@@ -1,19 +1,6 @@
-/**********************************************************
- * main.js
- * A single-file Phaser 3 setup with two scenes:
- *   1) MainScene
- *   2) UIScene
- * 
- * Ensures the code is not duplicated 
- * and classes are declared only once.
- **********************************************************/
+// main.js
 
-// If needed for tasks, keep a global array:
-window.globalTasks = window.globalTasks || [];
-
-/* ---------------------------
- * MainScene
- * --------------------------- */
+// MainScene handles the top-down movement and vendor overlap logic
 class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: 'MainScene' });
@@ -38,24 +25,37 @@ class MainScene extends Phaser.Scene {
   }
 
   create() {
+    // Player sprite with basic physics
     this.player = this.physics.add.sprite(400, 300, 'player_dummy');
     this.player.setCollideWorldBounds(true);
 
+    // A static vendor sprite
     this.vendor = this.physics.add.staticSprite(200, 200, 'vendor_dummy');
 
-    this.cursors = this.input.keyboard.createCursorKeys();
-
+    // Overlap detection
     this.physics.add.overlap(
       this.player,
       this.vendor,
-      () => {
-        console.log('Vendor overlapped');
-      },
+      this.onVendorOverlap,
       null,
       this
     );
 
-    // Launch the UI scene
+    // Cursor keys
+    this.cursors = this.input.keyboard.createCursorKeys();
+
+    // Create new tasks every few seconds
+    this.time.addEvent({
+      delay: 5000,
+      callback: () => {
+        const task = createRandomTask();
+        window.globalTasks.push(task);
+        console.log('New Task:', task.description);
+      },
+      loop: true
+    });
+
+    // Launch UI Scene
     this.scene.launch('UIScene');
   }
 
@@ -68,26 +68,14 @@ class MainScene extends Phaser.Scene {
     if (this.cursors.up.isDown) this.player.setVelocityY(-speed);
     if (this.cursors.down.isDown) this.player.setVelocityY(speed);
   }
-}
 
-/* ---------------------------
- * UIScene
- * --------------------------- */
-class UIScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'UIScene' });
-  }
-
-  create() {
-    this.add.text(10, 10, 'UIScene - Task List or Info', 
-      { fontSize: '16px', fill: '#000' }
-    );
+  onVendorOverlap() {
+    // Could open a vendor UI or check SLA
+    console.log('Vendor overlapped. Possibly call openVendorUI(this) from vendor.js');
   }
 }
 
-/* ---------------------------
- * Phaser Config
- * --------------------------- */
+// Phaser config that references both MainScene & UIScene
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -103,7 +91,5 @@ const config = {
   scene: [ MainScene, UIScene ]
 };
 
-/* ---------------------------
- * Start the Game
- * --------------------------- */
+// Launch the game
 new Phaser.Game(config);
