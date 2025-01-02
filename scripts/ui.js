@@ -6,35 +6,38 @@ class UIScene extends Phaser.Scene {
   }
 
   create() {
-    // Instructions
+    // Basic instructions
     this.add.text(10, 10,
-      'Arrow keys = move.\nPick a task.\nFollow each step in order by visiting the correct location.\n',
+      'Arrow keys = move.\nVisit Backlog location to view tasks.\nComplete each step.\nFinal step: Gather Everyone.\nThen finalize the task.',
       { fontSize: '15px', fill: '#000' }
     );
 
-    // Where we list tasks
+    // We'll store references to on-screen text
     this.taskTexts = [];
-    // No active task initially
     this.activeTaskId = null;
 
-    // Panel to display active task details
+    // UI panel for active task
     this.createActiveTaskPanel();
 
-    // Refresh tasks every second
+    // We refresh tasks every second
     this.time.addEvent({
       delay: 1000,
       callback: this.refreshTaskList,
       callbackScope: this,
       loop: true
     });
+
+    // A text to show player's score
+    this.scoreText = this.add.text(10, 110, 'Score: ' + window.playerScore, { 
+      fontSize: '16px', fill: '#ff0000' 
+    });
   }
 
   createActiveTaskPanel() {
-    // A container for showing the active task’s step
-    this.activePanel = this.add.container(400, 50);
+    // Shift the panel left, narrower width so it fits 1024px wide
+    this.activePanel = this.add.container(250, 160);
 
-    // Background
-    const bg = this.add.rectangle(0, 0, 380, 150, 0xcccccc);
+    const bg = this.add.rectangle(0, 0, 340, 200, 0xcccccc);
     bg.setOrigin(0, 0);
 
     this.panelTitle = this.add.text(10, 10, 'Active Task:', { fontSize: '16px', fill: '#000' });
@@ -42,28 +45,49 @@ class UIScene extends Phaser.Scene {
     this.statusText = this.add.text(10, 60, '', { fontSize: '14px', fill: '#333' });
     this.priorityText = this.add.text(10, 80, '', { fontSize: '14px', fill: '#333' });
 
-    // Button to finalize if all steps are done
-    const finalizeBtn = this.add.text(10, 110, '[ Finalize Task ]', {
+    // "Gather Everyone" button
+    this.gatherBtn = this.add.text(10, 110, '[ Gather Everyone ]', {
+      fontSize: '14px', fill: '#fff', backgroundColor: '#ff0000', padding: { x: 4, y: 2 }
+    })
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', () => this.gatherEveryone());
+
+    // "Finalize Task" button
+    const finalizeBtn = this.add.text(10, 150, '[ Finalize Task ]', {
       fontSize: '14px', fill: '#000', backgroundColor: '#00ff00', padding: { x: 4, y: 2 }
     })
-      .setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.finalizeActiveTask());
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', () => this.finalizeActiveTask());
 
     // Priority buttons
-    const lowBtn = this.add.text(150, 110, '[ Priority: Low ]', {
+    const lowBtn = this.add.text(130, 150, '[ Priority: Low ]', {
       fontSize: '14px', fill: '#000', backgroundColor: '#ccc', padding: { x: 4, y: 2 }
     }).setInteractive();
     lowBtn.on('pointerdown', () => this.setActiveTaskPriority('Low'));
 
-    const highBtn = this.add.text(290, 110, '[ Priority: High ]', {
+    const highBtn = this.add.text(250, 150, '[ Priority: High ]', {
       fontSize: '14px', fill: '#000', backgroundColor: '#ccc', padding: { x: 4, y: 2 }
     }).setInteractive();
     highBtn.on('pointerdown', () => this.setActiveTaskPriority('High'));
 
-    this.activePanel.add([ bg, this.panelTitle, this.stepText, this.statusText, this.priorityText, finalizeBtn, lowBtn, highBtn ]);
+    this.activePanel.add([ bg, this.panelTitle, this.stepText, this.statusText,
+      this.priorityText, this.gatherBtn, finalizeBtn, lowBtn, highBtn ]);
 
-    // Initially hide (if no active task)
+    // Hide if no active task
     this.activePanel.setVisible(false);
+  }
+
+  gatherEveryone() {
+    if (!this.activeTaskId) return;
+    const task = getTaskById(this.activeTaskId);
+    if (!task) return;
+
+    // Only gather if it's the final step
+    const currentStepText = task.steps[task.currentStep] || '';
+    if (currentStepText.includes('evening upgrade')) {
+      advanceTaskStep(task.id);
+      this.updateActiveTaskPanel();
+    }
   }
 
   finalizeActiveTask() {
@@ -73,7 +97,7 @@ class UIScene extends Phaser.Scene {
 
     if (task.status === 'Ready to finalize') {
       completeTask(task.id);
-      task.status = 'Done'; // Mark it done
+      task.status = 'Done';
       this.activeTaskId = null;
       this.activePanel.setVisible(false);
     }
@@ -82,6 +106,7 @@ class UIScene extends Phaser.Scene {
   setActiveTaskPriority(newPriority) {
     if (!this.activeTaskId) return;
     updateTaskPriority(this.activeTaskId, newPriority);
+    this.updateActiveTaskPanel();
   }
 
   pickActiveTask(taskId) {
@@ -95,43 +120,69 @@ class UIScene extends Phaser.Scene {
       this.activePanel.setVisible(false);
       return;
     }
-
     const task = getTaskById(this.activeTaskId);
     if (!task) {
       this.activePanel.setVisible(false);
       return;
     }
+    const stepIndex = task.currentStep;
+    const total = task.steps.length;
 
-    this.stepText.setText(`Step ${task.currentStep + 1} of ${task.steps.length}: ${task.steps[task.currentStep] || 'All steps done'}`);
+    let stepText = '';
+    if (stepIndex >= total) {
+      stepText = 'All steps completed. Ready to finalize.';
+    } else {
+      stepText = `Step ${stepIndex + 1} of ${total}: ${task.steps[stepIndex]}`;
+    }
+
+    this.stepText.setText(stepText);
     this.statusText.setText(`Status: ${task.status}`);
     this.priorityText.setText(`Priority: ${task.priority}`);
+
+    // Show or hide the "Gather Everyone" button
+    if (stepIndex < total && task.steps[stepIndex].includes('evening upgrade')) {
+      this.gatherBtn.setVisible(true);
+    } else {
+      this.gatherBtn.setVisible(false);
+    }
   }
 
   refreshTaskList() {
-    // Clear old texts
+    // Update Score
+    this.scoreText.setText('Score: ' + window.playerScore);
+
+    // Clear old text
     this.taskTexts.forEach(txt => txt.destroy());
     this.taskTexts = [];
 
-    const startY = 100;
-    const lineHeight = 20;
+    // If user is NOT in backlog zone, show a message instead of the tasks
+    if (!window.canViewBacklog) {
+      const msg = this.add.text(10, 140, 
+        'You must be at the Backlog location to view tasks.', 
+        { fontSize: '14px', fill: '#f00' }
+      );
+      this.taskTexts.push(msg);
+      this.updateActiveTaskPanel();
+      return;
+    }
 
+    // Otherwise, display tasks
+    const startY = 140;
+    const lineHeight = 20;
     window.globalTasks.forEach((task, index) => {
       const yPos = startY + index * lineHeight;
+      const sIndex = `${task.currentStep}/${task.steps.length}`;
       const txt = this.add.text(
         10,
         yPos,
-        `[${task.status}] ${task.description} (Step ${task.currentStep}/${task.steps.length})`,
+        `[${task.status}] ${task.description} (Step ${sIndex})`,
         { fontSize: '14px', fill: '#000' }
       );
-
-      // Click to pick as active
       txt.setInteractive({ useHandCursor: true });
       txt.on('pointerdown', () => this.pickActiveTask(task.id));
-
       this.taskTexts.push(txt);
     });
 
-    // Update panel for active task
     this.updateActiveTaskPanel();
   }
 }
