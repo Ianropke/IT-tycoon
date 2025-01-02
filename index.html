@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IT Governance Tycoon</title>
+  <!-- Phaser 3 from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+  <!-- Styles (Optional) -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 
+    The Phaser game will be injected into the body. 
+    Each JS file has distinct logic:
+    - main.js: Game config, scene creation, top-down movement
+    - tasks.js: Handles creation and management of tasks
+    - vendor.js: Vendor interactions, SLA checking
+    - ui.js: UI overlay for displaying tasks, statuses, etc.
+  -->
+
+  <!-- Load your custom scripts -->
+  <script src="scripts/tasks.js"></script>
+  <script src="scripts/vendor.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/main.js"></script>
+  
+</body>
+</html>
