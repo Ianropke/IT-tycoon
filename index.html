@@ -3,12 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <title>IT Governance Tycoon</title>
-  <!-- Phaser 3 (CDN) -->
+  <!-- Phaser 3 from a CDN -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+
+  <!-- Remove default browser margins so the game is flush -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Load your scripts in the correct order -->
+  <!-- Load scripts in correct order -->
   <script src="scripts/tasks.js"></script>
   <script src="scripts/vendor.js"></script>
   <script src="scripts/ui.js"></script>
