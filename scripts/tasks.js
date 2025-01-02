@@ -1,6 +1,6 @@
 // tasks.js
 
-// Keep a global array of tasks
+// Keep the globalTasks array
 window.globalTasks = window.globalTasks || [];
 
 // Helper to pick a random element from an array
@@ -9,52 +9,73 @@ function pickRandom(arr) {
 }
 
 /**
- * Creates a random new task object with extra fields:
- * - cost (number)
- * - benefit (string)
- * - securityRisk (string)
- * - priority (string)
+ * Creates a random new task with a step-based workflow:
+ * Steps:
+ * 1) vendor -> gather info
+ * 2) hospital -> check timing
+ * 3) infra -> secure resources
+ * 4) cab -> get final approval
+ * 5) evening -> do the actual upgrade
  */
 function createRandomTask() {
-  const benefits = [ 'High', 'Medium', 'Low' ];
-  const securityRisks = [ 'High', 'Medium', 'Low' ];
-
   return {
     id: Date.now(),
     description: pickRandom([
-      'LIMS not syncing lab results',
-      'EHR upgrade pending CAB approval',
-      'Urgent hospital request for lab server fix',
-      'SLA patch rollout check',
-      'Escalated frontline ticket (critical)'
+      'EHR system upgrade needed',
+      'Critical LIMS patch rollout',
+      'Security fix for hospital network',
+      'Infrastructure maintenance request'
     ]),
     status: 'New',
-    cost: Phaser.Math.Between(1000, 10000), // Random cost between 1k and 10k
-    benefit: pickRandom(benefits),         // High/Medium/Low
-    securityRisk: pickRandom(securityRisks), // High/Medium/Low
-    priority: 'Unassigned' // The player can set this
+    currentStep: 0,  // Which step we’re on
+    steps: [
+      'Visit Vendor for info',
+      'Visit Hospital to confirm timing',
+      'Visit Infrastructure dept to secure resources',
+      'Go to CAB meeting for approval',
+      'Gather everyone for evening upgrade'
+    ],
+    priority: 'Unassigned'
   };
 }
 
 /**
- * Marks a specific task as done by ID.
+ * Marks a task as “Done.” We only do this if we completed all steps.
  */
 function completeTask(taskId) {
   const task = getTaskById(taskId);
-  if (task) {
+  if (task && task.currentStep >= task.steps.length) {
     task.status = 'Done';
   }
 }
 
 /**
- * Retrieves a task by ID.
+ * Moves the task to its next step, if any remain.
+ */
+function advanceTaskStep(taskId) {
+  const task = getTaskById(taskId);
+  if (!task) return;
+  
+  // Only advance if we haven't completed all steps
+  if (task.currentStep < task.steps.length) {
+    task.currentStep++;
+    // If we've finished all steps, we can set it to "CanComplete"
+    if (task.currentStep >= task.steps.length) {
+      // All steps done
+      task.status = 'Ready to finalize';
+    }
+  }
+}
+
+/**
+ * Retrieve a task by ID
  */
 function getTaskById(taskId) {
   return window.globalTasks.find(t => t.id === taskId);
 }
 
 /**
- * Sets a new priority on a task (e.g., "Low", "Medium", "High").
+ * Update the priority for a given task.
  */
 function updateTaskPriority(taskId, newPriority) {
   const task = getTaskById(taskId);
