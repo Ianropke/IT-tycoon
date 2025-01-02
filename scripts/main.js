@@ -6,7 +6,7 @@ class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    // Player sprite
+    // Player
     const playerCanvas = this.textures.createCanvas('player_dummy', 64, 64);
     const pctx = playerCanvas.getContext();
     pctx.fillStyle = '#0000ff';
@@ -58,36 +58,35 @@ class MainScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(400, 300, 'player_dummy');
     this.player.setCollideWorldBounds(true);
 
-    // Zones for steps
+    // Zones
     this.vendorZone = this.physics.add.staticSprite(300, 200, 'vendor_dummy');
     this.hospitalZone = this.physics.add.staticSprite(500, 200, 'hospital_dummy');
-    this.infrastructureZone = this.physics.add.staticSprite(300, 400, 'infra_dummy');
-    this.cabZone = this.physics.add.staticSprite(500, 400, 'cab_dummy');
+    this.infrastructureZone = this.physics.add.staticSprite(300, 500, 'infra_dummy');
+    this.cabZone = this.physics.add.staticSprite(500, 500, 'cab_dummy');
 
-    // Orange backlog zone
+    // Backlog zone
     this.backlogZone = this.physics.add.staticSprite(100, 100, 'backlog_dummy');
 
-    // Overlaps for location-based steps
+    // Overlaps
     this.physics.add.overlap(this.player, this.vendorZone, () => this.triggerLocation('vendor'), null, this);
     this.physics.add.overlap(this.player, this.hospitalZone, () => this.triggerLocation('hospital'), null, this);
     this.physics.add.overlap(this.player, this.infrastructureZone, () => this.triggerLocation('infra'), null, this);
     this.physics.add.overlap(this.player, this.cabZone, () => this.triggerLocation('cab'), null, this);
 
-    // Create tasks every 20s
+    // Spawn new tasks (limit 10)
     this.time.addEvent({
       delay: 20000,
       callback: () => {
-        const t = createRandomTask();
-        window.globalTasks.push(t);
-        console.log('New Task:', t.description);
+        if (window.globalTasks.length < 10) {
+          const t = createRandomTask();
+          window.globalTasks.push(t);
+          console.log('New Task:', t.description, ' Risk=', t.risk);
+        }
       },
       loop: true
     });
 
-    // Cursor keys
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    // Launch UI
     this.scene.launch('UIScene');
   }
 
@@ -107,48 +106,44 @@ class MainScene extends Phaser.Scene {
   }
 
   triggerLocation(locationName) {
-    // Which task is active?
+    // Active task?
     const uiScene = this.scene.get('UIScene');
     const activeId = uiScene.activeTaskId;
     if (!activeId) return;
 
     const task = getTaskById(activeId);
-    if (!task) return;
-
-    // Only advance steps if the task is "committed" 
-    // (i.e. the player decided to solve it).
-    if (!task.committed) {
-      console.log('Cannot proceed with steps unless you commit to this task.');
+    if (!task || !task.committed) {
+      console.log('No active or committed task to advance steps.');
       return;
     }
 
-    const currentStepText = task.steps[task.currentStep] || '';
-
-    if (locationName === 'vendor' && currentStepText.includes('Vendor')) {
+    const stepDesc = task.steps[task.currentStep] || '';
+    if (locationName === 'vendor' && stepDesc.includes('Vendor')) {
       advanceTaskStep(task.id);
       uiScene.updateActiveTaskPanel();
-    } else if (locationName === 'hospital' && currentStepText.includes('Hospital')) {
+    } else if (locationName === 'hospital' && stepDesc.includes('Hospital')) {
       advanceTaskStep(task.id);
       uiScene.updateActiveTaskPanel();
-    } else if (locationName === 'infra' && currentStepText.includes('Infrastructure')) {
+    } else if (locationName === 'infra' && stepDesc.includes('Infra')) {
       advanceTaskStep(task.id);
       uiScene.updateActiveTaskPanel();
-    } else if (locationName === 'cab' && currentStepText.includes('CAB')) {
+    } else if (locationName === 'cab' && stepDesc.includes('CAB')) {
       advanceTaskStep(task.id);
       uiScene.updateActiveTaskPanel();
     }
   }
 }
 
+// Increase resolution to 1280×800
 const config = {
   type: Phaser.AUTO,
-  width: 1024,
-  height: 768,
+  width: 1280,
+  height: 800,
   backgroundColor: '#eeeeee',
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y:0 },
+      gravity: { y: 0 },
       debug: false
     }
   },
