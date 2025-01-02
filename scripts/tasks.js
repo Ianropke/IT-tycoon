@@ -1,33 +1,33 @@
 // tasks.js
 
-// Keep the globalTasks array
+// Global array of tasks
 window.globalTasks = window.globalTasks || [];
 
-// Helper to pick a random element from an array
-function pickRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+// A global player score (start at 10, for example)
+window.playerScore = 10;
 
 /**
- * Creates a random new task with a step-based workflow:
- * Steps:
- * 1) vendor -> gather info
- * 2) hospital -> check timing
- * 3) infra -> secure resources
- * 4) cab -> get final approval
- * 5) evening -> do the actual upgrade
+ * Creates a random new task with step-based workflow:
+ *   0) Visit Vendor
+ *   1) Visit Hospital
+ *   2) Visit Infrastructure
+ *   3) Go to CAB
+ *   4) Gather everyone for evening upgrade (final step in UI)
  */
 function createRandomTask() {
+  const descriptions = [
+    'EHR system upgrade needed',
+    'Critical LIMS patch rollout',
+    'Security fix for hospital network',
+    'Infrastructure maintenance request'
+  ];
+  const index = Phaser.Math.Between(0, descriptions.length - 1);
+
   return {
-    id: Date.now(),
-    description: pickRandom([
-      'EHR system upgrade needed',
-      'Critical LIMS patch rollout',
-      'Security fix for hospital network',
-      'Infrastructure maintenance request'
-    ]),
+    id: Date.now(),        // used for age-check
+    description: descriptions[index],
     status: 'New',
-    currentStep: 0,  // Which step we’re on
+    currentStep: 0,
     steps: [
       'Visit Vendor for info',
       'Visit Hospital to confirm timing',
@@ -40,7 +40,7 @@ function createRandomTask() {
 }
 
 /**
- * Marks a task as “Done.” We only do this if we completed all steps.
+ * Marks a task as done (only if all steps are finished).
  */
 function completeTask(taskId) {
   const task = getTaskById(taskId);
@@ -50,16 +50,14 @@ function completeTask(taskId) {
 }
 
 /**
- * Moves the task to its next step, if any remain.
+ * Advances the current step by 1.
  */
 function advanceTaskStep(taskId) {
   const task = getTaskById(taskId);
   if (!task) return;
-  
-  // Only advance if we haven't completed all steps
+
   if (task.currentStep < task.steps.length) {
     task.currentStep++;
-    // If we've finished all steps, we can set it to "CanComplete"
     if (task.currentStep >= task.steps.length) {
       // All steps done
       task.status = 'Ready to finalize';
@@ -68,14 +66,14 @@ function advanceTaskStep(taskId) {
 }
 
 /**
- * Retrieve a task by ID
+ * Retrieve a task by ID.
  */
 function getTaskById(taskId) {
   return window.globalTasks.find(t => t.id === taskId);
 }
 
 /**
- * Update the priority for a given task.
+ * Update the priority of a task.
  */
 function updateTaskPriority(taskId, newPriority) {
   const task = getTaskById(taskId);
