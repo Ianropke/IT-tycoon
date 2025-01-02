@@ -1,13 +1,12 @@
 // main.js
 
-// MainScene handles the top-down movement and vendor overlap logic
 class MainScene extends Phaser.Scene {
   constructor() {
     super({ key: 'MainScene' });
   }
 
   preload() {
-    // Dummy player sprite
+    // Dummy player sprite (64x64)
     const playerCanvas = this.textures.createCanvas('player_dummy', 64, 64);
     const pctx = playerCanvas.getContext();
     pctx.fillStyle = '#0000ff';
@@ -16,7 +15,7 @@ class MainScene extends Phaser.Scene {
     pctx.fillRect(24, 8, 16, 16);
     playerCanvas.refresh();
 
-    // Dummy vendor sprite
+    // Dummy vendor sprite (32x32)
     const vendorCanvas = this.textures.createCanvas('vendor_dummy', 32, 32);
     const vctx = vendorCanvas.getContext();
     vctx.fillStyle = '#00ff00';
@@ -25,7 +24,7 @@ class MainScene extends Phaser.Scene {
   }
 
   create() {
-    // Player sprite with basic physics
+    // Create the player
     this.player = this.physics.add.sprite(400, 300, 'player_dummy');
     this.player.setCollideWorldBounds(true);
 
@@ -41,10 +40,10 @@ class MainScene extends Phaser.Scene {
       this
     );
 
-    // Cursor keys
+    // Cursor keys for movement
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    // Create new tasks every few seconds
+    // Spawn new tasks every 5 seconds
     this.time.addEvent({
       delay: 5000,
       callback: () => {
@@ -55,7 +54,7 @@ class MainScene extends Phaser.Scene {
       loop: true
     });
 
-    // Launch UI Scene
+    // Launch the UI scene
     this.scene.launch('UIScene');
   }
 
@@ -63,19 +62,27 @@ class MainScene extends Phaser.Scene {
     const speed = 200;
     this.player.setVelocity(0);
 
-    if (this.cursors.left.isDown) this.player.setVelocityX(-speed);
-    if (this.cursors.right.isDown) this.player.setVelocityX(speed);
-    if (this.cursors.up.isDown) this.player.setVelocityY(-speed);
-    if (this.cursors.down.isDown) this.player.setVelocityY(speed);
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-speed);
+    }
+    if (this.cursors.right.isDown) {
+      this.player.setVelocityX(speed);
+    }
+    if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-speed);
+    }
+    if (this.cursors.down.isDown) {
+      this.player.setVelocityY(speed);
+    }
   }
 
   onVendorOverlap() {
-    // Could open a vendor UI or check SLA
-    console.log('Vendor overlapped. Possibly call openVendorUI(this) from vendor.js');
+    // Could open a vendor UI or do SLA checks
+    console.log('Vendor overlapped. Possibly do openVendorUI(this) if needed.');
   }
 }
 
-// Phaser config that references both MainScene & UIScene
+// Phaser config
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -89,6 +96,10 @@ const config = {
     }
   },
   scene: [ MainScene, UIScene ]
+};
+
+new Phaser.Game(config);
+ne: [ MainScene, UIScene ]
 };
 
 // Launch the game
