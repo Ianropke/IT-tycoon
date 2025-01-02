@@ -28,22 +28,22 @@ class MainScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(400, 300, 'player_dummy');
     this.player.setCollideWorldBounds(true);
 
-    // A static vendor sprite
+    // Create the vendor
     this.vendor = this.physics.add.staticSprite(200, 200, 'vendor_dummy');
-
-    // Overlap detection
-    this.physics.add.overlap(
-      this.player,
-      this.vendor,
-      this.onVendorOverlap,
-      null,
-      this
-    );
 
     // Cursor keys for movement
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    // Spawn new tasks every 5 seconds
+    // Overlap detection with the vendor
+    this.physics.add.overlap(
+      this.player,
+      this.vendor,
+      this.onVendorOverlap, 
+      null, 
+      this
+    );
+
+    // Generate tasks periodically
     this.time.addEvent({
       delay: 5000,
       callback: () => {
@@ -59,6 +59,7 @@ class MainScene extends Phaser.Scene {
   }
 
   update() {
+    // Simple top-down movement
     const speed = 200;
     this.player.setVelocity(0);
 
@@ -77,12 +78,12 @@ class MainScene extends Phaser.Scene {
   }
 
   onVendorOverlap() {
-    // Could open a vendor UI or do SLA checks
-    console.log('Vendor overlapped. Possibly do openVendorUI(this) if needed.');
+    // Called whenever the player overlaps with the vendor sprite
+    console.log('Vendor overlapped. Possibly call openVendorUI(this).');
   }
 }
 
-// Phaser config
+// Configure and start Phaser
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -95,12 +96,8 @@ const config = {
       debug: false
     }
   },
+  // Make sure UIScene is defined in ui.js, loaded before main.js in index.html
   scene: [ MainScene, UIScene ]
 };
 
-new Phaser.Game(config);
-ne: [ MainScene, UIScene ]
-};
-
-// Launch the game
 new Phaser.Game(config);
