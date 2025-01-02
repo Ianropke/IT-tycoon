@@ -1,26 +1,21 @@
-/***************************************************************
- * ui.js
- * 
- * Defines a UI overlay scene that displays global tasks, 
- * enabling the user to click and update them.
- ***************************************************************/
+// ui.js
 
 class UIScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'UIScene', active: false });
+    super({ key: 'UIScene' });
   }
 
   create() {
-    // Instructions
-    this.instructionsText = this.add.text(10, 10, 
-      'Use arrow keys to move. Tasks appear below.\nClick a task to mark as Done.', 
+    // Basic instructions at the top
+    this.add.text(10, 10, 
+      'Use arrow keys to move.\nTasks below.\nClick any task to mark as Done.',
       { fontSize: '16px', fill: '#000' }
     );
-    
-    // Array to store text objects for tasks
+
+    // We'll store text objects here so we can refresh or destroy them
     this.taskTexts = [];
 
-    // Update the task list every half-second
+    // Refresh the task list periodically
     this.time.addEvent({
       delay: 500,
       callback: this.refreshTaskList,
@@ -31,30 +26,24 @@ class UIScene extends Phaser.Scene {
 
   refreshTaskList() {
     // Clear existing text objects
-    this.taskTexts.forEach(t => t.destroy());
+    this.taskTexts.forEach(txt => txt.destroy());
     this.taskTexts = [];
 
-    const startY = 60;
+    const startY = 70;
     const lineHeight = 20;
 
-    // Loop over tasks
     window.globalTasks.forEach((task, index) => {
       const yPos = startY + index * lineHeight;
       const textObj = this.add.text(
         10,
         yPos,
         `[${task.status}] ${task.description}`,
-        { 
-          fontSize: '14px', 
-          fill: '#333', 
-          backgroundColor: '#fff', 
-          padding: { x: 4, y: 2 }
-        }
+        { fontSize: '14px', fill: '#333', backgroundColor: '#fff', padding: { x: 4, y: 2 } }
       );
 
+      // Make each task clickable
       textObj.setInteractive({ useHandCursor: true });
       textObj.on('pointerdown', () => {
-        // Mark the task as done using tasks.js
         completeTask(task.id);
       });
 
