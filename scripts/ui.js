@@ -1,6 +1,6 @@
 // js/ui.js
 
-import { getTasksForCurrentPage } from './tasks.js';
+import { backlog, activeTask, tasksPerPage } from './tasks.js';
 
 /**
  * Updates the backlog table with current tasks.
@@ -50,4 +50,17 @@ export function updateActiveTaskUI(activeTask) {
 export function updateScoresUI() {
   // Currently, scores are updated directly in tasks.js
   // This function can be expanded if additional score-related UI updates are needed
+}
+
+/**
+ * Retrieves tasks for the current page.
+ * @param {Array} backlog 
+ * @param {number} currentPage 
+ * @param {number} tasksPerPage 
+ * @returns {Array}
+ */
+function getTasksForCurrentPage(backlog, currentPage, tasksPerPage) {
+  const start = (currentPage - 1) * tasksPerPage;
+  const end = start + tasksPerPage;
+  return backlog.slice(start, end);
 }
