@@ -1,16 +1,8 @@
 // vendor.js
 
-function checkVendorSLA(task) {
-  const SLA_TIME = 48 * 60 * 60 * 1000; // 48 hours
-  const ageOfTask = Date.now() - task.id;
-
-  if (ageOfTask > SLA_TIME) {
-    console.log(`Task [${task.description}] is OVERDUE for vendor SLA.`);
-  } else {
-    console.log(`Task [${task.description}] is within SLA window.`);
-  }
-}
+// If you have any vendor-specific logic (SLA checks, etc.)
+// you can define it here. For now, let's keep it minimal.
 
 function openVendorUI(scene) {
-  console.log('Vendor UI opened. Potential negotiations or SLA checks here...');
+  console.log('Vendor UI could open here if needed...');
 }
