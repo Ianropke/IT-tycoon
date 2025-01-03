@@ -118,7 +118,7 @@ export function finalizeTask() {
   document.getElementById('gather-button').disabled = true;
   document.getElementById('finalize-button').disabled = true;
 
-  // Optionally, generate a new task
+  // Optionally, generate a new task if backlog is below threshold
   if (backlog.length < 15) {
     backlog.push(generateRandomTask());
     shuffleArray(backlog);
@@ -177,11 +177,20 @@ export function changePage(direction) {
 export function createRandomTask(options = {}) {
   const newTask = generateRandomTask();
   if (options.giver) {
-    newTask.giver = options.giver;
+    newTask.giver = capitalizeFirstLetter(options.giver);
   }
   backlog.push(newTask);
   shuffleArray(backlog);
   updateBacklogUI(backlog, currentPage, tasksPerPage);
+}
+
+/**
+ * Capitalizes the first letter of a string.
+ * @param {string} str 
+ * @returns {string}
+ */
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /**
