@@ -1,24 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Governance Tycoon</title>
-  <!-- Phaser 3 from a CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-  <!-- Ensure tasks.js is first, then vendor.js, then ui.js, then main.js -->
-  <script src="scripts/tasks.js"></script>
-  <script src="scripts/vendor.js"></script>
-  <script src="scripts/ui.js"></script>
-  <script src="scripts/main.js"></script>
-
+  <script src="lib/phaser.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
