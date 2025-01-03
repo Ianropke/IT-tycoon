@@ -1,53 +1,80 @@
 class UIScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'UIScene' });
-  }
+    constructor() {
+        super({ key: 'UIScene' });
+    }
 
-  create() {
-    this.add.rectangle(0, 0, 1440, 60, 0xf4f4f4).setOrigin(0, 0);
-    this.scoreText = this.add.text(20, 15, 'Score: 0 | Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
-      fontSize: '16px',
-      color: '#333',
-    });
+    create() {
+        this.scoreText = this.add.text(20, 10, 'Score: 0', {
+            fontSize: '24px',
+            color: '#007aff'
+        });
 
-    // Backlog
-    this.backlogContainer = this.add.container(920, 100);
-    this.backlogText = this.add.text(0, 0, 'Tasks (Backlog):', { fontSize: '14px', color: '#333' });
-    this.backlogContainer.add(this.backlogText);
+        this.scoreboard = this.add.text(700, 10, 'Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
+            fontSize: '16px',
+            color: '#333333'
+        });
 
-    // Active Task
-    this.activeTaskText = this.add.text(920, 500, 'Active Task:\n(No active task)', { fontSize: '14px', color: '#333' });
+        this.backlogContainer = this.add.container(910, 60);
+        this.activeTaskContainer = this.add.container(910, 480);
 
-    // Scrolling feature
-    this.scrollIndex = 0;
-    this.input.keyboard.on('keydown-UP', () => this.scrollTasks(-1));
-    this.input.keyboard.on('keydown-DOWN', () => this.scrollTasks(1));
+        this.updateUI();
+    }
 
-    this.updateUI();
-  }
+    updateUI() {
+        this.scoreText.setText(`Score: ${window.playerScore}`);
+        this.scoreboard.setText(
+            `Hospital: ${window.giverScoreboard.hospital} | ` +
+            `Infrastructure: ${window.giverScoreboard.infrastructure} | ` +
+            `InfoSec: ${window.giverScoreboard.informationSecurity} | ` +
+            `CyberSec: ${window.giverScoreboard.cybersecurity}`
+        );
 
-  updateUI() {
-    // Update Score
-    const { hospital, infrastructure, informationSecurity, cybersecurity } = window.completedTasks;
-    this.scoreText.setText(`Score: ${window.score} | Hospital: ${hospital} | Infrastructure: ${infrastructure} | InfoSec: ${informationSecurity} | CyberSec: ${cybersecurity}`);
+        this.backlogContainer.removeAll(true);
+        if (!window.canViewBacklog) {
+            this.backlogContainer.add(
+                this.add.text(0, 0, 'Stand on orange backlog to see tasks.', {
+                    fontSize: '14px',
+                    color: '#999999'
+                })
+            );
+            return;
+        }
 
-    // Backlog tasks
-    const tasks = window.globalTasks.slice(this.scrollIndex, this.scrollIndex + 5);
-    this.backlogContainer.removeAll(true);
-    this.backlogContainer.add(this.backlogText);
-    tasks.forEach((task, i) => {
-      const taskText = this.add.text(0, 20 + i * 20, `[${task.giver}] ${task.description} (${task.steps.length} steps)`, { fontSize: '12px', color: '#333' });
-      this.backlogContainer.add(taskText);
-    });
+        let y = 0;
+        window.globalTasks.forEach((task, index) => {
+            const taskText = this.add.text(0, y, `[${task.status}] ${task.description}`, {
+                fontSize: '14px',
+                color: '#333333'
+            });
 
-    // Penalty display
-    const penalties = window.penalties || [];
-    penalties.forEach(penalty => console.log('Penalty:', penalty));
-  }
+            taskText.setInteractive({ useHandCursor: true });
+            taskText.on('pointerdown', () => this.selectTask(task.id));
 
-  scrollTasks(direction) {
-    const maxScroll = Math.max(0, window.globalTasks.length - 5);
-    this.scrollIndex = Math.min(Math.max(this.scrollIndex + direction, 0), maxScroll);
-    this.updateUI();
-  }
+            this.backlogContainer.add(taskText);
+            y += 20;
+
+            if (index >= 10) {
+                this.backlogContainer.add(
+                    this.add.text(0, y, '...more tasks hidden...', {
+                        fontSize: '14px',
+                        color: '#888888'
+                    })
+                );
+                return;
+            }
+        });
+    }
+
+    selectTask(taskId) {
+        this.activeTaskContainer.removeAll(true);
+        const task = getTaskById(taskId);
+        if (!task) return;
+
+        this.activeTaskContainer.add(
+            this.add.text(0, 0, `Active Task: ${task.description}`, {
+                fontSize: '14px',
+                color: '#333333'
+            })
+        );
+    }
 }
