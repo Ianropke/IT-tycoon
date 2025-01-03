@@ -49,7 +49,6 @@
         <p><strong>Risk:</strong> <span id="active-risk">0</span></p>
         <p><strong>Giver:</strong> <span id="active-giver">None</span></p>
         <div id="active-controls">
-          <!-- Removed Inline onclick Attributes -->
           <button id="gather-button" disabled>Gather</button>
           <button id="finalize-button" disabled>Finalize</button>
         </div>
@@ -99,7 +98,6 @@
         <div id="resource-list">
           <!-- Resources will be dynamically inserted here -->
         </div>
-        <!-- Removed Inline onclick Attributes -->
         <button id="buy-server">Buy Server</button>
         <button id="buy-softwareLicenses">Buy Software Licenses</button>
         <button id="buy-officeSpace">Buy Office Space</button>
@@ -139,10 +137,7 @@
   <!-- Toast Notifications -->
   <div id="toast-container"></div>
   
-  <!-- Include JavaScript Files with Corrected Paths -->
-  <script src="scripts/utils.js"></script>
-  <script src="scripts/ui.js"></script>
-  <script src="scripts/tasks.js"></script>
-  <script src="scripts/main.js"></script>
+  <!-- Include JavaScript File as Module -->
+  <script src="scripts/main.js" type="module"></script>
 </body>
 </html>
