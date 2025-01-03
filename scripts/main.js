@@ -1,73 +1,55 @@
-// Updated Main Code (main.js)
-
+// main.js
 class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' });
   }
 
   preload() {
-    // Create squares for player and locations
-    this.makeSquare('player_dummy', 0x0000ff);
-    this.makeSquare('vendor_dummy', 0x00ff00);
-    this.makeSquare('hospital_dummy', 0xffff00);
-    this.makeSquare('infra_dummy', 0xff00ff);
-    this.makeSquare('cab_dummy', 0x000000);
-    this.makeSquare('legal_dummy', 0x654321);
-    this.makeSquare('backlog_dummy', 0xffa500);
-    this.makeSquare('informationSecurity_dummy', 0x00ffff);
-    this.makeSquare('cybersecurity_dummy', 0x88ffff);
+    this.makeSquare('player', 0x0000ff);
+    this.makeSquare('vendor', 0x00ff00);
+    this.makeSquare('hospital', 0xffff00);
+    this.makeSquare('infrastructure', 0xff00ff);
+    this.makeSquare('cab', 0x000000);
+    this.makeSquare('legal', 0xffa500);
+    this.makeSquare('backlog', 0x007aff);
+    this.makeSquare('infoSec', 0x00ffff);
+    this.makeSquare('cyberSec', 0x663399);
   }
 
   makeSquare(key, colorInt) {
-    const c = this.textures.createCanvas(key, 32, 32);
-    const ctx = c.getContext();
+    const canvas = this.textures.createCanvas(key, 32, 32);
+    const ctx = canvas.getContext();
     ctx.fillStyle = Phaser.Display.Color.IntegerToColor(colorInt).rgba;
     ctx.fillRect(0, 0, 32, 32);
-    c.refresh();
+    canvas.refresh();
   }
 
   create() {
-    // Game boundaries
-    window.canViewBacklog = false;
-
-    // Player sprite
-    this.player = this.physics.add.sprite(100, 450, 'player_dummy');
+    this.player = this.physics.add.sprite(100, 450, 'player');
     this.player.setCollideWorldBounds(true);
 
-    // Location sprites
     this.locations = {
-      vendor: this.physics.add.staticSprite(300, 200, 'vendor_dummy'),
-      hospital: this.physics.add.staticSprite(500, 200, 'hospital_dummy'),
-      infrastructure: this.physics.add.staticSprite(300, 350, 'infra_dummy'),
-      cab: this.physics.add.staticSprite(500, 350, 'cab_dummy'),
-      legal: this.physics.add.staticSprite(600, 250, 'legal_dummy'),
-      informationSecurity: this.physics.add.staticSprite(700, 300, 'informationSecurity_dummy'),
-      cybersecurity: this.physics.add.staticSprite(800, 400, 'cybersecurity_dummy'),
-      backlog: this.physics.add.staticSprite(150, 140, 'backlog_dummy')
+      vendor: this.physics.add.staticSprite(300, 200, 'vendor'),
+      hospital: this.physics.add.staticSprite(500, 200, 'hospital'),
+      infrastructure: this.physics.add.staticSprite(300, 350, 'infrastructure'),
+      cab: this.physics.add.staticSprite(500, 350, 'cab'),
+      legal: this.physics.add.staticSprite(600, 250, 'legal'),
+      infoSec: this.physics.add.staticSprite(700, 300, 'infoSec'),
+      cyberSec: this.physics.add.staticSprite(800, 400, 'cyberSec'),
+      backlog: this.physics.add.staticSprite(150, 140, 'backlog')
     };
 
-    // Overlaps
-    Object.keys(this.locations).forEach(locationName => {
-      this.physics.add.overlap(this.player, this.locations[locationName], () => {
-        this.triggerLocation(locationName);
-      }, null, this);
-    });
-
-    // Spawn tasks every 20 seconds
-    this.time.addEvent({
-      delay: 20000,
-      callback: () => {
-        if (window.globalTasks.length < 10) {
-          const newTask = createRandomTask();
-          window.globalTasks.push(newTask);
-        }
-      },
-      loop: true
+    Object.keys(this.locations).forEach(key => {
+      this.physics.add.overlap(
+        this.player,
+        this.locations[key],
+        () => this.triggerLocation(key),
+        null,
+        this
+      );
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    // Launch UI
     this.scene.launch('UIScene');
   }
 
@@ -79,35 +61,25 @@ class GameScene extends Phaser.Scene {
     if (this.cursors.right.isDown) this.player.setVelocityX(speed);
     if (this.cursors.up.isDown) this.player.setVelocityY(-speed);
     if (this.cursors.down.isDown) this.player.setVelocityY(speed);
-
-    const backlogRect = this.locations.backlog.getBounds();
-    const playerRect = this.player.getBounds();
-    window.canViewBacklog = Phaser.Geom.Intersects.RectangleToRectangle(playerRect, backlogRect);
   }
 
-  triggerLocation(locationName) {
+  triggerLocation(location) {
     const uiScene = this.scene.get('UIScene');
     if (!uiScene) return;
-    const activeId = uiScene.activeTaskId;
-    if (!activeId) return;
 
-    const task = getTaskById(activeId);
-    if (!task || !task.committed) return;
+    const activeTask = uiScene.getActiveTask();
+    if (!activeTask) return;
 
-    const idx = task.currentStep;
-    if (idx >= task.steps.length) return;
-
-    const needed = task.stepKeywords[idx];
-    if (needed === locationName) {
-      advanceTaskStep(task.id);
-      uiScene.updateActiveBox();
+    const currentStep = activeTask.steps[activeTask.currentStep];
+    if (currentStep === location) {
+      uiScene.advanceTask();
     }
   }
 }
 
 const config = {
   type: Phaser.AUTO,
-  width: 1440, // 900 for game + 540 for UI
+  width: 1440,
   height: 900,
   backgroundColor: '#eeeeee',
   physics: {
@@ -118,3 +90,72 @@ const config = {
 };
 
 new Phaser.Game(config);
+
+// ui.js
+class UIScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'UIScene' });
+  }
+
+  create() {
+    this.scoreText = this.add.text(20, 20, 'Score: 0', {
+      fontSize: '24px',
+      color: '#007aff'
+    });
+
+    this.taskDetails = this.add.text(950, 60, 'Tasks:', {
+      fontSize: '18px',
+      color: '#333'
+    });
+
+    this.activeTaskDetails = this.add.text(950, 400, '', {
+      fontSize: '16px',
+      color: '#333',
+      wordWrap: { width: 400 }
+    });
+
+    this.commitButton = this.add.text(950, 700, '[Commit]', {
+      fontSize: '16px',
+      backgroundColor: '#007aff',
+      color: '#fff',
+      padding: { x: 10, y: 5 }
+    })
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.commitTask());
+
+    this.updateUI();
+  }
+
+  updateUI() {
+    this.scoreText.setText(`Score: ${window.playerScore}`);
+    // Show active task details
+    const task = this.getActiveTask();
+    if (task) {
+      this.activeTaskDetails.setText(
+        `Active Task: ${task.description}\nSteps Remaining: ${task.steps.length - task.currentStep}\nRisk: ${task.risk}`
+      );
+    } else {
+      this.activeTaskDetails.setText('No active task selected.');
+    }
+  }
+
+  getActiveTask() {
+    return window.globalTasks.find(task => task.isActive);
+  }
+
+  commitTask() {
+    const task = this.getActiveTask();
+    if (task) {
+      task.isActive = true;
+      this.updateUI();
+    }
+  }
+
+  advanceTask() {
+    const task = this.getActiveTask();
+    if (task && task.currentStep < task.steps.length - 1) {
+      task.currentStep++;
+      this.updateUI();
+    }
+  }
+}
