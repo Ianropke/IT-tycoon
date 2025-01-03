@@ -1,11 +1,8 @@
 // scripts/utils.js
-
-// Function to generate a unique ID
 export function generateUniqueId() {
     return '_' + Math.random().toString(36).substr(2, 9);
 }
 
-// Function to shuffle an array
 export function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -14,16 +11,24 @@ export function shuffleArray(array) {
     return array;
 }
 
-// Function to generate a random task
 export function generateRandomTask() {
-    // Your logic to generate a random task
+    const descriptions = [
+        'Upgrade Network Infrastructure',
+        'Implement New Security Protocols',
+        'Develop Internal Tools',
+        'Conduct Employee Training',
+        'Optimize Database Performance'
+    ];
+    const givers = ['Hospital', 'Infrastructure', 'Cybersecurity', 'InfoSec'];
+    const priorities = ['Low', 'Medium', 'High'];
+
     return {
-        description: 'Sample Task',
-        steps: 5,
-        risk: 3,
-        giver: 'Alice',
-        priority: 'Medium'
+        id: generateUniqueId(),
+        description: descriptions[Math.floor(Math.random() * descriptions.length)],
+        steps: Math.floor(Math.random() * 5) + 1,
+        stepsCompleted: 0,
+        risk: Math.floor(Math.random() * 5) + 1,
+        giver: givers[Math.floor(Math.random() * givers.length)],
+        priority: priorities[Math.floor(Math.random() * priorities.length)]
     };
 }
-
-// Export other utility functions as needed
