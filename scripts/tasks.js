@@ -3,10 +3,10 @@
 import { getRandomInt, generateUniqueId, shuffleArray } from './utils.js';
 import { updateBacklogUI, updateActiveTaskUI, updateScoresUI } from './ui.js';
 
-let backlog = [];
-let activeTask = null;
-let currentPage = 1;
-const tasksPerPage = 10;
+export let backlog = [];
+export let activeTask = null;
+export let currentPage = 1;
+export const tasksPerPage = 10;
 
 const stakeholders = ['Hospital', 'Infrastructure', 'Cybersecurity', 'InfoSec'];
 
@@ -182,4 +182,12 @@ export function createRandomTask(options = {}) {
   backlog.push(newTask);
   shuffleArray(backlog);
   updateBacklogUI(backlog, currentPage, tasksPerPage);
+}
+
+/**
+ * Retrieves the current active task.
+ * @returns {Object|null}
+ */
+export function getActiveTask() {
+  return activeTask;
 }
