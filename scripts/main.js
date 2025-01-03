@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Function to close modal (can be imported from ui.js)
+// Function to close modal (can be imported from ui.js or defined here)
 function closeModalFunction() {
     const modal = document.getElementById('modal');
     modal.style.display = 'none';
