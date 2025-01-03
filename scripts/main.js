@@ -16,8 +16,6 @@ import {
     listenToPhaserEvents
 } from './tasks.js';
 
-import { generateUniqueId } from './utils.js';
-
 import { BootScene, MenuScene, GameScene } from './gameScenes.js';
 
 import { openTaskSelectionModal } from './ui.js'; // Import from ui.js
@@ -41,6 +39,9 @@ const config = {
 // Initialize Phaser Game
 const phaserGame = new Phaser.Game(config);
 
+// Assign Phaser game instance to a global variable
+window.phaserGame = phaserGame;
+
 // Listen to Phaser Events
 listenToPhaserEvents(phaserGame);
 
@@ -48,11 +49,6 @@ listenToPhaserEvents(phaserGame);
 phaserGame.events.on('redirectToLegal', () => {
     phaserGame.scene.getScene('GameScene').enterZone('legal');
 });
-
-// Ensure only one instance of Phaser Game exists
-if (!Phaser.Game.getGame('default')) {
-    window.phaserGame = phaserGame;
-}
 
 // DOMContentLoaded Event
 document.addEventListener('DOMContentLoaded', () => {
@@ -63,9 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         assignTask();
     }, 30000); // 30,000 ms = 30 seconds
 
-    // Commit Task Button (handled in ui.js)
-    // Other buttons handled via ui.js event listeners
-
     // Close Modal when 'x' is clicked
     const closeModal = document.getElementById('close-modal');
     if (closeModal) {
@@ -75,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Function to close modal (can be imported from ui.js or defined here)
+// Function to close modal
 function closeModalFunction() {
     const modal = document.getElementById('modal');
     modal.style.display = 'none';
