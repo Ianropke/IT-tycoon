@@ -5,12 +5,16 @@ import {
     updateActiveTaskUI, 
     showToast 
 } from './ui.js';
-
-import { shuffleArray, generateRandomTask } from './utils.js';
+import { shuffleArray, generateUniqueId } from './utils.js';
 import { gameState } from './state.js';
+
+// Sample task givers and locations for steps
+const taskGivers = ['Hospital', 'Infrastructure', 'Cybersecurity', 'InfoSec'];
+const stepLocations = ['Vendor Zone', 'Budget Zone', 'Legal Zone', 'Infrastructure Zone', 'Cybersecurity Zone'];
 
 export function initializeTasks() {
     gameState.tasks = [];
+    gameState.activeTask = null;
     gameState.scores = {
         totalScore: 0,
         currentMoney: 50000,
@@ -21,56 +25,103 @@ export function initializeTasks() {
             infosec: 0
         }
     };
+    gameState.contracts = []; // Initialize contracts
     updateBacklogUI([]);
     updateScoreboardUI(gameState.scores);
 }
 
-export function assignTask(zoneKey) {
-    if (['hospital', 'infrastructure', 'cybersecurity', 'infosec'].includes(zoneKey)) {
-        const newTask = generateRandomTask();
-        newTask.giver = getGiverByZone(zoneKey);
-        gameState.activeTask = newTask;
+export function generateRandomTask() {
+    const descriptions = [
+        'Upgrade Network Infrastructure',
+        'Implement New Security Protocols',
+        'Develop Internal Tools',
+        'Conduct Employee Training',
+        'Optimize Database Performance'
+    ];
+    const priorities = ['Low', 'Medium', 'High'];
+
+    const stepsCount = Math.floor(Math.random() * 3) + 2; // 2-4 steps
+    const shuffledSteps = shuffleArray([...stepLocations]).slice(0, stepsCount);
+
+    return {
+        id: generateUniqueId(),
+        description: descriptions[Math.floor(Math.random() * descriptions.length)],
+        taskGiver: taskGivers[Math.floor(Math.random() * taskGivers.length)],
+        risk: Math.floor(Math.random() * 5) + 1, // 1-5
+        price: Math.floor(Math.random() * 5000) + 1000, // $1,000 - $6,000
+        steps: shuffledSteps, // Ordered list of steps
+        currentStepIndex: 0, // Tracks progress
+        isCompleted: false
+    };
+}
+
+export function assignTask() {
+    const newTask = generateRandomTask();
+    gameState.tasks.push(newTask);
+    updateBacklogUI(gameState.tasks.slice(0, 5)); // Show top 5 tasks
+    showToast(`New task added by ${newTask.taskGiver}: "${newTask.description}"`);
+}
+
+export function selectTask(taskId) {
+    const task = gameState.tasks.find(t => t.id === taskId);
+    if (task) {
+        gameState.activeTask = task;
         updateActiveTaskUI(gameState.activeTask);
-        showToast(`New task assigned by ${newTask.giver}: ${newTask.description}`);
-    } else {
-        showToast(`No tasks assigned by ${zoneKey} zone.`);
+        showToast(`Selected Task: "${task.description}"`);
     }
 }
 
-function getGiverByZone(zoneKey) {
-    const zoneGivers = {
-        hospital: 'Hospital',
-        infrastructure: 'Infrastructure',
-        cybersecurity: 'Cybersecurity',
-        infosec: 'InfoSec'
-    };
-    return zoneGivers[zoneKey] || 'Unknown';
-}
-
-export function commitTask() {
+export function completeStep() {
     if (!gameState.activeTask) {
-        showToast('No active task to commit.');
+        showToast('No active task selected.');
         return;
     }
-    showToast('Task already active.');
+
+    if (gameState.activeTask.currentStepIndex < gameState.activeTask.steps.length) {
+        const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStepIndex];
+        gameState.activeTask.currentStepIndex += 1;
+        showToast(`Completed step: Visit "${currentStep}"`);
+        updateActiveTaskUI(gameState.activeTask);
+
+        // Check if all steps are completed
+        if (gameState.activeTask.currentStepIndex >= gameState.activeTask.steps.length) {
+            showToast('All steps completed! Ready to finalize the task.');
+        }
+    } else {
+        showToast('All steps already completed.');
+    }
 }
 
 export function finalizeTask() {
-    if (gameState.activeTask && gameState.activeTask.stepsCompleted >= gameState.activeTask.steps) {
-        const pointsEarned = gameState.activeTask.risk * 10;
-        gameState.scores.totalScore += pointsEarned;
-        gameState.scores.currentMoney += pointsEarned;
-        const giverKey = gameState.activeTask.giver.toLowerCase();
-        if (gameState.scores.stakeholderScores.hasOwnProperty(giverKey)) {
-            gameState.scores.stakeholderScores[giverKey] += pointsEarned;
-        }
-        gameState.activeTask = null;
-        updateActiveTaskUI(null);
-        updateScoreboardUI(gameState.scores);
-        showToast(`Task finalized! Earned ${pointsEarned} points.`);
-    } else {
-        showToast('Active task is not ready to finalize.');
+    if (!gameState.activeTask) {
+        showToast('No active task to finalize.');
+        return;
     }
+
+    if (gameState.activeTask.currentStepIndex < gameState.activeTask.steps.length) {
+        showToast('Complete all steps before finalizing the task.');
+        return;
+    }
+
+    const pointsEarned = gameState.activeTask.risk * 10;
+    const moneyEarned = gameState.activeTask.price;
+    gameState.scores.totalScore += pointsEarned;
+    gameState.scores.currentMoney += moneyEarned;
+
+    const giverKey = gameState.activeTask.taskGiver.toLowerCase();
+    if (gameState.scores.stakeholderScores.hasOwnProperty(giverKey)) {
+        gameState.scores.stakeholderScores[giverKey] += pointsEarned;
+    }
+
+    // Remove task from backlog if present
+    gameState.tasks = gameState.tasks.filter(t => t.id !== gameState.activeTask.id);
+
+    showToast(`Task "${gameState.activeTask.description}" finalized! Earned ${pointsEarned} points and $${moneyEarned}.`);
+
+    gameState.activeTask = null;
+    updateActiveTaskUI(null);
+    updateBacklogUI(gameState.tasks.slice(0, 5));
+    updateScoreboardUI(gameState.scores);
 }
 
 export function hireEmployee(employee) {
@@ -127,8 +178,8 @@ export function loadGame() {
 }
 
 export function listenToPhaserEvents(phaserGame) {
-    phaserGame.events.on('taskAssigned', (zoneKey) => {
-        assignTask(zoneKey);
+    phaserGame.events.on('taskAssigned', () => {
+        assignTask();
     });
 
     phaserGame.events.on('taskCompleted', () => {
@@ -151,6 +202,10 @@ export function listenToPhaserEvents(phaserGame) {
     phaserGame.events.on('budgetZoneVisited', () => {
         showToast('Welcome to the Budget Zone. Allocate your funds and view reports here.');
     });
+
+    phaserGame.events.on('redirectToLegal', () => {
+        phaserGame.scene.getScene('GameScene').enterZone('legal');
+    });
 }
 
 function calculateCost(resourceName, amount) {
@@ -160,4 +215,28 @@ function calculateCost(resourceName, amount) {
         officeSpace: 20000
     };
     return prices[resourceName] * amount;
+}
+
+// Function to manage contracts (dummy implementation)
+export function manageContracts() {
+    // Open the contracts management modal
+    openContractsModal();
+}
+
+function openContractsModal() {
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+    modalBody.innerHTML = `
+        <div id="manage-contracts-content">
+            <h3>Manage Contracts</h3>
+            <input type="text" id="contract-name" placeholder="Contract Name" />
+            <input type="number" id="contract-value" placeholder="Contract Value" />
+            <button id="create-contract-button">Create Contract</button>
+            <h4>Existing Contracts:</h4>
+            <ul id="contracts-list">
+                ${gameState.contracts.map(contract => `<li>${contract.name}: $${contract.value}</li>`).join('')}
+            </ul>
+        </div>
+    `;
+    modal.style.display = 'block';
 }
