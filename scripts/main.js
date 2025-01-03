@@ -18,7 +18,7 @@ import {
 
 import { BootScene, MenuScene, GameScene } from './gameScenes.js';
 
-import { openTaskSelectionModal } from './ui.js'; // Import from ui.js
+import { openTaskSelectionModal, closeModalFunction } from './ui.js'; // Import updated functions
 
 // Phaser Game Configuration
 const config = {
@@ -33,6 +33,9 @@ const config = {
             gravity: { y: 0 },
             debug: false
         }
+    },
+    audio: {
+        disableWebAudio: false
     }
 };
 
@@ -66,10 +69,57 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModalFunction();
         });
     }
-});
 
-// Function to close modal
-function closeModalFunction() {
-    const modal = document.getElementById('modal');
-    modal.style.display = 'none';
-}
+    // Close Modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('modal');
+        if (event.target == modal) {
+            closeModalFunction();
+        }
+    });
+
+    // Add event listeners to additional management buttons
+    document.getElementById('hire-employee')?.addEventListener('click', () => {
+        // Implement hire employee functionality
+        showToast('Hire Employee feature not implemented yet.');
+    });
+
+    document.getElementById('purchase-resources')?.addEventListener('click', () => {
+        // Implement purchase resources functionality
+        showToast('Purchase Resources feature not implemented yet.');
+    });
+
+    document.getElementById('check-compliance')?.addEventListener('click', () => {
+        checkCompliance();
+    });
+
+    document.getElementById('manage-contracts')?.addEventListener('click', () => {
+        manageContracts();
+    });
+
+    document.getElementById('toggle-theme')?.addEventListener('click', () => {
+        toggleTheme();
+    });
+
+    document.getElementById('save-button')?.addEventListener('click', () => {
+        saveGame();
+    });
+
+    document.getElementById('load-button')?.addEventListener('click', () => {
+        loadGame();
+    });
+
+    document.getElementById('submit-feedback')?.addEventListener('click', () => {
+        submitFeedback();
+    });
+
+    document.getElementById('allocate-budget')?.addEventListener('click', () => {
+        // Implement allocate budget functionality
+        showToast('Allocate Budget feature not implemented yet.');
+    });
+
+    document.getElementById('view-reports')?.addEventListener('click', () => {
+        // Implement view reports functionality
+        showToast('View Reports feature not implemented yet.');
+    });
+});
