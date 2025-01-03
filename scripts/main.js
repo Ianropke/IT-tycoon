@@ -134,7 +134,7 @@ class GameScene extends Phaser.Scene {
 // Phaser Game Configuration
 const config = {
   type: Phaser.AUTO,
-  width: 1440, // 900 (game area) + 540 (UI panel)
+  width: 900, // Changed from 1440 to 900 to match the 'game-area' div width
   height: 900,
   backgroundColor: '#eeeeee',
   physics: {
@@ -142,7 +142,7 @@ const config = {
     arcade: { gravity: { y: 0 }, debug: false },
   },
   scene: [GameScene],
-  parent: 'game-area'
+  parent: 'game-area' // Ensures the game canvas is attached to the 'game-area' div
 };
 
 // Initialize Phaser Game
