@@ -1,15 +1,9 @@
 // scripts/state.js
+
+/** Game State **/
 export const gameState = {
-    currentZone: null,
-    tasks: [], // Backlog of tasks
-    activeTask: null, // Currently selected task
-    employees: [],
-    resources: {
-        servers: 0,
-        softwareLicenses: 0,
-        officeSpace: 0
-    },
-    contracts: [], // Contracts array
+    tasks: [],
+    activeTask: null,
     scores: {
         totalScore: 0,
         currentMoney: 50000,
@@ -19,5 +13,13 @@ export const gameState = {
             cybersecurity: 0,
             infosec: 0
         }
-    }
+    },
+    contracts: [],
+    employees: [],
+    resources: {
+        servers: 0,
+        softwareLicenses: 0,
+        officeSpace: 0
+    },
+    currentZone: 'None'
 };
