@@ -13,10 +13,10 @@ export const gameState = {
         totalScore: 0,
         currentMoney: 50000,
         stakeholderScores: {
-            hospital: 5,
-            infrastructure: 3,
+            hospital: 0,
+            infrastructure: 0,
             cybersecurity: 0,
-            infosec: 2
+            infosec: 0
         }
     }
 };
