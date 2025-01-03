@@ -10,6 +10,8 @@ class GameScene extends Phaser.Scene {
     this.makeSquare("cybersecurity", 0x88ffff);
     this.makeSquare("informationSecurity", 0x00ffff);
     this.makeSquare("backlog", 0xffa500);
+    this.makeSquare("cab", 0x000000);
+    this.makeSquare("legal", 0x0000ff);
   }
 
   makeSquare(key, color) {
@@ -28,12 +30,19 @@ class GameScene extends Phaser.Scene {
       cybersecurity: this.physics.add.staticSprite(300, 350, "cybersecurity"),
       informationSecurity: this.physics.add.staticSprite(500, 350, "informationSecurity"),
       backlog: this.physics.add.staticSprite(150, 140, "backlog"),
+      cab: this.physics.add.staticSprite(400, 400, "cab"),
+      legal: this.physics.add.staticSprite(600, 250, "legal"),
     };
 
     Object.keys(this.locations).forEach(key => {
       this.physics.add.overlap(this.player, this.locations[key], () => {
         if (key === "backlog" && window.globalTasks.length < 10) {
           window.globalTasks.push(createRandomTask());
+        } else {
+          const activeTask = window.globalTasks.find(task => task.committed && task.status === "In Progress");
+          if (activeTask && activeTask.steps[activeTask.currentStep] === key) {
+            advanceTaskStep(activeTask.id); // Progress task step
+          }
         }
       });
     });
@@ -58,3 +67,14 @@ class GameScene extends Phaser.Scene {
     }
   }
 }
+
+const config = {
+  type: Phaser.AUTO,
+  width: 1440,
+  height: 900,
+  backgroundColor: "#eeeeee",
+  physics: { default: "arcade", arcade: { gravity: { y: 0 }, debug: false } },
+  scene: [GameScene, UIScene],
+};
+
+new Phaser.Game(config);
