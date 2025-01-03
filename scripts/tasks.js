@@ -177,52 +177,23 @@ export function loadGame() {
     }
 }
 
-export function listenToPhaserEvents(phaserGame) {
-    phaserGame.events.on('taskAssigned', () => {
-        assignTask();
-    });
-
-    phaserGame.events.on('taskZoneVisited', (zoneKey) => {
-        if (gameState.activeTask) {
-            // Check if the visited zone matches the current step
-            const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStepIndex];
-            const requiredZone = currentStep.toLowerCase().replace(' zone', '');
-
-            if (zoneKey === requiredZone) {
-                completeStep();
-            } else {
-                showToast(`Incorrect zone. Please visit "${currentStep}" to complete the step.`);
-            }
+export function checkCompliance() {
+    // 50% chance to find a compliance issue
+    const isNonCompliant = Math.random() < 0.5;
+    if (isNonCompliant) {
+        showToast('Compliance Check Failed! Issues found.');
+        // Redirect player to Legal Zone
+        gameState.currentZone = 'Legal Zone';
+        // Emit event to handle redirection in Phaser
+        const phaserGame = Phaser.Game.getGame('default');
+        if (phaserGame) {
+            phaserGame.events.emit('redirectToLegal');
         }
-    });
-
-    phaserGame.events.on('legalZoneVisited', () => {
-        showToast('Welcome to the Legal Zone. Manage your contracts and compliance here.');
-    });
-
-    phaserGame.events.on('vendorZoneVisited', () => {
-        showToast('Welcome to the Vendor Zone. Manage your vendors and purchases here.');
-    });
-
-    phaserGame.events.on('budgetZoneVisited', () => {
-        showToast('Welcome to the Budget Zone. Allocate your funds and view reports here.');
-    });
-
-    phaserGame.events.on('redirectToLegal', () => {
-        phaserGame.scene.getScene('GameScene').enterZone('legal');
-    });
+    } else {
+        showToast('Compliance Check Passed! All systems are compliant.');
+    }
 }
 
-function calculateCost(resourceName, amount) {
-    const prices = {
-        servers: 10000,
-        softwareLicenses: 500,
-        officeSpace: 20000
-    };
-    return prices[resourceName] * amount;
-}
-
-// Function to manage contracts (dummy implementation)
 export function manageContracts() {
     // Open the contracts management modal
     openContractsModal();
@@ -244,4 +215,43 @@ function openContractsModal() {
         </div>
     `;
     modal.style.display = 'block';
+
+    // Add event listener to the "Create Contract" button
+    const createContractButton = document.getElementById('create-contract-button');
+    if (createContractButton) {
+        createContractButton.addEventListener('click', () => {
+            const contractName = document.getElementById('contract-name').value.trim();
+            const contractValue = parseInt(document.getElementById('contract-value').value.trim(), 10);
+
+            if (contractName && !isNaN(contractValue)) {
+                createContract(contractName, contractValue);
+                document.getElementById('contract-name').value = '';
+                document.getElementById('contract-value').value = '';
+            } else {
+                showToast('Please enter valid contract details.');
+            }
+        });
+    }
+}
+
+function createContract(name, value) {
+    gameState.contracts.push({ name, value });
+    showToast(`Contract "${name}" created successfully!`);
+    // Update the contracts list in the modal if it's open
+    const contractsList = document.getElementById('contracts-list');
+    if (contractsList) {
+        contractsList.innerHTML += `<li>${name}: $${value}</li>`;
+    }
+}
+
+// Ensure that selectTask is exported
+export { selectTask };
+
+function calculateCost(resourceName, amount) {
+    const prices = {
+        servers: 10000,
+        softwareLicenses: 500,
+        officeSpace: 20000
+    };
+    return prices[resourceName] * amount;
 }
