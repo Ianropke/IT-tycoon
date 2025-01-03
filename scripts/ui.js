@@ -1,22 +1,8 @@
 // scripts/ui.js
-import { completeStep, finalizeTask, selectTask, openTaskSelectionModal } from './tasks.js'; // Ensure no circular imports
+import { completeStep, finalizeTask, selectTask } from './tasks.js'; // Remove or minimize imports from tasks.js
+import { openTaskSelectionModal, commitToTask } from './tasks.js'; // Potentially remove if causing circular imports
 import { gameState } from './state.js';
-
-/** Show Toast Notification **/
-export function showToast(message) {
-    const toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) return; // Prevent errors if toast-container is missing
-
-    const toast = document.createElement('div');
-    toast.classList.add('toast');
-    toast.textContent = message;
-    toastContainer.appendChild(toast);
-
-    // Remove toast after 3 seconds
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
-}
+import { showToast } from './shared.js'; // Import shared function
 
 /** Update Backlog UI **/
 export function updateBacklogUI(tasks) {
