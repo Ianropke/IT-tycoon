@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>IT Manager Tycoon</title>
+  <!-- Corrected CSS Path (Removed Leading Slash) -->
   <link rel="stylesheet" href="css/styles.css">
   <!-- Include Phaser Library -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
@@ -48,6 +49,7 @@
         <p><strong>Risk:</strong> <span id="active-risk">0</span></p>
         <p><strong>Giver:</strong> <span id="active-giver">None</span></p>
         <div id="active-controls">
+          <!-- Removed Inline onclick Attributes -->
           <button id="gather-button" disabled>Gather</button>
           <button id="finalize-button" disabled>Finalize</button>
         </div>
@@ -97,9 +99,10 @@
         <div id="resource-list">
           <!-- Resources will be dynamically inserted here -->
         </div>
-        <button onclick="purchaseResource('servers', 1)">Buy Server</button>
-        <button onclick="purchaseResource('softwareLicenses', 5)">Buy Software Licenses</button>
-        <button onclick="purchaseResource('officeSpace', 1)">Buy Office Space</button>
+        <!-- Removed Inline onclick Attributes -->
+        <button id="buy-server">Buy Server</button>
+        <button id="buy-softwareLicenses">Buy Software Licenses</button>
+        <button id="buy-officeSpace">Buy Office Space</button>
       </div>
       
       <!-- Feedback Form -->
@@ -136,10 +139,10 @@
   <!-- Toast Notifications -->
   <div id="toast-container"></div>
   
-  <!-- Include JavaScript Files -->
-  <script src="js/utils.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/tasks.js"></script>
-  <script src="js/main.js"></script>
+  <!-- Include JavaScript Files with Corrected Paths -->
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/tasks.js"></script>
+  <script src="scripts/main.js"></script>
 </body>
 </html>
