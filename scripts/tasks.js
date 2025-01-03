@@ -1,14 +1,8 @@
 // scripts/tasks.js
-import { 
-    updateBacklogUI, 
-    updateScoreboardUI, 
-    updateActiveTaskUI, 
-    showToast, 
-    openTaskDetailsModal, 
-    commitToTask 
-} from './ui.js'; // Avoid importing UI functions if possible
 import { shuffleArray, generateUniqueId } from './utils.js';
 import { gameState } from './state.js';
+import { showToast } from './shared.js'; // Import shared function
+import { updateBacklogUI, updateScoreboardUI, updateActiveTaskUI } from './ui.js'; // Import necessary UI functions
 
 /** Task Givers and Step Locations **/
 const taskGivers = ['Hospital', 'Infrastructure', 'Cybersecurity', 'InfoSec'];
@@ -273,4 +267,53 @@ function calculateCost(resourceName, amount) {
         officeSpace: 20000
     };
     return prices[resourceName] * amount;
+}
+
+/** Manage Contracts Modal **/
+function openContractsModal() {
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+    if (!modal || !modalBody) return; // Prevent errors if modal structure is missing
+
+    modalBody.innerHTML = `
+        <div id="manage-contracts-content">
+            <h3>Manage Contracts</h3>
+            <input type="text" id="contract-name" placeholder="Contract Name" />
+            <input type="number" id="contract-value" placeholder="Contract Value" />
+            <button id="create-contract-button">Create Contract</button>
+            <h4>Existing Contracts:</h4>
+            <ul id="contracts-list">
+                ${gameState.contracts.map(contract => `<li>${contract.name}: $${contract.value}</li>`).join('')}
+            </ul>
+        </div>
+    `;
+    modal.style.display = 'block';
+
+    // Add event listener to the "Create Contract" button
+    const createContractButton = document.getElementById('create-contract-button');
+    if (createContractButton) {
+        createContractButton.addEventListener('click', () => {
+            const contractName = document.getElementById('contract-name').value.trim();
+            const contractValue = parseInt(document.getElementById('contract-value').value.trim(), 10);
+
+            if (contractName && !isNaN(contractValue)) {
+                createContract(contractName, contractValue);
+                document.getElementById('contract-name').value = '';
+                document.getElementById('contract-value').value = '';
+            } else {
+                showToast('Please enter valid contract details.');
+            }
+        });
+    }
+}
+
+/** Create a New Contract **/
+function createContract(name, value) {
+    gameState.contracts.push({ name, value });
+    showToast(`Contract "${name}" created successfully!`);
+    // Update the contracts list in the modal if it's open
+    const contractsList = document.getElementById('contracts-list');
+    if (contractsList) {
+        contractsList.innerHTML += `<li>${name}: $${value}</li>`;
+    }
 }
