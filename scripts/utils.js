@@ -1,30 +1,29 @@
-// js/utils.js
+// scripts/utils.js
 
-/**
- * Generates a unique identifier.
- * @returns {string}
- */
+// Function to generate a unique ID
 export function generateUniqueId() {
-  return 'id-' + Math.random().toString(36).substr(2, 16);
+    return '_' + Math.random().toString(36).substr(2, 9);
 }
 
-/**
- * Shuffles an array in place using the Fisher-Yates algorithm.
- * @param {Array} array 
- */
+// Function to shuffle an array
 export function shuffleArray(array) {
-  for (let i = array.length -1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i +1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-/**
- * Generates a random integer between min and max (inclusive).
- * @param {number} min 
- * @param {number} max 
- * @returns {number}
- */
-export function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min +1)) + min;
+// Function to generate a random task
+export function generateRandomTask() {
+    // Your logic to generate a random task
+    return {
+        description: 'Sample Task',
+        steps: 5,
+        risk: 3,
+        giver: 'Alice',
+        priority: 'Medium'
+    };
 }
+
+// Export other utility functions as needed
