@@ -1,16 +1,76 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Governance Tycoon</title>
+  <title>IT Manager Tycoon</title>
+  <!-- Phaser 3 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+  <!-- Link to CSS -->
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
-  <script src="scripts/utils.js"></script>
-  <script src="scripts/tasks.js"></script>
-  <script src="scripts/ui.js"></script>
-  <script src="scripts/main.js"></script>
 </head>
 <body>
+  <div id="game-container">
+    <!-- Scoreboard -->
+    <div id="scoreboard">
+      <h2>Score: <span id="total-score">0</span></h2>
+      <div id="stakeholder-scores">
+        <p>Hospital: <span id="hospital-score">0</span></p>
+        <p>Infrastructure: <span id="infrastructure-score">0</span></p>
+        <p>Cybersecurity: <span id="cybersecurity-score">0</span></p>
+        <p>InfoSec: <span id="infosec-score">0</span></p>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div id="main-content">
+      <!-- Game Area -->
+      <div id="game-area"></div>
+      
+      <!-- UI Panel -->
+      <div id="ui-panel">
+        <!-- Backlog Section -->
+        <div id="backlog">
+          <h3>Backlog</h3>
+          <table id="backlog-tasks">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Steps</th>
+                <th>Risk</th>
+                <th>Giver</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Tasks will be dynamically inserted here -->
+            </tbody>
+          </table>
+          <div id="pagination-controls">
+            <button id="prev-page" disabled>Previous</button>
+            <span id="current-page">1</span>
+            <button id="next-page" disabled>Next</button>
+          </div>
+        </div>
+        
+        <!-- Active Task Section -->
+        <div id="active-task">
+          <h3>Active Task</h3>
+          <p>Description: <span id="active-description">None</span></p>
+          <p>Steps: <span id="active-steps">0/0</span></p>
+          <p>Priority: <span id="active-priority">Low</span></p>
+          <p>Risk: <span id="active-risk">0</span></p>
+          <p>Giver: <span id="active-giver">None</span></p>
+          <div id="task-actions">
+            <button id="commit-button">Commit</button>
+            <button id="gather-button" disabled>Gather</button>
+            <button id="finalize-button" disabled>Finalize</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- JavaScript Files -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
