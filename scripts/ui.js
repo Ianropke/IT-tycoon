@@ -6,93 +6,82 @@ class UIScene extends Phaser.Scene {
   }
 
   create() {
-    // This UI scene uses the right 440px for everything
-    this.cameras.main.setViewport(1000, 0, 440, 900);
-    // Light background (apple-like minimal design)
-    this.cameras.main.setBackgroundColor('#f5f5f7'); 
+    // This UI scene occupies x=900..1440, i.e. width=540, height=900
+    this.cameras.main.setViewport(900, 0, 540, 900);
+    // A light background
+    this.cameras.main.setBackgroundColor('#f4f4f6');
 
-    // ---------- 1) SCOREBOARD BOX ----------
-    // A pastel box at the top (y=0..160)
-    this.scoreboardBg = this.add.rectangle(0, 0, 440, 160, 0xdedede)
-      .setOrigin(0, 0)
-      .setAlpha(0.95);
+    // ---------------- 1) SCOREBOARD (y=0..160) ----------------
+    this.scoreboardBg = this.add.rectangle(0, 0, 540, 160, 0xe0e0e0)
+      .setOrigin(0, 0);
 
-    // Title for scoreboard
     this.scoreTitle = this.add.text(20, 10, 'Scoreboard', {
-      fontFamily: 'sans-serif',
+      fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '20px',
       color: '#333333'
     });
 
-    // Score text
+    // Larger, bright text for score
     this.scoreText = this.add.text(20, 50, 'Score: 0', {
-      fontFamily: 'sans-serif',
+      fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '24px',
-      color: '#007aff' // a subtle “blue” reminiscent of Apple
+      color: '#007aff'
     });
 
     // Giver scoreboard
-    this.giverScoreText = this.add.text(20, 85, '', {
-      fontFamily: 'sans-serif',
+    this.giverScoreText = this.add.text(20, 90, '', {
+      fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '16px',
       color: '#333333'
     });
 
-    // ---------- 2) INSTRUCTIONS BOX ----------
-    // We place instructions in a box below the scoreboard
-    this.instructionsBg = this.add.rectangle(0, 160, 440, 100, 0xffffff)
-      .setOrigin(0, 0)
-      .setAlpha(0.9);
+    // ---------------- 2) TASK LIST (y=160..460) ----------------
+    this.taskListBg = this.add.rectangle(0, 160, 540, 300, 0xffffff)
+      .setOrigin(0, 0);
 
-    this.instructions = this.add.text(20, 170,
-      'Tasks & Score on the right.\nDocument tasks before finalize.\nSome tasks may have "gather."\nUse arrow keys in GameScene.',
-      {
-        fontFamily: 'sans-serif',
-        fontSize: '14px',
-        color: '#333333'
-      }
-    );
-
-    // ---------- 3) TASK LIST (BACKLOG) BOX ----------
-    // from y=260..500
-    this.backlogBg = this.add.rectangle(0, 260, 440, 240, 0xeef0f1)
-      .setOrigin(0, 0)
-      .setAlpha(0.95);
-
-    this.backlogTitle = this.add.text(20, 270, 'Tasks (Backlog)', {
-      fontFamily: 'sans-serif',
+    this.taskListTitle = this.add.text(20, 170, 'Tasks (Backlog)', {
+      fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '18px',
       color: '#333333'
     });
 
-    this.taskTexts = []; // We'll list tasks here
-    // We'll display tasks in the region y=300..(300 + space)
+    this.taskTexts = [];  
+    // We'll place tasks from y=200 down to ~460
 
-    // ---------- 4) ACTIVE TASK BOX ----------
-    // from y=500..900
-    this.activeBg = this.add.rectangle(0, 500, 440, 400, 0xffffff)
-      .setOrigin(0, 0)
-      .setAlpha(0.9);
+    // ---------------- 3) ACTIVE TASK BOX (y=460..900) ----------------
+    this.activeBg = this.add.rectangle(0, 460, 540, 440, 0xf8f8f9)
+      .setOrigin(0, 0);
 
-    this.activeTitle = this.add.text(20, 510, 'Active Task:', {
-      fontFamily: 'sans-serif',
+    this.activeTitle = this.add.text(20, 470, 'Active Task', {
+      fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '18px',
       color: '#333333'
     });
 
-    // We'll store up to 10 lines for the active task details
+    // We store lines for step info, priority, etc.
     this.activeLines = [];
-    for (let i = 0; i < 10; i++) {
-      const line = this.add.text(20, 540 + i * 20, '', {
-        fontFamily: 'sans-serif',
+    for (let i = 0; i < 7; i++) {
+      const line = this.add.text(20, 500 + i * 20, '', {
+        fontFamily: 'Helvetica, Arial, sans-serif',
         fontSize: '14px',
         color: '#333333',
-        wordWrap: { width: 400 }
+        wordWrap: { width: 500 }
       });
       this.activeLines.push(line);
     }
 
-    // Track the active task and doc status
+    // A [Commit] button
+    this.commitBtn = this.add.text(20, 640, '[ Commit ]', {
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontSize: '16px',
+      backgroundColor: '#007aff',
+      color: '#ffffff',
+      padding: { x: 8, y: 4 }
+    })
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', () => this.commitActiveTask());
+
+    // We track the active task & doc status
     this.activeTaskId = null;
     this.documented = false;
 
@@ -104,92 +93,92 @@ class UIScene extends Phaser.Scene {
     });
   }
 
-  // Called every second
   refreshUI() {
-    // 1) Score + scoreboard
+    // 1) Update Score + scoreboard
     this.scoreText.setText(`Score: ${window.playerScore}`);
     const scoreboardString =
       `Completed:\n` +
       `  - hospital: ${window.giverScoreboard.hospital}\n` +
       `  - infrastructure: ${window.giverScoreboard.infrastructure}\n` +
-      `  - informationSec: ${window.giverScoreboard.informationSecurity}\n` +
+      `  - informationSecurity: ${window.giverScoreboard.informationSecurity}\n` +
       `  - cybersecurity: ${window.giverScoreboard.cybersecurity}\n`;
     this.giverScoreText.setText(scoreboardString);
 
-    // 2) Task listing (backlog)
-    this.taskTexts.forEach(txt => txt.destroy());
+    // 2) Update Task List
+    this.taskTexts.forEach(t => t.destroy());
     this.taskTexts = [];
-    let yPos = 300;
+    let yPos = 200;
 
     if (!window.canViewBacklog) {
-      // If the player isn’t on the backlog
       const msg = this.add.text(20, yPos, 'Stand on orange backlog to see tasks.', {
-        fontFamily: 'sans-serif',
+        fontFamily: 'Helvetica, Arial, sans-serif',
         fontSize: '14px',
         color: '#444444',
-        wordWrap: { width: 400 }
+        wordWrap: { width: 500 }
       });
       this.taskTexts.push(msg);
       return;
     }
 
-    // Otherwise, show tasks
     for (let i = 0; i < window.globalTasks.length; i++) {
       const t = window.globalTasks[i];
       const stepStr = `${t.currentStep}/${t.steps.length}`;
       const cStr = t.committed ? ' (Committed)' : '';
       const tType = t.isFeature ? '[Feature]' : '[Maint]';
-      const label = `[${t.status}] ${t.description} ${tType}${cStr}\n  (Risk=${t.risk}, Steps=${stepStr}, Giver=${t.giver})`;
+      const label = `[${t.status}] ${t.description} ${tType}${cStr}\n(Risk=${t.risk}, Steps=${stepStr}, Giver=${t.giver})`;
 
       const line = this.add.text(20, yPos, label, {
-        fontFamily: 'sans-serif',
+        fontFamily: 'Helvetica, Arial, sans-serif',
         fontSize: '14px',
         color: '#333333',
-        wordWrap: { width: 400 }
+        wordWrap: { width: 500 }
       });
       line.setInteractive({ useHandCursor: true });
-      line.on('pointerdown', () => this.selectActiveTask(t.id));
+      line.on('pointerdown', () => this.pickActiveTask(t.id));
 
       this.taskTexts.push(line);
-      yPos += 40; // bigger spacing for Apple-like clarity
-      if (yPos > 480) {
-        // We only have ~180 px in this box (260..500), so let's not overflow
+      yPos += 40; // spaced out for easy reading
+      if (yPos > 440) {
+        // This box ends at y=460
         const moreMsg = this.add.text(20, yPos, '...more tasks hidden...', {
-          fontFamily: 'sans-serif',
+          fontFamily: 'Helvetica, Arial, sans-serif',
           fontSize: '14px',
           color: '#888888'
         });
         this.taskTexts.push(moreMsg);
-        break; // stop listing tasks if they exceed the box
+        break;
       }
     }
 
-    // 3) Update active task
+    // 3) Update Active Task Box
     this.updateActiveBox();
   }
 
-  selectActiveTask(taskId) {
+  pickActiveTask(taskId) {
     this.activeTaskId = taskId;
-    this.documented = false;
+    this.documented = false; // reset doc
     this.updateActiveBox();
   }
 
   updateActiveBox() {
     // Clear lines
-    for (let i = 0; i < this.activeLines.length; i++) {
+    for (let i=0; i<this.activeLines.length; i++){
       this.activeLines[i].setText('');
     }
 
-    if (!this.activeTaskId) return;
+    if (!this.activeTaskId) {
+      // no active task
+      return;
+    }
     const task = getTaskById(this.activeTaskId);
     if (!task) return;
 
-    // line0: Step info
+    // line0: step info
     let line0 = '';
     if (task.currentStep >= task.steps.length) {
-      line0 = 'All steps done. Document before finalize.';
+      line0 = 'All steps done. Document before finalizing.';
     } else {
-      line0 = `Step ${task.currentStep+1} of ${task.steps.length}: ${task.steps[task.currentStep]}`;
+      line0 = `Step ${task.currentStep + 1} of ${task.steps.length}: ${task.steps[task.currentStep]}`;
     }
     this.activeLines[0].setText(line0);
 
@@ -208,7 +197,7 @@ class UIScene extends Phaser.Scene {
     let line6 = '';
     if (!task.committed) line6 += '[Need to commit]\n';
     if (task.currentStep < task.steps.length && task.steps[task.currentStep].toLowerCase().includes('gather')) {
-      line6 += '(Move to gather location)\n';
+      line6 += '(Gather step)\n';
     }
     if (task.status === 'Ready to finalize') {
       line6 += '(Document, then finalize)\n';
@@ -216,24 +205,9 @@ class UIScene extends Phaser.Scene {
     this.activeLines[6].setText(line6.trim());
   }
 
-  documentTask() {
-    this.documented = true;
-  }
-  commitTask() {
+  commitActiveTask() {
     if (!this.activeTaskId) return;
     commitToTask(this.activeTaskId);
-  }
-  finalizeTask() {
-    if (!this.activeTaskId) return;
-    if (!this.documented) {
-      console.log('Document first!');
-      return;
-    }
-    const task = getTaskById(this.activeTaskId);
-    if (task && task.status==='Ready to finalize'){
-      completeTask(task.id);
-      task.status='Done';
-      this.activeTaskId=null;
-    }
+    // Now the scoreboard & lines will update on next refresh
   }
 }
