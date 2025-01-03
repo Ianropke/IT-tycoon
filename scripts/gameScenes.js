@@ -1,18 +1,13 @@
 // scripts/gameScenes.js
+import { gameState } from './state.js';
+
 export class BootScene extends Phaser.Scene {
     constructor() {
         super({ key: 'BootScene' });
     }
 
     preload() {
-        this.load.image('player', 'assets/images/player.png');
-        this.load.image('hospitalZone', 'assets/images/hospital_zone.png');
-        this.load.image('infrastructureZone', 'assets/images/infrastructure_zone.png');
-        this.load.image('cybersecurityZone', 'assets/images/cybersecurity_zone.png');
-        this.load.image('infosecZone', 'assets/images/infosec_zone.png');
-        this.load.image('legalZone', 'assets/images/legal_zone.png');
-        this.load.image('vendorZone', 'assets/images/vendor_zone.png');
-        this.load.image('budgetZone', 'assets/images/budget_zone.png');
+        // No image assets needed; using graphics instead
     }
 
     create() {
@@ -45,76 +40,145 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
+        // Create Zones using Graphics
         this.zones = {
             hospital: {
-                image: this.add.image(450, 450, 'hospitalZone').setVisible(false),
-                name: 'Hospital Zone'
+                name: 'Hospital Zone',
+                x: 200,
+                y: 200,
+                width: 100,
+                height: 100,
+                color: 0xff0000, // Red
+                type: 'task'
             },
             infrastructure: {
-                image: this.add.image(450, 450, 'infrastructureZone').setVisible(false),
-                name: 'Infrastructure Zone'
+                name: 'Infrastructure Zone',
+                x: 700,
+                y: 200,
+                width: 100,
+                height: 100,
+                color: 0x00ff00, // Green
+                type: 'task'
             },
             cybersecurity: {
-                image: this.add.image(450, 450, 'cybersecurityZone').setVisible(false),
-                name: 'Cybersecurity Zone'
+                name: 'Cybersecurity Zone',
+                x: 200,
+                y: 700,
+                width: 100,
+                height: 100,
+                color: 0x0000ff, // Blue
+                type: 'task'
             },
             infosec: {
-                image: this.add.image(450, 450, 'infosecZone').setVisible(false),
-                name: 'InfoSec Zone'
+                name: 'InfoSec Zone',
+                x: 700,
+                y: 700,
+                width: 100,
+                height: 100,
+                color: 0xffff00, // Yellow
+                type: 'task'
             },
             legal: {
-                image: this.add.image(450, 450, 'legalZone').setVisible(false),
-                name: 'Legal Zone'
+                name: 'Legal Zone',
+                x: 450,
+                y: 450,
+                width: 100,
+                height: 100,
+                color: 0xff00ff, // Magenta
+                type: 'non-task'
             },
             vendor: {
-                image: this.add.image(450, 450, 'vendorZone').setVisible(false),
-                name: 'Vendor Zone'
+                name: 'Vendor Zone',
+                x: 450,
+                y: 300,
+                width: 100,
+                height: 100,
+                color: 0x00ffff, // Cyan
+                type: 'non-task'
             },
             budget: {
-                image: this.add.image(450, 450, 'budgetZone').setVisible(false),
-                name: 'Budget Zone'
+                name: 'Budget Zone',
+                x: 450,
+                y: 600,
+                width: 100,
+                height: 100,
+                color: 0xffffff, // White
+                type: 'non-task'
             }
         };
 
-        this.player = this.physics.add.sprite(450, 450, 'player');
-        this.player.setCollideWorldBounds(true);
+        // Draw Zones
+        for (let key in this.zones) {
+            const zone = this.zones[key];
+            const graphics = this.add.graphics();
+            graphics.fillStyle(zone.color, 1);
+            graphics.fillRect(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
 
-        const { width, height } = this.scale;
+            // Add text label
+            this.add.text(zone.x, zone.y, zone.name, { fontSize: '12px', fill: '#000' }).setOrigin(0.5);
+        }
 
-        const buttonWidth = 150;
-        const buttonHeight = 40;
-        const buttonSpacing = 20;
-        const startY = 50;
+        // Create Player as a Circle
+        this.player = this.physics.add.sprite(450, 450, null);
+        const playerGraphics = this.add.graphics();
+        playerGraphics.fillStyle(0x000000, 1);
+        playerGraphics.fillCircle(0, 0, 15);
+        this.player.setSize(30, 30);
+        this.player.body.setCircle(15);
+        this.player.body.setCollideWorldBounds(true);
 
-        const zonesKeys = Object.keys(this.zones);
-        zonesKeys.forEach((zoneKey, index) => {
-            const button = this.add.text(100 + (buttonWidth + buttonSpacing) * index, startY, `Go to ${this.zones[zoneKey].name}`, { fontSize: '16px', fill: '#fff' })
-                .setOrigin(0.5)
-                .setInteractive()
-                .on('pointerdown', () => {
-                    this.navigateTo(zoneKey);
-                });
-        });
+        // Player Movement
+        this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.locationLabel = this.add.text(width / 2, 50, 'Current Location: None', { fontSize: '20px', fill: '#fff' })
+        // Current Location Label
+        this.locationLabel = this.add.text(450, 20, 'Current Location: None', { fontSize: '20px', fill: '#fff' })
             .setOrigin(0.5);
+
+        // Enable Physics Overlap
+        this.physics.add.overlap(this.player, this.getZoneBodies(), this.handleOverlap, null, this);
     }
 
-    navigateTo(zoneKey) {
-        Object.values(this.zones).forEach(zone => {
-            zone.image.setVisible(false);
+    update() {
+        const speed = 200;
+        this.player.setVelocity(0);
+
+        if (this.cursors.left.isDown) {
+            this.player.setVelocityX(-speed);
+        } else if (this.cursors.right.isDown) {
+            this.player.setVelocityX(speed);
+        }
+
+        if (this.cursors.up.isDown) {
+            this.player.setVelocityY(-speed);
+        } else if (this.cursors.down.isDown) {
+            this.player.setVelocityY(speed);
+        }
+    }
+
+    getZoneBodies() {
+        // Create an array of zone bodies for overlap checking
+        return Object.values(this.zones).map(zone => {
+            return new Phaser.Geom.Rectangle(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
         });
+    }
 
-        const selectedZone = this.zones[zoneKey];
-        if (selectedZone) {
-            selectedZone.image.setVisible(true);
-            this.locationLabel.setText(`Current Location: ${selectedZone.name}`);
-            this.player.setPosition(this.scale.width / 2, this.scale.height / 2);
+    handleOverlap(player, zoneGeom) {
+        const zone = Object.values(this.zones).find(z => Phaser.Geom.Rectangle.Contains(zoneGeom, player.x, player.y));
+        if (zone && gameState.currentZone !== zone.name) {
+            this.enterZone(zone.name.toLowerCase().replace(' ', ''));
+        }
+    }
 
-            if (['hospital', 'infrastructure', 'cybersecurity', 'infosec'].includes(zoneKey)) {
-                this.events.emit('taskAssigned', zoneKey);
-            }
+    enterZone(zoneKey) {
+        const zone = Object.keys(this.zones).find(key => this.zones[key].name.toLowerCase().replace(' ', '') === zoneKey);
+        if (!zone) return;
 
+        gameState.currentZone = this.zones[zone].name;
+        this.locationLabel.setText(`Current Location: ${gameState.currentZone}`);
+
+        if (this.zones[zone].type === 'task') {
+            this.events.emit('taskAssigned', zoneKey);
+        } else {
             if (zoneKey === 'legal') {
                 this.events.emit('legalZoneVisited');
             } else if (zoneKey === 'vendor') {
@@ -123,8 +187,5 @@ export class GameScene extends Phaser.Scene {
                 this.events.emit('budgetZoneVisited');
             }
         }
-    }
-
-    update() {
     }
 }
