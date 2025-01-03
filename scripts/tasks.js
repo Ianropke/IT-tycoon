@@ -3,7 +3,9 @@ import {
     updateBacklogUI, 
     updateScoreboardUI, 
     updateActiveTaskUI, 
-    showToast 
+    showToast, 
+    openTaskDetailsModal, 
+    commitToTask 
 } from './ui.js';
 import { shuffleArray, generateUniqueId } from './utils.js';
 import { gameState } from './state.js';
@@ -58,19 +60,36 @@ export function generateRandomTask() {
 
 /** Assign a New Task **/
 export function assignTask() {
+    // Limit to 10 tasks in backlog
+    if (gameState.tasks.length >= 10) {
+        console.log('Backlog is full. Cannot assign more tasks.');
+        showToast('Backlog is full. Complete existing tasks to assign new ones.');
+        return;
+    }
+
     const newTask = generateRandomTask();
+    console.log('Assigning Task:', newTask);
     gameState.tasks.push(newTask);
-    updateBacklogUI(gameState.tasks.slice(0, 5)); // Show top 5 tasks
+    updateBacklogUI(gameState.tasks.slice(0, 10)); // Show top 10 tasks
     showToast(`New task added by ${newTask.taskGiver}: "${newTask.description}"`);
 }
 
 /** Select a Task **/
 export function selectTask(taskId) {
+    if (gameState.activeTask) {
+        showToast('You already have an active task. Complete it before committing to another.');
+        return;
+    }
+
     const task = gameState.tasks.find(t => t.id === taskId);
     if (task) {
         gameState.activeTask = task;
         updateActiveTaskUI(gameState.activeTask);
         showToast(`Selected Task: "${task.description}"`);
+
+        // Remove task from backlog
+        gameState.tasks = gameState.tasks.filter(t => t.id !== taskId);
+        updateBacklogUI(gameState.tasks.slice(0, 10));
     }
 }
 
@@ -118,14 +137,10 @@ export function finalizeTask() {
         gameState.scores.stakeholderScores[giverKey] += pointsEarned;
     }
 
-    // Remove task from backlog if present
-    gameState.tasks = gameState.tasks.filter(t => t.id !== gameState.activeTask.id);
-
     showToast(`Task "${gameState.activeTask.description}" finalized! Earned ${pointsEarned} points and $${moneyEarned}.`);
 
     gameState.activeTask = null;
     updateActiveTaskUI(null);
-    updateBacklogUI(gameState.tasks.slice(0, 5));
     updateScoreboardUI(gameState.scores);
 }
 
@@ -179,7 +194,7 @@ export function loadGame() {
     const savedState = localStorage.getItem('itManagerTycoonGameState');
     if (savedState) {
         Object.assign(gameState, JSON.parse(savedState));
-        updateBacklogUI(gameState.tasks.slice(0, 5));
+        updateBacklogUI(gameState.tasks.slice(0, 10));
         updateActiveTaskUI(gameState.activeTask);
         updateScoreboardUI(gameState.scores);
         showToast('Game loaded successfully!');
@@ -214,10 +229,12 @@ export function manageContracts() {
 /** Listen to Phaser Events **/
 export function listenToPhaserEvents(phaserGame) {
     phaserGame.events.on('taskAssigned', () => {
+        console.log('Received taskAssigned event');
         assignTask();
     });
 
     phaserGame.events.on('taskZoneVisited', (zoneKey) => {
+        console.log(`Received taskZoneVisited event for zone: ${zoneKey}`);
         if (gameState.activeTask) {
             // Check if the visited zone matches the current step
             const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStepIndex];
@@ -232,14 +249,17 @@ export function listenToPhaserEvents(phaserGame) {
     });
 
     phaserGame.events.on('legalZoneVisited', () => {
+        console.log('Received legalZoneVisited event');
         showToast('Welcome to the Legal Zone. Manage your contracts and compliance here.');
     });
 
     phaserGame.events.on('vendorZoneVisited', () => {
+        console.log('Received vendorZoneVisited event');
         showToast('Welcome to the Vendor Zone. Manage your vendors and purchases here.');
     });
 
     phaserGame.events.on('budgetZoneVisited', () => {
+        console.log('Received budgetZoneVisited event');
         showToast('Welcome to the Budget Zone. Allocate your funds and view reports here.');
     });
 }
