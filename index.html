@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>IT Governance Tycoon</title>
-  <!-- Phaser 3 from CDN -->
+  <!-- Phaser 3 from a CDN -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
   <style>
     body {
@@ -14,9 +14,9 @@
 </head>
 <body>
 
-  <!-- Load scripts in correct order -->
+  <!-- Ensure tasks.js is first, then vendor.js, then ui.js, then main.js -->
   <script src="scripts/tasks.js"></script>
-  <script src="scripts/vendor.js"></script> 
+  <script src="scripts/vendor.js"></script>
   <script src="scripts/ui.js"></script>
   <script src="scripts/main.js"></script>
 
