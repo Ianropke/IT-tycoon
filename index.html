@@ -36,6 +36,8 @@
             <th>Steps</th>
             <th>Risk</th>
             <th>Price</th>
+            <th>View</th>
+            <th>Commit</th>
           </tr>
         </thead>
         <tbody>
@@ -47,7 +49,7 @@
         <h4>Active Task:</h4>
         <p>No active task.</p>
         <div class="buttons">
-          <button id="commit-button">Commit Task</button>
+          <button id="commit-button" disabled>Commit Task</button>
         </div>
       </div>
       
@@ -87,7 +89,7 @@
     </div>
   </div>
   
-  <!-- Modal for Task Selection and Contracts -->
+  <!-- Modal for Task Details and Contracts -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
@@ -100,7 +102,7 @@
   <!-- Toast Notifications -->
   <div id="toast-container"></div>
   
-  <!-- Include JavaScript File as Module -->
+  <!-- Include JavaScript Files as Modules -->
   <script src="scripts/main.js" type="module"></script>
 </body>
 </html>
