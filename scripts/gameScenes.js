@@ -40,8 +40,17 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-        // Create Zones using Graphics
+        // Define Zones using Graphics
         this.zones = {
+            taskDispatch: {
+                name: 'Task Dispatch',
+                x: 450,
+                y: 100,
+                width: 100,
+                height: 100,
+                color: 0x8e44ad, // Purple
+                type: 'dispatch'
+            },
             hospital: {
                 name: 'Hospital Zone',
                 x: 200,
@@ -176,8 +185,10 @@ export class GameScene extends Phaser.Scene {
         gameState.currentZone = this.zones[zone].name;
         this.locationLabel.setText(`Current Location: ${gameState.currentZone}`);
 
-        if (this.zones[zone].type === 'task') {
-            this.events.emit('taskAssigned', zoneKey);
+        if (this.zones[zone].type === 'dispatch') {
+            this.events.emit('taskAssigned');
+        } else if (this.zones[zone].type === 'task') {
+            this.events.emit('taskZoneVisited', zoneKey);
         } else {
             if (zoneKey === 'legal') {
                 this.events.emit('legalZoneVisited');
