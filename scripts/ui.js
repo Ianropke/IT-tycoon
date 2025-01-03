@@ -1,6 +1,7 @@
 // scripts/ui.js
-import { completeStep, finalizeTask, openTaskSelectionModal } from './tasks.js';
+import { completeStep, finalizeTask } from './tasks.js';
 import { gameState } from './state.js';
+import { selectTask } from './tasks.js'; // Ensure selectTask is exported from tasks.js
 
 export function updateBacklogUI(tasks) {
     const tasksTableBody = document.querySelector('#tasks-table tbody');
@@ -100,4 +101,40 @@ export function showToast(message) {
             toast.remove();
         }, 3000);
     }
+}
+
+// Define openTaskSelectionModal within ui.js
+export function openTaskSelectionModal() {
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+    let taskOptions = '';
+
+    if (gameState.tasks.length === 0) {
+        taskOptions = '<p>No tasks available.</p>';
+    } else {
+        taskOptions = '<h3>Select a Task to Commit</h3><ul>';
+        gameState.tasks.slice(0, 5).forEach(task => {
+            taskOptions += `
+                <li>
+                    <strong>${task.description}</strong><br>
+                    Giver: ${task.taskGiver} | Risk: ${task.risk} | Price: $${task.price}
+                    <button data-task-id="${task.id}">Select</button>
+                </li>
+            `;
+        });
+        taskOptions += '</ul>';
+    }
+
+    modalBody.innerHTML = taskOptions;
+    modal.style.display = 'block';
+
+    // Add event listeners to task selection buttons
+    const selectButtons = modalBody.querySelectorAll('button[data-task-id]');
+    selectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const taskId = button.getAttribute('data-task-id');
+            selectTask(taskId);
+            modal.style.display = 'none';
+        });
+    });
 }
