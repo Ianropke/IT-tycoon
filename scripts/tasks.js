@@ -1,161 +1,128 @@
-// scripts/tasks.js
+// scripts/ui.js
 
-// Import necessary functions from ui.js and utils.js
-import { 
-    updateBacklogUI, 
-    updateActiveTaskUI, 
-    updateStakeholderScore, 
-    updateTotalScore, 
-    updateScoresUI, 
-    updateBudgetBar, 
-    updateBudgetBreakdown, 
-    showToast, 
-    checkAchievements, 
-    checkMissions, 
-    performInspectAndAdapt 
-} from './ui.js';
+// Update the backlog UI with pagination
+export function updateBacklogUI(tasks, currentPage, tasksPerPage) {
+    const backlogTasksBody = document.querySelector('#backlog-tasks tbody');
+    backlogTasksBody.innerHTML = '';
 
-import { shuffleArray, generateRandomTask } from './utils.js';
+    const start = (currentPage - 1) * tasksPerPage;
+    const end = start + tasksPerPage;
+    const paginatedTasks = tasks.slice(start, end);
 
-// Initialize tasks and other game data
-export function initializeTasks() {
-    console.log('Initializing tasks...');
-    // Your initialization logic here
-    // For example, load tasks from localStorage or generate random tasks
-    // Example:
-    // const tasks = loadTasksFromStorage() || generateRandomTasks();
-    // updateBacklogUI(tasks, 1, 10);
+    paginatedTasks.forEach(task => {
+        const row = document.createElement('tr');
+
+        const descCell = document.createElement('td');
+        descCell.textContent = task.description;
+        row.appendChild(descCell);
+
+        const stepsCell = document.createElement('td');
+        stepsCell.textContent = `${task.stepsCompleted || 0}/${task.steps}`;
+        row.appendChild(stepsCell);
+
+        const riskCell = document.createElement('td');
+        riskCell.textContent = task.risk;
+        row.appendChild(riskCell);
+
+        const giverCell = document.createElement('td');
+        giverCell.textContent = task.giver;
+        row.appendChild(giverCell);
+
+        backlogTasksBody.appendChild(row);
+    });
+
+    // Update current page display
+    const currentPageSpan = document.getElementById('current-page');
+    if (currentPageSpan) {
+        currentPageSpan.textContent = currentPage;
+    }
 }
 
-// Commit a task
-export function commitTask() {
-    console.log('Committing task...');
-    // Your commit task logic here
-    // Example:
-    // const activeTask = getActiveTask();
-    // if (activeTask) {
-    //     performCommit(activeTask);
-    // }
+// Update the active task UI
+export function updateActiveTaskUI(activeTask) {
+    document.getElementById('active-description').textContent = activeTask ? activeTask.description : 'None';
+    document.getElementById('active-steps').textContent = activeTask ? `${activeTask.stepsCompleted}/${activeTask.steps}` : '0/0';
+    document.getElementById('active-priority').textContent = activeTask ? activeTask.priority : 'Low';
+    document.getElementById('active-risk').textContent = activeTask ? activeTask.risk : '0';
+    document.getElementById('active-giver').textContent = activeTask ? activeTask.giver : 'None';
+
+    // Enable or disable buttons based on task status
+    const gatherButton = document.getElementById('gather-button');
+    const finalizeButton = document.getElementById('finalize-button');
+
+    if (activeTask) {
+        gatherButton.disabled = (activeTask.stepsCompleted >= activeTask.steps);
+        finalizeButton.disabled = (activeTask.stepsCompleted < activeTask.steps);
+    } else {
+        gatherButton.disabled = true;
+        finalizeButton.disabled = true;
+    }
 }
 
-// Gather progress on the active task
-export function gatherTask() {
-    console.log('Gathering progress...');
-    // Your gather task logic here
-    // Example:
-    // const activeTask = getActiveTask();
-    // if (activeTask) {
-    //     performGather(activeTask);
-    // }
+// Update the scores UI
+export function updateScoresUI(scores) {
+    document.getElementById('total-score').textContent = scores.totalScore;
+    document.getElementById('current-money').textContent = scores.currentMoney;
+
+    for (const [stakeholder, score] of Object.entries(scores.stakeholderScores)) {
+        const scoreElement = document.getElementById(`${stakeholder}-score`);
+        if (scoreElement) {
+            scoreElement.textContent = score;
+        }
+    }
 }
 
-// Finalize the active task
-export function finalizeTask() {
-    console.log('Finalizing task...');
-    // Your finalize task logic here
-    // Example:
-    // const activeTask = getActiveTask();
-    // if (activeTask) {
-    //     performFinalize(activeTask);
-    // }
+// Update the budget bar based on current money
+export function updateBudgetBar(currentMoney) {
+    const budgetBar = document.getElementById('budget-bar');
+    if (budgetBar) {
+        const maxBudget = 100000; // Example maximum budget
+        const percentage = Math.min((currentMoney / maxBudget) * 100, 100);
+        budgetBar.style.width = `${percentage}%`;
+    }
 }
 
-// Hire a new employee
-export function hireEmployee(employee) {
-    console.log(`Hiring employee: ${employee.name}`);
-    // Your hire employee logic here
-    // Example:
-    // addEmployeeToList(employee);
-    // updateEmployeeUI(employee);
+// Update the budget breakdown (last 10 tasks)
+export function updateBudgetBreakdown() {
+    const expenseList = document.getElementById('expense-list');
+    if (expenseList) {
+        expenseList.innerHTML = ''; // Clear existing expenses
+
+        // Example: Fetch last 10 expenses from storage or state
+        const lastExpenses = getLastTenExpenses(); // Implement this function as needed
+
+        lastExpenses.forEach(expense => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${expense.description}: ${expense.amount} kr`;
+            expenseList.appendChild(listItem);
+        });
+    }
 }
 
-// Purchase a resource
-export function purchaseResource(resourceName, amount) {
-    console.log(`Purchasing ${amount} of ${resourceName}`);
-    // Your purchase resource logic here
-    // Example:
-    // const cost = calculateCost(resourceName, amount);
-    // if (deductBudget(cost)) {
-    //     addResource(resourceName, amount);
-    //     updateResourceUI(resourceName, amount);
-    // }
+// Show a toast notification
+export function showToast(message) {
+    const toastContainer = document.getElementById('toast-container');
+    if (toastContainer) {
+        const toast = document.createElement('div');
+        toast.classList.add('toast');
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
 }
 
-// Submit user feedback
-export function submitFeedback() {
-    console.log('Submitting feedback...');
-    // Your feedback submission logic here
-    // Example:
-    // const feedback = document.getElementById('feedback-text').value;
-    // sendFeedbackToServer(feedback);
-    // showToast('Feedback submitted. Thank you!');
+// Placeholder function to get last 10 expenses
+function getLastTenExpenses() {
+    // Implement your logic to retrieve the last 10 expenses
+    // For demonstration, returning sample data
+    return [
+        { description: 'Buy Server', amount: 10000 },
+        { description: 'Hire Employee', amount: 2500 },
+        { description: 'Buy Software Licenses', amount: 500 },
+        // Add more expenses as needed
+    ];
 }
-
-// Toggle between light and dark themes
-export function toggleTheme() {
-    console.log('Toggling theme...');
-    // Your theme toggle logic here
-    // Example:
-    // document.body.classList.toggle('dark-theme');
-    // saveThemePreference();
-}
-
-// Save the current game state
-export function saveGame() {
-    console.log('Saving game...');
-    // Your save game logic here
-    // Example:
-    // const gameState = getCurrentGameState();
-    // saveToLocalStorage(gameState);
-    // showToast('Game saved successfully!');
-}
-
-// Load a saved game state
-export function loadGame() {
-    console.log('Loading game...');
-    // Your load game logic here
-    // Example:
-    // const savedState = loadFromLocalStorage();
-    // if (savedState) {
-    //     applyGameState(savedState);
-    //     showToast('Game loaded successfully!');
-    // } else {
-    //     showToast('No saved game found.');
-    // }
-}
-
-// Initialize theme based on user preference or default
-export function initializeTheme() {
-    console.log('Initializing theme...');
-    // Your theme initialization logic here
-    // Example:
-    // const savedTheme = getSavedThemePreference();
-    // if (savedTheme) {
-    //     document.body.classList.add(savedTheme);
-    // } else {
-    //     document.body.classList.add('light-theme');
-    // }
-}
-
-// Change page for backlog pagination
-export function changePage(direction) {
-    console.log(`Changing page: ${direction}`);
-    // Your pagination logic here
-    // Example:
-    // const newPage = currentPage + direction;
-    // updateBacklogUI(tasks, newPage, tasksPerPage);
-}
-
-// Example Function to Get Stakeholder Scores
-export function getStakeholderScores() {
-    console.log('Getting stakeholder scores...');
-    // Your implementation here
-    return {
-        Hospital: 10,
-        Infrastructure: 15,
-        Cybersecurity: 20,
-        InfoSec: 25
-    };
-}
-
-// Export other necessary functions as needed
