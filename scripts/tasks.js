@@ -8,10 +8,11 @@ import {
 import { shuffleArray, generateUniqueId } from './utils.js';
 import { gameState } from './state.js';
 
-// Sample task givers and locations for steps
+/** Task Givers and Step Locations **/
 const taskGivers = ['Hospital', 'Infrastructure', 'Cybersecurity', 'InfoSec'];
 const stepLocations = ['Vendor Zone', 'Budget Zone', 'Legal Zone', 'Infrastructure Zone', 'Cybersecurity Zone'];
 
+/** Initialize Tasks **/
 export function initializeTasks() {
     gameState.tasks = [];
     gameState.activeTask = null;
@@ -30,6 +31,7 @@ export function initializeTasks() {
     updateScoreboardUI(gameState.scores);
 }
 
+/** Generate a Random Task **/
 export function generateRandomTask() {
     const descriptions = [
         'Upgrade Network Infrastructure',
@@ -38,7 +40,6 @@ export function generateRandomTask() {
         'Conduct Employee Training',
         'Optimize Database Performance'
     ];
-    const priorities = ['Low', 'Medium', 'High'];
 
     const stepsCount = Math.floor(Math.random() * 3) + 2; // 2-4 steps
     const shuffledSteps = shuffleArray([...stepLocations]).slice(0, stepsCount);
@@ -55,6 +56,7 @@ export function generateRandomTask() {
     };
 }
 
+/** Assign a New Task **/
 export function assignTask() {
     const newTask = generateRandomTask();
     gameState.tasks.push(newTask);
@@ -62,6 +64,7 @@ export function assignTask() {
     showToast(`New task added by ${newTask.taskGiver}: "${newTask.description}"`);
 }
 
+/** Select a Task **/
 export function selectTask(taskId) {
     const task = gameState.tasks.find(t => t.id === taskId);
     if (task) {
@@ -71,6 +74,7 @@ export function selectTask(taskId) {
     }
 }
 
+/** Complete a Step **/
 export function completeStep() {
     if (!gameState.activeTask) {
         showToast('No active task selected.');
@@ -92,6 +96,7 @@ export function completeStep() {
     }
 }
 
+/** Finalize a Task **/
 export function finalizeTask() {
     if (!gameState.activeTask) {
         showToast('No active task to finalize.');
@@ -124,11 +129,13 @@ export function finalizeTask() {
     updateScoreboardUI(gameState.scores);
 }
 
+/** Hire an Employee **/
 export function hireEmployee(employee) {
     gameState.employees.push(employee);
     showToast(`Hired employee: ${employee.name}`);
 }
 
+/** Purchase a Resource **/
 export function purchaseResource(resourceName, amount) {
     const cost = calculateCost(resourceName, amount);
     if (gameState.scores.currentMoney >= cost) {
@@ -141,6 +148,7 @@ export function purchaseResource(resourceName, amount) {
     }
 }
 
+/** Submit Feedback **/
 export function submitFeedback() {
     const feedbackText = document.getElementById('feedback-text') ? document.getElementById('feedback-text').value.trim() : '';
     if (feedbackText) {
@@ -153,17 +161,20 @@ export function submitFeedback() {
     }
 }
 
+/** Toggle Theme **/
 export function toggleTheme() {
     document.body.classList.toggle('dark-theme');
     document.body.classList.toggle('light-theme');
     showToast('Theme toggled.');
 }
 
+/** Save Game State **/
 export function saveGame() {
     localStorage.setItem('itManagerTycoonGameState', JSON.stringify(gameState));
     showToast('Game saved successfully!');
 }
 
+/** Load Game State **/
 export function loadGame() {
     const savedState = localStorage.getItem('itManagerTycoonGameState');
     if (savedState) {
@@ -177,6 +188,7 @@ export function loadGame() {
     }
 }
 
+/** Check Compliance **/
 export function checkCompliance() {
     // 50% chance to find a compliance issue
     const isNonCompliant = Math.random() < 0.5;
@@ -194,11 +206,57 @@ export function checkCompliance() {
     }
 }
 
+/** Manage Contracts **/
 export function manageContracts() {
     // Open the contracts management modal
     openContractsModal();
 }
 
+/** Listen to Phaser Events **/
+export function listenToPhaserEvents(phaserGame) {
+    phaserGame.events.on('taskAssigned', () => {
+        assignTask();
+    });
+
+    phaserGame.events.on('taskZoneVisited', (zoneKey) => {
+        if (gameState.activeTask) {
+            // Check if the visited zone matches the current step
+            const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStepIndex];
+            const requiredZone = currentStep.toLowerCase().replace(' zone', '');
+
+            if (zoneKey === requiredZone) {
+                completeStep();
+            } else {
+                showToast(`Incorrect zone. Please visit "${currentStep}" to complete the step.`);
+            }
+        }
+    });
+
+    phaserGame.events.on('legalZoneVisited', () => {
+        showToast('Welcome to the Legal Zone. Manage your contracts and compliance here.');
+    });
+
+    phaserGame.events.on('vendorZoneVisited', () => {
+        showToast('Welcome to the Vendor Zone. Manage your vendors and purchases here.');
+    });
+
+    phaserGame.events.on('budgetZoneVisited', () => {
+        showToast('Welcome to the Budget Zone. Allocate your funds and view reports here.');
+    });
+}
+
+/** Helper Functions **/
+
+function calculateCost(resourceName, amount) {
+    const prices = {
+        servers: 10000,
+        softwareLicenses: 500,
+        officeSpace: 20000
+    };
+    return prices[resourceName] * amount;
+}
+
+/** Manage Contracts Modal **/
 function openContractsModal() {
     const modal = document.getElementById('modal');
     const modalBody = document.getElementById('modal-body');
@@ -234,6 +292,7 @@ function openContractsModal() {
     }
 }
 
+/** Create a New Contract **/
 function createContract(name, value) {
     gameState.contracts.push({ name, value });
     showToast(`Contract "${name}" created successfully!`);
@@ -242,16 +301,4 @@ function createContract(name, value) {
     if (contractsList) {
         contractsList.innerHTML += `<li>${name}: $${value}</li>`;
     }
-}
-
-// Ensure that selectTask is exported
-// (Already handled by directly exporting the function above)
-
-function calculateCost(resourceName, amount) {
-    const prices = {
-        servers: 10000,
-        softwareLicenses: 500,
-        officeSpace: 20000
-    };
-    return prices[resourceName] * amount;
 }
