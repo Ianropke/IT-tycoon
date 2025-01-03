@@ -1,6 +1,6 @@
 // js/main.js
 
-import { initializeTasks, commitTask, gatherTask, finalizeTask, changePage } from './tasks.js';
+import { initializeTasks, commitTask, gatherTask, finalizeTask, changePage, createRandomTask, getActiveTask } from './tasks.js';
 import { updateBacklogUI, updateActiveTaskUI, updateScoresUI } from './ui.js';
 
 /**
