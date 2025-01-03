@@ -1,6 +1,5 @@
 // scripts/ui.js
-import { completeStep, finalizeTask, selectTask } from './tasks.js'; // Remove or minimize imports from tasks.js
-import { openTaskSelectionModal, commitToTask } from './tasks.js'; // Potentially remove if causing circular imports
+import { completeStep, finalizeTask, selectTask } from './tasks.js'; // Import necessary task functions
 import { gameState } from './state.js';
 import { showToast } from './shared.js'; // Import shared function
 
