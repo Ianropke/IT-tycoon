@@ -29,6 +29,11 @@ export class MenuScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
+                // Resume Audio Context if suspended
+                if (this.sound.context.state === 'suspended') {
+                    this.sound.context.resume();
+                    console.log('AudioContext resumed by user interaction');
+                }
                 this.scene.start('GameScene');
             });
     }
@@ -132,6 +137,9 @@ export class GameScene extends Phaser.Scene {
         const playerGraphics = this.add.graphics();
         playerGraphics.fillStyle(0x000000, 1);
         playerGraphics.fillCircle(0, 0, 15);
+        playerGraphics.generateTexture('playerTexture', 30, 30);
+        playerGraphics.destroy();
+        this.player.setTexture('playerTexture');
         this.player.setSize(30, 30);
         this.player.body.setCircle(15);
         this.player.body.setCollideWorldBounds(true);
@@ -174,9 +182,19 @@ export class GameScene extends Phaser.Scene {
 
     /** Handle Overlapping with Zones **/
     handleOverlap(player, zoneGeom) {
-        const zone = Object.values(this.zones).find(z => Phaser.Geom.Rectangle.Contains(zoneGeom, player.x, player.y));
-        if (zone && gameState.currentZone !== zone.name) {
-            this.enterZone(zone.name.toLowerCase().replace(' ', ''));
+        // Check which zone the player is currently in
+        let currentZone = null;
+        for (let key in this.zones) {
+            const zone = this.zones[key];
+            const rect = new Phaser.Geom.Rectangle(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
+            if (Phaser.Geom.Rectangle.Contains(rect, player.x, player.y)) {
+                currentZone = zone;
+                break;
+            }
+        }
+
+        if (currentZone && gameState.currentZone !== currentZone.name) {
+            this.enterZone(currentZone.name.toLowerCase().replace(' ', ''));
         }
     }
 
@@ -186,18 +204,24 @@ export class GameScene extends Phaser.Scene {
         if (!zone) return;
 
         gameState.currentZone = this.zones[zone].name;
+        console.log(`Entered Zone: ${gameState.currentZone}`);
         this.locationLabel.setText(`Current Location: ${gameState.currentZone}`);
 
         if (this.zones[zone].type === 'dispatch') {
+            console.log('Emitting taskAssigned event');
             this.events.emit('taskAssigned');
         } else if (this.zones[zone].type === 'task') {
+            console.log(`Emitting taskZoneVisited event for zone: ${zoneKey}`);
             this.events.emit('taskZoneVisited', zoneKey);
         } else {
             if (zoneKey === 'legal') {
+                console.log('Emitting legalZoneVisited event');
                 this.events.emit('legalZoneVisited');
             } else if (zoneKey === 'vendor') {
+                console.log('Emitting vendorZoneVisited event');
                 this.events.emit('vendorZoneVisited');
             } else if (zoneKey === 'budget') {
+                console.log('Emitting budgetZoneVisited event');
                 this.events.emit('budgetZoneVisited');
             }
         }
