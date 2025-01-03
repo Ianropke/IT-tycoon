@@ -164,6 +164,7 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    /** Create Phaser Rectangle Bodies for Overlap Checking **/
     getZoneBodies() {
         // Create an array of zone bodies for overlap checking
         return Object.values(this.zones).map(zone => {
@@ -171,6 +172,7 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
+    /** Handle Overlapping with Zones **/
     handleOverlap(player, zoneGeom) {
         const zone = Object.values(this.zones).find(z => Phaser.Geom.Rectangle.Contains(zoneGeom, player.x, player.y));
         if (zone && gameState.currentZone !== zone.name) {
@@ -178,6 +180,7 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    /** Enter a Zone **/
     enterZone(zoneKey) {
         const zone = Object.keys(this.zones).find(key => this.zones[key].name.toLowerCase().replace(' ', '') === zoneKey);
         if (!zone) return;
