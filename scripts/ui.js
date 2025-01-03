@@ -1,6 +1,6 @@
 // js/ui.js
 
-import { backlog, activeTask, tasksPerPage } from './tasks.js';
+import { getTasksForCurrentPage } from './tasks.js';
 
 /**
  * Updates the backlog table with current tasks.
