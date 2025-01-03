@@ -245,7 +245,7 @@ function createContract(name, value) {
 }
 
 // Ensure that selectTask is exported
-export { selectTask };
+// (Already handled by directly exporting the function above)
 
 function calculateCost(resourceName, amount) {
     const prices = {
