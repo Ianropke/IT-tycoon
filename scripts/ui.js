@@ -1,7 +1,5 @@
 // js/ui.js
 
-import { getTasksForCurrentPage } from './tasks.js';
-
 /**
  * Updates the backlog table with current tasks.
  * @param {Array} backlog 
@@ -46,10 +44,11 @@ export function updateActiveTaskUI(activeTask) {
 
 /**
  * Updates the scores in the UI.
+ * This function is currently a placeholder and can be expanded if additional score-related UI updates are needed.
  */
 export function updateScoresUI() {
   // Currently, scores are updated directly in tasks.js
-  // This function can be expanded if additional score-related UI updates are needed
+  // This function can be expanded for future enhancements.
 }
 
 /**
