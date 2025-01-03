@@ -1,10 +1,12 @@
 // scripts/ui.js
-import { completeStep, finalizeTask, selectTask, openTaskSelectionModal } from './tasks.js';
+import { completeStep, finalizeTask, selectTask, openTaskSelectionModal } from './tasks.js'; // Ensure no circular imports
 import { gameState } from './state.js';
 
 /** Show Toast Notification **/
 export function showToast(message) {
     const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return; // Prevent errors if toast-container is missing
+
     const toast = document.createElement('div');
     toast.classList.add('toast');
     toast.textContent = message;
@@ -19,6 +21,7 @@ export function showToast(message) {
 /** Update Backlog UI **/
 export function updateBacklogUI(tasks) {
     const tasksTableBody = document.querySelector('#tasks-table tbody');
+    if (!tasksTableBody) return; // Prevent errors if tasks-table is missing
     tasksTableBody.innerHTML = '';
 
     tasks.forEach(task => {
@@ -79,10 +82,12 @@ export function updateBacklogUI(tasks) {
 
     // Enable or disable the Commit Task button based on activeTask
     const commitTaskButton = document.getElementById('commit-button');
-    if (gameState.activeTask) {
-        commitTaskButton.disabled = true;
-    } else {
-        commitTaskButton.disabled = tasks.length === 0;
+    if (commitTaskButton) {
+        if (gameState.activeTask || tasks.length === 0) {
+            commitTaskButton.disabled = true;
+        } else {
+            commitTaskButton.disabled = false;
+        }
     }
 }
 
@@ -96,6 +101,8 @@ export function openTaskDetailsModal(taskId) {
 
     const modal = document.getElementById('modal');
     const modalBody = document.getElementById('modal-body');
+    if (!modal || !modalBody) return; // Prevent errors if modal structure is missing
+
     modalBody.innerHTML = `
         <div id="task-details-content">
             <h3>Task Details</h3>
@@ -221,6 +228,7 @@ export function updateActiveTaskUI(activeTask) {
 /** Close Modal Function **/
 export function closeModalFunction() {
     const modal = document.getElementById('modal');
+    if (!modal) return;
     modal.style.display = 'none';
 }
 
@@ -233,6 +241,8 @@ export function openTaskSelectionModal() {
 
     const modal = document.getElementById('modal');
     const modalBody = document.getElementById('modal-body');
+    if (!modal || !modalBody) return; // Prevent errors if modal structure is missing
+
     let taskOptions = '';
 
     if (gameState.tasks.length === 0) {
