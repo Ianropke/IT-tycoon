@@ -1,6 +1,7 @@
 // scripts/gameScenes.js
 import { gameState } from './state.js';
 
+/** Boot Scene **/
 export class BootScene extends Phaser.Scene {
     constructor() {
         super({ key: 'BootScene' });
@@ -15,6 +16,7 @@ export class BootScene extends Phaser.Scene {
     }
 }
 
+/** Menu Scene **/
 export class MenuScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MenuScene' });
@@ -23,8 +25,10 @@ export class MenuScene extends Phaser.Scene {
     create() {
         const { width, height } = this.scale;
 
+        // Game Title
         this.add.text(width / 2, height / 2 - 50, 'IT Manager Tycoon', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
 
+        // Start Game Button
         const startButton = this.add.text(width / 2, height / 2 + 50, 'Start Game', { fontSize: '24px', fill: '#0f0' })
             .setOrigin(0.5)
             .setInteractive()
@@ -39,6 +43,7 @@ export class MenuScene extends Phaser.Scene {
     }
 }
 
+/** Game Scene **/
 export class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
