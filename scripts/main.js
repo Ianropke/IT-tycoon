@@ -20,6 +20,7 @@ import { generateUniqueId } from './utils.js';
 
 import { BootScene, MenuScene, GameScene } from './gameScenes.js';
 
+// Phaser Game Configuration
 const config = {
     type: Phaser.AUTO,
     width: 900,
@@ -35,8 +36,10 @@ const config = {
     }
 };
 
+// Initialize Phaser Game
 const phaserGame = new Phaser.Game(config);
 
+// Listen to Phaser Events
 listenToPhaserEvents(phaserGame);
 
 // Handle redirection to Legal Zone when compliance issues are found
@@ -44,10 +47,12 @@ phaserGame.events.on('redirectToLegal', () => {
     phaserGame.scene.getScene('GameScene').enterZone('legal');
 });
 
-window.addEventListener('resize', () => {
-    // Not required as Game Area is fixed
-});
+// Ensure only one instance of Phaser Game exists
+if (!Phaser.Game.getGame('default')) {
+    window.phaserGame = phaserGame;
+}
 
+// DOMContentLoaded Event
 document.addEventListener('DOMContentLoaded', () => {
     initializeTasks();
 
@@ -56,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         assignTask();
     }, 30000); // 30,000 ms = 30 seconds
 
+    // Commit Task Button
     const commitButton = document.getElementById('commit-button');
     if (commitButton) {
         commitButton.addEventListener('click', () => {
@@ -70,13 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const finalizeButton = document.getElementById('finalize-button');
+    // Finalize Task Button
+    const finalizeButton = document.getElementById('finalize-task-button');
     if (finalizeButton) {
         finalizeButton.addEventListener('click', () => {
             finalizeTask();
         });
     }
 
+    // Hire Employee Button
     const hireEmployeeButton = document.getElementById('hire-employee');
     if (hireEmployeeButton) {
         hireEmployeeButton.addEventListener('click', () => {
@@ -93,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Manage Contracts Button
     const manageContractsButton = document.getElementById('manage-contracts');
     if (manageContractsButton) {
         manageContractsButton.addEventListener('click', () => {
@@ -100,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Check Compliance Button
     const checkComplianceButton = document.getElementById('check-compliance');
     if (checkComplianceButton) {
         checkComplianceButton.addEventListener('click', () => {
@@ -107,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Purchase Resources Button
     const purchaseResourcesButton = document.getElementById('purchase-resources');
     if (purchaseResourcesButton) {
         purchaseResourcesButton.addEventListener('click', () => {
@@ -114,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Upgrade Services Button
     const upgradeServicesButton = document.getElementById('upgrade-services');
     if (upgradeServicesButton) {
         upgradeServicesButton.addEventListener('click', () => {
@@ -121,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Allocate Budget Button
     const allocateBudgetButton = document.getElementById('allocate-budget');
     if (allocateBudgetButton) {
         allocateBudgetButton.addEventListener('click', () => {
@@ -128,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // View Reports Button
     const viewReportsButton = document.getElementById('view-reports');
     if (viewReportsButton) {
         viewReportsButton.addEventListener('click', () => {
@@ -136,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Submit Feedback Button
     const submitFeedbackButton = document.getElementById('submit-feedback');
     if (submitFeedbackButton) {
         submitFeedbackButton.addEventListener('click', () => {
@@ -143,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Toggle Theme Button
     const toggleThemeButton = document.getElementById('toggle-theme');
     if (toggleThemeButton) {
         toggleThemeButton.addEventListener('click', () => {
@@ -150,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Save Game Button
     const saveButton = document.getElementById('save-button');
     if (saveButton) {
         saveButton.addEventListener('click', () => {
@@ -157,10 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Load Game Button
     const loadButton = document.getElementById('load-button');
     if (loadButton) {
         loadButton.addEventListener('click', () => {
             loadGame();
+        });
+    }
+
+    // Close Modal when 'x' is clicked
+    const closeModal = document.getElementById('close-modal');
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            closeModalFunction();
         });
     }
 });
@@ -201,11 +227,14 @@ function openTaskSelectionModal() {
     });
 }
 
-// Handle closing the modal when 'x' is clicked
-const closeModal = document.getElementById('close-modal');
-if (closeModal) {
-    closeModal.addEventListener('click', () => {
-        const modal = document.getElementById('modal');
-        modal.style.display = 'none';
-    });
+// Function to close modal
+function closeModalFunction() {
+    const modal = document.getElementById('modal');
+    modal.style.display = 'none';
+}
+
+// Initialize contracts in gameState if not already present
+import { gameState } from './state.js';
+if (!gameState.contracts) {
+    gameState.contracts = [];
 }
