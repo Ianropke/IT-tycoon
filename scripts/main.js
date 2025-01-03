@@ -1,7 +1,9 @@
 // scripts/main.js
 import { 
     initializeTasks, 
-    commitTask, 
+    assignTask, 
+    selectTask, 
+    completeStep, 
     finalizeTask, 
     hireEmployee, 
     purchaseResource, 
@@ -9,6 +11,8 @@ import {
     toggleTheme, 
     saveGame, 
     loadGame,
+    checkCompliance,
+    manageContracts,
     listenToPhaserEvents
 } from './tasks.js';
 
@@ -35,17 +39,34 @@ const phaserGame = new Phaser.Game(config);
 
 listenToPhaserEvents(phaserGame);
 
+// Handle redirection to Legal Zone when compliance issues are found
+phaserGame.events.on('redirectToLegal', () => {
+    phaserGame.scene.getScene('GameScene').enterZone('legal');
+});
+
 window.addEventListener('resize', () => {
     // Not required as Game Area is fixed
 });
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeTasks();
-    
+
+    // Periodically assign tasks every 30 seconds
+    setInterval(() => {
+        assignTask();
+    }, 30000); // 30,000 ms = 30 seconds
+
     const commitButton = document.getElementById('commit-button');
     if (commitButton) {
         commitButton.addEventListener('click', () => {
-            commitTask();
+            if (gameState.activeTask) {
+                showToast('Task already active. Complete it before committing a new one.');
+            } else if (gameState.tasks.length > 0) {
+                // Show task selection modal
+                openTaskSelectionModal();
+            } else {
+                showToast('No tasks available to commit.');
+            }
         });
     }
 
@@ -75,14 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const manageContractsButton = document.getElementById('manage-contracts');
     if (manageContractsButton) {
         manageContractsButton.addEventListener('click', () => {
-            showToast('Manage Contracts clicked.');
+            manageContracts();
         });
     }
 
     const checkComplianceButton = document.getElementById('check-compliance');
     if (checkComplianceButton) {
         checkComplianceButton.addEventListener('click', () => {
-            showToast('Check Compliance clicked.');
+            checkCompliance();
         });
     }
 
@@ -111,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewReportsButton) {
         viewReportsButton.addEventListener('click', () => {
             showToast('View Reports clicked.');
+            // Implement report viewing functionality here
         });
     }
 
@@ -142,3 +164,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Function to open task selection modal
+function openTaskSelectionModal() {
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+    let taskOptions = '';
+
+    if (gameState.tasks.length === 0) {
+        taskOptions = '<p>No tasks available.</p>';
+    } else {
+        taskOptions = '<h3>Select a Task to Commit</h3><ul>';
+        gameState.tasks.slice(0, 5).forEach(task => {
+            taskOptions += `
+                <li>
+                    <strong>${task.description}</strong><br>
+                    Giver: ${task.taskGiver} | Risk: ${task.risk} | Price: $${task.price}
+                    <button data-task-id="${task.id}">Select</button>
+                </li>
+            `;
+        });
+        taskOptions += '</ul>';
+    }
+
+    modalBody.innerHTML = taskOptions;
+    modal.style.display = 'block';
+
+    // Add event listeners to task selection buttons
+    const selectButtons = modalBody.querySelectorAll('button[data-task-id]');
+    selectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const taskId = button.getAttribute('data-task-id');
+            selectTask(taskId);
+            modal.style.display = 'none';
+        });
+    });
+}
+
+// Handle closing the modal when 'x' is clicked
+const closeModal = document.getElementById('close-modal');
+if (closeModal) {
+    closeModal.addEventListener('click', () => {
+        const modal = document.getElementById('modal');
+        modal.style.display = 'none';
+    });
+}
