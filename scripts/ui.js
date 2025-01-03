@@ -6,59 +6,52 @@ class UIScene extends Phaser.Scene {
   }
 
   create() {
-    // UI Layout
     this.cameras.main.setViewport(0, 0, 1440, 900);
     this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
 
     // ---------- SCOREBOARD BAR ----------
-    this.scorebarBg = this.add.rectangle(0, 0, 1440, 60, 0xf4f4f4).setOrigin(0, 0);
-    this.scoreTitle = this.add.text(20, 15, 'Score: 0', {
+    this.scorebarBg = this.add.rectangle(0, 0, 1440, 50, 0xf4f4f4).setOrigin(0, 0);
+    this.scoreText = this.add.text(20, 15, 'Score: 0', {
       fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '24px',
+      fontSize: '20px',
       color: '#007aff',
     });
-    this.scoreboardLines = this.add.text(700, 15, '', {
+
+    this.taskgiverScores = this.add.text(300, 15, 'Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
       fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '16px',
       color: '#333333',
     });
 
-    // ---------- RIGHT PANEL BACKGROUND ----------
-    this.rightBg = this.add.rectangle(900, 60, 540, 840, 0xffffff).setOrigin(0, 0);
-
     // ---------- BACKLOG SECTION ----------
-    this.backlogTitle = this.add.text(910, 70, 'Tasks (Backlog)', {
+    this.backlogBg = this.add.rectangle(900, 50, 540, 450, 0xffffff).setOrigin(0, 0);
+    this.add.text(910, 60, 'Tasks (Backlog)', {
       fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '18px',
       color: '#333333',
     });
-    this.add.text(910, 100, 'Desc', { fontSize: '14px', color: '#666666' });
-    this.add.text(1060, 100, 'Steps', { fontSize: '14px', color: '#666666' });
-    this.add.text(1120, 100, 'Risk', { fontSize: '14px', color: '#666666' });
-    this.add.text(1160, 100, 'Giver', { fontSize: '14px', color: '#666666' });
 
-    this.taskRowTexts = [];
+    this.add.text(910, 90, 'Desc', { fontSize: '14px', color: '#666666' });
+    this.add.text(1060, 90, 'Steps', { fontSize: '14px', color: '#666666' });
+    this.add.text(1120, 90, 'Risk', { fontSize: '14px', color: '#666666' });
+    this.add.text(1180, 90, 'Giver', { fontSize: '14px', color: '#666666' });
+
+    this.backlogTaskRows = [];
 
     // ---------- ACTIVE TASK SECTION ----------
-    this.activeBg = this.add.rectangle(900, 480, 540, 420, 0xf0f0f2).setOrigin(0, 0);
-    this.activeTitle = this.add.text(910, 490, 'Active Task', {
+    this.activeBg = this.add.rectangle(900, 500, 540, 400, 0xf8f8f8).setOrigin(0, 0);
+    this.add.text(910, 510, 'Active Task', {
       fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '18px',
       color: '#333333',
     });
 
-    this.activeLines = [];
+    this.activeTaskDetails = [];
     for (let i = 0; i < 7; i++) {
-      const line = this.add.text(910, 520 + i * 20, '', {
-        fontFamily: 'Helvetica, Arial, sans-serif',
-        fontSize: '14px',
-        color: '#333333',
-      });
-      this.activeLines.push(line);
+      this.activeTaskDetails.push(this.add.text(910, 540 + i * 20, '', { fontSize: '14px', color: '#333333' }));
     }
 
-    this.commitBtn = this.add.text(910, 700, '[ Commit ]', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
+    this.commitButton = this.add.text(910, 680, '[ Commit ]', {
       fontSize: '16px',
       backgroundColor: '#007aff',
       color: '#fff',
@@ -67,8 +60,7 @@ class UIScene extends Phaser.Scene {
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => this.handleCommit());
 
-    this.gatherBtn = this.add.text(1010, 700, '[ Gather ]', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
+    this.gatherButton = this.add.text(1010, 680, '[ Gather ]', {
       fontSize: '16px',
       backgroundColor: '#34c759',
       color: '#fff',
@@ -77,8 +69,7 @@ class UIScene extends Phaser.Scene {
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => this.handleGather());
 
-    this.finalizeBtn = this.add.text(1110, 700, '[ Finalize ]', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
+    this.finalizeButton = this.add.text(1110, 680, '[ Finalize ]', {
       fontSize: '16px',
       backgroundColor: '#ff9500',
       color: '#fff',
@@ -90,7 +81,6 @@ class UIScene extends Phaser.Scene {
     this.activeTaskId = null;
     this.documented = false;
 
-    // Refresh every second
     this.time.addEvent({
       delay: 1000,
       callback: () => this.refreshUI(),
@@ -99,118 +89,88 @@ class UIScene extends Phaser.Scene {
   }
 
   refreshUI() {
-    // Update score
-    this.scoreTitle.setText(`Score: ${window.playerScore}`);
-    this.scoreboardLines.setText(
-      `Hospital: ${window.giverScoreboard.hospital}  |  ` +
-        `Infrastructure: ${window.giverScoreboard.infrastructure}  |  ` +
-        `InfoSec: ${window.giverScoreboard.informationSecurity}  |  ` +
-        `CyberSec: ${window.giverScoreboard.cybersecurity}`
+    this.scoreText.setText(`Score: ${window.playerScore}`);
+    this.taskgiverScores.setText(
+      `Hospital: ${window.giverScoreboard.hospital} | Infrastructure: ${window.giverScoreboard.infrastructure} | InfoSec: ${window.giverScoreboard.informationSecurity} | CyberSec: ${window.giverScoreboard.cybersecurity}`
     );
 
-    // Refresh backlog tasks
-    this.taskRowTexts.forEach(row => row.forEach(t => t.destroy()));
-    this.taskRowTexts = [];
-    let y = 120;
+    this.updateBacklog();
+    this.updateActiveTask();
+  }
+
+  updateBacklog() {
+    this.backlogTaskRows.forEach((row) => row.forEach((cell) => cell.destroy()));
+    this.backlogTaskRows = [];
 
     if (!window.canViewBacklog) {
-      const noTasks = this.add.text(910, y, 'Stand on orange backlog to see tasks.', {
+      const noTasks = this.add.text(910, 120, 'Stand on orange backlog to view tasks.', {
         fontSize: '14px',
         color: '#999999',
-        wordWrap: { width: 520 },
       });
-      this.taskRowTexts.push([noTasks]);
+      this.backlogTaskRows.push([noTasks]);
       return;
     }
 
-    for (let i = 0; i < window.globalTasks.length; i++) {
-      const t = window.globalTasks[i];
-      const steps = `${t.currentStep}/${t.steps.length}`;
-      const rowDesc = `[${t.status}] ${t.description} ${t.isFeature ? '[Feature]' : '[Maint]'}`;
-      const risk = `${t.risk}`;
-      const giv = `${t.giver}`;
-      const textDesc = this.add.text(910, y, rowDesc, { fontSize: '14px', color: '#333333' })
-        .setInteractive({ useHandCursor: true });
-      textDesc.on('pointerdown', () => this.selectActiveTask(t.id));
+    let y = 120;
+    window.globalTasks.forEach((task) => {
+      const desc = `[${task.status}] ${task.description}`;
+      const steps = `${task.currentStep}/${task.steps.length}`;
+      const risk = `${task.risk}`;
+      const giver = `${task.giver}`;
 
-      const textSteps = this.add.text(1060, y, steps, { fontSize: '14px', color: '#333333' });
-      const textRisk = this.add.text(1120, y, risk, { fontSize: '14px', color: '#333333' });
-      const textGiver = this.add.text(1160, y, giv, { fontSize: '14px', color: '#333333' });
+      const descText = this.add.text(910, y, desc, { fontSize: '14px', color: '#333333' }).setInteractive();
+      const stepsText = this.add.text(1060, y, steps, { fontSize: '14px', color: '#333333' });
+      const riskText = this.add.text(1120, y, risk, { fontSize: '14px', color: '#333333' });
+      const giverText = this.add.text(1180, y, giver, { fontSize: '14px', color: '#333333' });
 
-      this.taskRowTexts.push([textDesc, textSteps, textRisk, textGiver]);
+      descText.on('pointerdown', () => this.selectTask(task.id));
+
+      this.backlogTaskRows.push([descText, stepsText, riskText, giverText]);
       y += 30;
-
-      if (y > 460) {
-        const moreMsg = this.add.text(910, y, '...more tasks hidden...', {
-          fontSize: '14px',
-          color: '#888888',
-        });
-        this.taskRowTexts.push([moreMsg]);
-        break;
-      }
-    }
-
-    this.updateActiveBox();
+    });
   }
 
-  selectActiveTask(taskId) {
+  updateActiveTask() {
+    const task = window.globalTasks.find((t) => t.id === this.activeTaskId);
+
+    this.activeTaskDetails.forEach((line) => line.setText(''));
+
+    if (task) {
+      const details = [
+        `Step ${task.currentStep + 1} of ${task.steps.length}: ${task.steps[task.currentStep]}`,
+        `Status: ${task.status}`,
+        `Priority: ${task.priority}`,
+        `Risk: ${task.risk}`,
+        task.isFeature ? 'Feature Task' : 'Maintenance Task',
+        `Giver: ${task.giver}`,
+      ];
+      details.forEach((detail, i) => this.activeTaskDetails[i].setText(detail));
+
+      this.commitButton.setVisible(!task.committed);
+      this.gatherButton.setVisible(task.steps[task.currentStep]?.includes('gather'));
+      this.finalizeButton.setVisible(task.status === 'Ready to finalize');
+    } else {
+      this.commitButton.setVisible(false);
+      this.gatherButton.setVisible(false);
+      this.finalizeButton.setVisible(false);
+    }
+  }
+
+  selectTask(taskId) {
     this.activeTaskId = taskId;
-    this.documented = false;
-    this.updateActiveBox();
-  }
-
-  updateActiveBox() {
-    for (let i = 0; i < this.activeLines.length; i++) {
-      this.activeLines[i].setText('');
-    }
-
-    this.commitBtn.setVisible(false);
-    this.gatherBtn.setVisible(false);
-    this.finalizeBtn.setVisible(false);
-
-    if (!this.activeTaskId) return;
-    const task = getTaskById(this.activeTaskId);
-    if (!task) return;
-
-    const stepDescriptions = task.steps
-      .map((step, index) => `${index + 1}. ${step} ${index === task.currentStep ? '(Current Step)' : ''}`)
-      .join('\n');
-    this.activeLines[0].setText(stepDescriptions);
-
-    this.activeLines[1].setText(`Status: ${task.status}`);
-    this.activeLines[2].setText(`Priority: ${task.priority}`);
-    this.activeLines[3].setText(`Risk: ${task.risk}`);
-    this.activeLines[4].setText(task.isFeature ? 'Feature Task' : 'Maintenance Task');
-    this.activeLines[5].setText(`Giver: ${task.giver}`);
-
-    if (!task.committed) this.commitBtn.setVisible(true);
-    if (task.currentStep < task.steps.length && task.steps[task.currentStep].toLowerCase().includes('gather')) {
-      this.gatherBtn.setVisible(true);
-    }
-    if (task.status === 'Ready to finalize') this.finalizeBtn.setVisible(true);
+    this.updateActiveTask();
   }
 
   handleCommit() {
-    if (!this.activeTaskId) return;
-    commitToTask(this.activeTaskId);
+    if (this.activeTaskId) commitToTask(this.activeTaskId);
   }
 
   handleGather() {
-    console.log('User pressed Gather—this can be expanded if needed.');
+    console.log('Gather action performed.');
   }
 
   handleFinalize() {
-    if (!this.activeTaskId) return;
-    if (!this.documented) {
-      console.log('Document first!');
-      return;
-    }
-    const task = getTaskById(this.activeTaskId);
-    if (!task) return;
-    if (task.status === 'Ready to finalize') {
-      completeTask(task.id);
-      task.status = 'Done';
-      this.activeTaskId = null;
-    }
+    if (this.activeTaskId) finalizeTask(this.activeTaskId);
   }
 }
+
