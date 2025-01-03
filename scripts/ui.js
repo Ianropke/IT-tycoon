@@ -1,6 +1,7 @@
 class UIScene extends Phaser.Scene {
   constructor() {
     super({ key: "UIScene" });
+    this.backlogContainer = null; // Declare as a class property
   }
 
   create() {
@@ -14,9 +15,11 @@ class UIScene extends Phaser.Scene {
 
     // Backlog (Scrollable)
     this.add.text(910, 70, "Tasks (Backlog)", { fontSize: "18px", color: "#333" });
-    const backlogContainer = this.add.container(910, 120);
+
+    // Create backlog container and mask
+    this.backlogContainer = this.add.container(910, 120); // Assign to class property
     const scrollMask = this.add.graphics().fillStyle(0xffffff).fillRect(910, 120, 520, 340);
-    backlogContainer.setMask(new Phaser.Display.Masks.GeometryMask(this, scrollMask));
+    this.backlogContainer.setMask(new Phaser.Display.Masks.GeometryMask(this, scrollMask));
     this.taskRows = [];
 
     // Active Task Box
@@ -24,7 +27,9 @@ class UIScene extends Phaser.Scene {
 
     // Scrolling
     this.input.on("wheel", (pointer, deltaX, deltaY) => {
-      backlogContainer.y = Phaser.Math.Clamp(backlogContainer.y - deltaY * 0.2, -300, 120);
+      if (this.backlogContainer) {
+        this.backlogContainer.y = Phaser.Math.Clamp(this.backlogContainer.y - deltaY * 0.2, -300, 120);
+      }
     });
 
     // Refresh UI
@@ -47,7 +52,7 @@ class UIScene extends Phaser.Scene {
       const steps = this.add.text(150, y, `${task.currentStep}/${task.steps.length}`, { fontSize: "14px", color: "#333" });
       const risk = this.add.text(210, y, `${task.risk}`, { fontSize: "14px", color: "#333" });
       const giver = this.add.text(260, y, task.giver, { fontSize: "14px", color: "#333" });
-      backlogContainer.add([desc, steps, risk, giver]);
+      this.backlogContainer.add([desc, steps, risk, giver]); // Properly scoped
       y += 30;
     });
   }
