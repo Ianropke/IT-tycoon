@@ -182,13 +182,18 @@ export function listenToPhaserEvents(phaserGame) {
         assignTask();
     });
 
-    phaserGame.events.on('taskCompleted', () => {
-        const earned = 100;
-        gameState.scores.totalScore += earned;
-        gameState.scores.currentMoney += earned;
-        gameState.scores.stakeholderScores['hospital'] += earned;
-        updateScoreboardUI(gameState.scores);
-        showToast(`Phaser Task Completed! Earned ${earned} points.`);
+    phaserGame.events.on('taskZoneVisited', (zoneKey) => {
+        if (gameState.activeTask) {
+            // Check if the visited zone matches the current step
+            const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStepIndex];
+            const requiredZone = currentStep.toLowerCase().replace(' zone', '');
+
+            if (zoneKey === requiredZone) {
+                completeStep();
+            } else {
+                showToast(`Incorrect zone. Please visit "${currentStep}" to complete the step.`);
+            }
+        }
     });
 
     phaserGame.events.on('legalZoneVisited', () => {
