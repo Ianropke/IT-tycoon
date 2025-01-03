@@ -1,274 +1,205 @@
-// js/ui.js
+// scripts/ui.js
 
-import { getTasksForCurrentPage } from './tasks.js';
-
-/**
- * Updates the backlog table with current tasks.
- * @param {Array} backlog 
- * @param {number} currentPage 
- * @param {number} tasksPerPage 
- */
+// Function to update the backlog UI
 export function updateBacklogUI(backlog, currentPage, tasksPerPage) {
-  const backlogTasks = getTasksForCurrentPage(backlog, currentPage, tasksPerPage);
-  const tbody = document.querySelector('#backlog-tasks tbody');
-  tbody.innerHTML = ''; // Clear existing tasks
+    console.log('Updating backlog UI...');
+    // Your UI update logic here
+    // Example:
+    // Render tasks on the current page
+    // Clear existing tasks
+    const backlogTasksBody = document.querySelector('#backlog-tasks tbody');
+    backlogTasksBody.innerHTML = '';
 
-  backlogTasks.forEach(task => {
-    const row = document.createElement('tr');
-    row.id = `task-${task.id}`;
-    row.classList.add('task-item', `priority-${task.priority.toLowerCase()}`);
-    row.innerHTML = `
-      <td>${task.description}</td>
-      <td>${task.stepsCompleted}/${task.totalSteps}</td>
-      <td>${task.risk}</td>
-      <td>${task.giver}</td>
-    `;
-    tbody.appendChild(row);
-  });
+    // Calculate start and end indices
+    const start = (currentPage - 1) * tasksPerPage;
+    const end = start + tasksPerPage;
+    const paginatedTasks = backlog.slice(start, end);
 
-  // Update pagination buttons
-  const totalTasks = backlog.length;
-  const totalPages = Math.ceil(totalTasks / tasksPerPage);
-  document.getElementById('current-page').innerText = currentPage;
-  document.getElementById('prev-page').disabled = currentPage === 1;
-  document.getElementById('next-page').disabled = currentPage === totalPages || totalPages === 0;
+    // Populate table with tasks
+    paginatedTasks.forEach(task => {
+        const row = document.createElement('tr');
+
+        const descCell = document.createElement('td');
+        descCell.textContent = task.description;
+        row.appendChild(descCell);
+
+        const stepsCell = document.createElement('td');
+        stepsCell.textContent = `${task.stepsCompleted}/${task.steps}`;
+        row.appendChild(stepsCell);
+
+        const riskCell = document.createElement('td');
+        riskCell.textContent = task.risk;
+        row.appendChild(riskCell);
+
+        const giverCell = document.createElement('td');
+        giverCell.textContent = task.giver;
+        row.appendChild(giverCell);
+
+        backlogTasksBody.appendChild(row);
+    });
+
+    // Update current page display
+    const currentPageSpan = document.getElementById('current-page');
+    if (currentPageSpan) {
+        currentPageSpan.textContent = currentPage;
+    }
 }
 
-/**
- * Updates the active task panel with current task details.
- * @param {Object|null} activeTask 
- */
+// Function to update the active task UI
 export function updateActiveTaskUI(activeTask) {
-  document.getElementById('active-description').innerText = activeTask ? activeTask.description : 'None';
-  document.getElementById('active-steps').innerText = activeTask ? `${activeTask.stepsCompleted}/${activeTask.totalSteps}` : '0/0';
-  document.getElementById('active-priority').innerText = activeTask ? activeTask.priority : 'Low';
-  document.getElementById('active-risk').innerText = activeTask ? activeTask.risk : '0';
-  document.getElementById('active-giver').innerText = activeTask ? activeTask.giver : 'None';
-}
+    console.log('Updating active task UI...');
+    // Your UI update logic here
+    // Example:
+    // Display active task details
+    document.getElementById('active-description').textContent = activeTask.description;
+    document.getElementById('active-steps').textContent = `${activeTask.stepsCompleted}/${activeTask.steps}`;
+    document.getElementById('active-priority').textContent = activeTask.priority;
+    document.getElementById('active-risk').textContent = activeTask.risk;
+    document.getElementById('active-giver').textContent = activeTask.giver;
 
-/**
- * Updates the scores in the UI.
- * @param {Object} scores - Contains totalScore, currentMoney, and stakeholderScores
- */
-export function updateScoresUI(scores) {
-  if (scores.totalScore !== undefined) {
-    document.getElementById('total-score').innerText = scores.totalScore;
-  }
-  if (scores.currentMoney !== undefined) {
-    document.getElementById('current-money').innerText = scores.currentMoney;
-  }
-  if (scores.stakeholderScores !== undefined) {
-    for (let stakeholder in scores.stakeholderScores) {
-      const scoreElement = document.getElementById(`${stakeholder}-score`);
-      if (scoreElement) {
-        scoreElement.innerText = scores.stakeholderScores[stakeholder];
-      }
+    // Enable or disable buttons based on task status
+    const gatherButton = document.getElementById('gather-button');
+    const finalizeButton = document.getElementById('finalize-button');
+
+    if (activeTask.stepsCompleted < activeTask.steps) {
+        gatherButton.disabled = false;
+        finalizeButton.disabled = true;
+    } else {
+        gatherButton.disabled = true;
+        finalizeButton.disabled = false;
     }
-  }
 }
 
-/**
- * Updates the budget bar based on currentMoney.
- */
-export function updateBudgetBar(currentMoney, initialMoney = 50000) {
-  const budgetBar = document.getElementById('budget-bar');
-  const percentage = (currentMoney / initialMoney) * 100;
-  budgetBar.style.width = `${percentage}%`;
-
-  if (percentage > 50) {
-    budgetBar.style.backgroundColor = 'green';
-  } else if (percentage > 20) {
-    budgetBar.style.backgroundColor = 'yellow';
-  } else {
-    budgetBar.style.backgroundColor = 'red';
-  }
-}
-
-/**
- * Updates the employee list in the UI.
- * @param {Array} employees 
- */
-export function updateEmployeeListUI(employees) {
-  const employeeList = document.getElementById('employee-list');
-  employeeList.innerHTML = '';
-
-  employees.forEach(emp => {
-    const empElement = document.createElement('div');
-    empElement.innerText = `${emp.name} - ${emp.department} (${emp.isAvailable ? 'Available' : 'Busy'})`;
-    employeeList.appendChild(empElement);
-  });
-}
-
-/**
- * Updates the resource list in the UI.
- * @param {Object} resources 
- */
-export function updateResourceListUI(resources) {
-  const resourceList = document.getElementById('resource-list');
-  resourceList.innerHTML = '';
-
-  for (let [name, details] of Object.entries(resources)) {
-    const resourceElement = document.createElement('div');
-    resourceElement.innerText = `${name}: ${details.quantity} units (Maintenance: ${details.maintenance} kr/month)`;
-    resourceList.appendChild(resourceElement);
-  }
-}
-
-/**
- * Displays the performance review modal after 10 tasks.
- * @param {Object} reviewData 
- * @param {number} performanceScore 
- */
-export function displayPerformanceReview(reviewData, performanceScore) {
-  const modal = document.getElementById('modal');
-  const modalBody = document.getElementById('modal-body');
-  const closeModal = document.getElementById('close-modal');
-
-  // Clear previous content
-  modalBody.innerHTML = '';
-
-  // Create Performance Review Content
-  const header = document.createElement('h2');
-  header.innerText = 'Inspect and Adapt - Performance Review';
-  modalBody.appendChild(header);
-
-  // Balance Across Task Givers
-  const balanceSection = document.createElement('div');
-  balanceSection.innerHTML = `
-    <h3>1. Balance Across Task Givers</h3>
-    <p>Your balance score: <strong>${reviewData.balanceScore.toFixed(2)} / 100</strong></p>
-    <ul>
-      ${Object.keys(reviewData.taskGiversCount).map(giver => `<li>${giver}: ${reviewData.taskGiversCount[giver]} tasks</li>`).join('')}
-    </ul>
-  `;
-  modalBody.appendChild(balanceSection);
-
-  // Prioritizing High-Risk Tasks
-  const riskSection = document.createElement('div');
-  riskSection.innerHTML = `
-    <h3>2. Prioritizing High-Risk Tasks</h3>
-    <p>High-risk tasks completed early: <strong>${reviewData.highRiskTasksCompletedEarly} / 5</strong></p>
-    <p>Risk score: <strong>${(reviewData.highRiskTasksCompletedEarly / 5 * 100).toFixed(2)} / 100</strong></p>
-  `;
-  modalBody.appendChild(riskSection);
-
-  // Minimizing Effort
-  const effortSection = document.createElement('div');
-  effortSection.innerHTML = `
-    <h3>3. Minimizing Effort</h3>
-    <p>Average steps per task: <strong>${reviewData.averageSteps}</strong></p>
-    <p>Effort score: <strong>${(100 - (reviewData.averageSteps * 10)).toFixed(2)} / 100</strong></p>
-  `;
-  modalBody.appendChild(effortSection);
-
-  // Spending Efficiency
-  const spendingSection = document.createElement('div');
-  spendingSection.innerHTML = `
-    <h3>4. Spending Efficiency</h3>
-    <p>Total amount spent on last 10 tasks: <strong>${reviewData.totalAmountSpent} kr</strong></p>
-    <p>Spending score: <strong>${(100 - (reviewData.totalAmountSpent / 5000 * 100)).toFixed(2)} / 100</strong></p>
-  `;
-  modalBody.appendChild(spendingSection);
-
-  // Overall Performance Score
-  const overallSection = document.createElement('div');
-  overallSection.innerHTML = `
-    <h3>Overall Performance Score</h3>
-    <p>Your performance score: <strong>${performanceScore} / 100</strong></p>
-  `;
-  modalBody.appendChild(overallSection);
-
-  // Feedback Section
-  const feedbackSection = document.createElement('div');
-  feedbackSection.innerHTML = `<h3>Feedback</h3>`;
-
-  if (reviewData.balanceScore < 70) {
-    feedbackSection.innerHTML += `<p>Try to balance your task assignments across all departments to maximize efficiency.</p>`;
-  } else {
-    feedbackSection.innerHTML += `<p>Great job maintaining a balanced task distribution!</p>`;
-  }
-
-  if (reviewData.highRiskTasksCompletedEarly < 3) {
-    feedbackSection.innerHTML += `<p>Focus on tackling high-risk tasks earlier to minimize potential issues.</p>`;
-  } else {
-    feedbackSection.innerHTML += `<p>Excellent prioritization of high-risk tasks!</p>`;
-  }
-
-  if (reviewData.averageSteps > 3) {
-    feedbackSection.innerHTML += `<p>Consider optimizing your workflow to reduce the average number of steps per task.</p>`;
-  } else {
-    feedbackSection.innerHTML += `<p>Well done on minimizing the effort required for tasks!</p>`;
-  }
-
-  if (reviewData.totalAmountSpent > 40000) {
-    feedbackSection.innerHTML += `<p>Manage your budget more effectively to ensure sustainability.</p>`;
-  } else {
-    feedbackSection.innerHTML += `<p>Great job managing your finances!</p>`;
-  }
-
-  modalBody.appendChild(feedbackSection);
-
-  // Show the modal
-  modal.style.display = 'block';
-
-  // Close Modal Event
-  closeModal.onclick = () => {
-    modal.style.display = 'none';
-  };
-
-  // Close modal when clicking outside the content
-  window.onclick = (event) => {
-    if (event.target == modal) {
-      modal.style.display = 'none';
+// Function to update stakeholder scores
+export function updateStakeholderScore(giver, points) {
+    console.log(`Updating score for ${giver} by ${points} points.`);
+    // Your score update logic here
+    // Example:
+    const stakeholderScoreElement = document.getElementById(`${giver.toLowerCase()}-score`);
+    if (stakeholderScoreElement) {
+        const currentScore = parseInt(stakeholderScoreElement.textContent, 10);
+        stakeholderScoreElement.textContent = currentScore + points;
     }
-  };
 }
 
-/**
- * Shows a toast notification with the given message.
- * @param {string} message 
- */
+// Function to update the total score
+export function updateTotalScore(points) {
+    console.log(`Updating total score by ${points} points.`);
+    // Your total score update logic here
+    // Example:
+    const totalScoreElement = document.getElementById('total-score');
+    if (totalScoreElement) {
+        const currentScore = parseInt(totalScoreElement.textContent, 10);
+        totalScoreElement.textContent = currentScore + points;
+    }
+}
+
+// Function to update the scores UI
+export function updateScoresUI({ totalScore, currentMoney, stakeholderScores }) {
+    console.log('Updating scores UI...');
+    // Your scores UI update logic here
+    // Example:
+    document.getElementById('total-score').textContent = totalScore;
+    document.getElementById('current-money').textContent = currentMoney;
+
+    for (const [stakeholder, score] of Object.entries(stakeholderScores)) {
+        const scoreElement = document.getElementById(`${stakeholder.toLowerCase()}-score`);
+        if (scoreElement) {
+            scoreElement.textContent = score;
+        }
+    }
+}
+
+// Function to update the budget bar
+export function updateBudgetBar(currentMoney) {
+    console.log(`Updating budget bar with ${currentMoney} kr.`);
+    // Your budget bar update logic here
+    // Example:
+    const budgetBar = document.getElementById('budget-bar');
+    if (budgetBar) {
+        const maxBudget = 100000; // Example maximum budget
+        const percentage = Math.min((currentMoney / maxBudget) * 100, 100);
+        budgetBar.style.width = `${percentage}%`;
+    }
+}
+
+// Function to update the budget breakdown
+export function updateBudgetBreakdown() {
+    console.log('Updating budget breakdown...');
+    // Your budget breakdown update logic here
+    // Example:
+    // List the last 10 expenses
+    const expenseList = document.getElementById('expense-list');
+    if (expenseList) {
+        expenseList.innerHTML = ''; // Clear existing expenses
+
+        // Example: Fetch last 10 expenses from storage or state
+        const lastExpenses = getLastTenExpenses(); // Implement this function
+
+        lastExpenses.forEach(expense => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${expense.description}: ${expense.amount} kr`;
+            expenseList.appendChild(listItem);
+        });
+    }
+}
+
+// Function to show a toast notification
 export function showToast(message) {
-  const toastContainer = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.classList.add('toast');
-  toast.innerText = message;
-  toastContainer.appendChild(toast);
+    console.log(`Showing toast: ${message}`);
+    // Your toast notification logic here
+    // Example:
+    const toastContainer = document.getElementById('toast-container');
+    if (toastContainer) {
+        const toast = document.createElement('div');
+        toast.classList.add('toast');
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
 
-  // Show the toast
-  setTimeout(() => {
-    toast.classList.add('show');
-  }, 100);
-
-  // Hide the toast after 3 seconds
-  setTimeout(() => {
-    toast.classList.remove('show');
-    // Remove the toast from DOM after transition
-    setTimeout(() => {
-      toastContainer.removeChild(toast);
-    }, 500);
-  }, 3000);
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
 }
 
-/**
- * Opens a modal with the given content.
- * @param {string} content 
- */
-export function openModal(content) {
-  const modal = document.getElementById('modal');
-  const modalBody = document.getElementById('modal-body');
-
-  // Set the content
-  modalBody.innerHTML = content;
-
-  // Show the modal
-  modal.style.display = 'block';
+// Function to check and unlock achievements
+export function checkAchievements() {
+    console.log('Checking achievements...');
+    // Your achievement logic here
+    // Example:
+    // if (totalScore >= 1000) {
+    //     unlockAchievement('Score 1000');
+    // }
 }
 
-/**
- * Closes the modal.
- */
-export function closeModal() {
-  const modal = document.getElementById('modal');
-  modal.style.display = 'none';
+// Function to check and complete missions
+export function checkMissions() {
+    console.log('Checking missions...');
+    // Your mission logic here
+    // Example:
+    // if (purchaseCount['servers'] >= 5) {
+    //     completeMission('Buy 5 Servers');
+    // }
 }
+
+// Function to perform Inspect and Adapt
+export function performInspectAndAdapt() {
+    console.log('Performing Inspect and Adapt...');
+    // Your Inspect and Adapt logic here
+    // Example:
+    // Analyze recent game performance and suggest improvements
+}
+
+// Example function to get last 10 expenses
+function getLastTenExpenses() {
+    // Implement logic to retrieve last 10 expenses
+    // Placeholder example:
+    return [
+        { description: 'Buy Server', amount: 10000 },
+        { description: 'Hire Employee', amount: 2500 },
+        // Add more expenses as needed
+    ];
+}
+
+// Export other UI functions as needed
