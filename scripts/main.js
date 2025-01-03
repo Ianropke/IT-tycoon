@@ -1,10 +1,7 @@
 // scripts/main.js
-
-// Import necessary functions from tasks.js and utils.js
 import { 
     initializeTasks, 
     commitTask, 
-    gatherTask, 
     finalizeTask, 
     hireEmployee, 
     purchaseResource, 
@@ -13,21 +10,40 @@ import {
     saveGame, 
     loadGame, 
     initializeTheme, 
-    changePage 
+    changePage,
+    listenToPhaserEvents
 } from './tasks.js';
 
 import { generateUniqueId } from './utils.js';
 
-// Wait until the DOM is fully loaded before attaching event listeners
+import { BootScene, MenuScene, GameScene } from './gameScenes.js';
+
+const config = {
+    type: Phaser.AUTO,
+    width: 900,
+    height: 900,
+    parent: 'game-area',
+    scene: [BootScene, MenuScene, GameScene],
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 0 },
+            debug: false
+        }
+    }
+};
+
+const phaserGame = new Phaser.Game(config);
+
+listenToPhaserEvents(phaserGame);
+
+window.addEventListener('resize', () => {
+    // Not required as Game Area is fixed
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize the game logic and UI
     initializeTasks();
     
-    // ============================
-    // Event Listeners for Buttons
-    // ============================
-    
-    // Commit Task Button
     const commitButton = document.getElementById('commit-button');
     if (commitButton) {
         commitButton.addEventListener('click', () => {
@@ -35,15 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Gather Progress Button
-    const gatherButton = document.getElementById('gather-button');
-    if (gatherButton) {
-        gatherButton.addEventListener('click', () => {
-            gatherTask();
-        });
-    }
-
-    // Finalize Task Button
     const finalizeButton = document.getElementById('finalize-button');
     if (finalizeButton) {
         finalizeButton.addEventListener('click', () => {
@@ -51,23 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Previous Page Button for Backlog Pagination
-    const prevPageButton = document.getElementById('prev-page');
-    if (prevPageButton) {
-        prevPageButton.addEventListener('click', () => {
-            changePage(-1);
-        });
-    }
-
-    // Next Page Button for Backlog Pagination
-    const nextPageButton = document.getElementById('next-page');
-    if (nextPageButton) {
-        nextPageButton.addEventListener('click', () => {
-            changePage(1);
-        });
-    }
-
-    // Hire Employee Button
     const hireEmployeeButton = document.getElementById('hire-employee');
     if (hireEmployeeButton) {
         hireEmployeeButton.addEventListener('click', () => {
@@ -84,7 +74,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Submit Feedback Button
+    const purchaseResourcesButton = document.getElementById('purchase-resources');
+    if (purchaseResourcesButton) {
+        purchaseResourcesButton.addEventListener('click', () => {
+            purchaseResource('servers', 1);
+        });
+    }
+
+    const upgradeServicesButton = document.getElementById('upgrade-services');
+    if (upgradeServicesButton) {
+        upgradeServicesButton.addEventListener('click', () => {
+            purchaseResource('softwareLicenses', 5);
+        });
+    }
+
+    const allocateBudgetButton = document.getElementById('allocate-budget');
+    if (allocateBudgetButton) {
+        allocateBudgetButton.addEventListener('click', () => {
+            purchaseResource('officeSpace', 1);
+        });
+    }
+
     const submitFeedbackButton = document.getElementById('submit-feedback');
     if (submitFeedbackButton) {
         submitFeedbackButton.addEventListener('click', () => {
@@ -92,7 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggle Theme Button
     const toggleThemeButton = document.getElementById('toggle-theme');
     if (toggleThemeButton) {
         toggleThemeButton.addEventListener('click', () => {
@@ -100,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Save Game Button
     const saveButton = document.getElementById('save-button');
     if (saveButton) {
         saveButton.addEventListener('click', () => {
@@ -108,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Load Game Button
     const loadButton = document.getElementById('load-button');
     if (loadButton) {
         loadButton.addEventListener('click', () => {
@@ -116,36 +123,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ============================
-    // Event Listeners for Purchase Buttons
-    // ============================
-
-    // Buy Server Button
-    const buyServerButton = document.getElementById('buy-server');
-    if (buyServerButton) {
-        buyServerButton.addEventListener('click', () => {
-            purchaseResource('servers', 1);
-        });
-    }
-
-    // Buy Software Licenses Button
-    const buySoftwareLicensesButton = document.getElementById('buy-softwareLicenses');
-    if (buySoftwareLicensesButton) {
-        buySoftwareLicensesButton.addEventListener('click', () => {
-            purchaseResource('softwareLicenses', 5);
-        });
-    }
-
-    // Buy Office Space Button
-    const buyOfficeSpaceButton = document.getElementById('buy-officeSpace');
-    if (buyOfficeSpaceButton) {
-        buyOfficeSpaceButton.addEventListener('click', () => {
-            purchaseResource('officeSpace', 1);
-        });
-    }
-
-    // ============================
-    // Initialize Theme
-    // ============================
     initializeTheme();
 });
