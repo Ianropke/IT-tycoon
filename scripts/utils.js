@@ -1,17 +1,32 @@
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+// js/utils.js
+
+/**
+ * Generates a random integer between min and max (inclusive).
+ * @param {number} min 
+ * @param {number} max 
+ * @returns {number}
+ */
+export function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function createRandomTask() {
-  const steps = ["hospital", "infrastructure", "cybersecurity", "informationSecurity"];
-  return {
-    id: Date.now(),
-    description: "Random Task",
-    steps: steps.slice(0, getRandomInt(1, steps.length)),
-    currentStep: 0,
-    risk: getRandomInt(1, 10),
-    giver: steps[getRandomInt(0, steps.length - 1)],
-    status: "New",
-    committed: false,
-  };
+/**
+ * Generates a unique identifier for tasks.
+ * @returns {string}
+ */
+export function generateUniqueId() {
+  return '_' + Math.random().toString(36).substr(2, 9);
+}
+
+/**
+ * Shuffles an array in place using the Fisher-Yates algorithm.
+ * @param {Array} array 
+ * @returns {Array}
+ */
+export function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = getRandomInt(0, i);
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
