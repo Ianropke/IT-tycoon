@@ -1,127 +1,94 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>IT Manager Tycoon</title>
-  <!-- Corrected CSS Path -->
   <link rel="stylesheet" href="css/style.css">
-  <!-- Include Phaser Library -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
-  <!-- Optional: Add Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body class="light-theme">
-  <div id="game-container">
-    <!-- Game Area -->
+  <!-- Scoreboard (Top Bar) -->
+  <div id="scoreboard">
+    <span id="score">Score: 0</span>
+    <span id="hospital-score">Hospital: 5</span>
+    <span id="infrastructure-score">Infra: 3</span>
+    <span id="infosec-score">InfoSec: 2</span>
+  </div>
+  
+  <!-- Main Container -->
+  <div id="main-container">
+    <!-- Game Area (Left Column) -->
     <div id="game-area">
-      <!-- Budget Bar -->
-      <div id="budget-bar-container">
-        <div id="budget-bar"></div>
-      </div>
-      
-      <!-- Backlog Tasks -->
-      <div id="backlog">
-        <h3>Backlog</h3>
-        <table id="backlog-tasks">
-          <thead>
-            <tr>
-              <th>Description</th>
-              <th>Steps</th>
-              <th>Risk</th>
-              <th>Giver</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Tasks will be dynamically inserted here -->
-          </tbody>
-        </table>
-        <div id="pagination">
-          <button id="prev-page">Previous</button>
-          <span>Page <span id="current-page">1</span></span>
-          <button id="next-page">Next</button>
-        </div>
-      </div>
-      
-      <!-- Active Task Panel -->
-      <div id="active-task">
-        <h3>Active Task</h3>
-        <p><strong>Description:</strong> <span id="active-description">None</span></p>
-        <p><strong>Steps:</strong> <span id="active-steps">0/0</span></p>
-        <p><strong>Priority:</strong> <span id="active-priority">Low</span></p>
-        <p><strong>Risk:</strong> <span id="active-risk">0</span></p>
-        <p><strong>Giver:</strong> <span id="active-giver">None</span></p>
-        <div id="active-controls">
-          <button id="gather-button" disabled>Gather</button>
-          <button id="finalize-button" disabled>Finalize</button>
-        </div>
-      </div>
-      
-      <!-- Budget Breakdown -->
-      <div id="budget-breakdown">
-        <h3>Budget Breakdown (Last 10 Tasks)</h3>
-        <ul id="expense-list">
-          <!-- Expenses will be dynamically inserted here -->
-        </ul>
-      </div>
-      
-      <!-- Leaderboard -->
-      <div id="leaderboard">
-        <h3>Leaderboard</h3>
-        <!-- Leaderboard entries will be dynamically inserted here -->
-      </div>
+      <!-- Phaser Game will be rendered here -->
     </div>
     
-    <!-- UI Panel -->
-    <div id="ui-panel">
-      <!-- Scoreboard -->
-      <div id="scoreboard">
-        <h2>Score: <span id="total-score">0</span></h2>
-        <h2>Budget: <span id="current-money">50000</span> kr</h2>
-        <div id="stakeholder-scores">
-          <p>Hospital: <span id="hospital-score">0</span></p>
-          <p>Infrastructure: <span id="infrastructure-score">0</span></p>
-          <p>Cybersecurity: <span id="cybersecurity-score">0</span></p>
-          <p>InfoSec: <span id="infosec-score">0</span></p>
+    <!-- Tasks and Additional Sections (Right Column) -->
+    <div id="tasks-section">
+      <h3>Tasks (Backlog)</h3>
+      <table id="tasks-table">
+        <thead>
+          <tr>
+            <th>Desc</th>
+            <th>Steps</th>
+            <th>Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Task 1</td>
+            <td>2/5</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>Task 2</td>
+            <td>1/3</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>Task 3</td>
+            <td>0/2</td>
+            <td>8</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Active Task Panel -->
+      <div id="active-task-panel">
+        <h4>Active Task:</h4>
+        <p>Step 1 of 3: Gather</p>
+        <p>Priority: High</p>
+        <p>Risk: 12</p>
+        <p>Giver: Hospital</p>
+        <div class="buttons">
+          <button id="commit-button">Commit</button>
+          <button id="finalize-button">Finalize</button>
         </div>
       </div>
       
-      <!-- Employee Management -->
-      <div id="employee-management">
-        <h3>Employees</h3>
-        <div id="employee-list">
-          <!-- Employees will be dynamically inserted here -->
+      <!-- Additional Sections -->
+      <div id="additional-sections">
+        <!-- Legal Zone Controls -->
+        <div class="section">
+          <h4>Legal Zone</h4>
+          <button id="manage-contracts">Manage Contracts</button>
+          <button id="check-compliance">Check Compliance</button>
         </div>
-        <button id="hire-employee">Hire Employee</button>
-      </div>
-      
-      <!-- Resource Management -->
-      <div id="resource-management">
-        <h3>Resources</h3>
-        <div id="resource-list">
-          <!-- Resources will be dynamically inserted here -->
+        
+        <!-- Vendor Zone Controls -->
+        <div class="section">
+          <h4>Vendor Zone</h4>
+          <button id="purchase-resources">Purchase Resources</button>
+          <button id="upgrade-services">Upgrade Services</button>
         </div>
-        <button id="buy-server">Buy Server</button>
-        <button id="buy-softwareLicenses">Buy Software Licenses</button>
-        <button id="buy-officeSpace">Buy Office Space</button>
-      </div>
-      
-      <!-- Feedback Form -->
-      <div id="feedback-form">
-        <h3>Provide Your Feedback</h3>
-        <textarea id="feedback-text" placeholder="Enter your feedback here..." rows="4" cols="50"></textarea>
-        <br>
-        <button id="submit-feedback">Submit Feedback</button>
-      </div>
-      
-      <!-- Theme Toggle -->
-      <div id="theme-toggle">
-        <button id="toggle-theme">Toggle Dark Mode</button>
-      </div>
-      
-      <!-- Save and Load Buttons -->
-      <div id="save-load">
-        <button id="save-button">Save Game</button>
-        <button id="load-button">Load Game</button>
+        
+        <!-- Budget Zone Controls -->
+        <div class="section">
+          <h4>Budget Zone</h4>
+          <button id="allocate-budget">Allocate Budget</button>
+          <button id="view-reports">View Reports</button>
+        </div>
       </div>
     </div>
   </div>
@@ -131,7 +98,6 @@
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
       <div id="modal-body">
-        <!-- Dynamic content will be inserted here -->
       </div>
     </div>
   </div>
