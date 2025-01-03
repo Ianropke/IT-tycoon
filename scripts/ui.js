@@ -1,7 +1,6 @@
 // scripts/ui.js
-import { completeStep, finalizeTask } from './tasks.js';
+import { completeStep, finalizeTask, selectTask } from './tasks.js';
 import { gameState } from './state.js';
-import { selectTask } from './tasks.js'; // Ensure selectTask is exported from tasks.js
 
 export function updateBacklogUI(tasks) {
     const tasksTableBody = document.querySelector('#tasks-table tbody');
