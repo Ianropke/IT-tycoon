@@ -112,8 +112,13 @@ body.dark-theme {
   color: #fff;
 }
 
-#finalize-button {
+#finalize-task-button {
   background-color: #007bff;
+  color: #fff;
+}
+
+#complete-step-button {
+  background-color: #ffc107;
   color: #fff;
 }
 
@@ -159,7 +164,7 @@ body.dark-theme {
 
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; 
+  margin: 10% auto; 
   padding: 20px;
   border: 1px solid #888;
   width: 80%; 
@@ -202,4 +207,24 @@ body.dark-theme {
   0% { opacity: 1; }
   80% { opacity: 1; }
   100% { opacity: 0; }
+}
+
+/* Input Styles in Modal */
+#manage-contracts-content input,
+#manage-contracts-content button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#manage-contracts-content button {
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+}
+
+#manage-contracts-content button:hover {
+    background-color: #218838;
 }
