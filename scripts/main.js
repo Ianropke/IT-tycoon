@@ -8,9 +8,7 @@ import {
     submitFeedback, 
     toggleTheme, 
     saveGame, 
-    loadGame, 
-    initializeTheme, 
-    changePage,
+    loadGame,
     listenToPhaserEvents
 } from './tasks.js';
 
@@ -74,6 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const manageContractsButton = document.getElementById('manage-contracts');
+    if (manageContractsButton) {
+        manageContractsButton.addEventListener('click', () => {
+            showToast('Manage Contracts clicked.');
+        });
+    }
+
+    const checkComplianceButton = document.getElementById('check-compliance');
+    if (checkComplianceButton) {
+        checkComplianceButton.addEventListener('click', () => {
+            showToast('Check Compliance clicked.');
+        });
+    }
+
     const purchaseResourcesButton = document.getElementById('purchase-resources');
     if (purchaseResourcesButton) {
         purchaseResourcesButton.addEventListener('click', () => {
@@ -92,6 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (allocateBudgetButton) {
         allocateBudgetButton.addEventListener('click', () => {
             purchaseResource('officeSpace', 1);
+        });
+    }
+
+    const viewReportsButton = document.getElementById('view-reports');
+    if (viewReportsButton) {
+        viewReportsButton.addEventListener('click', () => {
+            showToast('View Reports clicked.');
         });
     }
 
@@ -122,6 +141,4 @@ document.addEventListener('DOMContentLoaded', () => {
             loadGame();
         });
     }
-
-    initializeTheme();
 });
