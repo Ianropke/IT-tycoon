@@ -18,7 +18,7 @@ import {
 
 import { BootScene, MenuScene, GameScene } from './gameScenes.js';
 
-import { openTaskSelectionModal, closeModalFunction } from './ui.js'; // Import updated functions
+import { closeModalFunction } from './ui.js'; // Import updated functions
 
 // Phaser Game Configuration
 const config = {
