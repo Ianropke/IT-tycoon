@@ -1,115 +1,106 @@
-// ui.js
-
 class UIScene extends Phaser.Scene {
   constructor() {
     super({ key: 'UIScene' });
   }
 
   create() {
-    this.cameras.main.setViewport(0, 0, 1440, 900);
-    this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
+    this.createScoreboard();
+    this.createBacklog();
+    this.createActiveTaskSection();
 
-    // ---------- SCOREBOARD BAR ----------
-    this.scorebarBg = this.add.rectangle(0, 0, 1440, 50, 0xf4f4f4).setOrigin(0, 0);
-    this.scoreText = this.add.text(20, 15, 'Score: 0', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '20px',
-      color: '#007aff',
-    });
+    // Periodically refresh the UI
+    this.time.addEvent({ delay: 1000, callback: this.refreshUI, loop: true });
+  }
 
-    this.taskgiverScores = this.add.text(300, 15, 'Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '16px',
+  createScoreboard() {
+    // Scoreboard at the top of the screen
+    this.add.text(20, 10, 'Score:', { font: '24px Arial', color: '#007aff' });
+    this.scoreText = this.add.text(100, 10, '0', { font: '24px Arial', color: '#007aff' });
+
+    // Stakeholder satisfaction
+    this.stakeholderText = this.add.text(300, 10, '', {
+      font: '16px Arial',
       color: '#333333',
-    });
-
-    // ---------- BACKLOG SECTION ----------
-    this.backlogBg = this.add.rectangle(900, 50, 540, 450, 0xffffff).setOrigin(0, 0);
-    this.add.text(910, 60, 'Tasks (Backlog)', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '18px',
-      color: '#333333',
-    });
-
-    this.add.text(910, 90, 'Desc', { fontSize: '14px', color: '#666666' });
-    this.add.text(1060, 90, 'Steps', { fontSize: '14px', color: '#666666' });
-    this.add.text(1120, 90, 'Risk', { fontSize: '14px', color: '#666666' });
-    this.add.text(1180, 90, 'Giver', { fontSize: '14px', color: '#666666' });
-
-    this.backlogTaskRows = [];
-
-    // ---------- ACTIVE TASK SECTION ----------
-    this.activeBg = this.add.rectangle(900, 500, 540, 400, 0xf8f8f8).setOrigin(0, 0);
-    this.add.text(910, 510, 'Active Task', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '18px',
-      color: '#333333',
-    });
-
-    this.activeTaskDetails = [];
-    for (let i = 0; i < 7; i++) {
-      this.activeTaskDetails.push(this.add.text(910, 540 + i * 20, '', { fontSize: '14px', color: '#333333' }));
-    }
-
-    this.commitButton = this.add.text(910, 680, '[ Commit ]', {
-      fontSize: '16px',
-      backgroundColor: '#007aff',
-      color: '#fff',
-      padding: { x: 8, y: 4 },
-    })
-      .setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.handleCommit());
-
-    this.gatherButton = this.add.text(1010, 680, '[ Gather ]', {
-      fontSize: '16px',
-      backgroundColor: '#34c759',
-      color: '#fff',
-      padding: { x: 8, y: 4 },
-    })
-      .setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.handleGather());
-
-    this.finalizeButton = this.add.text(1110, 680, '[ Finalize ]', {
-      fontSize: '16px',
-      backgroundColor: '#ff9500',
-      color: '#fff',
-      padding: { x: 8, y: 4 },
-    })
-      .setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.handleFinalize());
-
-    this.activeTaskId = null;
-    this.documented = false;
-
-    this.time.addEvent({
-      delay: 1000,
-      callback: () => this.refreshUI(),
-      loop: true,
     });
   }
 
-  refreshUI() {
-    this.scoreText.setText(`Score: ${window.playerScore}`);
-    this.taskgiverScores.setText(
-      `Hospital: ${window.giverScoreboard.hospital} | Infrastructure: ${window.giverScoreboard.infrastructure} | InfoSec: ${window.giverScoreboard.informationSecurity} | CyberSec: ${window.giverScoreboard.cybersecurity}`
-    );
+  createBacklog() {
+    // Backlog title
+    this.add.text(910, 70, 'Tasks (Backlog)', { font: '18px Arial', color: '#333333' });
 
+    // Backlog column headers
+    this.add.text(910, 100, 'Desc', { font: '14px Arial', color: '#666666' });
+    this.add.text(1060, 100, 'Steps', { font: '14px Arial', color: '#666666' });
+    this.add.text(1120, 100, 'Risk', { font: '14px Arial', color: '#666666' });
+    this.add.text(1160, 100, 'Giver', { font: '14px Arial', color: '#666666' });
+
+    // Rows for tasks
+    this.backlogRows = [];
+  }
+
+  createActiveTaskSection() {
+    // Active task box
+    this.add.text(910, 480, 'Active Task', { font: '18px Arial', color: '#333333' });
+
+    this.activeTaskLines = [];
+    for (let i = 0; i < 7; i++) {
+      const line = this.add.text(910, 500 + i * 20, '', { font: '14px Arial', color: '#333333' });
+      this.activeTaskLines.push(line);
+    }
+
+    // Buttons for task management
+    this.commitButton = this.add
+      .text(910, 680, '[ Commit ]', {
+        font: '16px Arial',
+        backgroundColor: '#007aff',
+        color: '#fff',
+        padding: { x: 8, y: 4 },
+      })
+      .setInteractive()
+      .on('pointerdown', () => this.handleCommit());
+
+    this.gatherButton = this.add
+      .text(1010, 680, '[ Gather ]', {
+        font: '16px Arial',
+        backgroundColor: '#34c759',
+        color: '#fff',
+        padding: { x: 8, y: 4 },
+      })
+      .setInteractive()
+      .on('pointerdown', () => this.handleGather());
+
+    this.finalizeButton = this.add
+      .text(1110, 680, '[ Finalize ]', {
+        font: '16px Arial',
+        backgroundColor: '#ff9500',
+        color: '#fff',
+        padding: { x: 8, y: 4 },
+      })
+      .setInteractive()
+      .on('pointerdown', () => this.handleFinalize());
+
+    this.activeTaskId = null; // No active task initially
+    this.documented = false; // Documentation status
+  }
+
+  refreshUI() {
+    this.updateScoreboard();
     this.updateBacklog();
     this.updateActiveTask();
   }
 
-  updateBacklog() {
-    this.backlogTaskRows.forEach((row) => row.forEach((cell) => cell.destroy()));
-    this.backlogTaskRows = [];
+  updateScoreboard() {
+    // Update score and stakeholder satisfaction
+    this.scoreText.setText(`${window.playerScore}`);
+    this.stakeholderText.setText(
+      `Hospital: ${window.giverScoreboard.hospital} | Infrastructure: ${window.giverScoreboard.infrastructure} | InfoSec: ${window.giverScoreboard.informationSecurity} | CyberSec: ${window.giverScoreboard.cybersecurity} | Legal: ${window.giverScoreboard.legal}`
+    );
+  }
 
-    if (!window.canViewBacklog) {
-      const noTasks = this.add.text(910, 120, 'Stand on orange backlog to view tasks.', {
-        fontSize: '14px',
-        color: '#999999',
-      });
-      this.backlogTaskRows.push([noTasks]);
-      return;
-    }
+  updateBacklog() {
+    // Clear old rows
+    this.backlogRows.forEach((row) => row.forEach((col) => col.destroy()));
+    this.backlogRows = [];
 
     let y = 120;
     window.globalTasks.forEach((task) => {
@@ -118,59 +109,60 @@ class UIScene extends Phaser.Scene {
       const risk = `${task.risk}`;
       const giver = `${task.giver}`;
 
-      const descText = this.add.text(910, y, desc, { fontSize: '14px', color: '#333333' }).setInteractive();
-      const stepsText = this.add.text(1060, y, steps, { fontSize: '14px', color: '#333333' });
-      const riskText = this.add.text(1120, y, risk, { fontSize: '14px', color: '#333333' });
-      const giverText = this.add.text(1180, y, giver, { fontSize: '14px', color: '#333333' });
+      const descText = this.add
+        .text(910, y, desc, { font: '14px Arial', color: '#333333' })
+        .setInteractive()
+        .on('pointerdown', () => this.selectTask(task.id));
 
-      descText.on('pointerdown', () => this.selectTask(task.id));
+      const stepsText = this.add.text(1060, y, steps, { font: '14px Arial', color: '#333333' });
+      const riskText = this.add.text(1120, y, risk, { font: '14px Arial', color: '#333333' });
+      const giverText = this.add.text(1160, y, giver, { font: '14px Arial', color: '#333333' });
 
-      this.backlogTaskRows.push([descText, stepsText, riskText, giverText]);
+      this.backlogRows.push([descText, stepsText, riskText, giverText]);
       y += 30;
     });
   }
 
   updateActiveTask() {
-    const task = window.globalTasks.find((t) => t.id === this.activeTaskId);
+    const task = getTaskById(this.activeTaskId);
 
-    this.activeTaskDetails.forEach((line) => line.setText(''));
+    // Update active task details
+    this.activeTaskLines.forEach((line, i) => {
+      line.setText(task && task.steps[i] ? task.steps[i] : '');
+    });
 
-    if (task) {
-      const details = [
-        `Step ${task.currentStep + 1} of ${task.steps.length}: ${task.steps[task.currentStep]}`,
-        `Status: ${task.status}`,
-        `Priority: ${task.priority}`,
-        `Risk: ${task.risk}`,
-        task.isFeature ? 'Feature Task' : 'Maintenance Task',
-        `Giver: ${task.giver}`,
-      ];
-      details.forEach((detail, i) => this.activeTaskDetails[i].setText(detail));
-
-      this.commitButton.setVisible(!task.committed);
-      this.gatherButton.setVisible(task.steps[task.currentStep]?.includes('gather'));
-      this.finalizeButton.setVisible(task.status === 'Ready to finalize');
-    } else {
-      this.commitButton.setVisible(false);
-      this.gatherButton.setVisible(false);
-      this.finalizeButton.setVisible(false);
-    }
+    // Show buttons dynamically based on task status
+    this.commitButton.setVisible(task && !task.committed);
+    this.gatherButton.setVisible(task && task.steps[task.currentStep]?.includes('Gather'));
+    this.finalizeButton.setVisible(task && task.status === 'Ready to finalize' && this.documented);
   }
 
   selectTask(taskId) {
     this.activeTaskId = taskId;
+    this.documented = false; // Reset documentation status
     this.updateActiveTask();
   }
 
   handleCommit() {
-    if (this.activeTaskId) commitToTask(this.activeTaskId);
+    if (!this.activeTaskId) return;
+    commitToTask(this.activeTaskId);
+    this.updateActiveTask();
   }
 
   handleGather() {
-    console.log('Gather action performed.');
+    console.log('Gather step triggered.');
   }
 
   handleFinalize() {
-    if (this.activeTaskId) finalizeTask(this.activeTaskId);
+    if (!this.documented) {
+      console.log('Document the task first!');
+      return;
+    }
+
+    if (this.activeTaskId) {
+      finalizeTask(this.activeTaskId);
+      this.activeTaskId = null;
+      this.updateActiveTask();
+    }
   }
 }
-
