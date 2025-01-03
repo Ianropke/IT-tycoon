@@ -1,192 +1,164 @@
+// Updated UI Code (ui.js)
+
 class UIScene extends Phaser.Scene {
   constructor() {
     super({ key: 'UIScene' });
   }
 
   create() {
-    // Set up the viewport for the UI
-    this.cameras.main.setViewport(900, 0, 540, 900);
+    // 1. Layout Adjustments for Score and Task Giver Tally
+    this.cameras.main.setViewport(0, 0, 1440, 900);
     this.cameras.main.setBackgroundColor('rgba(0,0,0,0)');
 
-    // ---------- SCOREBOARD BAR (y=0..60, x=900..1440) ----------
-    this.scorebarBg = this.add.rectangle(0, 0, 540, 60, 0xf4f4f4).setOrigin(0, 0);
-
-    this.scoreTitle = this.add.text(20, 15, 'Score: 0', {
+    // Score and Task Giver Tally Bar
+    this.scorebarBg = this.add.rectangle(0, 0, 1440, 40, 0xf4f4f4).setOrigin(0, 0);
+    this.scoreTitle = this.add.text(20, 10, 'Score: 0 | Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
       fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '24px',
-      color: '#007aff',
+      fontSize: '18px',
+      color: '#007aff'
     });
 
-    this.giverScores = this.add.text(300, 15, 'Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
+    // Right UI Background for Backlog and Active Task Details
+    this.rightBg = this.add.rectangle(900, 40, 540, 860, 0xffffff).setOrigin(0, 0);
+
+    // Backlog Table Title and Headers
+    this.backlogTitle = this.add.text(910, 50, 'Tasks (Backlog)', {
       fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '16px',
-      color: '#333333',
+      color: '#333333'
     });
+    this.add.text(910, 80, 'Desc', { fontSize: '14px', color: '#666666' });
+    this.add.text(1080, 80, 'Steps', { fontSize: '14px', color: '#666666' });
+    this.add.text(1140, 80, 'Risk', { fontSize: '14px', color: '#666666' });
+    this.add.text(1200, 80, 'Giver', { fontSize: '14px', color: '#666666' });
 
-    // ---------- BACKLOG AREA (y=60..480, x=900..1440) ----------
-    this.backlogTitle = this.add.text(20, 70, 'Tasks (Backlog)', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '18px',
-      color: '#333333',
+    // Placeholder for Backlog Rows
+    this.taskRowTexts = [];
+
+    // Active Task Details Box
+    this.activeBg = this.add.rectangle(900, 480, 540, 380, 0xf0f0f2).setOrigin(0, 0);
+    this.activeTitle = this.add.text(910, 490, 'Active Task', {
+      fontFamily: 'Helvetica',
+      fontSize: '16px',
+      color: '#333333'
     });
-
-    this.add.text(20, 100, 'Desc', { fontSize: '14px', color: '#666666' });
-    this.add.text(260, 100, 'Steps', { fontSize: '14px', color: '#666666' });
-    this.add.text(320, 100, 'Risk', { fontSize: '14px', color: '#666666' });
-    this.add.text(380, 100, 'Giver', { fontSize: '14px', color: '#666666' });
-
-    this.taskRowTexts = []; // For dynamic backlog rows
-
-    // ---------- ACTIVE TASK AREA (y=480..900, x=900..1440) ----------
-    this.activeTaskBg = this.add.rectangle(0, 480, 540, 420, 0xf0f0f2).setOrigin(0, 0);
-
-    this.activeTaskTitle = this.add.text(20, 490, 'Active Task', {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '18px',
-      color: '#333333',
-    });
-
-    this.activeTaskLines = [];
-    for (let i = 0; i < 7; i++) {
-      const line = this.add.text(20, 520 + i * 20, '', {
-        fontFamily: 'Helvetica, Arial, sans-serif',
+    this.activeLines = [];
+    for (let i = 0; i < 6; i++) {
+      this.activeLines.push(this.add.text(910, 520 + i * 20, '', {
+        fontFamily: 'Helvetica',
         fontSize: '14px',
-        color: '#333333',
-      });
-      this.activeTaskLines.push(line);
+        color: '#333333'
+      }));
     }
 
-    // Buttons: Commit, Gather, Finalize
-    this.commitButton = this.createButton(20, 680, '[ Commit ]', '#007aff', () => this.handleCommit());
-    this.gatherButton = this.createButton(140, 680, '[ Gather ]', '#34c759', () => this.handleGather());
-    this.finalizeButton = this.createButton(260, 680, '[ Finalize ]', '#ff9500', () => this.handleFinalize());
+    // Task Action Buttons
+    this.commitBtn = this.createButton(910, 680, '[ Commit ]', '#007aff', this.handleCommit.bind(this));
+    this.gatherBtn = this.createButton(1010, 680, '[ Gather ]', '#34c759', this.handleGather.bind(this));
+    this.finalizeBtn = this.createButton(1110, 680, '[ Finalize ]', '#ff9500', this.handleFinalize.bind(this));
 
-    // Initialize active task state
+    // State Variables
     this.activeTaskId = null;
     this.documented = false;
 
-    // Periodic UI refresh
-    this.time.addEvent({
-      delay: 1000,
-      callback: () => this.refreshUI(),
-      loop: true,
-    });
+    // Refresh UI Every Second
+    this.time.addEvent({ delay: 1000, callback: this.refreshUI, callbackScope: this, loop: true });
   }
 
-  createButton(x, y, text, bgColor, onClick) {
-    const button = this.add.text(x, y, text, {
-      fontFamily: 'Helvetica, Arial, sans-serif',
-      fontSize: '16px',
+  createButton(x, y, text, bgColor, callback) {
+    return this.add.text(x, y, text, {
+      fontFamily: 'Helvetica',
+      fontSize: '14px',
       backgroundColor: bgColor,
-      color: '#ffffff',
-      padding: { x: 8, y: 4 },
-    });
-    button.setInteractive({ useHandCursor: true }).on('pointerdown', onClick);
-    button.setVisible(false); // Hidden by default
-    return button;
+      color: '#fff',
+      padding: { x: 8, y: 4 }
+    }).setInteractive({ useHandCursor: true }).on('pointerdown', callback);
   }
 
   refreshUI() {
-    // Update score and giver scores
-    this.scoreTitle.setText(`Score: ${window.playerScore}`);
-    this.giverScores.setText(
-      `Hospital: ${window.giverScoreboard.hospital} | Infrastructure: ${window.giverScoreboard.infrastructure} | InfoSec: ${window.giverScoreboard.informationSecurity} | CyberSec: ${window.giverScoreboard.cybersecurity}`
-    );
+    // Update Score and Task Giver Tally
+    const scoreText = `Score: ${window.playerScore} | Hospital: ${window.giverScoreboard.hospital} | Infrastructure: ${window.giverScoreboard.infrastructure} | InfoSec: ${window.giverScoreboard.informationSecurity} | CyberSec: ${window.giverScoreboard.cybersecurity}`;
+    this.scoreTitle.setText(scoreText);
 
-    // Clear and refresh task rows in the backlog
-    this.taskRowTexts.forEach(row => row.forEach(text => text.destroy()));
+    // Update Backlog Table
+    this.taskRowTexts.forEach(row => row.forEach(cell => cell.destroy()));
     this.taskRowTexts = [];
 
     if (!window.canViewBacklog) {
-      const noTasks = this.add.text(20, 120, 'Stand on orange backlog to see tasks.', {
+      this.taskRowTexts.push([this.add.text(910, 110, 'Stand on the backlog to view tasks.', {
         fontSize: '14px',
-        color: '#999999',
-        wordWrap: { width: 500 },
-      });
-      this.taskRowTexts.push([noTasks]);
+        color: '#999999'
+      })]);
       return;
     }
 
-    let y = 120;
-    for (let i = 0; i < window.globalTasks.length; i++) {
-      const task = window.globalTasks[i];
-      const row = [
-        this.createBacklogRowText(20, y, `[${task.status}] ${task.description} ${(task.isFeature ? '[Feature]' : '[Maint]')}`, () => this.selectActiveTask(task.id)),
-        this.createBacklogRowText(260, y, `${task.currentStep}/${task.steps.length}`),
-        this.createBacklogRowText(320, y, `${task.risk}`),
-        this.createBacklogRowText(380, y, `${task.giver}`),
-      ];
-      this.taskRowTexts.push(row);
+    let y = 110;
+    for (let task of window.globalTasks) {
+      if (y > 460) break;
+      const desc = `[${task.status}] ${task.description}`;
+      const steps = `${task.currentStep}/${task.steps.length}`;
+      const risk = `${task.risk}`;
+      const giver = `${task.giver}`;
+
+      const descText = this.add.text(910, y, desc, { fontSize: '14px', color: '#333333' })
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => this.selectActiveTask(task.id));
+      const stepsText = this.add.text(1080, y, steps, { fontSize: '14px', color: '#333333' });
+      const riskText = this.add.text(1140, y, risk, { fontSize: '14px', color: '#333333' });
+      const giverText = this.add.text(1200, y, giver, { fontSize: '14px', color: '#333333' });
+
+      this.taskRowTexts.push([descText, stepsText, riskText, giverText]);
       y += 30;
-      if (y > 450) {
-        const moreMsg = this.add.text(20, y, '...more tasks hidden...', { fontSize: '14px', color: '#888888' });
-        this.taskRowTexts.push([moreMsg]);
-        break;
-      }
     }
 
-    // Update active task box
-    this.updateActiveTaskBox();
-  }
-
-  createBacklogRowText(x, y, text, onClick = null) {
-    const rowText = this.add.text(x, y, text, { fontSize: '14px', color: '#333333' });
-    if (onClick) rowText.setInteractive({ useHandCursor: true }).on('pointerdown', onClick);
-    return rowText;
+    // Update Active Task Box
+    this.updateActiveBox();
   }
 
   selectActiveTask(taskId) {
     this.activeTaskId = taskId;
     this.documented = false;
-    this.updateActiveTaskBox();
+    this.updateActiveBox();
   }
 
-  updateActiveTaskBox() {
-    // Clear active task lines
-    this.activeTaskLines.forEach(line => line.setText(''));
-
-    // Hide buttons by default
-    this.commitButton.setVisible(false);
-    this.gatherButton.setVisible(false);
-    this.finalizeButton.setVisible(false);
+  updateActiveBox() {
+    for (let line of this.activeLines) line.setText('');
+    this.commitBtn.setVisible(false);
+    this.gatherBtn.setVisible(false);
+    this.finalizeBtn.setVisible(false);
 
     if (!this.activeTaskId) return;
     const task = getTaskById(this.activeTaskId);
     if (!task) return;
 
-    // Display active task details
-    const stepDescription = task.currentStep >= task.steps.length ? 'All steps done. Document before finalize.' : `Step ${task.currentStep + 1} of ${task.steps.length}: ${task.steps[task.currentStep]}`;
-    this.activeTaskLines[0].setText(stepDescription);
-    this.activeTaskLines[1].setText(`Status: ${task.status}`);
-    this.activeTaskLines[2].setText(`Priority: ${task.priority}`);
-    this.activeTaskLines[3].setText(`Risk: ${task.risk}`);
-    this.activeTaskLines[4].setText(task.isFeature ? 'Feature Task' : 'Maintenance Task');
-    this.activeTaskLines[5].setText(`Giver: ${task.giver}`);
+    this.activeLines[0].setText(`Step ${task.currentStep + 1} of ${task.steps.length}: ${task.steps[task.currentStep] || 'All steps done.'}`);
+    this.activeLines[1].setText(`Status: ${task.status}`);
+    this.activeLines[2].setText(`Priority: ${task.priority}`);
+    this.activeLines[3].setText(`Risk: ${task.risk}`);
+    this.activeLines[4].setText(task.isFeature ? 'Feature Task' : 'Maintenance Task');
+    this.activeLines[5].setText(`Giver: ${task.giver}`);
 
-    // Button visibility logic
-    if (!task.committed) this.commitButton.setVisible(true);
-    if (task.currentStep < task.steps.length && task.steps[task.currentStep].toLowerCase().includes('gather')) this.gatherButton.setVisible(true);
-    if (task.status === 'Ready to finalize') this.finalizeButton.setVisible(true);
+    if (!task.committed) this.commitBtn.setVisible(true);
+    if (task.currentStep < task.steps.length && task.steps[task.currentStep].includes('gather')) this.gatherBtn.setVisible(true);
+    if (task.status === 'Ready to finalize') this.finalizeBtn.setVisible(true);
   }
 
   handleCommit() {
-    if (!this.activeTaskId) return;
-    commitToTask(this.activeTaskId);
+    if (this.activeTaskId) commitToTask(this.activeTaskId);
   }
 
   handleGather() {
-    console.log('Gathering step in progress...');
+    console.log('Gather button clicked. Ensure appropriate logic.');
   }
 
   handleFinalize() {
-    if (!this.activeTaskId) return;
     if (!this.documented) {
-      console.log('You must document before finalizing!');
+      console.log('Please document the task first!');
       return;
     }
     const task = getTaskById(this.activeTaskId);
     if (task && task.status === 'Ready to finalize') {
       completeTask(task.id);
+      task.status = 'Done';
       this.activeTaskId = null;
     }
   }
