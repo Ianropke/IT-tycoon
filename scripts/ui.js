@@ -4,31 +4,35 @@ class UIScene extends Phaser.Scene {
     }
 
     create() {
+        // Score Text
         this.scoreText = this.add.text(20, 10, 'Score: 0', {
             fontSize: '24px',
             color: '#007aff'
         });
 
-        this.scoreboard = this.add.text(700, 10, 'Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
+        // Scoreboard (Task Completion)
+        this.scoreboard = this.add.text(700, 10, this.getScoreboardText(), {
             fontSize: '16px',
             color: '#333333'
         });
 
+        // Backlog UI
         this.backlogContainer = this.add.container(910, 60);
+
+        // Active Task UI
         this.activeTaskContainer = this.add.container(910, 480);
 
         this.updateUI();
     }
 
     updateUI() {
+        // Update Score Text
         this.scoreText.setText(`Score: ${window.playerScore}`);
-        this.scoreboard.setText(
-            `Hospital: ${window.giverScoreboard.hospital} | ` +
-            `Infrastructure: ${window.giverScoreboard.infrastructure} | ` +
-            `InfoSec: ${window.giverScoreboard.informationSecurity} | ` +
-            `CyberSec: ${window.giverScoreboard.cybersecurity}`
-        );
 
+        // Update Scoreboard
+        this.scoreboard.setText(this.getScoreboardText());
+
+        // Update Backlog
         this.backlogContainer.removeAll(true);
         if (!window.canViewBacklog) {
             this.backlogContainer.add(
@@ -63,6 +67,18 @@ class UIScene extends Phaser.Scene {
                 return;
             }
         });
+    }
+
+    getScoreboardText() {
+        // Ensure `giverScoreboard` is initialized
+        const scoreboard = window.giverScoreboard || {
+            hospital: 0,
+            infrastructure: 0,
+            informationSecurity: 0,
+            cybersecurity: 0
+        };
+
+        return `Hospital: ${scoreboard.hospital} | Infrastructure: ${scoreboard.infrastructure} | InfoSec: ${scoreboard.informationSecurity} | CyberSec: ${scoreboard.cybersecurity}`;
     }
 
     selectTask(taskId) {
