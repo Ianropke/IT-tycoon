@@ -197,9 +197,8 @@ export function checkCompliance() {
         // Redirect player to Legal Zone
         gameState.currentZone = 'Legal Zone';
         // Emit event to handle redirection in Phaser
-        const phaserGame = Phaser.Game.getGame('default');
-        if (phaserGame) {
-            phaserGame.events.emit('redirectToLegal');
+        if (window.phaserGame) {
+            window.phaserGame.events.emit('redirectToLegal');
         }
     } else {
         showToast('Compliance Check Passed! All systems are compliant.');
