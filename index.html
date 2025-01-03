@@ -1,76 +1,145 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>IT Manager Tycoon</title>
-  <!-- Phaser 3 CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
-  <!-- Link to CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Include Phaser Library -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
 </head>
-<body>
+<body class="light-theme">
   <div id="game-container">
-    <!-- Scoreboard -->
-    <div id="scoreboard">
-      <h2>Score: <span id="total-score">0</span></h2>
-      <div id="stakeholder-scores">
-        <p>Hospital: <span id="hospital-score">0</span></p>
-        <p>Infrastructure: <span id="infrastructure-score">0</span></p>
-        <p>Cybersecurity: <span id="cybersecurity-score">0</span></p>
-        <p>InfoSec: <span id="infosec-score">0</span></p>
+    <!-- Game Area -->
+    <div id="game-area">
+      <!-- Budget Bar -->
+      <div id="budget-bar-container">
+        <div id="budget-bar"></div>
+      </div>
+      
+      <!-- Backlog Tasks -->
+      <div id="backlog">
+        <h3>Backlog</h3>
+        <table id="backlog-tasks">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Steps</th>
+              <th>Risk</th>
+              <th>Giver</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Tasks will be dynamically inserted here -->
+          </tbody>
+        </table>
+        <div id="pagination">
+          <button id="prev-page">Previous</button>
+          <span>Page <span id="current-page">1</span></span>
+          <button id="next-page">Next</button>
+        </div>
+      </div>
+      
+      <!-- Active Task Panel -->
+      <div id="active-task">
+        <h3>Active Task</h3>
+        <p><strong>Description:</strong> <span id="active-description">None</span></p>
+        <p><strong>Steps:</strong> <span id="active-steps">0/0</span></p>
+        <p><strong>Priority:</strong> <span id="active-priority">Low</span></p>
+        <p><strong>Risk:</strong> <span id="active-risk">0</span></p>
+        <p><strong>Giver:</strong> <span id="active-giver">None</span></p>
+        <div id="active-controls">
+          <button id="gather-button" disabled>Gather</button>
+          <button id="finalize-button" disabled>Finalize</button>
+        </div>
+      </div>
+      
+      <!-- Budget Breakdown -->
+      <div id="budget-breakdown">
+        <h3>Budget Breakdown (Last 10 Tasks)</h3>
+        <ul id="expense-list">
+          <!-- Expenses will be dynamically inserted here -->
+        </ul>
+      </div>
+      
+      <!-- Leaderboard -->
+      <div id="leaderboard">
+        <h3>Leaderboard</h3>
+        <!-- Leaderboard entries will be dynamically inserted here -->
       </div>
     </div>
     
-    <!-- Main Content -->
-    <div id="main-content">
-      <!-- Game Area -->
-      <div id="game-area"></div>
+    <!-- UI Panel -->
+    <div id="ui-panel">
+      <!-- Scoreboard -->
+      <div id="scoreboard">
+        <h2>Score: <span id="total-score">0</span></h2>
+        <h2>Budget: <span id="current-money">50000</span> kr</h2>
+        <div id="stakeholder-scores">
+          <p>Hospital: <span id="hospital-score">0</span></p>
+          <p>Infrastructure: <span id="infrastructure-score">0</span></p>
+          <p>Cybersecurity: <span id="cybersecurity-score">0</span></p>
+          <p>InfoSec: <span id="infosec-score">0</span></p>
+        </div>
+      </div>
       
-      <!-- UI Panel -->
-      <div id="ui-panel">
-        <!-- Backlog Section -->
-        <div id="backlog">
-          <h3>Backlog</h3>
-          <table id="backlog-tasks">
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>Steps</th>
-                <th>Risk</th>
-                <th>Giver</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Tasks will be dynamically inserted here -->
-            </tbody>
-          </table>
-          <div id="pagination-controls">
-            <button id="prev-page" disabled>Previous</button>
-            <span id="current-page">1</span>
-            <button id="next-page" disabled>Next</button>
-          </div>
+      <!-- Employee Management -->
+      <div id="employee-management">
+        <h3>Employees</h3>
+        <div id="employee-list">
+          <!-- Employees will be dynamically inserted here -->
         </div>
-        
-        <!-- Active Task Section -->
-        <div id="active-task">
-          <h3>Active Task</h3>
-          <p>Description: <span id="active-description">None</span></p>
-          <p>Steps: <span id="active-steps">0/0</span></p>
-          <p>Priority: <span id="active-priority">Low</span></p>
-          <p>Risk: <span id="active-risk">0</span></p>
-          <p>Giver: <span id="active-giver">None</span></p>
-          <div id="task-actions">
-            <button id="commit-button">Commit</button>
-            <button id="gather-button" disabled>Gather</button>
-            <button id="finalize-button" disabled>Finalize</button>
-          </div>
+        <button id="hire-employee">Hire Employee</button>
+      </div>
+      
+      <!-- Resource Management -->
+      <div id="resource-management">
+        <h3>Resources</h3>
+        <div id="resource-list">
+          <!-- Resources will be dynamically inserted here -->
         </div>
+        <button onclick="purchaseResource('servers', 1)">Buy Server</button>
+        <button onclick="purchaseResource('softwareLicenses', 5)">Buy Software Licenses</button>
+        <button onclick="purchaseResource('officeSpace', 1)">Buy Office Space</button>
+      </div>
+      
+      <!-- Feedback Form -->
+      <div id="feedback-form">
+        <h3>Provide Your Feedback</h3>
+        <textarea id="feedback-text" placeholder="Enter your feedback here..." rows="4" cols="50"></textarea>
+        <br>
+        <button id="submit-feedback">Submit Feedback</button>
+      </div>
+      
+      <!-- Theme Toggle -->
+      <div id="theme-toggle">
+        <button id="toggle-theme">Toggle Dark Mode</button>
+      </div>
+      
+      <!-- Save and Load Buttons -->
+      <div id="save-load">
+        <button id="save-button">Save Game</button>
+        <button id="load-button">Load Game</button>
       </div>
     </div>
   </div>
   
-  <!-- JavaScript Files -->
-  <script type="module" src="js/main.js"></script>
+  <!-- Modal for Performance Review and Tutorials -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <div id="modal-body">
+        <!-- Dynamic content will be inserted here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast Notifications -->
+  <div id="toast-container"></div>
+  
+  <!-- Include JavaScript Files -->
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
