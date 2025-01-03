@@ -17,7 +17,7 @@ class UIScene extends Phaser.Scene {
       color: '#007aff',
     });
 
-    this.giverScores = this.add.text(200, 15, 'Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
+    this.giverScores = this.add.text(300, 15, 'Hospital: 0 | Infrastructure: 0 | InfoSec: 0 | CyberSec: 0', {
       fontFamily: 'Helvetica, Arial, sans-serif',
       fontSize: '16px',
       color: '#333333',
