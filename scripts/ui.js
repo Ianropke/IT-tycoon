@@ -134,4 +134,3 @@ class UIScene extends Phaser.Scene {
     finalizeTask(window.activeTaskId);
   }
 }
-
