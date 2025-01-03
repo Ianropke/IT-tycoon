@@ -44,20 +44,17 @@ class GameScene extends Phaser.Scene {
 
   update() {
     this.player.setVelocity(0);
+
     if (this.cursors.left.isDown) this.player.setVelocityX(-200);
     if (this.cursors.right.isDown) this.player.setVelocityX(200);
     if (this.cursors.up.isDown) this.player.setVelocityY(-200);
     if (this.cursors.down.isDown) this.player.setVelocityY(200);
+
+    // Reset backlog view when leaving the backlog zone
+    const backlogBounds = this.locations.backlog.getBounds();
+    const playerBounds = this.player.getBounds();
+    if (!Phaser.Geom.Intersects.RectangleToRectangle(playerBounds, backlogBounds)) {
+      window.canViewBacklog = false;
+    }
   }
 }
-
-const config = {
-  type: Phaser.AUTO,
-  width: 1440,
-  height: 900,
-  backgroundColor: "#eeeeee",
-  physics: { default: "arcade", arcade: { gravity: { y: 0 }, debug: false } },
-  scene: [GameScene, UIScene],
-};
-
-new Phaser.Game(config);
