@@ -6,88 +6,118 @@ class UIScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.text(10, 10,
-      'Arrow keys = move. Orange "Backlog" to see tasks (max 10).\nNo tasks from Vendor (giver) anymore. "Information Security" can give tasks.\nShort/medium/long tasks, optional "Legal" step for features.\nSome tasks might require InfoSec or hospital or infrastructure.\nFinalize steps, gather, then finalize the task.\nScore + scoreboard below.\n',
-      { fontSize: '15px', fill: '#000' }
-    );
+    // 1) Create top bar (score + scoreboard + minimal instructions)
+    this.createTopBar();
 
-    this.taskTexts = [];
-    this.activeTaskId = null;
+    // 2) Create left panel for tasks
+    this.createLeftPanel();
 
-    this.createActiveTaskPanel();
+    // 3) Create right panel for active task
+    this.createRightPanel();
 
     // Periodic refresh
     this.time.addEvent({
       delay: 1000,
-      callback: this.refreshTaskList,
+      callback: this.refreshAll,
       callbackScope: this,
       loop: true
     });
-
-    this.scoreText = this.add.text(10, 240, `Score: ${window.playerScore}`, {
-      fontSize: '16px', fill: '#f00'
-    });
-
-    // Show how many tasks completed per giver
-    this.giverScoreText = this.add.text(10, 270, '', {
-      fontSize: '14px', fill: '#000'
-    });
   }
 
-  createActiveTaskPanel() {
-    this.activePanel = this.add.container(1300, 100);
+  createTopBar() {
+    // Top bar background
+    const topBg = this.add.rectangle(0, 0, 1440, 100, 0x222222)
+      .setOrigin(0,0);
 
-    const bg = this.add.rectangle(0, 0, 290, 550, 0xcccccc);
-    bg.setOrigin(0, 0);
-
-    this.panelTitle = this.add.text(10, 10, 'Active Task:', { fontSize: '16px', fill: '#000' });
-    this.stepText = this.add.text(10, 40, '', { fontSize: '14px', fill: '#333', wordWrap: { width: 270 } });
-    this.statusText = this.add.text(10, 70, '', { fontSize: '14px', fill: '#333' });
-    this.priorityText = this.add.text(10, 90, '', { fontSize: '14px', fill: '#333' });
-    this.riskText = this.add.text(10, 110, '', { fontSize: '14px', fill: '#f00' });
-    this.taskTypeText = this.add.text(10, 130, '', { fontSize: '14px', fill: '#008000' });
-    this.giverText = this.add.text(10, 150, '', { fontSize: '14px', fill: '#008080' });
-
-    this.commitBtn = this.add.text(10, 180, '[ Commit to Task ]', {
-      fontSize: '14px', fill: '#fff', backgroundColor: '#0000ff', padding: { x:4, y:2 }
-    })
-    .setInteractive({ useHandCursor: true })
-    .on('pointerdown', () => this.commitActiveTask());
-
-    this.allStepsLabel = this.add.text(10, 210, '', { 
-      fontSize: '14px', fill: '#000', underline: true 
-    });
-    this.allStepsText = this.add.text(10, 230, '', {
-      fontSize: '14px', fill: '#333', wordWrap: { width: 270 }
+    // Score text
+    this.scoreText = this.add.text(20, 10, 'Score: 0', {
+      fontSize: '20px', fill: '#ff0000'
     });
 
-    this.gatherBtn = this.add.text(10, 430, '[ Gather Everyone ]', {
-      fontSize: '14px', fill: '#fff', backgroundColor: '#ff0000', padding: { x:4, y:2 }
+    // Giver scoreboard text
+    this.giverScoreText = this.add.text(20, 40, 'Completed tasks:\n - hospital: 0\n - infra: 0\n - infoSec: 0', {
+      fontSize: '14px', fill: '#ffffff'
+    });
+
+    // Minimal instructions
+    this.instructionsText = this.add.text(400, 10,
+      'Arrow keys to move. Stand on the orange backlog to see tasks. Max 10 tasks.\nSome tasks have "gather," others do not. Must document tasks before finalizing.\nInformation Security can also give tasks now. Score is at left.',
+      { fontSize: '14px', fill: '#ffffff' }
+    );
+  }
+
+  createLeftPanel() {
+    // Left panel for backlog
+    // x=0, y=100, width ~400, height ~800
+    const leftBg = this.add.rectangle(0, 100, 400, 800, 0x333333)
+      .setOrigin(0,0);
+
+    this.leftPanelTitle = this.add.text(10, 110, 'Tasks (Backlog)', {
+      fontSize: '18px', fill: '#ffffff'
+    });
+    // We'll show tasks starting at y=140 or so
+    this.taskTexts = [];
+  }
+
+  createRightPanel() {
+    // Right panel for active task
+    // x=400, y=100, width=1440-400=1040, height=800
+    const rightBg = this.add.rectangle(400, 100, 1040, 800, 0xcccccc)
+      .setOrigin(0,0);
+
+    this.activeTaskContainer = this.add.container(410, 110); 
+    // We'll place everything inside this container.
+
+    // Title
+    this.panelTitle = this.add.text(0, 0, 'Active Task:', { fontSize: '20px', fill: '#000' });
+    // Step info
+    this.stepText = this.add.text(0, 30, '', { fontSize: '16px', fill: '#333', wordWrap: { width: 1000 } });
+    this.statusText = this.add.text(0, 60, '', { fontSize: '16px', fill: '#333' });
+    this.priorityText = this.add.text(0, 90, '', { fontSize: '16px', fill: '#333' });
+    this.riskText = this.add.text(0, 120, '', { fontSize: '16px', fill: '#f00' });
+    this.taskTypeText = this.add.text(0, 150, '', { fontSize: '16px', fill: '#008000' });
+    this.giverText = this.add.text(0, 180, '', { fontSize: '16px', fill: '#008080' });
+
+    // Document + Commit + Gather + Finalize
+    this.documented = false; // track if user has documented this task
+    this.documentBtn = this.add.text(0, 220, '[ Document Task ]', {
+      fontSize: '16px', fill: '#fff', backgroundColor: '#4444ff', padding: { x:4, y:2 }
     }).setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.gatherEveryone());
+      .on('pointerdown', () => this.handleDocument());
 
-    const finalizeBtn = this.add.text(10, 460, '[ Finalize Task ]', {
-      fontSize: '14px', fill: '#000', backgroundColor: '#00ff00', padding: { x:4, y:2 }
+    this.commitBtn = this.add.text(160, 220, '[ Commit to Task ]', {
+      fontSize: '16px', fill: '#fff', backgroundColor: '#0000ff', padding: { x:4, y:2 }
     }).setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.finalizeActiveTask());
+      .on('pointerdown', () => this.commitActiveTask());
 
-    const lowBtn = this.add.text(100, 460, '[ Priority: Low ]', {
-      fontSize: '14px', fill: '#000', backgroundColor: '#ccc', padding: { x:4, y:2 }
-    }).setInteractive();
-    lowBtn.on('pointerdown', () => this.setActiveTaskPriority('Low'));
+    this.gatherBtn = this.add.text(0, 260, '[ Gather Everyone ]', {
+      fontSize: '16px', fill: '#fff', backgroundColor: '#ff0000', padding: { x:4, y:2 }
+    }).setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.handleGather());
 
-    const highBtn = this.add.text(200, 460, '[ Priority: High ]', {
-      fontSize: '14px', fill: '#000', backgroundColor: '#ccc', padding: { x:4, y:2 }
-    }).setInteractive();
-    highBtn.on('pointerdown', () => this.setActiveTaskPriority('High'));
+    this.finalizeBtn = this.add.text(200, 260, '[ Finalize Task ]', {
+      fontSize: '16px', fill: '#000', backgroundColor: '#00ff00', padding: { x:4, y:2 }
+    }).setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.handleFinalize());
 
-    this.activePanel.add([
-      bg, this.panelTitle, this.stepText, this.statusText, this.priorityText, this.riskText,
-      this.taskTypeText, this.giverText, this.commitBtn,
-      this.allStepsLabel, this.allStepsText,
-      this.gatherBtn, finalizeBtn, lowBtn, highBtn
+    // We'll show the "all steps" text if you're in backlog or if you want
+    this.allStepsLabel = this.add.text(0, 300, '', { fontSize: '16px', fill: '#000', underline: true });
+    this.allStepsText = this.add.text(0, 330, '', { fontSize: '14px', fill: '#333', wordWrap: { width: 1000 } });
+
+    this.activeTaskContainer.add([
+      this.panelTitle, this.stepText, this.statusText, this.priorityText,
+      this.riskText, this.taskTypeText, this.giverText,
+      this.documentBtn, this.commitBtn, this.gatherBtn, this.finalizeBtn,
+      this.allStepsLabel, this.allStepsText
     ]);
-    this.activePanel.setVisible(false);
+    this.activeTaskContainer.setVisible(false);
+  }
+
+  handleDocument() {
+    // Mark the current active task as documented
+    // We'll store a local flag "documented"
+    // If we want to store it in the task itself, we can do so too
+    this.documented = true;
   }
 
   commitActiveTask() {
@@ -96,129 +126,139 @@ class UIScene extends Phaser.Scene {
     this.updateActiveTaskPanel();
   }
 
-  gatherEveryone() {
+  handleGather() {
     if (!this.activeTaskId) return;
     const task = getTaskById(this.activeTaskId);
     if (!task) return;
-    const stepTxt = (task.steps[task.currentStep] || '').toLowerCase();
-    if (stepTxt.includes('gather')) {
+    const currentStepText = (task.steps[task.currentStep] || '').toLowerCase();
+    if (currentStepText.includes('gather')) {
       advanceTaskStep(task.id);
       this.updateActiveTaskPanel();
     }
   }
 
-  finalizeActiveTask() {
+  handleFinalize() {
+    // Only finalize if documented
     if (!this.activeTaskId) return;
+    if (!this.documented) {
+      // Possibly show a message telling the user "You must document first"
+      console.log('You must document this task first!');
+      return;
+    }
     const task = getTaskById(this.activeTaskId);
     if (!task) return;
 
     if (task.status === 'Ready to finalize') {
       completeTask(task.id);
       task.status = 'Done';
+      // Clear active ID
       this.activeTaskId = null;
-      this.activePanel.setVisible(false);
+      this.activeTaskContainer.setVisible(false);
+      this.documented = false; // reset for next task
     }
-  }
-
-  setActiveTaskPriority(newPriority) {
-    if (!this.activeTaskId) return;
-    updateTaskPriority(this.activeTaskId, newPriority);
-    this.updateActiveTaskPanel();
   }
 
   pickActiveTask(taskId) {
     this.activeTaskId = taskId;
-    this.activePanel.setVisible(true);
+    this.activeTaskContainer.setVisible(true);
+    this.documented = false; // reset doc for new active
     this.updateActiveTaskPanel();
   }
 
   updateActiveTaskPanel() {
     if (!this.activeTaskId) {
-      this.activePanel.setVisible(false);
+      this.activeTaskContainer.setVisible(false);
       return;
     }
     const task = getTaskById(this.activeTaskId);
     if (!task) {
-      this.activePanel.setVisible(false);
+      this.activeTaskContainer.setVisible(false);
       return;
     }
 
+    // Basic info
     const cur = task.currentStep;
     const total = task.steps.length;
-    const stepInfo = (cur >= total)
-      ? 'All steps done. Ready to finalize.'
-      : `Step ${cur + 1} of ${total}: ${task.steps[cur]}`;
+    let stepInfo = (cur >= total)
+      ? 'All steps done. Must document before finalizing.'
+      : `Step ${cur+1} of ${total}: ${task.steps[cur]}`;
 
     this.stepText.setText(stepInfo);
     this.statusText.setText(`Status: ${task.status}`);
     this.priorityText.setText(`Priority: ${task.priority}`);
-    this.riskText.setText(`Risk: ${task.risk} (L=${task.likelihood}, C=${task.consequence}${task.isFeature ? ', +5 for feature' : ''})`);
+    this.riskText.setText(`Risk: ${task.risk}`);
     this.taskTypeText.setText(task.isFeature ? 'Feature Task' : 'Maintenance Task');
     this.giverText.setText(`Giver: ${task.giver}`);
 
+    // Show commit button if not committed
     this.commitBtn.setVisible(!task.committed);
 
-    // If in backlog => show all steps
-    if (window.canViewBacklog) {
-      this.allStepsLabel.setText('All Steps:');
-      let block = '';
-      for (let i = 0; i < total; i++) {
-        block += `${i+1}) ${task.steps[i]}\n   - ${task.educationalExplanations[i]}\n\n`;
-      }
-      this.allStepsText.setText(block);
-    } else {
-      this.allStepsLabel.setText('');
-      this.allStepsText.setText('');
-    }
-
+    // Show gather button only if the current step is "gather"
     if (cur < total && task.steps[cur].toLowerCase().includes('gather')) {
       this.gatherBtn.setVisible(true);
     } else {
       this.gatherBtn.setVisible(false);
     }
+
+    // Show all steps if in backlog or always? 
+    // We'll show it always for clarity, or only if "window.canViewBacklog" if you prefer:
+    // if (window.canViewBacklog) ...
+    this.allStepsLabel.setText('All Steps:');
+    let lines = '';
+    for (let i=0; i<task.steps.length; i++) {
+      lines += `${i+1}) ${task.steps[i]}\n   - ${task.educationalExplanations[i]}\n\n`;
+    }
+    this.allStepsText.setText(lines);
   }
 
-  refreshTaskList() {
-    // Update main score
+  refreshAll() {
+    this.refreshTopBar();
+    this.refreshLeftPanel();
+    this.updateActiveTaskPanel();
+  }
+
+  refreshTopBar() {
+    // Score
     this.scoreText.setText(`Score: ${window.playerScore}`);
 
-    // Scoreboard per giver
-    let bStr =
-      `Completed Tasks:\n` +
-      `- Hospital: ${window.giverScoreboard.hospital}\n` +
-      `- Infrastructure: ${window.giverScoreboard.infrastructure}\n` +
-      `- InformationSec: ${window.giverScoreboard.informationSecurity}\n`;
-    this.giverScoreText.setText(bStr);
+    // Giver scoreboard
+    const boardStr = 
+      `Completed tasks:\n` +
+      ` - hospital: ${window.giverScoreboard.hospital}\n` +
+      ` - infrastructure: ${window.giverScoreboard.infrastructure}\n` +
+      ` - informationSecurity: ${window.giverScoreboard.informationSecurity}\n`;
+    this.giverScoreText.setText(boardStr);
+  }
 
+  refreshLeftPanel() {
+    // Clear old text objects
     this.taskTexts.forEach(t => t.destroy());
     this.taskTexts = [];
 
+    // If user not in backlog, display message
     if (!window.canViewBacklog) {
-      const msg = this.add.text(10, 310,
-        'Stand on the orange "Backlog" to see/pick tasks. (Max 10).',
-        { fontSize: '14px', fill: '#f00' }
-      );
+      const msg = this.add.text(10, 140, 'Stand on the orange backlog to see tasks', {
+        fontSize: '14px', fill: '#ffffff'
+      });
       this.taskTexts.push(msg);
-      this.updateActiveTaskPanel();
       return;
     }
 
-    let yPos = 310;
+    // Otherwise, list tasks
+    let y = 140;
     const lineHeight = 20;
-    window.globalTasks.forEach(task => {
-      let cStr = task.committed ? ' (Committed)' : '';
-      let stepStr = `${task.currentStep}/${task.steps.length}`;
-      let typeStr = task.isFeature ? '[Feature]' : '[Maint]';
-      const label = `[${task.status}] ${task.description} ${typeStr}${cStr} (Risk=${task.risk}, Steps=${stepStr}, Giver=${task.giver})`;
+    window.globalTasks.forEach((task) => {
+      const cStr = task.committed ? ' (Committed)' : '';
+      const stepStr = `${task.currentStep}/${task.steps.length}`;
+      const tType = task.isFeature ? '[Feature]' : '[Maint]';
+      const label = `[${task.status}] ${task.description} ${tType}${cStr} (Risk=${task.risk}, Steps=${stepStr}, Giver=${task.giver})`;
 
-      const txt = this.add.text(10, yPos, label, { fontSize: '14px', fill: '#000' });
+      const txt = this.add.text(10, y, label, { fontSize: '14px', fill: '#ffffff', wordWrap: { width: 380 }});
       txt.setInteractive({ useHandCursor: true });
       txt.on('pointerdown', () => this.pickActiveTask(task.id));
 
       this.taskTexts.push(txt);
-      yPos += lineHeight;
+      y += lineHeight;
     });
-
-    this.updateActiveTaskPanel();
   }
 }
