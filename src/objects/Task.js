@@ -1,5 +1,4 @@
 // src/objects/Task.js
-
 export default class Task {
   static nextId = 0;
 
