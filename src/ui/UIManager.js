@@ -1,4 +1,5 @@
 // src/ui/UIManager.js
+
 export default class UIManager {
   constructor(scene) {
     this.scene = scene;
@@ -46,10 +47,18 @@ export default class UIManager {
   }
 
   createBacklogPanel() {
-    this.backlogContainer = this.scene.add.container(50, 100);
-    const backlogBackground = this.scene.add.rectangle(0, 0, 300, 600, 0x333333).setOrigin(0);
+    const panelWidth = 300;
+    const panelHeight = 600;
+    const padding = 50;
+    
+    this.backlogContainer = this.scene.add.container(padding, padding + 100);
+    
+    // Background for backlog
+    const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
+    backlogBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.backlogContainer.add(backlogBackground);
 
+    // Title for backlog
     this.backlogText = this.scene.add.text(10, 10, 'Backlog', {
       font: '20px Arial',
       fill: '#ffffff'
@@ -63,20 +72,32 @@ export default class UIManager {
     // Enable scrolling with the mouse wheel
     this.backlogContainer.setInteractive();
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= 50 && pointer.x <= 350 && pointer.y >= 100 && pointer.y <= 700) {
+      if (pointer.x >= padding && pointer.x <= padding + panelWidth && pointer.y >= padding + 100 && pointer.y <= padding + 100 + panelHeight) {
         this.backlogScroll.y += deltaY * 0.5;
         // Clamp the scroll position
         const maxScroll = Math.max(0, this.backlogTasks.length * 30 - 550);
         this.backlogScroll.y = Phaser.Math.Clamp(this.backlogScroll.y, -maxScroll, 0);
       }
     });
+
+    // Ensure backlogContainer is above other elements
+    this.backlogContainer.setDepth(10);
   }
 
   createActiveTaskPanel() {
-    this.activeTaskContainer = this.scene.add.container(1000, 100);
-    const activeTaskBackground = this.scene.add.rectangle(0, 0, 250, 600, 0x333333).setOrigin(0);
+    const panelWidth = 250;
+    const panelHeight = 600;
+    const padding = 50;
+    const gameWidth = this.scene.sys.game.config.width;
+
+    this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, padding + 100);
+    
+    // Background for active tasks
+    const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
+    activeTaskBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.activeTaskContainer.add(activeTaskBackground);
 
+    // Title for active tasks
     this.activeTaskText = this.scene.add.text(10, 10, 'Active Tasks', {
       font: '20px Arial',
       fill: '#ffffff'
@@ -90,16 +111,20 @@ export default class UIManager {
     // Enable scrolling with the mouse wheel
     this.activeTaskContainer.setInteractive();
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= 1000 && pointer.x <= 1250 && pointer.y >= 100 && pointer.y <= 700) {
+      if (pointer.x >= gameWidth - panelWidth - padding && pointer.x <= gameWidth - padding && pointer.y >= padding + 100 && pointer.y <= padding + 100 + panelHeight) {
         this.activeTaskScroll.y += deltaY * 0.5;
         // Clamp the scroll position
         const maxScroll = Math.max(0, this.activeTasks.length * 50 - 550);
         this.activeTaskScroll.y = Phaser.Math.Clamp(this.activeTaskScroll.y, -maxScroll, 0);
       }
     });
+
+    // Ensure activeTaskContainer is above other elements
+    this.activeTaskContainer.setDepth(10);
   }
 
   addBacklogTask(task) {
+    console.log(`Adding task to backlog: ${task.description}`);
     this.backlogTasks.push(task);
     const taskText = this.scene.add.text(0, this.backlogTasks.length * 30, task.description, {
       font: '16px Arial',
@@ -111,11 +136,13 @@ export default class UIManager {
     // Add interactivity to commit task
     taskText.setInteractive();
     taskText.on('pointerdown', () => {
+      console.log(`Committing task: ${task.description}`);
       this.scene.commitTask(task);
     });
   }
 
   commitTask(task) {
+    console.log(`Committing task: ${task.description}`);
     this.scene.commitTask(task);
     this.backlogTasks = this.backlogTasks.filter(t => t !== task);
     this.refreshBacklog();
@@ -155,6 +182,7 @@ export default class UIManager {
       backgroundColor: '#000000'
     }).setInteractive();
     gatherButton.on('pointerdown', () => {
+      console.log(`Gathering resources for task: ${task.description}`);
       task.progress();
       this.refreshActiveTasks();
     });
@@ -167,6 +195,7 @@ export default class UIManager {
       backgroundColor: '#000000'
     }).setInteractive();
     finalizeButton.on('pointerdown', () => {
+      console.log(`Finalizing task: ${task.description}`);
       this.scene.finalizeTask(task);
     });
     this.activeTaskScroll.add(finalizeButton);
@@ -186,26 +215,31 @@ export default class UIManager {
       this.stakeholderScores[task.stakeholder.key].setText(`${task.stakeholder.name}: ${task.stakeholder.score}`);
       this.activeTasks = this.activeTasks.filter(t => t !== task);
       this.refreshActiveTasks();
+      console.log(`Task finalized: ${task.description}, Reward: ${task.reward}`);
     } else {
       // Handle incomplete task finalization
-      // Possibly emit an event or handle penalties elsewhere
+      console.log(`Attempted to finalize incomplete task: ${task.description}`);
+      // Optionally, emit an event or handle penalties elsewhere
     }
   }
 
   removeActiveTask(task) {
     this.activeTasks = this.activeTasks.filter(t => t !== task);
     this.refreshActiveTasks();
+    console.log(`Removed active task: ${task.description}`);
   }
 
   updateScore(scoreData) {
     this.score += scoreData.amount;
     this.scoreText.setText(`Score: ${this.score}`);
+    console.log(`Score updated: ${this.score}`);
   }
 
   updateStakeholderScores(stakeholderData) {
     const { key, name, score } = stakeholderData;
     if (this.stakeholderScores[key]) {
       this.stakeholderScores[key].setText(`${name}: ${score}`);
+      console.log(`Stakeholder score updated: ${name} - ${score}`);
     }
   }
 }
