@@ -7,10 +7,6 @@ export default class UIManager {
     this.stakeholderScores = {};
     this.backlogTasks = [];
     this.activeTasks = [];
-
-    // Define maximum visible tasks before scrolling is needed
-    this.maxVisibleBacklogTasks = 10;
-    this.maxVisibleActiveTasks = 10;
   }
 
   createUI() {
@@ -22,7 +18,7 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 1. Scoreboard and Stakeholder
+  // 1. Scoreboard and Stakeholders
   // ------------------------------
   createScoreboard() {
     this.scoreText = this.scene.add.text(20, 20, 'Score: 0', {
@@ -56,7 +52,8 @@ export default class UIManager {
     this.backlogContainer = this.scene.add.container(padding, 100).setDepth(10);
 
     // Panel background
-    const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0).setDepth(10);
+    const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0);
+    backlogBackground.setInteractive();
     this.backlogContainer.add(backlogBackground);
 
     // Panel title
@@ -70,7 +67,20 @@ export default class UIManager {
     this.backlogScroll = this.scene.add.container(10, 60).setDepth(11);
     this.backlogContainer.add(this.backlogScroll);
 
-    // Optional: Add a border or other decorative elements
+    // Enable scrolling with the mouse wheel
+    this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+      if (
+        pointer.x >= padding &&
+        pointer.x <= padding + panelWidth &&
+        pointer.y >= 100 &&
+        pointer.y <= 100 + panelHeight
+      ) {
+        this.backlogScroll.y += deltaY * 0.5;
+        // Clamp the scroll position
+        const maxScroll = Math.max(0, this.backlogTasks.length * 60 - (panelHeight - 80));
+        this.backlogScroll.y = Phaser.Math.Clamp(this.backlogScroll.y, -maxScroll, 0);
+      }
+    });
   }
 
   // ------------------------------
@@ -86,7 +96,8 @@ export default class UIManager {
     this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100).setDepth(10);
 
     // Panel background
-    const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0).setDepth(10);
+    const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0);
+    activeTaskBackground.setInteractive();
     this.activeTaskContainer.add(activeTaskBackground);
 
     // Panel title
@@ -99,6 +110,21 @@ export default class UIManager {
     // Scrollable area
     this.activeTaskScroll = this.scene.add.container(10, 60).setDepth(11);
     this.activeTaskContainer.add(this.activeTaskScroll);
+
+    // Enable scrolling with the mouse wheel
+    this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+      if (
+        pointer.x >= gameWidth - panelWidth - padding &&
+        pointer.x <= gameWidth - padding &&
+        pointer.y >= 100 &&
+        pointer.y <= 100 + panelHeight
+      ) {
+        this.activeTaskScroll.y += deltaY * 0.5;
+        // Clamp the scroll position
+        const maxScroll = Math.max(0, this.activeTasks.length * 100 - (panelHeight - 80));
+        this.activeTaskScroll.y = Phaser.Math.Clamp(this.activeTaskScroll.y, -maxScroll, 0);
+      }
+    });
   }
 
   // ------------------------------
@@ -112,10 +138,43 @@ export default class UIManager {
   renderBacklog() {
     this.backlogScroll.removeAll(true);
     this.backlogTasks.forEach((task, index) => {
-      const taskItem = this.createTaskItem(task, 'backlog');
+      const taskItem = this.createBacklogTaskItem(task);
       taskItem.y = index * 60;
       this.backlogScroll.add(taskItem);
     });
+  }
+
+  createBacklogTaskItem(task) {
+    const container = this.scene.add.container(0, 0).setDepth(11);
+
+    // Background for task item
+    const bg = this.scene.add.rectangle(0, 0, 280, 50, 0x34495e).setOrigin(0);
+    bg.setInteractive();
+    container.add(bg);
+
+    // Task Description
+    const description = this.scene.add.text(10, -10, task.description, {
+      font: '16px Arial',
+      fill: '#ecf0f1',
+      wordWrap: { width: 260 }
+    }).setOrigin(0).setDepth(12);
+    container.add(description);
+
+    // Commit Button
+    const commitButton = this.createButton(240, 0, 'Commit', '#2980b9', () => {
+      this.handleCommitTask(task);
+    });
+    container.add(commitButton);
+
+    // Hover Effects
+    bg.on('pointerover', () => {
+      bg.setFillStyle(0x1abc9c);
+    });
+    bg.on('pointerout', () => {
+      bg.setFillStyle(0x34495e);
+    });
+
+    return container;
   }
 
   // ------------------------------
@@ -129,69 +188,67 @@ export default class UIManager {
   renderActiveTasks() {
     this.activeTaskScroll.removeAll(true);
     this.activeTasks.forEach((task, index) => {
-      const taskItem = this.createTaskItem(task, 'active');
+      const taskItem = this.createActiveTaskItem(task);
       taskItem.y = index * 100;
       this.activeTaskScroll.add(taskItem);
     });
   }
 
-  // ------------------------------
-  // 6. Creating Task Items
-  // ------------------------------
-  createTaskItem(task, type) {
+  createActiveTaskItem(task) {
     const container = this.scene.add.container(0, 0).setDepth(11);
 
     // Background for task item
-    const bg = this.scene.add.rectangle(0, 0, 280, 50, 0x34495e).setOrigin(0).setInteractive();
+    const bg = this.scene.add.rectangle(0, 0, 280, 90, 0x34495e).setOrigin(0);
+    bg.setInteractive();
     container.add(bg);
 
     // Task Description
-    const description = this.scene.add.text(10, 10, task.description, {
+    const description = this.scene.add.text(10, -25, task.description, {
       font: '16px Arial',
       fill: '#ecf0f1',
       wordWrap: { width: 260 }
     }).setOrigin(0).setDepth(12);
     container.add(description);
 
-    if (type === 'active') {
-      // Steps Remaining
-      const stepsText = this.scene.add.text(10, 30, `Steps: ${task.steps}`, {
-        font: '14px Arial',
-        fill: '#bdc3c7'
-      }).setOrigin(0).setDepth(12);
-      container.add(stepsText);
+    // Steps Remaining
+    const stepsText = this.scene.add.text(10, 0, `Steps: ${task.steps}`, {
+      font: '14px Arial',
+      fill: '#bdc3c7'
+    }).setOrigin(0).setDepth(12);
+    container.add(stepsText);
 
-      // Risk Level
-      const riskText = this.scene.add.text(100, 30, `Risk: ${task.riskLevel}`, {
-        font: '14px Arial',
-        fill: '#bdc3c7'
-      }).setOrigin(0).setDepth(12);
-      container.add(riskText);
+    // Risk Level
+    const riskText = this.scene.add.text(150, 0, `Risk: ${task.riskLevel}`, {
+      font: '14px Arial',
+      fill: '#bdc3c7'
+    }).setOrigin(0).setDepth(12);
+    container.add(riskText);
 
-      // Action Buttons
-      const gatherButton = this.createButton(180, 30, 'Gather', '#27ae60', () => {
-        this.handleGather(task);
-      });
-      container.add(gatherButton);
+    // Gather Button
+    const gatherButton = this.createButton(240, -10, 'Gather', '#27ae60', () => {
+      this.handleGather(task);
+    });
+    container.add(gatherButton);
 
-      const finalizeButton = this.createButton(240, 30, 'Finalize', '#c0392b', () => {
-        this.handleFinalize(task);
-      });
-      container.add(finalizeButton);
-    }
+    // Finalize Button
+    const finalizeButton = this.createButton(240, 20, 'Finalize', '#c0392b', () => {
+      this.handleFinalize(task);
+    });
+    container.add(finalizeButton);
 
-    // Toggle details on click
-    bg.on('pointerdown', () => {
-      if (type === 'backlog') {
-        this.handleCommitTask(task);
-      }
+    // Hover Effects
+    bg.on('pointerover', () => {
+      bg.setFillStyle(0x1abc9c);
+    });
+    bg.on('pointerout', () => {
+      bg.setFillStyle(0x34495e);
     });
 
     return container;
   }
 
   // ------------------------------
-  // 7. Creating Buttons
+  // 6. Creating Buttons
   // ------------------------------
   createButton(x, y, text, color, callback) {
     const button = this.scene.add.text(x, y, text, {
@@ -200,7 +257,10 @@ export default class UIManager {
       backgroundColor: color,
       padding: { x: 5, y: 5 },
       align: 'center'
-    }).setOrigin(0.5).setInteractive();
+    })
+      .setOrigin(0.5)
+      .setInteractive()
+      .setDepth(12);
 
     button.on('pointerdown', () => {
       callback();
@@ -218,22 +278,22 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 8. Handling Task Commit
+  // 7. Handling Task Commit
   // ------------------------------
   handleCommitTask(task) {
     // Move task from backlog to active tasks
     this.backlogTasks = this.backlogTasks.filter(t => t !== task);
+    this.scene.commitTask(task); // Update task status
     this.addActiveTask(task);
-    this.scene.commitTask(task); // Assuming this updates task status
     this.renderBacklog();
   }
 
   // ------------------------------
-  // 9. Handling Gather Action
+  // 8. Handling Gather Action
   // ------------------------------
   handleGather(task) {
     if (task.steps > 0) {
-      task.steps -= 1;
+      task.progress();
       console.log(`Gathering resources for task: ${task.description}, Steps left: ${task.steps}`);
       if (task.steps === 0) {
         this.finalizeTask(task);
@@ -244,10 +304,10 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 10. Handling Finalize Action
+  // 9. Handling Finalize Action
   // ------------------------------
   handleFinalize(task) {
-    if (task.steps === 0) {
+    if (task.isCompleted()) {
       this.finalizeTask(task);
     } else {
       console.log(`Cannot finalize task: ${task.description}. Steps remaining.`);
@@ -256,7 +316,7 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 11. Finalizing Task
+  // 10. Finalizing Task
   // ------------------------------
   finalizeTask(task) {
     this.score += task.reward;
@@ -273,7 +333,7 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 12. Updating Stakeholder Scores
+  // 11. Updating Stakeholder Scores
   // ------------------------------
   updateStakeholderScores(stakeholderData) {
     const { key, name, score } = stakeholderData;
@@ -284,7 +344,7 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 13. Updating Score
+  // 12. Updating Score
   // ------------------------------
   updateScore(scoreData) {
     this.score += scoreData.amount;
@@ -292,4 +352,3 @@ export default class UIManager {
     console.log(`Score updated: ${this.score}`);
   }
 }
-
