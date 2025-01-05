@@ -1,108 +1,26 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>IT Manager Tycoon</title>
-  <link rel="stylesheet" href="css/style.css">
-  <!-- Include Phaser via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>IT Tycoon Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #242424;
+    }
+    #game-container {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
 </head>
-<body class="light-theme">
-  <!-- Scoreboard (Top Bar) -->
-  <div id="scoreboard">
-    <span id="score">Score: 0</span>
-    <span id="hospital-score">Hospital: 0</span>
-    <span id="infrastructure-score">Infra: 0</span>
-    <span id="infosec-score">InfoSec: 0</span>
-    <span id="money">Money: $50000</span>
-  </div>
-  
-  <!-- Main Container -->
-  <div id="main-container">
-    <!-- Game Area (Left Column) -->
-    <div id="game-area">
-      <!-- Phaser Game will be rendered here -->
-    </div>
-    
-    <!-- Tasks and Additional Sections (Right Column) -->
-    <div id="tasks-section">
-      <h3>Tasks (Backlog)</h3>
-      <table id="tasks-table">
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Steps</th>
-            <th>Risk</th>
-            <th>Price</th>
-            <th>View</th>
-            <th>Commit</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-      
-      <!-- Active Task Panel -->
-      <div id="active-task-panel">
-        <h4>Active Task:</h4>
-        <p>No active task.</p>
-        <div class="buttons">
-          <button id="commit-button" disabled>Commit Task</button>
-        </div>
-      </div>
-      
-      <!-- Additional Sections -->
-      <div id="additional-sections">
-        <!-- Legal Zone Controls -->
-        <div class="section">
-          <h4>Legal Zone</h4>
-          <button id="manage-contracts">Manage Contracts</button>
-          <button id="check-compliance">Check Compliance</button>
-        </div>
-        
-        <!-- Vendor Zone Controls -->
-        <div class="section">
-          <h4>Vendor Zone</h4>
-          <button id="purchase-resources">Purchase Resources</button>
-          <button id="upgrade-services">Upgrade Services</button>
-        </div>
-        
-        <!-- Budget Zone Controls -->
-        <div class="section">
-          <h4>Budget Zone</h4>
-          <button id="allocate-budget">Allocate Budget</button>
-          <button id="view-reports">View Reports</button>
-        </div>
-        
-        <!-- Additional Management Controls -->
-        <div class="section">
-          <h4>Management</h4>
-          <button id="hire-employee">Hire Employee</button>
-          <button id="submit-feedback">Submit Feedback</button>
-          <button id="toggle-theme">Toggle Theme</button>
-          <button id="save-button">Save Game</button>
-          <button id="load-button">Load Game</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Modal for Task Details and Contracts -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span id="close-modal" class="close">&times;</span>
-      <div id="modal-body">
-        <!-- Dynamic content will be injected here -->
-      </div>
-    </div>
-  </div>
-  
-  <!-- Toast Notifications -->
-  <div id="toast-container"></div>
-  
-  <!-- Include JavaScript Files as Modules -->
-  <script src="scripts/main.js" type="module"></script>
+<body>
+  <div id="game-container"></div>
+  <!-- Include Phaser via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+  <!-- Include main.js as a module -->
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>
