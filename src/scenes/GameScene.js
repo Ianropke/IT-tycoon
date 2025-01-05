@@ -29,6 +29,10 @@ export default class GameScene extends Phaser.Scene {
     // Define zones with Phaser graphics
     this.createZones();
 
+    // Initialize UIManager
+    this.uiManager = new UIManager(this);
+    this.uiManager.createUI();
+
     // Task system
     this.backlog = [];
     this.activeTasks = [];
@@ -38,10 +42,6 @@ export default class GameScene extends Phaser.Scene {
 
     // Input handling
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    // Initialize UIManager
-    this.uiManager = new UIManager(this);
-    this.uiManager.createUI();
 
     // Event listeners
     this.events.on('completed', this.handleTaskCompletion, this);
@@ -194,4 +194,3 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 }
-
