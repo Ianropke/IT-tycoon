@@ -1,4 +1,5 @@
 // src/objects/Stakeholder.js
+
 export default class Stakeholder {
   constructor(scene, name, initialScore) {
     this.scene = scene;
