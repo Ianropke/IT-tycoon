@@ -23,7 +23,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Initialize player at the center of the screen
     this.player = new Player(this, this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'player');
-    this.player.sprite.setDepth(15); // Higher depth than zones and UI
+    this.player.sprite.setDepth(15); // Ensure player is above zones and UI
 
     // Define zones with Phaser graphics
     this.createZones();
