@@ -3,7 +3,7 @@
 export default class Stakeholder {
   constructor(scene, name, initialScore) {
     this.scene = scene;
-    this.key = name.toLowerCase();
+    this.key = name.toLowerCase().replace(' ', ''); // e.g., "Information Security" -> "informationsecurity"
     this.name = name;
     this.score = initialScore;
   }
