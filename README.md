@@ -1,17 +1,21 @@
-# IT Governance Tycoon
+# IT Tycoon Game
 
-A web-based top-down IT management game built with **Phaser 3**.  
-Manage **hospital IT systems**, **vendor relationships**, and **governance tasks** without doing any actual coding or development yourself.
+A web-based simulation game where you manage an IT company, navigate tasks across different stakeholders, and build a high score by satisfying demands efficiently and managing resources effectively.
 
 ## Features
-- **Top-down** movement in a simple 2D office environment
-- **Task system** for escalated incidents, vendor proposals, and hospital requests
-- **Basic UI** scene that displays tasks, which you can mark as **Done**
-- **Vendor logic** with placeholder SLA checks
+
+- **Player Movement:** Navigate the player sprite using arrow keys across different task zones: Hospital, Infrastructure, Cybersecurity, and Backlog.
+- **Task System:** Dynamically generated tasks categorized by stakeholders, each with descriptions, steps, risk levels, and priorities.
+- **Stakeholder Scoring:** Each stakeholder has a score that increases when tasks are completed.
+- **Backlog and Active Task UI:** View available tasks in the backlog with scrolling, and manage active tasks with detailed information.
+- **Dynamic Stakeholder Demands:** Stakeholders dynamically compete for attention, requiring strategic prioritization.
+- **Cascading Consequences:** Timely completion of tasks rewards the player, while delays lead to penalties affecting scores and resources.
+- **Minimalist UI:** Clean and intuitive design with a top-aligned scoreboard and color-coded task zones.
+- **Real-Time Updates:** Dynamic updates of scores, task statuses, and UI elements based on player actions.
 
 ## How to Run
-1. **Clone** or **download** this repository.
-2. If you're using **GitHub Pages**, just ensure `index.html` is in the root (like it is now), then enable GitHub Pages in the repository settings.
-3. **Open** `index.html` in your browser (or use a local web server) to start playing.
 
-## File Structure
+1. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/yourusername/it-tycoon-game.git
