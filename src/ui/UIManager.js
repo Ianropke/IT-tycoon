@@ -51,8 +51,9 @@ export default class UIManager {
     const panelHeight = this.scene.sys.game.config.height - 200;
     const padding = 50;
 
+    // Position backlog panel on the left
     this.backlogContainer = this.scene.add.container(padding, 100);
-    this.backlogContainer.setDepth(10); // Above zones
+    this.backlogContainer.setDepth(10); // Above game zones
 
     // Background for backlog
     const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
@@ -73,7 +74,7 @@ export default class UIManager {
     // Enable scrolling with the mouse wheel
     this.backlogContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= padding && pointer.x <= padding + panelWidth && pointer.y >= 100 && pointer.y <= 700) {
+      if (pointer.x >= padding && pointer.x <= padding + panelWidth && pointer.y >= 100 && pointer.y <= this.scene.sys.game.config.height - 100) {
         this.backlogScroll.y += deltaY * 0.5;
         // Clamp the scroll position
         const maxScroll = Math.max(0, this.backlogTasks.length * 30 - (panelHeight - 50));
@@ -83,13 +84,14 @@ export default class UIManager {
   }
 
   createActiveTaskPanel() {
-    const panelWidth = 250;
+    const panelWidth = 300;
     const panelHeight = this.scene.sys.game.config.height - 200;
     const padding = 50;
     const gameWidth = this.scene.sys.game.config.width;
 
+    // Position active task panel on the right
     this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100);
-    this.activeTaskContainer.setDepth(10); // Above zones
+    this.activeTaskContainer.setDepth(10); // Above game zones
 
     // Background for active tasks
     const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
@@ -110,10 +112,10 @@ export default class UIManager {
     // Enable scrolling with the mouse wheel
     this.activeTaskContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= (gameWidth - panelWidth - padding) && pointer.x <= (gameWidth - padding) && pointer.y >= 100 && pointer.y <= 700) {
+      if (pointer.x >= (gameWidth - panelWidth - padding) && pointer.x <= (gameWidth - padding) && pointer.y >= 100 && pointer.y <= this.scene.sys.game.config.height - 100) {
         this.activeTaskScroll.y += deltaY * 0.5;
         // Clamp the scroll position
-        const maxScroll = Math.max(0, this.activeTasks.length * 50 - (panelHeight - 50));
+        const maxScroll = Math.max(0, this.activeTasks.length * 70 - (panelHeight - 50));
         this.activeTaskScroll.y = Phaser.Math.Clamp(this.activeTaskScroll.y, -maxScroll, 0);
       }
     });
@@ -165,8 +167,15 @@ export default class UIManager {
   }
 
   addActiveTask(task) {
-    const yPosition = this.activeTasks.length * 50;
+    if (this.activeTasks.length > 5) { // Limit to 5 active tasks
+      console.log('Maximum active tasks reached.');
+      return;
+    }
+
+    const yPosition = this.activeTasks.length * 70; // Increased spacing for better readability
     const taskInfo = `• ${task.description}\nSteps: ${task.steps}\nRisk: ${task.riskLevel}`;
+    
+    // Task Text
     const taskText = this.scene.add.text(0, yPosition, taskInfo, {
       font: '16px Arial',
       fill: '#ffffff',
@@ -174,13 +183,15 @@ export default class UIManager {
     }).setDepth(15);
     this.activeTaskScroll.add(taskText);
 
-    // Add Gather button
-    const gatherButton = this.scene.add.text(150, yPosition, 'Gather', {
+    // Gather Button
+    const gatherButton = this.scene.add.text(240, yPosition, 'Gather', {
       font: '14px Arial',
       fill: '#00ff00',
       backgroundColor: '#000000',
       padding: { x: 5, y: 5 }
-    }).setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains).setDepth(15);
+    })
+    .setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains)
+    .setDepth(15);
     gatherButton.on('pointerdown', () => {
       console.log(`Gathering resources for task: ${task.description}`);
       task.progress();
@@ -188,13 +199,15 @@ export default class UIManager {
     });
     this.activeTaskScroll.add(gatherButton);
 
-    // Add Finalize button
-    const finalizeButton = this.scene.add.text(220, yPosition, 'Finalize', {
+    // Finalize Button
+    const finalizeButton = this.scene.add.text(330, yPosition, 'Finalize', {
       font: '14px Arial',
       fill: '#ff0000',
       backgroundColor: '#000000',
       padding: { x: 5, y: 5 }
-    }).setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains).setDepth(15);
+    })
+    .setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains)
+    .setDepth(15);
     finalizeButton.on('pointerdown', () => {
       console.log(`Finalizing task: ${task.description}`);
       this.scene.finalizeTask(task);
@@ -244,3 +257,4 @@ export default class UIManager {
     }
   }
 }
+
