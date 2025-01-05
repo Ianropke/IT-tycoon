@@ -11,16 +11,29 @@ export default class UIScene extends Phaser.Scene {
     this.uiManager.createUI();
   }
 
-  updateScore(scoreData) {
-    this.uiManager.updateScore(scoreData);
+  // Proxy methods to UIManager
+  addBacklogTask(task) {
+    this.uiManager.addBacklogTask(task);
   }
 
-  updateStakeholderScores(stakeholderData) {
-    this.uiManager.updateStakeholderScores(stakeholderData);
+  addActiveTask(task) {
+    this.uiManager.addActiveTask(task);
   }
 
-  commitTask(task) {
-    this.uiManager.commitTask(task);
+  renderBacklog() {
+    this.uiManager.renderBacklog();
+  }
+
+  renderActiveTasks() {
+    this.uiManager.renderActiveTasks();
+  }
+
+  handleGather(task) {
+    this.uiManager.handleGather(task);
+  }
+
+  handleFinalize(task) {
+    this.uiManager.handleFinalize(task);
   }
 
   finalizeTask(task) {
@@ -29,5 +42,13 @@ export default class UIScene extends Phaser.Scene {
 
   removeActiveTask(task) {
     this.uiManager.removeActiveTask(task);
+  }
+
+  updateScore(scoreData) {
+    this.uiManager.updateScore(scoreData);
+  }
+
+  updateStakeholderScores(stakeholderData) {
+    this.uiManager.updateStakeholderScores(stakeholderData);
   }
 }
