@@ -6,25 +6,21 @@ export default class UIManager {
     this.score = 0;
     this.stakeholderScores = {};
     this.backlogTasks = [];
-    this.activeTasks = {};
-
-    // Reference to HTML elements
-    this.backlogContainer = document.getElementById('backlog-tasks');
-    this.activeTasksContainer = document.getElementById('active-tasks');
+    this.activeTasks = [];
   }
 
   createUI() {
     this.createScoreboard();
     this.createStakeholderScores();
-    this.setupEventListeners();
+    this.createBacklogPanel();
+    this.createActiveTaskPanel();
+    this.scene.events.on('newTask', this.addBacklogTask, this);
   }
 
   // ------------------------------
   // 1. Scoreboard and Stakeholders
   // ------------------------------
   createScoreboard() {
-    // Create a scoreboard element or integrate with existing Phaser text
-    // For simplicity, using Phaser's text for scoreboard
     this.scoreText = this.scene.add.text(20, 20, 'Score: 0', {
       font: '24px Arial',
       fill: '#ffffff'
@@ -45,14 +41,94 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 2. Event Listeners
+  // 2. Backlog Panel (Left)
   // ------------------------------
-  setupEventListeners() {
-    this.scene.events.on('newTask', this.addBacklogTask.bind(this));
+  createBacklogPanel() {
+    const panelWidth = 300;
+    const panelHeight = this.scene.sys.game.config.height - 200;
+    const padding = 50;
+
+    // Create a container for the backlog panel
+    this.backlogContainer = this.scene.add.container(padding, 100).setDepth(10);
+
+    // Panel background
+    const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0);
+    backlogBackground.setInteractive();
+    this.backlogContainer.add(backlogBackground);
+
+    // Panel title
+    const backlogTitle = this.scene.add.text(panelWidth / 2, 20, 'Backlog', {
+      font: '24px Arial',
+      fill: '#ecf0f1'
+    }).setOrigin(0.5).setDepth(11);
+    this.backlogContainer.add(backlogTitle);
+
+    // Scrollable area
+    this.backlogScroll = this.scene.add.container(10, 60).setDepth(11);
+    this.backlogContainer.add(this.backlogScroll);
+
+    // Enable scrolling with the mouse wheel
+    this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+      if (
+        pointer.x >= padding &&
+        pointer.x <= padding + panelWidth &&
+        pointer.y >= 100 &&
+        pointer.y <= 100 + panelHeight
+      ) {
+        this.backlogScroll.y += deltaY * 0.5;
+        // Clamp the scroll position
+        const maxScroll = Math.max(0, this.backlogTasks.length * 60 - (panelHeight - 80));
+        this.backlogScroll.y = Phaser.Math.Clamp(this.backlogScroll.y, -maxScroll, 0);
+      }
+    });
   }
 
   // ------------------------------
-  // 3. Adding Tasks to Backlog
+  // 3. Active Tasks Panel (Right)
+  // ------------------------------
+  createActiveTaskPanel() {
+    const panelWidth = 300;
+    const panelHeight = this.scene.sys.game.config.height - 200;
+    const padding = 50;
+    const gameWidth = this.scene.sys.game.config.width;
+
+    // Create a container for the active tasks panel
+    this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100).setDepth(10);
+
+    // Panel background
+    const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0);
+    activeTaskBackground.setInteractive();
+    this.activeTaskContainer.add(activeTaskBackground);
+
+    // Panel title
+    const activeTaskTitle = this.scene.add.text(panelWidth / 2, 20, 'Active Tasks', {
+      font: '24px Arial',
+      fill: '#ecf0f1'
+    }).setOrigin(0.5).setDepth(11);
+    this.activeTaskContainer.add(activeTaskTitle);
+
+    // Scrollable area
+    this.activeTaskScroll = this.scene.add.container(10, 60).setDepth(11);
+    this.activeTaskContainer.add(this.activeTaskScroll);
+
+    // Enable scrolling with the mouse wheel
+    this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
+      if (
+        pointer.x >= (gameWidth - panelWidth - padding) &&
+        pointer.x <= (gameWidth - padding) &&
+        pointer.y >= 100 &&
+        pointer.y <= 100 + panelHeight
+      ) {
+        this.activeTaskScroll.y += deltaY * 0.5;
+        // Clamp the scroll position
+        const maxScroll = Math.max(0, this.activeTasks.length * 100 - (panelHeight - 80));
+        this.activeTaskScroll.y = Phaser.Math.Clamp(this.activeTaskScroll.y, -maxScroll, 0);
+      }
+    });
+  }
+
+  // ------------------------------
+  // 4. Adding Tasks to Backlog
   // ------------------------------
   addBacklogTask(task) {
     this.backlogTasks.push(task);
@@ -60,86 +136,247 @@ export default class UIManager {
   }
 
   renderBacklog() {
-    this.backlogContainer.innerHTML = ''; // Clear existing tasks
+    this.backlogScroll.removeAll(true);
     this.backlogTasks.forEach((task, index) => {
-      const taskDiv = document.createElement('div');
-      taskDiv.classList.add('task-item');
-      taskDiv.innerHTML = `<strong>${task.description}</strong>`;
-      taskDiv.addEventListener('click', () => {
-        this.commitTask(task);
-      });
-      this.backlogContainer.appendChild(taskDiv);
+      const taskItem = this.createBacklogTaskItem(task);
+      taskItem.y = index * 60;
+      this.backlogScroll.add(taskItem);
     });
   }
 
+  createBacklogTaskItem(task) {
+    const container = this.scene.add.container(0, 0).setDepth(11);
+    container.isExpanded = false;
+
+    // Background for task item
+    const bg = this.scene.add.rectangle(0, 0, 280, 50, 0x34495e).setOrigin(0);
+    bg.setInteractive();
+    container.add(bg);
+
+    // Task Description
+    const description = this.scene.add.text(10, -10, task.description, {
+      font: '16px Arial',
+      fill: '#ecf0f1',
+      wordWrap: { width: 260 }
+    }).setOrigin(0).setDepth(12);
+    container.add(description);
+
+    // Commit Button
+    const commitButton = this.createButton(240, 0, 'Commit', '#2980b9', () => {
+      this.handleCommitTask(task);
+    });
+    container.add(commitButton);
+
+    // Hover Effects
+    bg.on('pointerover', () => {
+      bg.setFillStyle(0x1abc9c);
+    });
+    bg.on('pointerout', () => {
+      bg.setFillStyle(0x34495e);
+    });
+
+    // Toggle expand/collapse on click
+    bg.on('pointerdown', () => {
+      container.isExpanded = !container.isExpanded;
+      if (container.isExpanded) {
+        this.expandBacklogTask(container, task);
+      } else {
+        this.collapseBacklogTask(container);
+      }
+    });
+
+    // Log task position
+    console.log(`Backlog Task Position Y: ${container.y}`);
+
+    return container;
+  }
+
+  expandBacklogTask(container, task) {
+    // Increase background height
+    container.getAt(0).setSize(280, 100);
+
+    // Add detailed information
+    const stepsText = this.scene.add.text(10, 15, `Steps: ${task.steps}`, {
+      font: '14px Arial',
+      fill: '#bdc3c7'
+    }).setOrigin(0).setDepth(12);
+    container.add(stepsText);
+
+    const riskText = this.scene.add.text(10, 35, `Risk: ${task.riskLevel}`, {
+      font: '14px Arial',
+      fill: '#bdc3c7'
+    }).setOrigin(0).setDepth(12);
+    container.add(riskText);
+  }
+
+  collapseBacklogTask(container) {
+    // Reset background height
+    container.getAt(0).setSize(280, 50);
+
+    // Remove detailed information
+    container.list = container.list.filter(child => {
+      return !(child.text && (child.text.includes('Steps') || child.text.includes('Risk')));
+    });
+
+    // Refresh container to apply changes
+    container.refresh();
+  }
+
   // ------------------------------
-  // 4. Committing Task
+  // 5. Adding Tasks to Active Tasks
   // ------------------------------
-  commitTask(task) {
+  addActiveTask(task) {
+    this.activeTasks.push(task);
+    this.renderActiveTasks();
+  }
+
+  renderActiveTasks() {
+    this.activeTaskScroll.removeAll(true);
+    this.activeTasks.forEach((task, index) => {
+      const taskItem = this.createActiveTaskItem(task);
+      taskItem.y = index * 100;
+      this.activeTaskScroll.add(taskItem);
+    });
+  }
+
+  createActiveTaskItem(task) {
+    const container = this.scene.add.container(0, 0).setDepth(11);
+    container.isExpanded = false;
+
+    // Background for task item
+    const bg = this.scene.add.rectangle(0, 0, 280, 90, 0x34495e).setOrigin(0);
+    bg.setInteractive();
+    container.add(bg);
+
+    // Task Description
+    const description = this.scene.add.text(10, -25, task.description, {
+      font: '16px Arial',
+      fill: '#ecf0f1',
+      wordWrap: { width: 260 }
+    }).setOrigin(0).setDepth(12);
+    container.add(description);
+
+    // Steps Remaining
+    const stepsText = this.scene.add.text(10, 0, `Steps: ${task.steps}`, {
+      font: '14px Arial',
+      fill: '#bdc3c7'
+    }).setOrigin(0).setDepth(12);
+    container.add(stepsText);
+
+    // Risk Level
+    const riskText = this.scene.add.text(150, 0, `Risk: ${task.riskLevel}`, {
+      font: '14px Arial',
+      fill: '#bdc3c7'
+    }).setOrigin(0).setDepth(12);
+    container.add(riskText);
+
+    // Gather Button
+    const gatherButton = this.createButton(240, -10, 'Gather', '#27ae60', () => {
+      this.handleGather(task);
+    });
+    container.add(gatherButton);
+
+    // Finalize Button
+    const finalizeButton = this.createButton(240, 20, 'Finalize', '#c0392b', () => {
+      this.handleFinalize(task);
+    });
+    container.add(finalizeButton);
+
+    // Hover Effects
+    bg.on('pointerover', () => {
+      bg.setFillStyle(0x1abc9c);
+    });
+    bg.on('pointerout', () => {
+      bg.setFillStyle(0x34495e);
+    });
+
+    // Toggle expand/collapse on click (Optional)
+    bg.on('pointerdown', () => {
+      container.isExpanded = !container.isExpanded;
+      if (container.isExpanded) {
+        this.expandActiveTask(container, task);
+      } else {
+        this.collapseActiveTask(container);
+      }
+    });
+
+    // Log task position
+    console.log(`Active Task Position Y: ${container.y}`);
+
+    return container;
+  }
+
+  expandActiveTask(container, task) {
+    // Increase background height
+    container.getAt(0).setSize(280, 140);
+
+    // Add additional details or actions if needed
+    // For simplicity, we're keeping it minimal
+  }
+
+  collapseActiveTask(container) {
+    // Reset background height
+    container.getAt(0).setSize(280, 90);
+
+    // Remove expanded details
+    container.list = container.list.filter(child => {
+      return !(child.text && (child.text.includes('Steps') || child.text.includes('Risk')));
+    });
+
+    // Refresh container to apply changes
+    container.refresh();
+  }
+
+  // ------------------------------
+  // 6. Creating Buttons
+  // ------------------------------
+  createButton(x, y, text, color, callback) {
+    const button = this.scene.add.text(x, y, text, {
+      font: '14px Arial',
+      fill: '#ffffff',
+      backgroundColor: color,
+      padding: { x: 5, y: 5 },
+      align: 'center'
+    })
+      .setOrigin(0.5)
+      .setInteractive()
+      .setDepth(12);
+
+    button.on('pointerdown', () => {
+      callback();
+    });
+
+    button.on('pointerover', () => {
+      button.setStyle({ fill: '#f1c40f' });
+    });
+
+    button.on('pointerout', () => {
+      button.setStyle({ fill: '#ffffff' });
+    });
+
+    return button;
+  }
+
+  // ------------------------------
+  // 7. Handling Task Commit
+  // ------------------------------
+  handleCommitTask(task) {
     // Move task from backlog to active tasks
     this.backlogTasks = this.backlogTasks.filter(t => t !== task);
-    this.renderBacklog();
-
-    // Add to active tasks
-    this.activeTasks[task.id] = task; // Assuming each task has a unique id
-    this.renderActiveTasks();
     this.scene.commitTask(task); // Update task status
+    this.addActiveTask(task);
+    this.renderBacklog();
   }
 
   // ------------------------------
-  // 5. Rendering Active Tasks
+  // 8. Handling Gather Action
   // ------------------------------
-  renderActiveTasks() {
-    this.activeTasksContainer.innerHTML = ''; // Clear existing tasks
-    for (let key in this.activeTasks) {
-      const task = this.activeTasks[key];
-      const taskDiv = document.createElement('div');
-      taskDiv.classList.add('task-item');
-      taskDiv.innerHTML = `<strong>${task.description}</strong><br>Steps: ${task.steps}<br>Risk: ${task.riskLevel}`;
-
-      // Action Buttons
-      const actionsDiv = document.createElement('div');
-      actionsDiv.classList.add('task-actions');
-
-      const gatherBtn = document.createElement('button');
-      gatherBtn.classList.add('gather-btn');
-      gatherBtn.textContent = 'Gather';
-      gatherBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent triggering task collapse
-        this.handleGather(task.id);
-      });
-
-      const finalizeBtn = document.createElement('button');
-      finalizeBtn.classList.add('finalize-btn');
-      finalizeBtn.textContent = 'Finalize';
-      finalizeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.handleFinalize(task.id);
-      });
-
-      actionsDiv.appendChild(gatherBtn);
-      actionsDiv.appendChild(finalizeBtn);
-      taskDiv.appendChild(actionsDiv);
-
-      // Toggle Expand/Collapse
-      taskDiv.addEventListener('click', () => {
-        taskDiv.classList.toggle('expanded');
-      });
-
-      this.activeTasksContainer.appendChild(taskDiv);
-    }
-  }
-
-  // ------------------------------
-  // 6. Handling Gather Action
-  // ------------------------------
-  handleGather(taskId) {
-    const task = this.activeTasks[taskId];
+  handleGather(task) {
     if (task.steps > 0) {
       task.progress();
       console.log(`Gathering resources for task: ${task.description}, Steps left: ${task.steps}`);
       if (task.steps === 0) {
-        this.finalizeTask(taskId);
+        this.finalizeTask(task);
       } else {
         this.renderActiveTasks();
       }
@@ -147,12 +384,11 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 7. Handling Finalize Action
+  // 9. Handling Finalize Action
   // ------------------------------
-  handleFinalize(taskId) {
-    const task = this.activeTasks[taskId];
+  handleFinalize(task) {
     if (task.isCompleted()) {
-      this.finalizeTask(taskId);
+      this.finalizeTask(task);
     } else {
       console.log(`Cannot finalize task: ${task.description}. Steps remaining.`);
       // Optionally, display a notification to the player
@@ -160,41 +396,19 @@ export default class UIManager {
   }
 
   // ------------------------------
-  // 8. Finalizing Task
+  // 10. Finalizing Task
   // ------------------------------
-  finalizeTask(taskId) {
-    const task = this.activeTasks[taskId];
+  finalizeTask(task) {
     this.score += task.reward;
     this.scoreText.setText(`Score: ${this.score}`);
     this.scene.stakeholders[task.stakeholder.key].increaseScore(task.reward);
-    this.scene.stakeholders[task.stakeholder.key].score = this.scene.stakeholders[task.stakeholder.key].score;
-    // Update stakeholder scores if needed
+    this.stakeholderScores[task.stakeholder.key].setText(`${task.stakeholder.name}: ${this.stakeholderScores[task.stakeholder.key].text.split(': ')[1]}`); // Update text
 
     // Remove task from active tasks
-    delete this.activeTasks[taskId];
+    this.activeTasks = this.activeTasks.filter(t => t !== task);
     this.renderActiveTasks();
 
     console.log(`Task finalized: ${task.description}, Reward: ${task.reward}`);
     // Optionally, display a notification to the player
-  }
-
-  // ------------------------------
-  // 9. Updating Stakeholder Scores
-  // ------------------------------
-  updateStakeholderScores(stakeholderData) {
-    const { key, name, score } = stakeholderData;
-    if (this.stakeholderScores[key]) {
-      this.stakeholderScores[key].setText(`${name}: ${score}`);
-      console.log(`Stakeholder score updated: ${name} - ${score}`);
-    }
-  }
-
-  // ------------------------------
-  // 10. Updating Score
-  // ------------------------------
-  updateScore(scoreData) {
-    this.score += scoreData.amount;
-    this.scoreText.setText(`Score: ${this.score}`);
-    console.log(`Score updated: ${this.score}`);
   }
 }
