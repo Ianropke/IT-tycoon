@@ -1,4 +1,5 @@
 // src/objects/Player.js
+
 export default class Player {
   constructor(scene, x, y, texture) {
     this.scene = scene;
