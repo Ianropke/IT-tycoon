@@ -56,9 +56,12 @@ export default class GameScene extends Phaser.Scene {
     zones.forEach(zone => {
       const graphics = this.add.graphics();
       graphics.fillStyle(zone.color, 1);
-      graphics.fillRectZone = new Phaser.Geom.Rectangle(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
-      graphics.fillRectShape(graphics.fillRectZone);
-      graphics.setInteractive(graphics.fillRectZone, Phaser.Geom.Rectangle.Contains);
+      graphics.fillRect(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
+      
+      // Define the hit area using Phaser.Geom.Rectangle
+      const rect = new Phaser.Geom.Rectangle(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
+      graphics.setInteractive(rect, Phaser.Geom.Rectangle.Contains);
+      
       graphics.on('pointerdown', () => {
         this.handleZoneInteraction(zone.key);
       });
@@ -75,16 +78,20 @@ export default class GameScene extends Phaser.Scene {
     switch (zoneKey) {
       case 'hospital':
         // Display tasks or UI related to Hospital
-        // For simplicity, you can highlight tasks related to Hospital in the UI
+        console.log('Hospital zone clicked.');
         break;
       case 'infrastructure':
         // Display tasks or UI related to Infrastructure
+        console.log('Infrastructure zone clicked.');
         break;
       case 'cybersecurity':
         // Display tasks or UI related to Cybersecurity
+        console.log('Cybersecurity zone clicked.');
         break;
       case 'backlog':
         // Display backlog tasks
+        console.log('Backlog zone clicked.');
+        // Optionally, scroll to backlog panel or highlight tasks
         break;
       default:
         break;
@@ -103,6 +110,7 @@ export default class GameScene extends Phaser.Scene {
       const stakeholder = this.stakeholders[stakeholderKey];
       const task = new Task(this, stakeholder);
       this.backlog.push(task);
+      console.log(`Generated task: ${task.description}`);
       this.events.emit('newTask', task);
     }
   }
@@ -112,6 +120,7 @@ export default class GameScene extends Phaser.Scene {
       task.commit();
       this.activeTasks.push(task);
       this.backlog = this.backlog.filter(t => t !== task);
+      console.log(`Task committed: ${task.description}`);
       this.uiScene.commitTask(task);
     }
   }
@@ -130,7 +139,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   handleTaskCompletion(task) {
-    // Update overall score and stakeholder scores
+    console.log(`Task completed: ${task.description}`);
     this.uiScene.updateScore({ amount: task.reward });
     // Additional logic as needed
   }
@@ -139,6 +148,7 @@ export default class GameScene extends Phaser.Scene {
     const penalty = task.riskLevel * 10;
     this.score -= penalty;
     this.stakeholders[task.stakeholder.key].decreaseScore(penalty);
+    console.log(`Task failed: ${task.description}, Penalty: ${penalty}`);
     this.uiScene.updateScore({ amount: -penalty });
     // Remove failed task from active tasks
     this.activeTasks = this.activeTasks.filter(t => t !== task);
