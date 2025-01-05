@@ -21,6 +21,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Initialize player at the center of the screen
     this.player = new Player(this, this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'player');
+    this.player.sprite.setDepth(10); // Higher depth than zones and UI
 
     // Define zones with Phaser graphics
     this.createZones();
@@ -45,17 +46,23 @@ export default class GameScene extends Phaser.Scene {
 
   createZones() {
     // Define zone positions and sizes centrally, avoiding UI panels
+    const backlogWidth = 300;
+    const activeTaskWidth = 250;
+    const padding = 50;
+    const centerX = (this.sys.game.config.width - backlogWidth - activeTaskWidth - padding * 2) / 2 + backlogWidth + padding;
+
     const zones = [
-      { key: 'hospital', x: 300, y: 200, width: 200, height: 200, color: 0x1abc9c },
-      { key: 'infrastructure', x: this.sys.game.config.width / 2, y: 200, width: 200, height: 200, color: 0x3498db },
-      { key: 'cybersecurity', x: this.sys.game.config.width - 300, y: 200, width: 200, height: 200, color: 0xe74c3c },
-      { key: 'backlog', x: this.sys.game.config.width / 2, y: this.sys.game.config.height - 100, width: 200, height: 100, color: 0x9b59b6 }
+      { key: 'hospital', x: centerX - 250, y: 200, width: 200, height: 200, color: 0x1abc9c },
+      { key: 'infrastructure', x: centerX, y: 200, width: 200, height: 200, color: 0x3498db },
+      { key: 'cybersecurity', x: centerX + 250, y: 200, width: 200, height: 200, color: 0xe74c3c },
+      { key: 'backlog', x: centerX, y: this.sys.game.config.height - 100, width: 200, height: 100, color: 0x9b59b6 }
     ];
 
     zones.forEach(zone => {
       const graphics = this.add.graphics();
       graphics.fillStyle(zone.color, 1);
       graphics.fillRect(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
+      graphics.setDepth(5); // Lower than player and UI
 
       // Define the hit area using Phaser.Geom.Rectangle
       const rect = new Phaser.Geom.Rectangle(zone.x - zone.width / 2, zone.y - zone.height / 2, zone.width, zone.height);
@@ -69,7 +76,7 @@ export default class GameScene extends Phaser.Scene {
       this.add.text(zone.x, zone.y, zone.key.charAt(0).toUpperCase() + zone.key.slice(1), {
         font: '20px Arial',
         fill: '#ffffff'
-      }).setOrigin(0.5);
+      }).setOrigin(0.5).setDepth(6); // Above the zone
     });
   }
 
