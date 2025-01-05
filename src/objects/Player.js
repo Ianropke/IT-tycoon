@@ -15,6 +15,7 @@ export default class Player {
     graphics.destroy();
 
     this.sprite.setTexture('player');
+    this.sprite.setDepth(15); // Ensure player is above zones and UI
   }
 
   update(cursors) {
