@@ -1,31 +1,18 @@
 // src/objects/Stakeholder.js
-
 export default class Stakeholder {
-  constructor(scene, name, initialScore) {
-    this.scene = scene;
-    this.key = name.toLowerCase().replace(' ', ''); // e.g., "Information Security" -> "informationsecurity"
+  constructor(key, name, score) {
+    this.key = key;
     this.name = name;
-    this.score = initialScore;
+    this.score = score;
   }
 
   increaseScore(amount) {
     this.score += amount;
-    this.scene.events.emit('updateStakeholderScores', this.getScoreData());
-    console.log(`Stakeholder ${this.name} score increased by ${amount}. New score: ${this.score}`);
+    console.log(`${this.name} score increased by ${amount}. Total score: ${this.score}`);
   }
 
   decreaseScore(amount) {
     this.score -= amount;
-    if (this.score < 0) this.score = 0;
-    this.scene.events.emit('updateStakeholderScores', this.getScoreData());
-    console.log(`Stakeholder ${this.name} score decreased by ${amount}. New score: ${this.score}`);
-  }
-
-  getScoreData() {
-    return {
-      key: this.key,
-      name: this.name,
-      score: this.score
-    };
+    console.log(`${this.name} score decreased by ${amount}. Total score: ${this.score}`);
   }
 }
