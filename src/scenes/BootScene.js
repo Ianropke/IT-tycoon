@@ -26,9 +26,8 @@ export default class BootScene extends Phaser.Scene {
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
-      
+
       startText.destroy(); // Remove the start button after starting the game
     });
   }
 }
-
