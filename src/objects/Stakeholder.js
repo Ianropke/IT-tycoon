@@ -11,12 +11,14 @@ export default class Stakeholder {
   increaseScore(amount) {
     this.score += amount;
     this.scene.events.emit('updateStakeholderScores', this.getScoreData());
+    console.log(`Stakeholder ${this.name} score increased by ${amount}. New score: ${this.score}`);
   }
 
   decreaseScore(amount) {
     this.score -= amount;
     if (this.score < 0) this.score = 0;
     this.scene.events.emit('updateStakeholderScores', this.getScoreData());
+    console.log(`Stakeholder ${this.name} score decreased by ${amount}. New score: ${this.score}`);
   }
 
   getScoreData() {
