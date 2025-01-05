@@ -16,6 +16,7 @@ export default class Task {
   commit() {
     this.status = 'active';
     // Additional logic when committing to a task
+    console.log(`Task committed: ${this.description}`);
   }
 
   isCompleted() {
@@ -26,6 +27,7 @@ export default class Task {
   progress() {
     if (this.steps > 0) {
       this.steps -= 1;
+      console.log(`Progressing task: ${this.description}, Steps left: ${this.steps}`);
       if (this.isCompleted()) {
         this.status = 'finalized';
         console.log(`Task finalized: ${this.description}`);
