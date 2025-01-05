@@ -15,11 +15,11 @@ export default class GameScene extends Phaser.Scene {
 
     // Initialize stakeholders
     this.stakeholders = {
-      hospital: new Stakeholder(this, 'Hospital', 100),
-      infrastructure: new Stakeholder(this, 'Infrastructure', 100),
-      cybersecurity: new Stakeholder(this, 'Cybersecurity', 100),
-      legal: new Stakeholder(this, 'Legal', 100),
-      informationSecurity: new Stakeholder(this, 'Information Security', 100)
+      hospital: new Stakeholder('hospital', 'Hospital', 100),
+      infrastructure: new Stakeholder('infrastructure', 'Infrastructure', 100),
+      cybersecurity: new Stakeholder('cybersecurity', 'Cybersecurity', 100),
+      legal: new Stakeholder('legal', 'Legal', 100),
+      informationSecurity: new Stakeholder('informationSecurity', 'Information Security', 100)
     };
 
     // Initialize player at the center of the screen
@@ -62,11 +62,11 @@ export default class GameScene extends Phaser.Scene {
 
     // Define zone positions and sizes within the center area
     const zones = [
-      { key: 'hospital', x: centerAreaStartX + 100, y: 200, width: 200, height: 200, color: 0x1abc9c },
+      { key: 'hospital', x: centerAreaStartX + 150, y: 200, width: 200, height: 200, color: 0x1abc9c },
       { key: 'infrastructure', x: centerAreaStartX + 400, y: 200, width: 200, height: 200, color: 0x3498db },
-      { key: 'cybersecurity', x: centerAreaStartX + 700, y: 200, width: 200, height: 200, color: 0xe74c3c },
-      { key: 'legal', x: centerAreaStartX + 250, y: 450, width: 200, height: 200, color: 0x8e44ad },
-      { key: 'informationSecurity', x: centerAreaStartX + 550, y: 450, width: 200, height: 200, color: 0x2ecc71 }
+      { key: 'cybersecurity', x: centerAreaStartX + 650, y: 200, width: 200, height: 200, color: 0xe74c3c },
+      { key: 'legal', x: centerAreaStartX + 275, y: 450, width: 200, height: 200, color: 0x8e44ad },
+      { key: 'informationSecurity', x: centerAreaStartX + 525, y: 450, width: 200, height: 200, color: 0x2ecc71 }
     ];
 
     zones.forEach(zone => {
