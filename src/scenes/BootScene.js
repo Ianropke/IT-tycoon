@@ -6,28 +6,29 @@ export default class BootScene extends Phaser.Scene {
   }
 
   preload() {
-    // Preload any assets if needed in the future
+    // Preload any assets if needed
   }
 
   create() {
-    // Add a start button for user interaction to handle AudioContext
-    const startText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Start Game', {
+    // Create a "Start Game" button
+    const startButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Start Game', {
       font: '32px Arial',
       fill: '#ffffff',
       backgroundColor: '#000000',
       padding: { x: 20, y: 10 }
     }).setOrigin(0.5).setInteractive();
 
-    startText.on('pointerdown', () => {
-      this.scene.start('GameScene');
-      this.scene.launch('UIScene');
-
-      // Resume Audio Context if needed
+    startButton.on('pointerdown', () => {
+      // Resume AudioContext
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
 
-      startText.destroy(); // Remove the start button after starting the game
+      // Start GameScene
+      this.scene.start('GameScene');
+
+      // Destroy the button
+      startButton.destroy();
     });
   }
 }
