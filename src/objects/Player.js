@@ -1,5 +1,4 @@
 // src/objects/Player.js
-
 export default class Player {
   constructor(scene, x, y, texture) {
     this.scene = scene;
@@ -7,14 +6,17 @@ export default class Player {
     this.sprite.setCollideWorldBounds(true);
     this.speed = 300;
 
-    // Draw player as a circle
-    const graphics = scene.add.graphics();
-    graphics.fillStyle(0xffffff, 1);
-    graphics.fillCircle(0, 0, 20);
-    graphics.generateTexture('player', 40, 40);
-    graphics.destroy();
+    // Draw player as a circle if texture is not provided
+    if (!texture) {
+      const graphics = scene.add.graphics();
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillCircle(0, 0, 20);
+      graphics.generateTexture('player', 40, 40);
+      graphics.destroy();
 
-    this.sprite.setTexture('player');
+      this.sprite.setTexture('player');
+    }
+
     this.sprite.setDepth(15); // Ensure player is above zones and UI
   }
 
