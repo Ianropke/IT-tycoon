@@ -1,8 +1,11 @@
 // src/objects/Task.js
 
 export default class Task {
+  static nextId = 0;
+
   constructor(scene, stakeholder) {
     this.scene = scene;
+    this.id = Task.nextId++;
     this.description = `Task for ${stakeholder.name}`;
     this.steps = Phaser.Math.Between(3, 5);
     this.riskLevel = Phaser.Math.Between(1, 5);
