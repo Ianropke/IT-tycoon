@@ -10,6 +10,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
+    // Set a background color
+    this.cameras.main.setBackgroundColor('#1e272e'); // Dark gray
+
     // Initialize score
     this.score = 0;
 
