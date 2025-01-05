@@ -1,5 +1,4 @@
 // src/scenes/BootScene.js
-
 export default class BootScene extends Phaser.Scene {
   constructor() {
     super({ key: 'BootScene' });
@@ -15,8 +14,9 @@ export default class BootScene extends Phaser.Scene {
       font: '32px Arial',
       fill: '#ffffff',
       backgroundColor: '#000000',
-      padding: { x: 20, y: 10 }
-    }).setOrigin(0.5).setInteractive();
+      padding: { x: 20, y: 10 },
+      align: 'center'
+    }).setOrigin(0.5).setInteractive().setDepth(10);
 
     startButton.on('pointerdown', () => {
       // Resume AudioContext
