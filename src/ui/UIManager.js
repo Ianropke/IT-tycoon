@@ -52,7 +52,8 @@ export default class UIManager {
     const padding = 50;
 
     this.backlogContainer = this.scene.add.container(padding, 100);
-    
+    this.backlogContainer.setDepth(10); // Above zones
+
     // Background for backlog
     const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
     backlogBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
@@ -72,16 +73,13 @@ export default class UIManager {
     // Enable scrolling with the mouse wheel
     this.backlogContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= padding && pointer.x <= padding + panelWidth && pointer.y >= 100 && pointer.y <= 700) {
+      if (pointer.x >= 50 && pointer.x <= 350 && pointer.y >= 100 && pointer.y <= 700) {
         this.backlogScroll.y += deltaY * 0.5;
         // Clamp the scroll position
         const maxScroll = Math.max(0, this.backlogTasks.length * 30 - (panelHeight - 50));
         this.backlogScroll.y = Phaser.Math.Clamp(this.backlogScroll.y, -maxScroll, 0);
       }
     });
-
-    // Ensure backlogContainer is above other elements
-    this.backlogContainer.setDepth(10);
   }
 
   createActiveTaskPanel() {
@@ -91,7 +89,8 @@ export default class UIManager {
     const gameWidth = this.scene.sys.game.config.width;
 
     this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100);
-    
+    this.activeTaskContainer.setDepth(10); // Above zones
+
     // Background for active tasks
     const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
     activeTaskBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
@@ -111,16 +110,13 @@ export default class UIManager {
     // Enable scrolling with the mouse wheel
     this.activeTaskContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= gameWidth - panelWidth - padding && pointer.x <= gameWidth - padding && pointer.y >= 100 && pointer.y <= 700) {
+      if (pointer.x >= (gameWidth - panelWidth - padding) && pointer.x <= (gameWidth - padding) && pointer.y >= 100 && pointer.y <= 700) {
         this.activeTaskScroll.y += deltaY * 0.5;
         // Clamp the scroll position
         const maxScroll = Math.max(0, this.activeTasks.length * 50 - (panelHeight - 50));
         this.activeTaskScroll.y = Phaser.Math.Clamp(this.activeTaskScroll.y, -maxScroll, 0);
       }
     });
-
-    // Ensure activeTaskContainer is above other elements
-    this.activeTaskContainer.setDepth(10);
   }
 
   addBacklogTask(task) {
