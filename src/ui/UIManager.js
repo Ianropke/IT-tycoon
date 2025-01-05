@@ -51,8 +51,9 @@ export default class UIManager {
     // Create a container for the backlog panel
     this.backlogContainer = this.scene.add.container(padding, 100).setDepth(10);
 
-    // Panel background
+    // Panel background with border
     const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0);
+    backlogBackground.setStrokeStyle(2, 0xffffff);
     backlogBackground.setInteractive();
     this.backlogContainer.add(backlogBackground);
 
@@ -95,8 +96,9 @@ export default class UIManager {
     // Create a container for the active tasks panel
     this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100).setDepth(10);
 
-    // Panel background
+    // Panel background with border
     const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0);
+    activeTaskBackground.setStrokeStyle(2, 0xffffff);
     activeTaskBackground.setInteractive();
     this.activeTaskContainer.add(activeTaskBackground);
 
@@ -408,5 +410,23 @@ export default class UIManager {
 
     console.log(`Task finalized: ${task.description}, Reward: ${task.reward}`);
     // Optionally, display a notification to the player
+  }
+
+  // ------------------------------
+  // 11. Remove Active Task (for task failures)
+  // ------------------------------
+  removeActiveTask(task) {
+    this.activeTasks = this.activeTasks.filter(t => t !== task);
+    this.renderActiveTasks();
+  }
+
+  // ------------------------------
+  // 12. Update Score (for task failures)
+  // ------------------------------
+  updateScore(scoreData) {
+    this.score += scoreData.amount;
+    this.scoreText.setText(`Score: ${this.score}`);
+    // Log the score update
+    console.log(`Score updated: ${this.score}`);
   }
 }
