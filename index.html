@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Tycoon Game</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #242424;
+      background-color: #000000;
     }
     #game-container {
       width: 100vw;
@@ -18,9 +20,9 @@
 </head>
 <body>
   <div id="game-container"></div>
-  <!-- Include Phaser via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
-  <!-- Include main.js as a module -->
+  <!-- Include Phaser library -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+  <!-- Include main.js -->
   <script type="module" src="src/main.js"></script>
 </body>
 </html>
