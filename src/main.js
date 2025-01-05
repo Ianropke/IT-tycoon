@@ -1,19 +1,21 @@
 // src/main.js
 import BootScene from './scenes/BootScene.js';
 import GameScene from './scenes/GameScene.js';
-import UIScene from './scenes/UIScene.js';
 
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
   parent: 'game-container',
-  scene: [BootScene, GameScene, UIScene],
+  scene: [BootScene, GameScene],
   physics: {
     default: 'arcade',
     arcade: {
-      debug: false // Set to true for debugging
+      debug: false
     }
+  },
+  dom: {
+    createContainer: true
   },
   scale: {
     mode: Phaser.Scale.RESIZE,
