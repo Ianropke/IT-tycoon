@@ -16,10 +16,10 @@ export default class UIManager {
     // Create stakeholder scores
     this.createStakeholderScores();
 
-    // Create backlog panel with scrolling
+    // Create backlog panel with scrolling on the left
     this.createBacklogPanel();
 
-    // Create active task panel
+    // Create active task panel with scrolling on the right
     this.createActiveTaskPanel();
 
     // Listen to game events
@@ -30,7 +30,7 @@ export default class UIManager {
     this.scoreText = this.scene.add.text(20, 20, 'Score: 0', {
       font: '24px Arial',
       fill: '#ffffff'
-    });
+    }).setDepth(20);
   }
 
   createStakeholderScores() {
@@ -41,17 +41,17 @@ export default class UIManager {
       this.stakeholderScores[key] = this.scene.add.text(xOffset, 20, `${stakeholder.name}: ${stakeholder.score}`, {
         font: '24px Arial',
         fill: '#ffffff'
-      });
+      }).setDepth(20);
       xOffset += 200;
     }
   }
 
   createBacklogPanel() {
     const panelWidth = 300;
-    const panelHeight = 600;
+    const panelHeight = this.scene.sys.game.config.height - 200;
     const padding = 50;
-    
-    this.backlogContainer = this.scene.add.container(padding, padding + 100);
+
+    this.backlogContainer = this.scene.add.container(padding, 100);
     
     // Background for backlog
     const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
@@ -62,7 +62,7 @@ export default class UIManager {
     this.backlogText = this.scene.add.text(10, 10, 'Backlog', {
       font: '20px Arial',
       fill: '#ffffff'
-    });
+    }).setDepth(20);
     this.backlogContainer.add(this.backlogText);
 
     // Scrollable area
@@ -70,12 +70,12 @@ export default class UIManager {
     this.backlogContainer.add(this.backlogScroll);
 
     // Enable scrolling with the mouse wheel
-    this.backlogContainer.setInteractive();
+    this.backlogContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= padding && pointer.x <= padding + panelWidth && pointer.y >= padding + 100 && pointer.y <= padding + 100 + panelHeight) {
+      if (pointer.x >= padding && pointer.x <= padding + panelWidth && pointer.y >= 100 && pointer.y <= 700) {
         this.backlogScroll.y += deltaY * 0.5;
         // Clamp the scroll position
-        const maxScroll = Math.max(0, this.backlogTasks.length * 30 - 550);
+        const maxScroll = Math.max(0, this.backlogTasks.length * 30 - (panelHeight - 50));
         this.backlogScroll.y = Phaser.Math.Clamp(this.backlogScroll.y, -maxScroll, 0);
       }
     });
@@ -86,11 +86,11 @@ export default class UIManager {
 
   createActiveTaskPanel() {
     const panelWidth = 250;
-    const panelHeight = 600;
+    const panelHeight = this.scene.sys.game.config.height - 200;
     const padding = 50;
     const gameWidth = this.scene.sys.game.config.width;
 
-    this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, padding + 100);
+    this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100);
     
     // Background for active tasks
     const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
@@ -101,7 +101,7 @@ export default class UIManager {
     this.activeTaskText = this.scene.add.text(10, 10, 'Active Tasks', {
       font: '20px Arial',
       fill: '#ffffff'
-    });
+    }).setDepth(20);
     this.activeTaskContainer.add(this.activeTaskText);
 
     // Scrollable area
@@ -109,12 +109,12 @@ export default class UIManager {
     this.activeTaskContainer.add(this.activeTaskScroll);
 
     // Enable scrolling with the mouse wheel
-    this.activeTaskContainer.setInteractive();
+    this.activeTaskContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= gameWidth - panelWidth - padding && pointer.x <= gameWidth - padding && pointer.y >= padding + 100 && pointer.y <= padding + 100 + panelHeight) {
+      if (pointer.x >= gameWidth - panelWidth - padding && pointer.x <= gameWidth - padding && pointer.y >= 100 && pointer.y <= 700) {
         this.activeTaskScroll.y += deltaY * 0.5;
         // Clamp the scroll position
-        const maxScroll = Math.max(0, this.activeTasks.length * 50 - 550);
+        const maxScroll = Math.max(0, this.activeTasks.length * 50 - (panelHeight - 50));
         this.activeTaskScroll.y = Phaser.Math.Clamp(this.activeTaskScroll.y, -maxScroll, 0);
       }
     });
@@ -126,15 +126,16 @@ export default class UIManager {
   addBacklogTask(task) {
     console.log(`Adding task to backlog: ${task.description}`);
     this.backlogTasks.push(task);
-    const taskText = this.scene.add.text(0, this.backlogTasks.length * 30, task.description, {
+    const taskY = this.backlogTasks.length * 30;
+    const taskText = this.scene.add.text(0, taskY, task.description, {
       font: '16px Arial',
       fill: '#ffffff',
       wordWrap: { width: 280 }
-    });
+    }).setDepth(15);
     this.backlogScroll.add(taskText);
 
     // Add interactivity to commit task
-    taskText.setInteractive();
+    taskText.setInteractive(new Phaser.Geom.Rectangle(0, 0, 280, 30), Phaser.Geom.Rectangle.Contains);
     taskText.on('pointerdown', () => {
       console.log(`Committing task: ${task.description}`);
       this.scene.commitTask(task);
@@ -157,10 +158,11 @@ export default class UIManager {
         font: '16px Arial',
         fill: '#ffffff',
         wordWrap: { width: 280 }
-      });
+      }).setDepth(15);
       this.backlogScroll.add(taskText);
-      taskText.setInteractive();
+      taskText.setInteractive(new Phaser.Geom.Rectangle(0, 0, 280, 30), Phaser.Geom.Rectangle.Contains);
       taskText.on('pointerdown', () => {
+        console.log(`Committing task: ${t.description}`);
         this.scene.commitTask(t);
       });
     });
@@ -168,19 +170,21 @@ export default class UIManager {
 
   addActiveTask(task) {
     const yPosition = this.activeTasks.length * 50;
-    const taskInfo = `• ${task.description} (Steps: ${task.steps}, Risk: ${task.riskLevel})`;
+    const taskInfo = `• ${task.description}\nSteps: ${task.steps}\nRisk: ${task.riskLevel}`;
     const taskText = this.scene.add.text(0, yPosition, taskInfo, {
       font: '16px Arial',
-      fill: '#ffffff'
-    });
+      fill: '#ffffff',
+      wordWrap: { width: 230 }
+    }).setDepth(15);
     this.activeTaskScroll.add(taskText);
 
     // Add Gather button
     const gatherButton = this.scene.add.text(150, yPosition, 'Gather', {
-      font: '16px Arial',
+      font: '14px Arial',
       fill: '#00ff00',
-      backgroundColor: '#000000'
-    }).setInteractive();
+      backgroundColor: '#000000',
+      padding: { x: 5, y: 5 }
+    }).setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains).setDepth(15);
     gatherButton.on('pointerdown', () => {
       console.log(`Gathering resources for task: ${task.description}`);
       task.progress();
@@ -190,10 +194,11 @@ export default class UIManager {
 
     // Add Finalize button
     const finalizeButton = this.scene.add.text(220, yPosition, 'Finalize', {
-      font: '16px Arial',
+      font: '14px Arial',
       fill: '#ff0000',
-      backgroundColor: '#000000'
-    }).setInteractive();
+      backgroundColor: '#000000',
+      padding: { x: 5, y: 5 }
+    }).setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains).setDepth(15);
     finalizeButton.on('pointerdown', () => {
       console.log(`Finalizing task: ${task.description}`);
       this.scene.finalizeTask(task);
