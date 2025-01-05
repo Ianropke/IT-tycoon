@@ -1,4 +1,5 @@
 // src/objects/Task.js
+
 export default class Task {
   constructor(scene, stakeholder) {
     this.scene = scene;
@@ -27,6 +28,7 @@ export default class Task {
       this.steps -= 1;
       if (this.isCompleted()) {
         this.status = 'finalized';
+        console.log(`Task finalized: ${this.description}`);
       }
     }
   }
@@ -36,7 +38,8 @@ export default class Task {
     // For example, check if deadline has passed
     if (time > this.deadline && this.status === 'active') {
       this.status = 'failed';
-      // Optionally, trigger an event or callback
+      console.log(`Task failed due to deadline: ${this.description}`);
+      this.scene.events.emit('taskFailed', this);
     }
   }
 }
