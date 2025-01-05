@@ -7,25 +7,23 @@ export default class UIManager {
     this.stakeholderScores = {};
     this.backlogTasks = [];
     this.activeTasks = [];
+
+    // Define maximum visible tasks before scrolling is needed
+    this.maxVisibleBacklogTasks = 10;
+    this.maxVisibleActiveTasks = 10;
   }
 
   createUI() {
-    // Create top scoreboard
     this.createScoreboard();
-
-    // Create stakeholder scores
     this.createStakeholderScores();
-
-    // Create backlog panel with scrolling on the left
     this.createBacklogPanel();
-
-    // Create active task panel with scrolling on the right
     this.createActiveTaskPanel();
-
-    // Listen to game events
     this.scene.events.on('newTask', this.addBacklogTask, this);
   }
 
+  // ------------------------------
+  // 1. Scoreboard and Stakeholder
+  // ------------------------------
   createScoreboard() {
     this.scoreText = this.scene.add.text(20, 20, 'Score: 0', {
       font: '24px Arial',
@@ -46,215 +44,252 @@ export default class UIManager {
     }
   }
 
+  // ------------------------------
+  // 2. Backlog Panel (Left)
+  // ------------------------------
   createBacklogPanel() {
     const panelWidth = 300;
     const panelHeight = this.scene.sys.game.config.height - 200;
     const padding = 50;
 
-    // Position backlog panel on the left
-    this.backlogContainer = this.scene.add.container(padding, 100);
-    this.backlogContainer.setDepth(10); // Above game zones
+    // Create a container for the backlog panel
+    this.backlogContainer = this.scene.add.container(padding, 100).setDepth(10);
 
-    // Background for backlog
-    const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
-    backlogBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
+    // Panel background
+    const backlogBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0).setDepth(10);
     this.backlogContainer.add(backlogBackground);
 
-    // Title for backlog
-    this.backlogText = this.scene.add.text(10, 10, 'Backlog', {
-      font: '20px Arial',
-      fill: '#ffffff'
-    }).setDepth(20);
-    this.backlogContainer.add(this.backlogText);
+    // Panel title
+    const backlogTitle = this.scene.add.text(panelWidth / 2, 20, 'Backlog', {
+      font: '24px Arial',
+      fill: '#ecf0f1'
+    }).setOrigin(0.5).setDepth(11);
+    this.backlogContainer.add(backlogTitle);
 
     // Scrollable area
-    this.backlogScroll = this.scene.add.container(10, 40);
+    this.backlogScroll = this.scene.add.container(10, 60).setDepth(11);
     this.backlogContainer.add(this.backlogScroll);
 
-    // Enable scrolling with the mouse wheel
-    this.backlogContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
-    this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= padding && pointer.x <= padding + panelWidth && pointer.y >= 100 && pointer.y <= this.scene.sys.game.config.height - 100) {
-        this.backlogScroll.y += deltaY * 0.5;
-        // Clamp the scroll position
-        const maxScroll = Math.max(0, this.backlogTasks.length * 30 - (panelHeight - 50));
-        this.backlogScroll.y = Phaser.Math.Clamp(this.backlogScroll.y, -maxScroll, 0);
-      }
-    });
+    // Optional: Add a border or other decorative elements
   }
 
+  // ------------------------------
+  // 3. Active Tasks Panel (Right)
+  // ------------------------------
   createActiveTaskPanel() {
     const panelWidth = 300;
     const panelHeight = this.scene.sys.game.config.height - 200;
     const padding = 50;
     const gameWidth = this.scene.sys.game.config.width;
 
-    // Position active task panel on the right
-    this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100);
-    this.activeTaskContainer.setDepth(10); // Above game zones
+    // Create a container for the active tasks panel
+    this.activeTaskContainer = this.scene.add.container(gameWidth - panelWidth - padding, 100).setDepth(10);
 
-    // Background for active tasks
-    const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x333333).setOrigin(0);
-    activeTaskBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
+    // Panel background
+    const activeTaskBackground = this.scene.add.rectangle(0, 0, panelWidth, panelHeight, 0x2c3e50).setOrigin(0).setDepth(10);
     this.activeTaskContainer.add(activeTaskBackground);
 
-    // Title for active tasks
-    this.activeTaskText = this.scene.add.text(10, 10, 'Active Tasks', {
-      font: '20px Arial',
-      fill: '#ffffff'
-    }).setDepth(20);
-    this.activeTaskContainer.add(this.activeTaskText);
+    // Panel title
+    const activeTaskTitle = this.scene.add.text(panelWidth / 2, 20, 'Active Tasks', {
+      font: '24px Arial',
+      fill: '#ecf0f1'
+    }).setOrigin(0.5).setDepth(11);
+    this.activeTaskContainer.add(activeTaskTitle);
 
     // Scrollable area
-    this.activeTaskScroll = this.scene.add.container(10, 40);
+    this.activeTaskScroll = this.scene.add.container(10, 60).setDepth(11);
     this.activeTaskContainer.add(this.activeTaskScroll);
-
-    // Enable scrolling with the mouse wheel
-    this.activeTaskContainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, panelWidth, panelHeight), Phaser.Geom.Rectangle.Contains);
-    this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY, deltaZ) => {
-      if (pointer.x >= (gameWidth - panelWidth - padding) && pointer.x <= (gameWidth - padding) && pointer.y >= 100 && pointer.y <= this.scene.sys.game.config.height - 100) {
-        this.activeTaskScroll.y += deltaY * 0.5;
-        // Clamp the scroll position
-        const maxScroll = Math.max(0, this.activeTasks.length * 70 - (panelHeight - 50));
-        this.activeTaskScroll.y = Phaser.Math.Clamp(this.activeTaskScroll.y, -maxScroll, 0);
-      }
-    });
   }
 
+  // ------------------------------
+  // 4. Adding Tasks to Backlog
+  // ------------------------------
   addBacklogTask(task) {
-    console.log(`Adding task to backlog: ${task.description}`);
     this.backlogTasks.push(task);
-    const taskY = this.backlogTasks.length * 30;
-    const taskText = this.scene.add.text(0, taskY, task.description, {
-      font: '16px Arial',
-      fill: '#ffffff',
-      wordWrap: { width: 280 }
-    }).setDepth(15);
-    this.backlogScroll.add(taskText);
-
-    // Add interactivity to commit task
-    taskText.setInteractive(new Phaser.Geom.Rectangle(0, 0, 280, 30), Phaser.Geom.Rectangle.Contains);
-    taskText.on('pointerdown', () => {
-      console.log(`Committing task: ${task.description}`);
-      this.scene.commitTask(task);
-    });
+    this.renderBacklog();
   }
 
-  commitTask(task) {
-    console.log(`Committing task: ${task.description}`);
-    this.scene.commitTask(task);
-    this.backlogTasks = this.backlogTasks.filter(t => t !== task);
-    this.refreshBacklog();
-    this.activeTasks.push(task);
-    this.addActiveTask(task);
-  }
-
-  refreshBacklog() {
+  renderBacklog() {
     this.backlogScroll.removeAll(true);
-    this.backlogTasks.forEach((t, index) => {
-      const taskText = this.scene.add.text(0, index * 30, t.description, {
-        font: '16px Arial',
-        fill: '#ffffff',
-        wordWrap: { width: 280 }
-      }).setDepth(15);
-      this.backlogScroll.add(taskText);
-      taskText.setInteractive(new Phaser.Geom.Rectangle(0, 0, 280, 30), Phaser.Geom.Rectangle.Contains);
-      taskText.on('pointerdown', () => {
-        console.log(`Committing task: ${t.description}`);
-        this.scene.commitTask(t);
-      });
+    this.backlogTasks.forEach((task, index) => {
+      const taskItem = this.createTaskItem(task, 'backlog');
+      taskItem.y = index * 60;
+      this.backlogScroll.add(taskItem);
     });
   }
 
+  // ------------------------------
+  // 5. Adding Tasks to Active Tasks
+  // ------------------------------
   addActiveTask(task) {
-    if (this.activeTasks.length > 5) { // Limit to 5 active tasks
-      console.log('Maximum active tasks reached.');
-      return;
-    }
-
-    const yPosition = this.activeTasks.length * 70; // Increased spacing for better readability
-    const taskInfo = `• ${task.description}\nSteps: ${task.steps}\nRisk: ${task.riskLevel}`;
-    
-    // Task Text
-    const taskText = this.scene.add.text(0, yPosition, taskInfo, {
-      font: '16px Arial',
-      fill: '#ffffff',
-      wordWrap: { width: 230 }
-    }).setDepth(15);
-    this.activeTaskScroll.add(taskText);
-
-    // Gather Button
-    const gatherButton = this.scene.add.text(240, yPosition, 'Gather', {
-      font: '14px Arial',
-      fill: '#00ff00',
-      backgroundColor: '#000000',
-      padding: { x: 5, y: 5 }
-    })
-    .setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains)
-    .setDepth(15);
-    gatherButton.on('pointerdown', () => {
-      console.log(`Gathering resources for task: ${task.description}`);
-      task.progress();
-      this.refreshActiveTasks();
-    });
-    this.activeTaskScroll.add(gatherButton);
-
-    // Finalize Button
-    const finalizeButton = this.scene.add.text(330, yPosition, 'Finalize', {
-      font: '14px Arial',
-      fill: '#ff0000',
-      backgroundColor: '#000000',
-      padding: { x: 5, y: 5 }
-    })
-    .setInteractive(new Phaser.Geom.Rectangle(0, 0, 80, 25), Phaser.Geom.Rectangle.Contains)
-    .setDepth(15);
-    finalizeButton.on('pointerdown', () => {
-      console.log(`Finalizing task: ${task.description}`);
-      this.scene.finalizeTask(task);
-    });
-    this.activeTaskScroll.add(finalizeButton);
+    this.activeTasks.push(task);
+    this.renderActiveTasks();
   }
 
-  refreshActiveTasks() {
+  renderActiveTasks() {
     this.activeTaskScroll.removeAll(true);
     this.activeTasks.forEach((task, index) => {
-      this.addActiveTask(task);
+      const taskItem = this.createTaskItem(task, 'active');
+      taskItem.y = index * 100;
+      this.activeTaskScroll.add(taskItem);
     });
   }
 
-  finalizeTask(task) {
-    if (task.isCompleted()) {
-      this.score += task.reward;
-      this.scoreText.setText(`Score: ${this.score}`);
-      this.stakeholderScores[task.stakeholder.key].setText(`${task.stakeholder.name}: ${task.stakeholder.score}`);
-      this.activeTasks = this.activeTasks.filter(t => t !== task);
-      this.refreshActiveTasks();
-      console.log(`Task finalized: ${task.description}, Reward: ${task.reward}`);
-    } else {
-      // Handle incomplete task finalization
-      console.log(`Attempted to finalize incomplete task: ${task.description}`);
-      // Optionally, emit an event or handle penalties elsewhere
+  // ------------------------------
+  // 6. Creating Task Items
+  // ------------------------------
+  createTaskItem(task, type) {
+    const container = this.scene.add.container(0, 0).setDepth(11);
+
+    // Background for task item
+    const bg = this.scene.add.rectangle(0, 0, 280, 50, 0x34495e).setOrigin(0).setInteractive();
+    container.add(bg);
+
+    // Task Description
+    const description = this.scene.add.text(10, 10, task.description, {
+      font: '16px Arial',
+      fill: '#ecf0f1',
+      wordWrap: { width: 260 }
+    }).setOrigin(0).setDepth(12);
+    container.add(description);
+
+    if (type === 'active') {
+      // Steps Remaining
+      const stepsText = this.scene.add.text(10, 30, `Steps: ${task.steps}`, {
+        font: '14px Arial',
+        fill: '#bdc3c7'
+      }).setOrigin(0).setDepth(12);
+      container.add(stepsText);
+
+      // Risk Level
+      const riskText = this.scene.add.text(100, 30, `Risk: ${task.riskLevel}`, {
+        font: '14px Arial',
+        fill: '#bdc3c7'
+      }).setOrigin(0).setDepth(12);
+      container.add(riskText);
+
+      // Action Buttons
+      const gatherButton = this.createButton(180, 30, 'Gather', '#27ae60', () => {
+        this.handleGather(task);
+      });
+      container.add(gatherButton);
+
+      const finalizeButton = this.createButton(240, 30, 'Finalize', '#c0392b', () => {
+        this.handleFinalize(task);
+      });
+      container.add(finalizeButton);
+    }
+
+    // Toggle details on click
+    bg.on('pointerdown', () => {
+      if (type === 'backlog') {
+        this.handleCommitTask(task);
+      }
+    });
+
+    return container;
+  }
+
+  // ------------------------------
+  // 7. Creating Buttons
+  // ------------------------------
+  createButton(x, y, text, color, callback) {
+    const button = this.scene.add.text(x, y, text, {
+      font: '14px Arial',
+      fill: '#ffffff',
+      backgroundColor: color,
+      padding: { x: 5, y: 5 },
+      align: 'center'
+    }).setOrigin(0.5).setInteractive();
+
+    button.on('pointerdown', () => {
+      callback();
+    });
+
+    button.on('pointerover', () => {
+      button.setStyle({ fill: '#f1c40f' });
+    });
+
+    button.on('pointerout', () => {
+      button.setStyle({ fill: '#ffffff' });
+    });
+
+    return button;
+  }
+
+  // ------------------------------
+  // 8. Handling Task Commit
+  // ------------------------------
+  handleCommitTask(task) {
+    // Move task from backlog to active tasks
+    this.backlogTasks = this.backlogTasks.filter(t => t !== task);
+    this.addActiveTask(task);
+    this.scene.commitTask(task); // Assuming this updates task status
+    this.renderBacklog();
+  }
+
+  // ------------------------------
+  // 9. Handling Gather Action
+  // ------------------------------
+  handleGather(task) {
+    if (task.steps > 0) {
+      task.steps -= 1;
+      console.log(`Gathering resources for task: ${task.description}, Steps left: ${task.steps}`);
+      if (task.steps === 0) {
+        this.finalizeTask(task);
+      } else {
+        this.renderActiveTasks();
+      }
     }
   }
 
-  removeActiveTask(task) {
-    this.activeTasks = this.activeTasks.filter(t => t !== task);
-    this.refreshActiveTasks();
-    console.log(`Removed active task: ${task.description}`);
+  // ------------------------------
+  // 10. Handling Finalize Action
+  // ------------------------------
+  handleFinalize(task) {
+    if (task.steps === 0) {
+      this.finalizeTask(task);
+    } else {
+      console.log(`Cannot finalize task: ${task.description}. Steps remaining.`);
+      // Optionally, display a notification to the player
+    }
   }
 
-  updateScore(scoreData) {
-    this.score += scoreData.amount;
+  // ------------------------------
+  // 11. Finalizing Task
+  // ------------------------------
+  finalizeTask(task) {
+    this.score += task.reward;
     this.scoreText.setText(`Score: ${this.score}`);
-    console.log(`Score updated: ${this.score}`);
+    this.scene.stakeholders[task.stakeholder.key].increaseScore(task.reward);
+    this.stakeholderScores[task.stakeholder.key].setText(`${task.stakeholder.name}: ${task.stakeholder.score}`);
+
+    // Remove task from active tasks
+    this.activeTasks = this.activeTasks.filter(t => t !== task);
+    this.renderActiveTasks();
+
+    console.log(`Task finalized: ${task.description}, Reward: ${task.reward}`);
+    // Optionally, display a notification to the player
   }
 
+  // ------------------------------
+  // 12. Updating Stakeholder Scores
+  // ------------------------------
   updateStakeholderScores(stakeholderData) {
     const { key, name, score } = stakeholderData;
     if (this.stakeholderScores[key]) {
       this.stakeholderScores[key].setText(`${name}: ${score}`);
       console.log(`Stakeholder score updated: ${name} - ${score}`);
     }
+  }
+
+  // ------------------------------
+  // 13. Updating Score
+  // ------------------------------
+  updateScore(scoreData) {
+    this.score += scoreData.amount;
+    this.scoreText.setText(`Score: ${this.score}`);
+    console.log(`Score updated: ${this.score}`);
   }
 }
 
