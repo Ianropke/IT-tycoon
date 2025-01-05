@@ -2,6 +2,7 @@
 import Player from '../objects/Player.js';
 import Task from '../objects/Task.js';
 import Stakeholder from '../objects/Stakeholder.js';
+import UIManager from '../ui/UIManager.js';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -38,8 +39,9 @@ export default class GameScene extends Phaser.Scene {
     // Input handling
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    // Reference to UIScene
-    this.uiScene = this.scene.get('UIScene');
+    // Initialize UIManager
+    this.uiManager = new UIManager(this);
+    this.uiManager.createUI();
 
     // Event listeners
     this.events.on('completed', this.handleTaskCompletion, this);
@@ -49,7 +51,7 @@ export default class GameScene extends Phaser.Scene {
   createZones() {
     // Define UI panel widths and padding
     const backlogWidth = 300;
-    const activeTaskWidth = 250;
+    const activeTaskWidth = 300;
     const padding = 50;
     const gameWidth = this.sys.game.config.width;
     const gameHeight = this.sys.game.config.height;
@@ -87,35 +89,6 @@ export default class GameScene extends Phaser.Scene {
         fill: '#ffffff'
       }).setOrigin(0.5).setDepth(6); // Above the zone
     });
-
-    // Backlog zone (optional interaction)
-    const backlogZone = {
-      key: 'backlog',
-      x: padding,
-      y: gameHeight - 100,
-      width: backlogWidth,
-      height: 100,
-      color: 0x9b59b6
-    };
-
-    const backlogGraphics = this.add.graphics();
-    backlogGraphics.fillStyle(backlogZone.color, 1);
-    backlogGraphics.fillRect(backlogZone.x, backlogZone.y - backlogZone.height / 2, backlogZone.width, backlogZone.height);
-    backlogGraphics.setDepth(5); // Lower than player and UI
-
-    const backlogRect = new Phaser.Geom.Rectangle(backlogZone.x, backlogZone.y - backlogZone.height / 2, backlogZone.width, backlogZone.height);
-    backlogGraphics.setInteractive(backlogRect, Phaser.Geom.Rectangle.Contains);
-
-    backlogGraphics.on('pointerdown', () => {
-      console.log('Backlog zone clicked.');
-      // Optionally, focus on backlog panel or perform specific actions
-    });
-
-    // Add label to backlog
-    this.add.text(backlogZone.x + backlogZone.width / 2, backlogZone.y, 'Backlog', {
-      font: '20px Arial',
-      fill: '#ffffff'
-    }).setOrigin(0.5).setDepth(6); // Above the backlog zone
   }
 
   handleZoneInteraction(zoneKey) {
@@ -134,10 +107,6 @@ export default class GameScene extends Phaser.Scene {
         break;
       case 'informationSecurity':
         console.log('Information Security zone clicked.');
-        break;
-      case 'backlog':
-        console.log('Backlog zone clicked.');
-        // Optionally, highlight the backlog panel or perform specific actions
         break;
       default:
         break;
@@ -167,7 +136,9 @@ export default class GameScene extends Phaser.Scene {
       this.activeTasks.push(task);
       this.backlog = this.backlog.filter(t => t !== task);
       console.log(`Task committed: ${task.description}`);
-      this.uiScene.commitTask(task);
+      // Update UI via UIManager
+      this.uiManager.addActiveTask(task);
+      this.uiManager.renderBacklog();
     }
   }
 
@@ -177,7 +148,7 @@ export default class GameScene extends Phaser.Scene {
       this.stakeholders[task.stakeholder.key].increaseScore(task.reward);
       this.events.emit('completed', task);
       this.activeTasks = this.activeTasks.filter(t => t !== task);
-      this.uiScene.finalizeTask(task);
+      this.uiManager.finalizeTask(task);
     } else {
       // Handle incomplete task finalization
       this.events.emit('taskFailed', task);
@@ -186,7 +157,7 @@ export default class GameScene extends Phaser.Scene {
 
   handleTaskCompletion(task) {
     console.log(`Task completed: ${task.description}`);
-    this.uiScene.updateScore({ amount: task.reward });
+    this.uiManager.updateScore({ amount: task.reward });
     // Additional logic as needed
   }
 
@@ -195,10 +166,10 @@ export default class GameScene extends Phaser.Scene {
     this.score -= penalty;
     this.stakeholders[task.stakeholder.key].decreaseScore(penalty);
     console.log(`Task failed: ${task.description}, Penalty: ${penalty}`);
-    this.uiScene.updateScore({ amount: -penalty });
+    this.uiManager.updateScore({ amount: -penalty });
     // Remove failed task from active tasks
     this.activeTasks = this.activeTasks.filter(t => t !== task);
-    this.uiScene.removeActiveTask(task);
+    this.uiManager.removeActiveTask(task);
   }
 
   updateTasks(time, delta) {
@@ -223,3 +194,4 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 }
+
