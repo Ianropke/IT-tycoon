@@ -3,20 +3,27 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #f4f4f9;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #game-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Game world takes 2/3 of the width */
+  grid-template-rows: 1fr;
+  gap: 10px;
+  height: 100%;
+}
+
+#game-world {
   position: relative;
   width: 100%;
-  max-width: 1000px;
-  height: 600px;
-  margin: 20px auto;
-  border: 1px solid #ccc;
+  height: 100%;
   background: #fff;
+  border: 1px solid #ccc;
   overflow: hidden;
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: 10px;
 }
 
 #player {
@@ -33,8 +40,8 @@ body {
 
 .location {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   background: gray;
   color: white;
   display: flex;
@@ -46,39 +53,46 @@ body {
 }
 
 #dispatch {
-  top: 50px;
-  left: 50px;
+  top: 10%;
+  left: 10%;
 }
 
 #legal {
-  top: 50px;
-  left: 300px;
+  top: 10%;
+  right: 10%;
+  position: absolute;
 }
 
 #infrastructure {
-  top: 250px;
-  left: 300px;
+  bottom: 50%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 #vendors {
-  top: 450px;
-  left: 600px;
+  bottom: 10%;
+  right: 10%;
+  position: absolute;
 }
 
 #ui {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-left: 1px solid #ccc;
+  overflow-y: auto;
 }
 
 #tasks-window,
 #active-task-window {
   padding: 10px;
-  background: #f9f9f9;
+  background: #ffffff;
   border: 1px solid #ccc;
   border-radius: 5px;
   overflow-y: auto;
-  max-height: 250px;
+  flex-grow: 1;
 }
 
 #tasks-window h2,
@@ -118,4 +132,5 @@ body {
 #active-task-details {
   font-size: 14px;
   line-height: 1.5;
+  padding: 5px;
 }
