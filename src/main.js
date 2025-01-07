@@ -1,28 +1,12 @@
-// src/main.js
-import BootScene from './scenes/BootScene.js';
 import GameScene from './scenes/GameScene.js';
 
-const config = {
+const gameConfig = {
   type: Phaser.AUTO,
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: 800,
+  height: 600,
+  backgroundColor: '#f8f9fa',
   parent: 'game-container',
-  scene: [BootScene, GameScene],
-  physics: {
-    default: 'arcade',
-    arcade: {
-      debug: false
-    }
-  },
-  scale: {
-    mode: Phaser.Scale.RESIZE,
-    autoCenter: Phaser.Scale.CENTER_BOTH
-  }
+  scene: [GameScene],
 };
 
-const game = new Phaser.Game(config);
-
-// Handle window resize
-window.addEventListener('resize', () => {
-  game.scale.resize(window.innerWidth, window.innerHeight);
-});
+new Phaser.Game(gameConfig);
