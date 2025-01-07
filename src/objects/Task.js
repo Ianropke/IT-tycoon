@@ -1,19 +1,26 @@
 export default class Task {
-  constructor(description, risk, priority, steps, budget, deadline) {
+  constructor(
+    description,
+    risk,
+    priority,
+    steps,
+    reward,
+    penalty,
+    requiredLocations = []
+  ) {
     this.description = description;
     this.risk = risk;
     this.priority = priority;
     this.steps = steps;
-    this.progress = 0;
-    this.budget = budget;
-    this.deadline = deadline;
-    this.status = 'dispatch';
+    this.reward = reward;
+    this.penalty = penalty;
+    this.requiredLocations = [...requiredLocations]; // Sequence of locations
+    this.status = 'dispatch'; // dispatch, active, completed
+    this.progress = 0; // Track progress
   }
 
   commit() {
-    if (this.status === 'dispatch') {
-      this.status = 'active';
-    }
+    this.status = 'active';
   }
 
   progressTask() {
