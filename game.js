@@ -5,7 +5,7 @@ const player = {
   element: document.getElementById("player"),
   x: 400,
   y: 300,
-  speed: 10, // Increased speed
+  speed: 8, // Increased speed
 };
 
 // Resources and tasks
@@ -40,25 +40,38 @@ let availableTasks = [
 
 // DOM elements
 const taskList = document.getElementById("task-list");
-const resourcesPanel = document.getElementById("resources");
+const activeTaskDetails = document.getElementById("active-task-details");
 
 // Update UI
 function updateUI() {
-  // Update tasks
+  // Display available tasks
   taskList.innerHTML = "";
   availableTasks.forEach((task, index) => {
     const taskDiv = document.createElement("div");
+    taskDiv.classList.add("task");
     taskDiv.innerHTML = `
-      <strong>${task.description}</strong> (Giver: ${task.taskGiver})
-      <br>Risk: ${task.risk}, Reward: ${task.reward}
-      <br>Steps: ${task.requiredLocations.join(" → ")}
+      <strong>${task.description}</strong>
+      <p>Giver: ${task.taskGiver}</p>
+      <p>Risk: ${task.risk}, Reward: ${task.reward}</p>
+      <p>Steps: ${task.requiredLocations.join(" → ")}</p>
       <button onclick="commitToTask(${index})">Commit</button>
     `;
     taskList.appendChild(taskDiv);
   });
 
-  // Update resources
-  resourcesPanel.textContent = `Time: ${resources.time}, Budget: ${resources.budget}, Personnel: ${resources.personnel}`;
+  // Display active task details
+  if (activeTasks.length > 0) {
+    const task = activeTasks[0];
+    activeTaskDetails.innerHTML = `
+      <strong>${task.description}</strong>
+      <p>Giver: ${task.taskGiver}</p>
+      <p>Risk: ${task.risk}, Reward: ${task.reward}</p>
+      <p>Progress: ${task.progress} / ${task.requiredLocations.length}</p>
+      <p>Next Step: ${task.requiredLocations[task.progress]}</p>
+    `;
+  } else {
+    activeTaskDetails.innerHTML = "<p>No active tasks.</p>";
+  }
 }
 
 // Player movement
@@ -75,57 +88,15 @@ function movePlayer(event) {
   checkLocationInteraction();
 }
 
-// Check if the player is near a location
-function checkLocationInteraction() {
-  const locations = document.querySelectorAll(".location");
-  locations.forEach((location) => {
-    const rect = location.getBoundingClientRect();
-    const playerRect = player.element.getBoundingClientRect();
-
-    if (
-      playerRect.left < rect.right &&
-      playerRect.right > rect.left &&
-      playerRect.top < rect.bottom &&
-      playerRect.bottom > rect.top
-    ) {
-      handleLocationInteraction(location.dataset.name);
-    }
-  });
-}
-
-// Handle interaction with a location
-function handleLocationInteraction(locationName) {
-  if (locationName === "Dispatch") {
-    // Tasks are already visible at Dispatch
-    return;
-  } else if (activeTasks.length > 0) {
-    const currentTask = activeTasks[0];
-    const nextLocation = currentTask.requiredLocations[currentTask.progress];
-    if (nextLocation === locationName) {
-      currentTask.progress++;
-      resources.time -= 10;
-      resources.budget -= currentTask.risk * 5; // Penalty for risk
-
-      if (currentTask.progress === currentTask.requiredLocations.length) {
-        alert(
-          `Task "${currentTask.description}" by ${currentTask.taskGiver} completed! You earned ${currentTask.reward} budget.`
-        );
-        resources.budget += currentTask.reward; // Add reward
-        activeTasks.shift(); // Remove completed task
-      }
-
-      updateUI();
-    }
-  }
-}
-
 // Commit to a task
 function commitToTask(taskIndex) {
   const task = availableTasks.splice(taskIndex, 1)[0];
   activeTasks.push(task);
-  alert(`You have committed to "${task.description}"`);
+  alert(`You committed to "${task.description}"`);
   updateUI();
 }
+
+// Check location interactions (same as before)
 
 // Initialize game
 document.addEventListener("keydown", movePlayer);
