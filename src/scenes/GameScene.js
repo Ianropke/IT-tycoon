@@ -19,8 +19,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('player', 'https://via.placeholder.com/32'); // Placeholder for player sprite
-    this.load.image('location', 'https://via.placeholder.com/64'); // Placeholder for location sprite
+    // Use a CORS-enabled placeholder service for dummy images
+    this.load.image('player', 'https://dummyimage.com/32x32/000/fff.png&text=P'); // Player placeholder
+    this.load.image('location', 'https://dummyimage.com/64x64/ccc/000.png&text=L'); // Location placeholder
   }
 
   create() {
