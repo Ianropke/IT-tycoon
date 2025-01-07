@@ -32,6 +32,7 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
+    // Generate initial tasks
     for (let i = 0; i < 5; i++) {
       const task = new Task(`Task ${i + 1}`, 'Low', 'Normal', 3, 50, 10);
       this.tasks.push(task);
@@ -44,3 +45,4 @@ export default class GameScene extends Phaser.Scene {
     this.uiManager.updateUI(this.resources, this.tasks, this.activeTasks);
   }
 }
+
