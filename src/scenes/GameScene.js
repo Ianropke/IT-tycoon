@@ -18,26 +18,20 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    // Dummy assets as placeholders
     this.add.text(10, 10, 'Loading...', { font: '16px Arial', fill: '#000' });
   }
 
   create() {
     this.uiManager = new UIManager(this);
 
-    this.add.text(10, 10, 'IT Tycoon MVP', {
-      font: '20px Arial',
-      fill: '#000',
-    });
+    this.add.text(10, 10, 'IT Tycoon MVP', { font: '20px Arial', fill: '#000' });
 
-    // Handle AudioContext resumption
     this.input.once('pointerdown', () => {
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
     });
 
-    // Generate placeholder tasks
     for (let i = 0; i < 5; i++) {
       const task = new Task(`Task ${i + 1}`, 'Low', 'Normal', 3, 50, 10);
       this.tasks.push(task);
@@ -50,4 +44,3 @@ export default class GameScene extends Phaser.Scene {
     this.uiManager.updateUI(this.resources, this.tasks, this.activeTasks);
   }
 }
-
