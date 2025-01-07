@@ -1,31 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon MVP</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div id="game-container">
-    <div id="game-world">
-      <div id="player"></div>
-      <div class="location" id="dispatch" data-name="Dispatch">Dispatch</div>
-      <div class="location" id="legal" data-name="Legal Department">Legal Dept</div>
-      <div class="location" id="infrastructure" data-name="Infrastructure">Infrastructure</div>
-      <div class="location" id="vendors" data-name="Vendors">Vendors</div>
-    </div>
-    <div id="ui">
-      <div id="tasks-window">
-        <h2>Available Tasks</h2>
-        <div id="task-list"></div>
-      </div>
-      <div id="active-task-window">
-        <h2>Active Task</h2>
-        <div id="active-task-details"></div>
-      </div>
-    </div>
-  </div>
-  <script src="game.js"></script>
-</body>
-</html>
+/* styles.css */
+body {
+  margin: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#game-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  gap: 10px;
+}
+
+#score-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 20px;
+  color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
+
+#score-bar h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+#score-bar p {
+  margin: 0;
+  font-size: 18px;
+}
+
+#game-world {
+  position: relative;
+  background: url('https://via.placeholder.com/1000x600') no-repeat center center / cover;
+  border: 2px solid white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#player {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: blue;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  box-shadow: 0px 0px 10px 2px white;
+}
+
+.location {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1;
+}
+
+.location:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color: black;
+}
+
+#dispatch {
+  top: 10%;
+  left: 10%;
+}
+
+#legal {
+  top: 10%;
+  right: 10%;
+}
+
+#infrastructure {
+  bottom: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#vendors {
+  bottom: 10%;
+  right: 10%;
+}
+
+#ui {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border-left: 2px solid white;
+  overflow-y: auto;
+  border-radius: 10px;
+}
+
+#tasks-window,
+#active-task-window {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid black;
+  border-radius: 10px;
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+#tasks-window h2,
+#active-task-window h2 {
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.task {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #f4f4f4;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.task button {
+  align-self: flex-end;
+  padding: 5px 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.task button:hover {
+  background: #0056b3;
+}
+
+#active-task-details {
+  font-size: 14px;
+  line-height: 1.5;
+}
