@@ -24,6 +24,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 2; /* Ensure player is above locations */
 }
 
 .location {
@@ -37,6 +38,7 @@ body {
   align-items: center;
   border: 2px solid black;
   text-align: center;
+  z-index: 1;
 }
 
 #dispatch {
