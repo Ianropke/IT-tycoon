@@ -5,7 +5,7 @@ const player = {
   element: document.getElementById("player"),
   x: 400,
   y: 300,
-  speed: 5,
+  speed: 10, // Increased speed
 };
 
 // Resources and tasks
@@ -51,6 +51,7 @@ function updateUI() {
     taskDiv.innerHTML = `
       <strong>${task.description}</strong> (Giver: ${task.taskGiver})
       <br>Risk: ${task.risk}, Reward: ${task.reward}
+      <br>Steps: ${task.requiredLocations.join(" → ")}
       <button onclick="commitToTask(${index})">Commit</button>
     `;
     taskList.appendChild(taskDiv);
