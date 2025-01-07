@@ -3,15 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon</title>
-  <!-- Link to the CSS styles -->
-  <link rel="stylesheet" href="styles/styles.css">
-  <!-- Include Phaser library -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+  <title>IT Tycoon MVP</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="game-container"></div>
-  <!-- Link to the main game script -->
-  <script src="src/main.js" type="module"></script>
+  <div id="game-container">
+    <div id="player"></div>
+    <div class="location" id="dispatch" data-name="Dispatch">Dispatch</div>
+    <div class="location" id="legal" data-name="Legal Department">Legal Dept</div>
+    <div class="location" id="infrastructure" data-name="Infrastructure">Infrastructure</div>
+    <div class="location" id="vendors" data-name="Vendors">Vendors</div>
+    <div id="ui-panel">
+      <h2>Tasks</h2>
+      <div id="task-list"></div>
+      <h3>Resources</h3>
+      <p id="resources">Time: 100, Budget: 500, Personnel: 5</p>
+    </div>
+  </div>
+  <script src="game.js"></script>
 </body>
 </html>
