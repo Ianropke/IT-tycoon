@@ -7,21 +7,19 @@ export default class UIManager {
     this.activeTasksPanel = this.createPanel(260, 50, 240, 500, 'Active Tasks');
     this.resourcesPanel = this.createPanel(510, 50, 240, 150, 'Resources');
 
-    // Elements
+    // Element storage
     this.dispatchTasks = [];
     this.activeTasks = [];
     this.resourcesText = null;
   }
 
   createPanel(x, y, width, height, title) {
-    // Panel background
     this.scene.add.rectangle(x + width / 2, y + height / 2, width, height, 0xffffff).setStrokeStyle(2, 0x000000);
-    // Panel title
     this.scene.add.text(x + 10, y + 10, title, { font: '16px Arial', fill: '#000' });
   }
 
-  updateUI(resources, dispatchTasks, activeTasks) {
-    // Update resources
+  updateUI(resources, tasks, activeTasks) {
+    // Update Resources
     if (this.resourcesText) this.resourcesText.destroy();
     this.resourcesText = this.scene.add.text(
       520,
@@ -32,7 +30,7 @@ export default class UIManager {
 
     // Update Dispatch Queue
     this.clearTasks(this.dispatchTasks);
-    this.dispatchTasks = dispatchTasks
+    this.dispatchTasks = tasks
       .filter((task) => task.status === 'dispatch')
       .map((task, index) => this.createDispatchTask(task, 20, 100 + index * 60));
 
@@ -46,7 +44,7 @@ export default class UIManager {
   createDispatchTask(task, x, y) {
     const container = this.scene.add.container(x, y);
 
-    // Task description
+    // Task text
     const taskText = this.scene.add.text(0, 0, `${task.description}\nRisk: ${task.risk}\nPriority: ${task.priority}`, {
       font: '14px Arial',
       fill: '#000',
@@ -59,8 +57,10 @@ export default class UIManager {
     container.add(button).add(buttonText);
 
     button.on('pointerdown', () => {
+      // Move task to active queue
       task.commit();
       this.scene.activeTasks.push(task);
+      this.scene.tasks = this.scene.tasks.filter((t) => t !== task);
     });
 
     return container;
