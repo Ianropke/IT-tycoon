@@ -10,24 +10,29 @@ const player = {
 
 // Resources and tasks
 const resources = { time: 100, budget: 500, personnel: 5 };
-let tasks = [];
 let activeTasks = [];
-const availableTasks = [
+let availableTasks = [
   {
     description: "System Audit",
     taskGiver: "IT Security",
+    risk: 3,
+    reward: 50,
     requiredLocations: ["Legal Department", "Infrastructure", "Vendors"],
     progress: 0,
   },
   {
     description: "Employee Portal Setup",
     taskGiver: "HR Department",
+    risk: 2,
+    reward: 30,
     requiredLocations: ["Infrastructure", "Vendors", "Legal Department"],
     progress: 0,
   },
   {
     description: "Accounting Software Integration",
     taskGiver: "Finance Department",
+    risk: 4,
+    reward: 70,
     requiredLocations: ["Vendors", "Legal Department", "Infrastructure"],
     progress: 0,
   },
@@ -41,11 +46,12 @@ const resourcesPanel = document.getElementById("resources");
 function updateUI() {
   // Update tasks
   taskList.innerHTML = "";
-  activeTasks.forEach((task) => {
+  availableTasks.forEach((task, index) => {
     const taskDiv = document.createElement("div");
     taskDiv.innerHTML = `
       <strong>${task.description}</strong> (Giver: ${task.taskGiver})
-      <br>Progress: ${task.progress}/${task.requiredLocations.length}
+      <br>Risk: ${task.risk}, Reward: ${task.reward}
+      <button onclick="commitToTask(${index})">Commit</button>
     `;
     taskList.appendChild(taskDiv);
   });
@@ -89,17 +95,21 @@ function checkLocationInteraction() {
 // Handle interaction with a location
 function handleLocationInteraction(locationName) {
   if (locationName === "Dispatch") {
-    loadNewTasks();
+    // Tasks are already visible at Dispatch
+    return;
   } else if (activeTasks.length > 0) {
     const currentTask = activeTasks[0];
     const nextLocation = currentTask.requiredLocations[currentTask.progress];
     if (nextLocation === locationName) {
       currentTask.progress++;
       resources.time -= 10;
-      resources.budget -= 20;
+      resources.budget -= currentTask.risk * 5; // Penalty for risk
 
       if (currentTask.progress === currentTask.requiredLocations.length) {
-        alert(`Task "${currentTask.description}" by ${currentTask.taskGiver} completed!`);
+        alert(
+          `Task "${currentTask.description}" by ${currentTask.taskGiver} completed! You earned ${currentTask.reward} budget.`
+        );
+        resources.budget += currentTask.reward; // Add reward
         activeTasks.shift(); // Remove completed task
       }
 
@@ -108,15 +118,12 @@ function handleLocationInteraction(locationName) {
   }
 }
 
-// Load new tasks from the dispatch location
-function loadNewTasks() {
-  if (tasks.length === 0 && availableTasks.length > 0) {
-    tasks = availableTasks.splice(0, 2); // Load two new tasks
-    activeTasks.push(...tasks);
-    tasks = [];
-    updateUI();
-    alert("New tasks loaded!");
-  }
+// Commit to a task
+function commitToTask(taskIndex) {
+  const task = availableTasks.splice(taskIndex, 1)[0];
+  activeTasks.push(task);
+  alert(`You have committed to "${task.description}"`);
+  updateUI();
 }
 
 // Initialize game
