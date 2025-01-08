@@ -3,30 +3,37 @@
 // Player and Resources
 const player = {
   element: document.getElementById("player"),
-  x: 400,
-  y: 300,
-  speed: 10, // Faster speed
+  x: 200,
+  y: 150,
+  speed: 8,
 };
 
 const resources = { time: 100, budget: 500, personnel: 5 };
-let score = 0;
+let score = { "IT Security": 0, "HR Department": 0 };
 
 // Tasks
 let activeTasks = [];
 let availableTasks = [
   { description: "System Audit", taskGiver: "IT Security", risk: 3, reward: 50, requiredLocations: ["Legal Department", "Infrastructure"], progress: 0 },
-  { description: "Employee Portal", taskGiver: "HR", risk: 2, reward: 30, requiredLocations: ["Infrastructure"], progress: 0 },
+  { description: "Employee Portal", taskGiver: "HR Department", risk: 2, reward: 30, requiredLocations: ["Infrastructure"], progress: 0 },
 ];
 
 // DOM Elements
 const taskList = document.getElementById("task-list");
 const activeTaskDetails = document.getElementById("active-task-details");
-const scoreDisplay = document.getElementById("score-display");
+const scoreDisplay = document.getElementById("score-bar");
+
+// Introduction Screen Logic
+document.getElementById("start-game").addEventListener("click", () => {
+  document.getElementById("intro-screen").style.display = "none";
+  document.getElementById("game-container").style.display = "grid";
+});
 
 // Update UI
 function updateUI() {
   // Update score
-  scoreDisplay.innerText = `Score: ${score}`;
+  document.getElementById("it-security-score").innerText = score["IT Security"];
+  document.getElementById("hr-score").innerText = score["HR Department"];
 
   // Available Tasks
   taskList.innerHTML = "";
@@ -49,30 +56,19 @@ function updateUI() {
         .map(
           (task) => `
         <strong>${task.description}</strong>
-        <p>Giver: ${task.taskGiver}</p>
         <p>Progress: ${task.progress}/${task.requiredLocations.length}</p>
       `
         )
         .join("")
-    : "<p>No active tasks.</p>";
+    : "No active tasks.";
 }
 
-// Commit to Task
+// Commit to a Task
 function commitToTask(index) {
   const task = availableTasks.splice(index, 1)[0];
   activeTasks.push(task);
-  score += task.reward;
   updateUI();
 }
 
-// Movement
-document.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowUp") player.y -= player.speed;
-  if (event.key === "ArrowDown") player.y += player.speed;
-  if (event.key === "ArrowLeft") player.x -= player.speed;
-  if (event.key === "ArrowRight") player.x += player.speed;
-  player.element.style.left = `${player.x}px`;
-  player.element.style.top = `${player.y}px`;
-});
-
+// Initialize
 updateUI();
