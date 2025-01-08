@@ -91,13 +91,18 @@ function checkPlayerLocation() {
 
     locations.forEach((location) => {
         const locationRect = location.getBoundingClientRect();
+        const locationElement = document.getElementById(location.id);
+
         if (
             playerRect.left < locationRect.right &&
             playerRect.right > locationRect.left &&
             playerRect.top < locationRect.bottom &&
             playerRect.bottom > locationRect.top
         ) {
+            locationElement.classList.add("highlight"); // Highlight the location
             handleLocationVisit(location.id);
+        } else {
+            locationElement.classList.remove("highlight"); // Remove highlight when not visiting
         }
     });
 }
@@ -116,6 +121,9 @@ function handleLocationVisit(location) {
 
     if (activeTask && activeTask.steps[0] === capitalize(location)) {
         activeTask.steps.shift();
+        const locationElement = document.getElementById(location);
+        locationElement.classList.add("completed"); // Add visual cue for completed step
+        setTimeout(() => locationElement.classList.remove("completed"), 1000); // Remove cue after 1 second
         if (activeTask.steps.length === 0) {
             alert("Task completed! Click 'Complete Task' to finalize.");
         }
