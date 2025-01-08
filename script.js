@@ -239,7 +239,16 @@ function renderAvailableTasks() {
     desc.classList.add('task-description');
     desc.style.display = 'none'; // Hidden by default
 
-    // Toggle description on tap/click
+    // Create a commit button
+    const commitButton = document.createElement('button');
+    commitButton.textContent = 'Commit';
+    commitButton.classList.add('commit-button');
+    commitButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent triggering the description toggle
+      assignTask(task.id);
+    });
+
+    // Toggle description on tap/click (excluding commit button)
     li.addEventListener('click', () => {
       // Hide all other descriptions
       document.querySelectorAll('.task-description').forEach(p => {
@@ -249,18 +258,8 @@ function renderAvailableTasks() {
       desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
     });
 
-    // Assign Task on long press (for touch devices)
-    let pressTimer;
-    li.addEventListener('touchstart', () => {
-      pressTimer = setTimeout(() => {
-        assignTask(task.id);
-      }, 500); // Long press duration
-    });
-    li.addEventListener('touchend', () => {
-      clearTimeout(pressTimer);
-    });
-
     li.appendChild(desc);
+    li.appendChild(commitButton); // Append commit button
     tasksList.appendChild(li);
   });
 }
@@ -428,7 +427,7 @@ function startTaskGenerator() {
     if (gameState.availableTasks.length > 0) {
       showPopup('New tasks available.', 'success');
     }
-  }, 5000); // Every 5 seconds
+  }, 10000); // Increased interval from 5s to 10s
 }
 
 // Start Periodic Task Urgency Escalation
@@ -443,7 +442,7 @@ function startTaskUrgencyEscalation() {
       // High urgency remains high
     });
     renderAvailableTasks();
-  }, 10000); // Every 10 seconds
+  }, 20000); // Increased interval from 10s to 20s
 }
 
 // Start System Uptime Decay Over Time
