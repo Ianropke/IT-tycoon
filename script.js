@@ -1,127 +1,234 @@
-const player = document.getElementById("player");
+// JavaScript for IT Tycoon Game Logic
+
+// Player Object
+const player = {
+  element: document.getElementById('player'),
+  position: { top: 50, left: 50 }, // Percentage
+  moveSpeed: 2, // Percentage per key press
+};
+
+// Game State
+const gameState = {
+  tasksCompleted: 0,
+  totalRewards: 0,
+  departmentRewards: {
+    'IT Security': 0,
+    'HR Department': 0,
+  },
+  activeTask: null,
+  availableTasks: [],
+};
+
+// Locations
 const locations = {
-  dispatch: document.getElementById("dispatch"),
-  infrastructure: document.getElementById("infrastructure"),
-  legalDept: document.getElementById("legal-dept"),
-  vendors: document.getElementById("vendors"),
-};
-const taskList = document.getElementById("tasks-list");
-const activeTask = document.getElementById("active-task");
-const completeTaskButton = document.getElementById("complete-task");
-const scores = {
-  itSecurity: document.getElementById("it-security-score"),
-  hr: document.getElementById("hr-score"),
-  total: document.getElementById("total-score"),
+  Dispatch: document.getElementById('dispatch'),
+  Infrastructure: document.getElementById('infrastructure'),
+  'Legal Department': document.getElementById('legal'),
+  Vendors: document.getElementById('vendors'),
 };
 
-let activeTaskData = null;
-let availableTasks = [];
-let playerPosition = { x: 25, y: 50 }; // Percentage position
+// UI Elements
+const scoreboard = {
+  tasksCompleted: document.getElementById('tasks-completed'),
+  totalRewards: document.getElementById('total-rewards'),
+  itSecurity: document.getElementById('it-security'),
+  hrDepartment: document.getElementById('hr-department'),
+};
 
-function updatePlayerPosition() {
-  player.style.left = `${playerPosition.x}%`;
-  player.style.top = `${playerPosition.y}%`;
+const activeTaskDetails = document.getElementById('active-task-details');
+const tasksList = document.getElementById('tasks-list');
+
+// Initialize Game
+function initGame() {
+  updateScoreboard();
+  generateAvailableTasks();
+  renderAvailableTasks();
+  setupEventListeners();
 }
 
-function checkLocation() {
-  Object.keys(locations).forEach((key) => {
-    const rect = locations[key].getBoundingClientRect();
-    const playerRect = player.getBoundingClientRect();
-
-    if (
-      playerRect.left < rect.right &&
-      playerRect.right > rect.left &&
-      playerRect.top < rect.bottom &&
-      playerRect.bottom > rect.top
-    ) {
-      onEnterLocation(key);
-    }
-  });
+// Update Scoreboard UI
+function updateScoreboard() {
+  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
+  scoreboard.totalRewards.textContent = gameState.totalRewards;
+  scoreboard.itSecurity.textContent = gameState.departmentRewards['IT Security'];
+  scoreboard.hrDepartment.textContent = gameState.departmentRewards['HR Department'];
 }
 
-function onEnterLocation(location) {
-  if (location === "dispatch" && availableTasks.length === 0) {
-    taskList.innerHTML = "Loading tasks...";
-    setTimeout(() => {
-      availableTasks = [
-        { name: "System Audit", giver: "IT Security", steps: ["Legal Dept", "Infrastructure"], risk: 3, reward: 50 },
-        { name: "Employee Portal", giver: "HR Department", steps: ["Infrastructure"], risk: 2, reward: 30 },
-      ];
-      renderTasks();
-    }, 3000);
-  }
+// Generate Random Tasks
+function generateAvailableTasks() {
+  // Example: Generate 3 random tasks
+  for (let i = 0; i < 3; i++) {
+    const riskLevel = Math.floor(Math.random() * 3) + 1; // 1 to 3
+    const reward = riskLevel * 100; // Example reward calculation
+    const departments = Object.keys(gameState.departmentRewards);
+    const department = departments[Math.floor(Math.random() * departments.length)];
+    const steps = getRandomTaskSteps();
 
-  if (activeTaskData && activeTaskData.steps[0] === location) {
-    activeTaskData.steps.shift();
-    if (activeTaskData.steps.length === 0) {
-      completeTaskButton.disabled = false;
-    }
-    highlightLocation(location);
+    const task = {
+      id: Date.now() + i,
+      department,
+      riskLevel,
+      reward,
+      steps,
+      currentStep: 0,
+    };
+
+    gameState.availableTasks.push(task);
   }
 }
 
-function highlightLocation(location) {
-  locations[location].style.backgroundColor = "green";
-  setTimeout(() => {
-    locations[location].style.backgroundColor = "#444";
-  }, 1000);
+// Get Random Task Steps (Sequence of Locations)
+function getRandomTaskSteps() {
+  const locationKeys = Object.keys(locations).filter(loc => loc !== 'Dispatch');
+  const stepsCount = Math.floor(Math.random() * 3) + 2; // 2 to 4 steps
+  const steps = [];
+
+  while (steps.length < stepsCount) {
+    const loc = locationKeys[Math.floor(Math.random() * locationKeys.length)];
+    if (!steps.includes(loc)) {
+      steps.push(loc);
+    }
+  }
+
+  return steps;
 }
 
-function renderTasks() {
-  taskList.innerHTML = "";
-  availableTasks.forEach((task, index) => {
-    const taskDiv = document.createElement("div");
-    taskDiv.innerHTML = `
-      <strong>${task.name}</strong><br>
-      Giver: ${task.giver}<br>
-      Risk: ${task.risk}, Reward: ${task.reward}<br>
-      Steps: ${task.steps.join(" → ")}
-      <button onclick="commitTask(${index})">Commit</button>
-    `;
-    taskDiv.classList.add("task");
-    taskList.appendChild(taskDiv);
+// Render Available Tasks in UI
+function renderAvailableTasks() {
+  tasksList.innerHTML = '';
+  if (gameState.availableTasks.length === 0) {
+    tasksList.innerHTML = '<li>No available tasks.</li>';
+    return;
+  }
+
+  gameState.availableTasks.forEach(task => {
+    const li = document.createElement('li');
+    li.textContent = `Task ${task.id}: ${task.department} - Reward: $${task.reward} - Risk: ${task.riskLevel}`;
+    li.addEventListener('click', () => assignTask(task.id));
+    tasksList.appendChild(li);
   });
 }
 
-function commitTask(index) {
-  activeTaskData = availableTasks.splice(index, 1)[0];
-  activeTask.innerHTML = `
-    <strong>${activeTaskData.name}</strong><br>
-    Giver: ${activeTaskData.giver}<br>
-    Steps: ${activeTaskData.steps.join(" → ")}
-  `;
-  renderTasks();
+// Assign Task to Active Task
+function assignTask(taskId) {
+  if (gameState.activeTask) {
+    alert('You already have an active task.');
+    return;
+  }
+
+  const taskIndex = gameState.availableTasks.findIndex(task => task.id === taskId);
+  if (taskIndex === -1) return;
+
+  gameState.activeTask = gameState.availableTasks.splice(taskIndex, 1)[0];
+  activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
+  renderAvailableTasks();
 }
 
-completeTaskButton.addEventListener("click", () => {
-  if (!activeTaskData) return;
+// Format Active Task Details
+function formatActiveTask(task) {
+  return `Task ${task.id} (${task.department}) - Reward: $${task.reward}\nSteps: ${task.steps.join(' -> ')}`;
+}
 
-  const score = parseInt(scores[activeTaskData.giver.toLowerCase().replace(" ", "")].innerText) || 0;
-  scores[activeTaskData.giver.toLowerCase().replace(" ", "")].innerText = score + activeTaskData.reward;
-  scores.total.innerText = parseInt(scores.total.innerText) + activeTaskData.reward;
+// Setup Keyboard and Location Event Listeners
+function setupEventListeners() {
+  document.addEventListener('keydown', handleMovement);
 
-  activeTaskData = null;
-  activeTask.innerHTML = "No active tasks.";
-  completeTaskButton.disabled = true;
-});
+  Object.values(locations).forEach(location => {
+    location.addEventListener('click', () => handleLocationVisit(location.dataset.name));
+  });
+}
 
-document.addEventListener("keydown", (e) => {
+// Handle Player Movement via Arrow Keys
+function handleMovement(e) {
   switch (e.key) {
-    case "ArrowUp":
-      playerPosition.y = Math.max(5, playerPosition.y - 5);
+    case 'ArrowUp':
+      player.position.top = Math.max(player.position.top - player.moveSpeed, 0);
       break;
-    case "ArrowDown":
-      playerPosition.y = Math.min(95, playerPosition.y + 5);
+    case 'ArrowDown':
+      player.position.top = Math.min(player.position.top + player.moveSpeed, 100);
       break;
-    case "ArrowLeft":
-      playerPosition.x = Math.max(5, playerPosition.x - 5);
+    case 'ArrowLeft':
+      player.position.left = Math.max(player.position.left - player.moveSpeed, 0);
       break;
-    case "ArrowRight":
-      playerPosition.x = Math.min(95, playerPosition.x + 5);
+    case 'ArrowRight':
+      player.position.left = Math.min(player.position.left + player.moveSpeed, 100);
       break;
+    default:
+      return;
   }
   updatePlayerPosition();
-  checkLocation();
-});
+  checkDispatchStanding();
+}
 
-updatePlayerPosition();
+// Update Player's Position in the UI
+function updatePlayerPosition() {
+  player.element.style.top = `${player.position.top}%`;
+  player.element.style.left = `${player.position.left}%`;
+}
+
+// Check if Player is Standing on Dispatch to Assign Tasks
+let dispatchTimer = null;
+function checkDispatchStanding() {
+  const dispatch = locations['Dispatch'];
+  const playerRect = player.element.getBoundingClientRect();
+  const dispatchRect = dispatch.getBoundingClientRect();
+
+  if (
+    playerRect.left < dispatchRect.right &&
+    playerRect.right > dispatchRect.left &&
+    playerRect.top < dispatchRect.bottom &&
+    playerRect.bottom > dispatchRect.top
+  ) {
+    if (!dispatchTimer) {
+      dispatchTimer = setTimeout(() => {
+        generateAvailableTasks();
+        renderAvailableTasks();
+        dispatchTimer = null;
+      }, 3000); // 3 seconds
+    }
+  } else {
+    if (dispatchTimer) {
+      clearTimeout(dispatchTimer);
+      dispatchTimer = null;
+    }
+  }
+}
+
+// Handle Visiting a Location
+function handleLocationVisit(locationName) {
+  // Visual Feedback
+  const location = locations[locationName];
+  location.classList.add('visited');
+  setTimeout(() => location.classList.remove('visited'), 500);
+
+  // If there's an active task, check the next step
+  if (gameState.activeTask) {
+    const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStep];
+    if (locationName === currentStep) {
+      gameState.activeTask.currentStep += 1;
+      if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
+        completeTask();
+      } else {
+        activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
+      }
+    } else {
+      alert('Wrong location! Task failed.');
+      gameState.activeTask = null;
+      activeTaskDetails.textContent = 'No active task.';
+    }
+  }
+}
+
+// Complete the Active Task
+function completeTask() {
+  alert('Task Completed!');
+  gameState.tasksCompleted += 1;
+  gameState.totalRewards += gameState.activeTask.reward;
+  gameState.departmentRewards[gameState.activeTask.department] += gameState.activeTask.reward;
+  gameState.activeTask = null;
+  activeTaskDetails.textContent = 'No active task.';
+  updateScoreboard();
+}
+
+// Start the Game
+initGame();
