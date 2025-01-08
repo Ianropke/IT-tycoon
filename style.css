@@ -12,7 +12,7 @@ header, footer {
   text-align: center;
 }
 
-h1, h2 {
+h1, h2, h3 {
   margin: 10px 0;
 }
 
@@ -113,10 +113,12 @@ main {
   padding: 10px;
   border-radius: 3px;
   transition: background-color 0.3s;
+  position: relative;
 }
 
 #tasks-list li:hover {
   background-color: #1abc9c;
+  cursor: pointer;
 }
 
 /* Urgency Color Coding */
@@ -132,8 +134,23 @@ main {
   background-color: #e74c3c;
 }
 
-footer {
+/* Task Description Styles */
+.task-description {
+  margin-top: 5px;
   font-size: 0.9em;
+  color: #bdc3c7;
+}
+
+/* Active Task Description Styles */
+#active-task-description {
+  margin-top: 10px;
+  font-style: italic;
+  color: #bdc3c7;
+}
+
+/* Active Task Headline Styles */
+#active-task-headline {
+  color: #1abc9c;
 }
 
 /* Popup Notification Styles */
