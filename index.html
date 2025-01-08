@@ -2,38 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IT Tycoon</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="game-container">
-    <div class="scoreboard">
+  <div id="game-container">
+    <header>
       <h1>IT Tycoon</h1>
-      <div class="score-item">IT Security: <span id="it-security-score">0</span></div>
-      <div class="score-item">HR Department: <span id="hr-score">0</span></div>
-      <div class="score-item">Total: <span id="total-score">0</span></div>
-    </div>
-    <div class="game-area">
-      <div class="locations">
-        <div id="dispatch" class="location">Dispatch</div>
-        <div id="infrastructure" class="location">Infrastructure</div>
-        <div id="legal-dept" class="location">Legal Dept</div>
-        <div id="vendors" class="location">Vendors</div>
-        <div id="player" class="player"></div>
+      <div id="scoreboard">
+        <h2>Scoreboard</h2>
+        <div id="scores">
+          <p>Tasks Completed: <span id="tasks-completed">0</span></p>
+          <p>Total Rewards: $<span id="total-rewards">0</span></p>
+          <p>IT Security: $<span id="it-security">0</span></p>
+          <p>HR Department: $<span id="hr-department">0</span></p>
+        </div>
       </div>
-    </div>
-    <div class="panels">
-      <div class="available-tasks">
-        <h2>Available Tasks</h2>
-        <div id="tasks-list">Stand on Dispatch to see tasks.</div>
+    </header>
+    <main>
+      <div id="game-area">
+        <!-- Locations -->
+        <div class="location" id="dispatch" data-name="Dispatch" style="top: 20%; left: 50%;">Dispatch</div>
+        <div class="location" id="infrastructure" data-name="Infrastructure" style="top: 40%; left: 20%;">Infrastructure</div>
+        <div class="location" id="legal" data-name="Legal Department" style="top: 40%; left: 80%;">Legal Department</div>
+        <div class="location" id="vendors" data-name="Vendors" style="top: 70%; left: 50%;">Vendors</div>
+        <!-- Player -->
+        <div id="player"></div>
       </div>
-      <div class="active-task">
-        <h2>Active Task</h2>
-        <div id="active-task">No active tasks.</div>
-        <button id="complete-task" disabled>Complete Task</button>
+      <div id="task-panels">
+        <div id="active-task">
+          <h2>Active Task</h2>
+          <p id="active-task-details">No active task.</p>
+        </div>
+        <div id="available-tasks">
+          <h2>Available Tasks</h2>
+          <ul id="tasks-list">
+            <li>No available tasks.</li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </main>
+    <footer>
+      <p>&copy; 2025 IT Tycoon Inc.</p>
+    </footer>
   </div>
   <script src="script.js"></script>
 </body>
