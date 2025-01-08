@@ -1,91 +1,60 @@
-/* styles.css */
-
 /* General Styling */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #282c34;
+  background: #1e1e2f;
   color: white;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
-}
-
-/* Introduction Screen */
-#intro-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: #444;
-  color: white;
-  height: 100vh;
-  padding: 20px;
-}
-
-#intro-screen h1 {
-  margin-bottom: 20px;
-}
-
-#intro-screen p {
-  margin-bottom: 20px;
-}
-
-#intro-screen ul {
-  text-align: left;
-  margin: 0 auto;
-  padding: 0;
-  max-width: 400px;
-}
-
-#intro-screen button {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#intro-screen button:hover {
-  background: #0056b3;
 }
 
 /* Game Container */
 #game-container {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
-/* Score Bar */
-#score-bar {
+/* Top Bar */
+#top-bar {
+  background: #2c2f40;
+  padding: 10px 20px;
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #333;
-  padding: 10px 20px;
-  color: white;
 }
 
-#score-bar h1 {
+#top-bar h1 {
   margin: 0;
   font-size: 24px;
 }
 
-#scores p {
-  margin: 0;
-  font-size: 18px;
+#scores {
+  font-size: 16px;
+}
+
+/* Main Content */
+#main-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  height: 100%;
 }
 
 /* Game World */
 #game-world {
   position: relative;
-  background: #1d1f21;
-  border: 2px solid #333;
+  background: #282c34;
+  border: 2px solid #444;
+  border-radius: 10px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
 }
 
 #player {
@@ -109,7 +78,7 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 0 10px #000;
 }
 
@@ -138,23 +107,15 @@ body {
   right: 10%;
 }
 
-/* Task UI */
-#ui {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  background: #333;
-  border-left: 2px solid #444;
-}
-
+/* Tasks and Active Task */
 #tasks-window,
 #active-task-window {
   padding: 10px;
-  background: #444;
-  border: 1px solid #555;
-  border-radius: 5px;
+  background: #333;
+  border: 1px solid #444;
+  border-radius: 10px;
   overflow-y: auto;
+  height: 100%;
 }
 
 #tasks-window h2,
@@ -167,7 +128,7 @@ body {
 .task {
   padding: 10px;
   margin-bottom: 10px;
-  background: #555;
+  background: #444;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
