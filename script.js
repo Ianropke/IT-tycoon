@@ -1,140 +1,127 @@
-let tasks = [
-    { name: "System Audit", giver: "IT Security", steps: ["Legal Dept", "Infrastructure"], risk: 3, reward: 50 },
-    { name: "Employee Portal", giver: "HR Department", steps: ["Infrastructure"], risk: 2, reward: 30 },
-];
-
-let activeTask = null;
-let scores = { "IT Security": 0, "HR Department": 0 };
-let totalScore = 0;
 const player = document.getElementById("player");
+const locations = {
+  dispatch: document.getElementById("dispatch"),
+  infrastructure: document.getElementById("infrastructure"),
+  legalDept: document.getElementById("legal-dept"),
+  vendors: document.getElementById("vendors"),
+};
+const taskList = document.getElementById("tasks-list");
+const activeTask = document.getElementById("active-task");
+const completeTaskButton = document.getElementById("complete-task");
+const scores = {
+  itSecurity: document.getElementById("it-security-score"),
+  hr: document.getElementById("hr-score"),
+  total: document.getElementById("total-score"),
+};
 
-let dispatchTimer = null; // Timer to track 5 seconds on Dispatch
+let activeTaskData = null;
+let availableTasks = [];
+let playerPosition = { x: 25, y: 50 }; // Percentage position
 
-// Task Functions
-function loadTasks() {
-    const tasksList = document.getElementById("tasks-list");
-    tasksList.innerHTML = ""; // Clear existing tasks
-    tasks.forEach((task, index) => {
-        const taskDiv = document.createElement("div");
-        taskDiv.classList.add("task");
-        taskDiv.innerHTML = `
-            <strong>${task.name}</strong><br>
-            Giver: ${task.giver}<br>
-            Risk: ${task.risk}, Reward: ${task.reward}<br>
-            Steps: ${task.steps.join(" → ")}
-            <button class="commit-btn" onclick="commitTask(${index})">Commit</button>
-        `;
-        tasksList.appendChild(taskDiv);
-    });
+function updatePlayerPosition() {
+  player.style.left = `${playerPosition.x}%`;
+  player.style.top = `${playerPosition.y}%`;
+}
+
+function checkLocation() {
+  Object.keys(locations).forEach((key) => {
+    const rect = locations[key].getBoundingClientRect();
+    const playerRect = player.getBoundingClientRect();
+
+    if (
+      playerRect.left < rect.right &&
+      playerRect.right > rect.left &&
+      playerRect.top < rect.bottom &&
+      playerRect.bottom > rect.top
+    ) {
+      onEnterLocation(key);
+    }
+  });
+}
+
+function onEnterLocation(location) {
+  if (location === "dispatch" && availableTasks.length === 0) {
+    taskList.innerHTML = "Loading tasks...";
+    setTimeout(() => {
+      availableTasks = [
+        { name: "System Audit", giver: "IT Security", steps: ["Legal Dept", "Infrastructure"], risk: 3, reward: 50 },
+        { name: "Employee Portal", giver: "HR Department", steps: ["Infrastructure"], risk: 2, reward: 30 },
+      ];
+      renderTasks();
+    }, 3000);
+  }
+
+  if (activeTaskData && activeTaskData.steps[0] === location) {
+    activeTaskData.steps.shift();
+    if (activeTaskData.steps.length === 0) {
+      completeTaskButton.disabled = false;
+    }
+    highlightLocation(location);
+  }
+}
+
+function highlightLocation(location) {
+  locations[location].style.backgroundColor = "green";
+  setTimeout(() => {
+    locations[location].style.backgroundColor = "#444";
+  }, 1000);
+}
+
+function renderTasks() {
+  taskList.innerHTML = "";
+  availableTasks.forEach((task, index) => {
+    const taskDiv = document.createElement("div");
+    taskDiv.innerHTML = `
+      <strong>${task.name}</strong><br>
+      Giver: ${task.giver}<br>
+      Risk: ${task.risk}, Reward: ${task.reward}<br>
+      Steps: ${task.steps.join(" → ")}
+      <button onclick="commitTask(${index})">Commit</button>
+    `;
+    taskDiv.classList.add("task");
+    taskList.appendChild(taskDiv);
+  });
 }
 
 function commitTask(index) {
-    if (activeTask) {
-        alert("You already have an active task!");
-        return;
-    }
-    activeTask = tasks.splice(index, 1)[0];
-    updateActiveTaskDisplay();
-    loadTasks();
+  activeTaskData = availableTasks.splice(index, 1)[0];
+  activeTask.innerHTML = `
+    <strong>${activeTaskData.name}</strong><br>
+    Giver: ${activeTaskData.giver}<br>
+    Steps: ${activeTaskData.steps.join(" → ")}
+  `;
+  renderTasks();
 }
 
-function updateActiveTaskDisplay() {
-    const activeTaskDetails = document.getElementById("active-task-details");
-    const completeTaskBtn = document.getElementById("completeTask");
-    if (activeTask) {
-        activeTaskDetails.innerHTML = `
-            <strong>${activeTask.name}</strong><br>
-            Giver: ${activeTask.giver}<br>
-            Steps: ${activeTask.steps.join(" → ")}
-        `;
-        completeTaskBtn.disabled = false;
-    } else {
-        activeTaskDetails.innerHTML = "No active tasks.";
-        completeTaskBtn.disabled = true;
-    }
-}
+completeTaskButton.addEventListener("click", () => {
+  if (!activeTaskData) return;
 
-function completeTask() {
-    if (activeTask) {
-        scores[activeTask.giver] += activeTask.reward;
-        totalScore += activeTask.reward;
-        activeTask = null;
-        updateScoreboard();
-        updateActiveTaskDisplay();
-    }
-}
+  const score = parseInt(scores[activeTaskData.giver.toLowerCase().replace(" ", "")].innerText) || 0;
+  scores[activeTaskData.giver.toLowerCase().replace(" ", "")].innerText = score + activeTaskData.reward;
+  scores.total.innerText = parseInt(scores.total.innerText) + activeTaskData.reward;
 
-function updateScoreboard() {
-    document.getElementById("scoreboard").innerHTML = `
-        <p>IT Security: ${scores["IT Security"]}</p>
-        <p>HR Department: ${scores["HR Department"]}</p>
-        <p>Total: ${totalScore}</p>
-    `;
-}
-
-// Player Movement and Interaction
-document.addEventListener("keydown", (e) => {
-    const step = 10;
-    const rect = player.getBoundingClientRect();
-    const parentRect = player.parentElement.getBoundingClientRect();
-    if (e.key === "ArrowUp" && rect.top > parentRect.top) player.style.top = `${player.offsetTop - step}px`;
-    if (e.key === "ArrowDown" && rect.bottom < parentRect.bottom) player.style.top = `${player.offsetTop + step}px`;
-    if (e.key === "ArrowLeft" && rect.left > parentRect.left) player.style.left = `${player.offsetLeft - step}px`;
-    if (e.key === "ArrowRight" && rect.right < parentRect.right) player.style.left = `${player.offsetLeft + step}px`;
-
-    checkPlayerLocation();
+  activeTaskData = null;
+  activeTask.innerHTML = "No active tasks.";
+  completeTaskButton.disabled = true;
 });
 
-function checkPlayerLocation() {
-    const locations = document.querySelectorAll(".location");
-    const playerRect = player.getBoundingClientRect();
+document.addEventListener("keydown", (e) => {
+  switch (e.key) {
+    case "ArrowUp":
+      playerPosition.y = Math.max(5, playerPosition.y - 5);
+      break;
+    case "ArrowDown":
+      playerPosition.y = Math.min(95, playerPosition.y + 5);
+      break;
+    case "ArrowLeft":
+      playerPosition.x = Math.max(5, playerPosition.x - 5);
+      break;
+    case "ArrowRight":
+      playerPosition.x = Math.min(95, playerPosition.x + 5);
+      break;
+  }
+  updatePlayerPosition();
+  checkLocation();
+});
 
-    locations.forEach((location) => {
-        const locationRect = location.getBoundingClientRect();
-        const locationElement = document.getElementById(location.id);
-
-        if (
-            playerRect.left < locationRect.right &&
-            playerRect.right > locationRect.left &&
-            playerRect.top < locationRect.bottom &&
-            playerRect.bottom > locationRect.top
-        ) {
-            locationElement.classList.add("highlight"); // Highlight the location
-            handleLocationVisit(location.id);
-        } else {
-            locationElement.classList.remove("highlight"); // Remove highlight when not visiting
-        }
-    });
-}
-
-function handleLocationVisit(location) {
-    if (location === "dispatch") {
-        if (!dispatchTimer) {
-            dispatchTimer = setTimeout(() => {
-                loadTasks();
-            }, 5000);
-        }
-    } else {
-        clearTimeout(dispatchTimer);
-        dispatchTimer = null;
-    }
-
-    if (activeTask && activeTask.steps[0] === capitalize(location)) {
-        activeTask.steps.shift();
-        const locationElement = document.getElementById(location);
-        locationElement.classList.add("completed"); // Add visual cue for completed step
-        setTimeout(() => locationElement.classList.remove("completed"), 1000); // Remove cue after 1 second
-        if (activeTask.steps.length === 0) {
-            alert("Task completed! Click 'Complete Task' to finalize.");
-        }
-        updateActiveTaskDisplay();
-    }
-}
-
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
-
-// Initialize Game
-updateActiveTaskDisplay();
-updateScoreboard();
+updatePlayerPosition();
