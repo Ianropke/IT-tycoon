@@ -7,38 +7,32 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="intro-screen">
-    <h1>Welcome to IT Tycoon!</h1>
-    <p>Your goal is to manage IT tasks efficiently, visiting the required locations and balancing risks and rewards. Here's how to play:</p>
-    <ul>
-      <li>Use arrow keys to move between locations.</li>
-      <li>Select tasks from the available list and commit to them.</li>
-      <li>Complete tasks by visiting the required locations in the correct order.</li>
-      <li>Earn rewards and boost your score by completing tasks successfully!</li>
-    </ul>
-    <button id="start-game">Start Game</button>
-  </div>
-
-  <div id="game-container" style="display: none;">
-    <div id="score-bar">
+  <div id="game-container">
+    <div id="top-bar">
       <h1>IT Tycoon</h1>
       <div id="scores">
-        <p>IT Security: <span id="it-security-score">0</span></p>
-        <p>HR Department: <span id="hr-score">0</span></p>
+        IT Security: <span id="it-security-score">0</span> | 
+        HR Department: <span id="hr-score">0</span>
       </div>
     </div>
-    <div id="game-world">
-      <div id="player"></div>
-      <div class="location" id="dispatch" data-name="Dispatch">Dispatch</div>
-      <div class="location" id="legal" data-name="Legal Department">Legal Dept</div>
-      <div class="location" id="infrastructure" data-name="Infrastructure">Infrastructure</div>
-      <div class="location" id="vendors" data-name="Vendors">Vendors</div>
-    </div>
-    <div id="ui">
+
+    <div id="main-content">
+      <!-- Available Tasks -->
       <div id="tasks-window">
         <h2>Available Tasks</h2>
         <div id="task-list"></div>
       </div>
+
+      <!-- Game Space -->
+      <div id="game-world">
+        <div id="player"></div>
+        <div class="location" id="dispatch" data-name="Dispatch">Dispatch</div>
+        <div class="location" id="legal" data-name="Legal Department">Legal Dept</div>
+        <div class="location" id="infrastructure" data-name="Infrastructure">Infrastructure</div>
+        <div class="location" id="vendors" data-name="Vendors">Vendors</div>
+      </div>
+
+      <!-- Active Task -->
       <div id="active-task-window">
         <h2>Active Task</h2>
         <div id="active-task-details"></div>
