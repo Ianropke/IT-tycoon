@@ -1,150 +1,114 @@
-/* General Styling */
+/* General Styles */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #1e1e2f;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  background-color: #1b1b2f;
+  color: #fff;
 }
 
-/* Game Container */
-#game-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* Top Bar */
-#top-bar {
-  background: #2c2f40;
-  padding: 10px 20px;
-  color: white;
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 10px 20px;
+  background-color: #0f3460;
+  border-bottom: 2px solid #e94560;
 }
 
-#top-bar h1 {
+h1 {
   margin: 0;
-  font-size: 24px;
 }
 
-#scores {
-  font-size: 16px;
+#scoreboard {
+  font-size: 14px;
 }
 
-/* Main Content */
-#main-content {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 20px;
-  padding: 20px;
-  height: 100%;
-}
-
-/* Game World */
-#game-world {
-  position: relative;
-  background: #282c34;
-  border: 2px solid #444;
-  border-radius: 10px;
-  overflow: hidden;
+/* Game Area */
+#game-area {
   display: flex;
-  justify-content: center;
+  height: calc(100vh - 60px);
+}
+
+#map {
+  flex: 2;
+  position: relative;
+  background-color: #162447;
+  border: 2px solid #0f3460;
+  margin: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.location {
+  background-color: #1f4068;
+  color: #fff;
+  border-radius: 5px;
+  display: flex;
   align-items: center;
-  height: 400px;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 #player {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  background: blue;
+  width: 20px;
+  height: 20px;
+  background-color: #e94560;
   border-radius: 50%;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.location {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background: #444;
-  color: white;
+/* Task Panel */
+#task-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+#available-tasks,
+#active-task {
+  flex: 1;
+  background-color: #1f4068;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+/* Intro Overlay */
+#intro-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
+}
+
+.intro-content {
   text-align: center;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #000;
 }
 
-.location:hover {
-  background: #007bff;
-}
-
-#dispatch {
-  top: 10%;
-  left: 10%;
-}
-
-#legal {
-  top: 10%;
-  right: 10%;
-}
-
-#infrastructure {
-  bottom: 50%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-#vendors {
-  bottom: 10%;
-  right: 10%;
-}
-
-/* Tasks and Active Task */
-#tasks-window,
-#active-task-window {
-  padding: 10px;
-  background: #333;
-  border: 1px solid #444;
-  border-radius: 10px;
-  overflow-y: auto;
-  height: 100%;
-}
-
-#tasks-window h2,
-#active-task-window h2 {
-  margin: 0;
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-
-.task {
-  padding: 10px;
-  margin-bottom: 10px;
-  background: #444;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.task button {
-  align-self: flex-end;
-  padding: 5px 10px;
-  background: #007bff;
-  color: white;
+#start-game-btn {
+  padding: 10px 20px;
+  background-color: #e94560;
+  color: #fff;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-}
-
-.task button:hover {
-  background: #0056b3;
+  font-size: 16px;
 }
