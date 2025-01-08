@@ -4,48 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Tycoon</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Intro Screen -->
   <div id="intro-overlay">
-    <div class="intro-content">
-      <h1>Welcome to IT Tycoon</h1>
-      <p>
-        Take on the role of an IT manager! Navigate the map, accept tasks at the Dispatch area, and complete them to earn rewards. 
-        Remember, each task has risks and rewards. Use your resources wisely!
-      </p>
-      <button id="start-game-btn">Start Game</button>
-    </div>
+    <h1>Welcome to IT Tycoon</h1>
+    <p>Move around the map, accept tasks from the Dispatch area, and complete tasks to earn points. The higher the risk, the greater the reward!</p>
+    <button id="start-game-btn">Start Game</button>
   </div>
-  <div id="game-container">
-    <header>
-      <h1>IT Tycoon</h1>
-      <div id="scoreboard">
-        <span>IT Security: <span id="it-security-score">0</span></span> |
-        <span>HR Department: <span id="hr-score">0</span></span> |
-        <span>Total Score: <span id="total-score">0</span></span>
+
+  <!-- Game Container -->
+  <div id="game-container" style="display: none;">
+    <div id="scoreboard">
+      <h2>Scoreboard</h2>
+      <p>IT Security: <span id="it-security-score">0</span></p>
+      <p>HR Department: <span id="hr-score">0</span></p>
+      <p>Total: <span id="total-score">0</span></p>
+    </div>
+
+    <div id="map-container">
+      <div id="dispatch" class="location">Dispatch</div>
+      <div id="legal-dept" class="location">Legal Dept</div>
+      <div id="infrastructure" class="location">Infrastructure</div>
+      <div id="vendors" class="location">Vendors</div>
+      <div id="player"></div>
+    </div>
+
+    <div id="task-container">
+      <div id="task-list">
+        <h3>Available Tasks</h3>
+        <div id="available-tasks"></div>
       </div>
-    </header>
-    <div id="game-area">
-      <div id="map">
-        <div class="location" id="dispatch">Dispatch</div>
-        <div class="location" id="legal-dept">Legal Dept</div>
-        <div class="location" id="infrastructure">Infrastructure</div>
-        <div class="location" id="vendors">Vendors</div>
-        <div id="player"></div>
-      </div>
-      <div id="task-panel">
-        <div id="available-tasks">
-          <h2>Available Tasks</h2>
-          <div id="task-list"></div>
-        </div>
-        <div id="active-task">
-          <h2>Active Task</h2>
-          <div id="active-task-details">No active tasks.</div>
-        </div>
+      <div id="active-task">
+        <h3>Active Task</h3>
+        <div id="active-task-details">No active tasks.</div>
+        <button id="complete-task-btn">Complete Task</button>
       </div>
     </div>
   </div>
-  <script src="script.js"></script>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
+>
