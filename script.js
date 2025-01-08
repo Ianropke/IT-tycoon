@@ -8,6 +8,8 @@ let scores = { "IT Security": 0, "HR Department": 0 };
 let totalScore = 0;
 const player = document.getElementById("player");
 
+let dispatchTimer = null; // Timer to track 5 seconds on Dispatch
+
 // Task Functions
 function loadTasks() {
     const tasksList = document.getElementById("tasks-list");
@@ -70,7 +72,7 @@ function updateScoreboard() {
     `;
 }
 
-// Player Movement
+// Player Movement and Interaction
 document.addEventListener("keydown", (e) => {
     const step = 10;
     const rect = player.getBoundingClientRect();
@@ -79,7 +81,52 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowDown" && rect.bottom < parentRect.bottom) player.style.top = `${player.offsetTop + step}px`;
     if (e.key === "ArrowLeft" && rect.left > parentRect.left) player.style.left = `${player.offsetLeft - step}px`;
     if (e.key === "ArrowRight" && rect.right < parentRect.right) player.style.left = `${player.offsetLeft + step}px`;
+
+    checkPlayerLocation();
 });
 
+function checkPlayerLocation() {
+    const locations = document.querySelectorAll(".location");
+    const playerRect = player.getBoundingClientRect();
+
+    locations.forEach((location) => {
+        const locationRect = location.getBoundingClientRect();
+        if (
+            playerRect.left < locationRect.right &&
+            playerRect.right > locationRect.left &&
+            playerRect.top < locationRect.bottom &&
+            playerRect.bottom > locationRect.top
+        ) {
+            handleLocationVisit(location.id);
+        }
+    });
+}
+
+function handleLocationVisit(location) {
+    if (location === "dispatch") {
+        if (!dispatchTimer) {
+            dispatchTimer = setTimeout(() => {
+                loadTasks();
+            }, 5000);
+        }
+    } else {
+        clearTimeout(dispatchTimer);
+        dispatchTimer = null;
+    }
+
+    if (activeTask && activeTask.steps[0] === capitalize(location)) {
+        activeTask.steps.shift();
+        if (activeTask.steps.length === 0) {
+            alert("Task completed! Click 'Complete Task' to finalize.");
+        }
+        updateActiveTaskDisplay();
+    }
+}
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 // Initialize Game
-loadTasks();
+updateActiveTaskDisplay();
+updateScoreboard();
