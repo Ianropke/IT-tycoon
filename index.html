@@ -3,14 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon MVP</title>
+  <title>IT Tycoon</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="game-container">
+  <div id="intro-screen">
+    <h1>Welcome to IT Tycoon!</h1>
+    <p>Your goal is to manage IT tasks efficiently, visiting the required locations and balancing risks and rewards. Here's how to play:</p>
+    <ul>
+      <li>Use arrow keys to move between locations.</li>
+      <li>Select tasks from the available list and commit to them.</li>
+      <li>Complete tasks by visiting the required locations in the correct order.</li>
+      <li>Earn rewards and boost your score by completing tasks successfully!</li>
+    </ul>
+    <button id="start-game">Start Game</button>
+  </div>
+
+  <div id="game-container" style="display: none;">
     <div id="score-bar">
       <h1>IT Tycoon</h1>
-      <p id="score-display">Score: 0</p>
+      <div id="scores">
+        <p>IT Security: <span id="it-security-score">0</span></p>
+        <p>HR Department: <span id="hr-score">0</span></p>
+      </div>
     </div>
     <div id="game-world">
       <div id="player"></div>
