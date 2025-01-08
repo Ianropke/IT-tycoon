@@ -21,13 +21,6 @@ let availableTasks = [
 // DOM Elements
 const taskList = document.getElementById("task-list");
 const activeTaskDetails = document.getElementById("active-task-details");
-const scoreDisplay = document.getElementById("score-bar");
-
-// Introduction Screen Logic
-document.getElementById("start-game").addEventListener("click", () => {
-  document.getElementById("intro-screen").style.display = "none";
-  document.getElementById("game-container").style.display = "grid";
-});
 
 // Update UI
 function updateUI() {
