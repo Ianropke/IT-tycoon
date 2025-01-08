@@ -277,7 +277,7 @@ function assignTask(taskId) {
 
   gameState.activeTask = gameState.availableTasks.splice(taskIndex, 1)[0];
   activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
-  activeTaskHeadline.textContent = `Task ${gameState.activeTask.id}: ${gameState.activeTask.headline}`; // Set headline
+  activeTaskHeadline.textContent = `${gameState.activeTask.headline}`; // Set headline without task ID
   activeTaskDescription.textContent = gameState.activeTask.description; // Display description
   renderAvailableTasks();
   updateStepsList();
@@ -286,7 +286,7 @@ function assignTask(taskId) {
 
 // Format Active Task Details
 function formatActiveTask(task) {
-  return `Task ${task.id} (${task.department}) - Reward: $${task.reward}`;
+  return `Task (${task.department}) - Reward: $${task.reward}`;
 }
 
 // Update Steps List in Active Task Panel
