@@ -22,9 +22,8 @@ const gameState = {
   compliance: 100,
 };
 
-// Locations
+// Locations (Removed Dispatch)
 const locations = {
-  Dispatch: document.getElementById('dispatch'),
   Infrastructure: document.getElementById('infrastructure'),
   'Legal Department': document.getElementById('legal'),
   Vendors: document.getElementById('vendors'),
@@ -50,9 +49,10 @@ const popupContainer = document.getElementById('popup-container');
 // Initialize Game
 function initGame() {
   updateScoreboard();
-  generateAvailableTasks();
+  generateAvailableTasks(); // Initial Task Generation
   renderAvailableTasks();
   setupEventListeners();
+  startTaskGenerator(); // Continuous Task Generation
   startTaskUrgencyEscalation();
   startSystemUptimeDecay();
 }
@@ -63,39 +63,37 @@ function updateScoreboard() {
   scoreboard.totalRewards.textContent = gameState.totalRewards;
   scoreboard.itSecurity.textContent = gameState.departmentRewards['IT Security'];
   scoreboard.hrDepartment.textContent = gameState.departmentRewards['HR Department'];
-  scoreboard.systemUptime.textContent = `${gameState.systemUptime}%`;
-  scoreboard.stakeholderSatisfaction.textContent = `${gameState.stakeholderSatisfaction}%`;
-  scoreboard.compliance.textContent = `${gameState.compliance}%`;
+  scoreboard.systemUptime.textContent = `${gameState.systemUptime.toFixed(1)}%`;
+  scoreboard.stakeholderSatisfaction.textContent = `${gameState.stakeholderSatisfaction.toFixed(1)}%`;
+  scoreboard.compliance.textContent = `${gameState.compliance.toFixed(1)}%`;
 }
 
 // Generate Random Tasks with Urgency
 function generateAvailableTasks() {
-  // Example: Generate 3 random tasks
-  for (let i = 0; i < 3; i++) {
-    const riskLevel = Math.floor(Math.random() * 3) + 1; // 1 to 3
-    const reward = riskLevel * 100; // Example reward calculation
-    const departments = Object.keys(gameState.departmentRewards);
-    const department = departments[Math.floor(Math.random() * departments.length)];
-    const steps = getRandomTaskSteps();
-    const urgency = getRandomUrgency(); // Assign initial urgency
+  if (gameState.availableTasks.length >= 10) return; // Max 10 tasks
+  const riskLevel = Math.floor(Math.random() * 3) + 1; // 1 to 3
+  const reward = riskLevel * 100; // Example reward calculation
+  const departments = Object.keys(gameState.departmentRewards);
+  const department = departments[Math.floor(Math.random() * departments.length)];
+  const steps = getRandomTaskSteps();
+  const urgency = getRandomUrgency(); // Assign initial urgency
 
-    const task = {
-      id: Date.now() + i,
-      department,
-      riskLevel,
-      reward,
-      steps,
-      currentStep: 0,
-      urgency, // Added urgency
-    };
+  const task = {
+    id: Date.now(),
+    department,
+    riskLevel,
+    reward,
+    steps,
+    currentStep: 0,
+    urgency, // Added urgency
+  };
 
-    gameState.availableTasks.push(task);
-  }
+  gameState.availableTasks.push(task);
 }
 
 // Get Random Task Steps (Sequence of Locations)
 function getRandomTaskSteps() {
-  const locationKeys = Object.keys(locations).filter(loc => loc !== 'Dispatch');
+  const locationKeys = Object.keys(locations);
   const stepsCount = Math.floor(Math.random() * 3) + 2; // 2 to 4 steps
   const steps = [];
 
@@ -155,16 +153,13 @@ function formatActiveTask(task) {
   return `Task ${task.id} (${task.department}) - Reward: $${task.reward}\nSteps: ${task.steps.join(' -> ')}`;
 }
 
-// Setup Keyboard and Location Event Listeners
+// Setup Keyboard and Collision Event Listeners
 function setupEventListeners() {
   document.addEventListener('keydown', handleMovement);
-
-  Object.values(locations).forEach(location => {
-    location.addEventListener('click', () => handleLocationVisit(location.dataset.name));
-  });
+  requestAnimationFrame(checkCollisions); // Start collision detection loop
 }
 
-// Handle Player Movement via Arrow Keys
+// Handle Player Movement via Arrow Keys and WASD
 function handleMovement(e) {
   switch (e.key) {
     case 'ArrowUp':
@@ -191,7 +186,6 @@ function handleMovement(e) {
       return;
   }
   updatePlayerPosition();
-  checkDispatchStanding();
 }
 
 // Update Player's Position in the UI
@@ -200,37 +194,35 @@ function updatePlayerPosition() {
   player.element.style.left = `${player.position.left}%`;
 }
 
-// Check if Player is Standing on Dispatch to Assign Tasks
-let dispatchTimer = null;
-function checkDispatchStanding() {
-  const dispatch = locations['Dispatch'];
-  const playerRect = player.element.getBoundingClientRect();
-  const dispatchRect = dispatch.getBoundingClientRect();
-
-  if (
-    playerRect.left < dispatchRect.right &&
-    playerRect.right > dispatchRect.left &&
-    playerRect.top < dispatchRect.bottom &&
-    playerRect.bottom > dispatchRect.top
-  ) {
-    if (!dispatchTimer) {
-      dispatchTimer = setTimeout(() => {
-        generateAvailableTasks();
-        renderAvailableTasks();
-        showPopup('New tasks available at Dispatch.', 'success');
-        dispatchTimer = null;
-      }, 3000); // 3 seconds
-    }
-  } else {
-    if (dispatchTimer) {
-      clearTimeout(dispatchTimer);
-      dispatchTimer = null;
+// Check for Collisions between Player and Locations
+function checkCollisions() {
+  for (const [name, location] of Object.entries(locations)) {
+    if (isColliding(player.element, location)) {
+      handleLocationVisit(name);
     }
   }
+  requestAnimationFrame(checkCollisions); // Continue the loop
+}
+
+// Simple Collision Detection
+function isColliding(playerEl, locationEl) {
+  const playerRect = playerEl.getBoundingClientRect();
+  const locationRect = locationEl.getBoundingClientRect();
+
+  return !(
+    playerRect.top > locationRect.bottom ||
+    playerRect.bottom < locationRect.top ||
+    playerRect.left > locationRect.right ||
+    playerRect.right < locationRect.left
+  );
 }
 
 // Handle Visiting a Location
 function handleLocationVisit(locationName) {
+  // Prevent multiple visits for the same collision
+  if (player.isVisiting === locationName) return;
+  player.isVisiting = locationName;
+
   // Visual Feedback
   const location = locations[locationName];
   location.classList.add('visited');
@@ -252,6 +244,11 @@ function handleLocationVisit(locationName) {
       failTask();
     }
   }
+
+  // Reset visit status after a short delay to allow re-visiting if needed
+  setTimeout(() => {
+    player.isVisiting = null;
+  }, 1000);
 }
 
 // Complete the Active Task
@@ -281,7 +278,18 @@ function failTask() {
   gameState.systemUptime = Math.max(gameState.systemUptime - 5, 0);
   gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 10, 0);
   gameState.compliance = Math.max(gameState.compliance - 2, 0);
-  updateScoreboard();
+  showPopup('Task Failed!', 'error');
+}
+
+// Start Continuous Task Generation with Max 10 Tasks
+function startTaskGenerator() {
+  setInterval(() => {
+    generateAvailableTasks();
+    renderAvailableTasks();
+    if (gameState.availableTasks.length > 0) {
+      showPopup('New tasks available.', 'success');
+    }
+  }, 5000); // Every 5 seconds
 }
 
 // Start Periodic Task Urgency Escalation
