@@ -5,6 +5,85 @@ const player = {
   element: document.getElementById('player'),
   position: { top: 50, left: 50 }, // Percentage
   moveSpeed: 2, // Percentage per key press
+  isVisiting: null, // To prevent multiple triggers
+};
+
+// Task Descriptions Pool
+const taskDescriptions = {
+  'IT Security': [
+    'Implement a new firewall to enhance network security.',
+    'Conduct a security audit to identify vulnerabilities.',
+    'Respond to a phishing attack targeting employees.',
+  ],
+  'HR Department': [
+    'Upgrade the employee management system for better performance.',
+    'Resolve access issues in the HR database.',
+    'Integrate new recruitment tools into existing systems.',
+  ],
+  'Infrastructure': [
+    'Upgrade the server infrastructure to support increased load.',
+    'Perform routine maintenance on network switches.',
+    'Install new backup solutions for critical data.',
+  ],
+  'Legal Department': [
+    'Ensure all software licenses are up to date.',
+    'Implement GDPR compliance measures across systems.',
+    'Review and update data retention policies.',
+  ],
+  'Vendors': [
+    'Approve the latest software patch from the vendor.',
+    'Negotiate better SLA terms with the current vendor.',
+    'Integrate the vendor’s new API into existing applications.',
+  ],
+  'Labs': [
+    'Set up new laboratory information management systems (LIMS).',
+    'Troubleshoot connectivity issues in diagnostic equipment.',
+    'Deploy updates to the lab data analysis tools.',
+  ],
+  'Diagnostics': [
+    'Enhance the diagnostic system’s data processing speed.',
+    'Fix the integration between EHR and diagnostic tools.',
+    'Implement new diagnostic software updates.',
+  ],
+};
+
+// Task Headlines Pool
+const taskHeadlines = {
+  'IT Security': [
+    'Firewall Implementation',
+    'Security Audit',
+    'Phishing Attack Response',
+  ],
+  'HR Department': [
+    'Employee Management Upgrade',
+    'HR Database Access Issue',
+    'Recruitment Tools Integration',
+  ],
+  'Infrastructure': [
+    'Server Infrastructure Upgrade',
+    'Network Switch Maintenance',
+    'Backup Solutions Installation',
+  ],
+  'Legal Department': [
+    'Software License Compliance',
+    'GDPR Compliance Implementation',
+    'Data Retention Policy Review',
+  ],
+  'Vendors': [
+    'Software Patch Approval',
+    'SLA Negotiation',
+    'API Integration with Vendor',
+  ],
+  'Labs': [
+    'LIMS Setup',
+    'Diagnostic Equipment Connectivity',
+    'Lab Data Analysis Tools Update',
+  ],
+  'Diagnostics': [
+    'Diagnostic System Speed Enhancement',
+    'EHR-Diagnostic Tools Integration Fix',
+    'Diagnostic Software Updates',
+  ],
 };
 
 // Game State
@@ -43,6 +122,8 @@ const scoreboard = {
 };
 
 const activeTaskDetails = document.getElementById('active-task-details');
+const activeTaskHeadline = document.getElementById('active-task-headline'); // Added Headline Element
+const activeTaskDescription = document.getElementById('active-task-description'); // Added Description Element
 const tasksList = document.getElementById('tasks-list');
 const popupContainer = document.getElementById('popup-container');
 
@@ -68,7 +149,7 @@ function updateScoreboard() {
   scoreboard.compliance.textContent = `${gameState.compliance.toFixed(1)}%`;
 }
 
-// Generate Random Tasks with Urgency
+// Generate Random Tasks with Urgency and Descriptions
 function generateAvailableTasks() {
   if (gameState.availableTasks.length >= 10) return; // Max 10 tasks
   const riskLevel = Math.floor(Math.random() * 3) + 1; // 1 to 3
@@ -77,6 +158,8 @@ function generateAvailableTasks() {
   const department = departments[Math.floor(Math.random() * departments.length)];
   const steps = getRandomTaskSteps();
   const urgency = getRandomUrgency(); // Assign initial urgency
+  const headline = getRandomHeadline(department); // Assign headline
+  const description = getRandomDescription(department); // Assign description
 
   const task = {
     id: Date.now(),
@@ -86,6 +169,8 @@ function generateAvailableTasks() {
     steps,
     currentStep: 0,
     urgency, // Added urgency
+    headline, // Added headline
+    description, // Added description
   };
 
   gameState.availableTasks.push(task);
@@ -115,6 +200,26 @@ function getRandomUrgency() {
   return 'low';
 }
 
+// Get Random Headline Based on Department
+function getRandomHeadline(department) {
+  const headlines = taskHeadlines[department] || [
+    'General Task',
+    'Standard Procedure',
+    'Routine Maintenance',
+  ];
+  return headlines[Math.floor(Math.random() * headlines.length)];
+}
+
+// Get Random Description Based on Department
+function getRandomDescription(department) {
+  const descriptions = taskDescriptions[department] || [
+    'Complete the assigned task efficiently.',
+    'Ensure all requirements are met.',
+    'Coordinate with relevant teams to accomplish the task.',
+  ];
+  return descriptions[Math.floor(Math.random() * descriptions.length)];
+}
+
 // Render Available Tasks in UI
 function renderAvailableTasks() {
   tasksList.innerHTML = '';
@@ -125,9 +230,37 @@ function renderAvailableTasks() {
 
   gameState.availableTasks.forEach(task => {
     const li = document.createElement('li');
-    li.textContent = `Task ${task.id}: ${task.department} - Reward: $${task.reward} - Risk: ${task.riskLevel}`;
+    li.innerHTML = `<strong>${task.headline}</strong><br>Reward: $${task.reward} - Risk: ${task.riskLevel}`;
     li.classList.add(task.urgency); // Add urgency class for color-coding
-    li.addEventListener('click', () => assignTask(task.id));
+
+    // Create a description element
+    const desc = document.createElement('p');
+    desc.textContent = task.description;
+    desc.classList.add('task-description');
+    desc.style.display = 'none'; // Hidden by default
+
+    // Toggle description on tap/click
+    li.addEventListener('click', () => {
+      // Hide all other descriptions
+      document.querySelectorAll('.task-description').forEach(p => {
+        if (p !== desc) p.style.display = 'none';
+      });
+      // Toggle current description
+      desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Assign Task on long press (for touch devices)
+    let pressTimer;
+    li.addEventListener('touchstart', () => {
+      pressTimer = setTimeout(() => {
+        assignTask(task.id);
+      }, 500); // Long press duration
+    });
+    li.addEventListener('touchend', () => {
+      clearTimeout(pressTimer);
+    });
+
+    li.appendChild(desc);
     tasksList.appendChild(li);
   });
 }
@@ -144,13 +277,15 @@ function assignTask(taskId) {
 
   gameState.activeTask = gameState.availableTasks.splice(taskIndex, 1)[0];
   activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
+  activeTaskHeadline.textContent = activeTaskDetails.textContent; // Set headline
+  activeTaskDescription.textContent = gameState.activeTask.description; // Display description
   renderAvailableTasks();
-  showPopup(`Assigned Task ${gameState.activeTask.id}`, 'success');
+  showPopup(`Assigned Task: ${gameState.activeTask.headline}`, 'success');
 }
 
 // Format Active Task Details
 function formatActiveTask(task) {
-  return `Task ${task.id} (${task.department}) - Reward: $${task.reward}\nSteps: ${task.steps.join(' -> ')}`;
+  return `Task ${task.id} (${task.department}) - Reward: $${task.reward}`;
 }
 
 // Setup Keyboard and Collision Event Listeners
@@ -265,6 +400,8 @@ function completeTask() {
 
   gameState.activeTask = null;
   activeTaskDetails.textContent = 'No active task.';
+  activeTaskHeadline.textContent = 'No active task.';
+  activeTaskDescription.textContent = ''; // Clear description
   updateScoreboard();
 }
 
@@ -272,6 +409,8 @@ function completeTask() {
 function failTask() {
   gameState.activeTask = null;
   activeTaskDetails.textContent = 'No active task.';
+  activeTaskHeadline.textContent = 'No active task.';
+  activeTaskDescription.textContent = ''; // Clear description
   updateScoreboard();
 
   // Decrease metrics due to failure
