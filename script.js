@@ -101,7 +101,7 @@ const gameState = {
   compliance: 100,
 };
 
-// Locations (Removed Dispatch)
+// Locations
 const locations = {
   Infrastructure: document.getElementById('infrastructure'),
   'Legal Department': document.getElementById('legal'),
@@ -122,8 +122,9 @@ const scoreboard = {
 };
 
 const activeTaskDetails = document.getElementById('active-task-details');
-const activeTaskHeadline = document.getElementById('active-task-headline'); // Added Headline Element
-const activeTaskDescription = document.getElementById('active-task-description'); // Added Description Element
+const activeTaskHeadline = document.getElementById('active-task-headline'); // Headline Element
+const activeTaskDescription = document.getElementById('active-task-description'); // Description Element
+const stepsList = document.getElementById('steps-list'); // Steps List Element
 const tasksList = document.getElementById('tasks-list');
 const popupContainer = document.getElementById('popup-container');
 
@@ -279,12 +280,32 @@ function assignTask(taskId) {
   activeTaskHeadline.textContent = `Task ${gameState.activeTask.id}: ${gameState.activeTask.headline}`; // Set headline
   activeTaskDescription.textContent = gameState.activeTask.description; // Display description
   renderAvailableTasks();
+  updateStepsList();
   showPopup(`Assigned Task: ${gameState.activeTask.headline}`, 'success');
 }
 
 // Format Active Task Details
 function formatActiveTask(task) {
   return `Task ${task.id} (${task.department}) - Reward: $${task.reward}`;
+}
+
+// Update Steps List in Active Task Panel
+function updateStepsList() {
+  stepsList.innerHTML = '';
+  if (!gameState.activeTask) {
+    stepsList.innerHTML = '<li>No active task.</li>';
+    return;
+  }
+
+  gameState.activeTask.steps.forEach((step, index) => {
+    const li = document.createElement('li');
+    li.textContent = `Step ${index + 1}: Visit ${step}`;
+    if (index < gameState.activeTask.currentStep) {
+      li.style.textDecoration = 'line-through';
+      li.style.color = '#95a5a6';
+    }
+    stepsList.appendChild(li);
+  });
 }
 
 // Setup Keyboard and Collision Event Listeners
@@ -372,6 +393,7 @@ function handleLocationVisit(locationName) {
         completeTask();
       } else {
         activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
+        updateStepsList();
       }
     } else {
       showPopup('Wrong location! Task failed.', 'error');
@@ -401,6 +423,7 @@ function completeTask() {
   activeTaskDetails.textContent = 'No active task.';
   activeTaskHeadline.textContent = 'No active task.';
   activeTaskDescription.textContent = ''; // Clear description
+  stepsList.innerHTML = '<li>No active task.</li>'; // Reset steps list
   updateScoreboard();
 }
 
@@ -410,6 +433,7 @@ function failTask() {
   activeTaskDetails.textContent = 'No active task.';
   activeTaskHeadline.textContent = 'No active task.';
   activeTaskDescription.textContent = ''; // Clear description
+  stepsList.innerHTML = '<li>No active task.</li>'; // Reset steps list
   updateScoreboard();
 
   // Decrease metrics due to failure
