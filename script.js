@@ -277,7 +277,7 @@ function assignTask(taskId) {
 
   gameState.activeTask = gameState.availableTasks.splice(taskIndex, 1)[0];
   activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
-  activeTaskHeadline.textContent = activeTaskDetails.textContent; // Set headline
+  activeTaskHeadline.textContent = `Task ${gameState.activeTask.id}: ${gameState.activeTask.headline}`; // Set headline
   activeTaskDescription.textContent = gameState.activeTask.description; // Display description
   renderAvailableTasks();
   showPopup(`Assigned Task: ${gameState.activeTask.headline}`, 'success');
