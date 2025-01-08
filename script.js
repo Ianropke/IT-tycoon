@@ -1,58 +1,85 @@
-import { tasks, showTasks, commitTask, completeTask, scores } from './game.js';
+let tasks = [
+    { name: "System Audit", giver: "IT Security", steps: ["Legal Dept", "Infrastructure"], risk: 3, reward: 50 },
+    { name: "Employee Portal", giver: "HR Department", steps: ["Infrastructure"], risk: 2, reward: 30 },
+];
 
-const player = document.getElementById('player');
-const map = document.getElementById('map-container');
-const dispatch = document.getElementById('dispatch');
-const availableTasksContainer = document.getElementById('available-tasks');
-const activeTaskDetails = document.getElementById('active-task-details');
-const startGameBtn = document.getElementById('start-game-btn');
-const scoreboard = {
-  itSecurity: document.getElementById('it-security-score'),
-  hr: document.getElementById('hr-score'),
-  total: document.getElementById('total-score'),
-};
+let activeTask = null;
+let scores = { "IT Security": 0, "HR Department": 0 };
+let totalScore = 0;
+const player = document.getElementById("player");
 
-let playerPosition = { top: 50, left: 50 };
+// Task Functions
+function loadTasks() {
+    const tasksList = document.getElementById("tasks-list");
+    tasksList.innerHTML = ""; // Clear existing tasks
+    tasks.forEach((task, index) => {
+        const taskDiv = document.createElement("div");
+        taskDiv.classList.add("task");
+        taskDiv.innerHTML = `
+            <strong>${task.name}</strong><br>
+            Giver: ${task.giver}<br>
+            Risk: ${task.risk}, Reward: ${task.reward}<br>
+            Steps: ${task.steps.join(" → ")}
+            <button class="commit-btn" onclick="commitTask(${index})">Commit</button>
+        `;
+        tasksList.appendChild(taskDiv);
+    });
+}
 
-// Start Game
-startGameBtn.addEventListener('click', () => {
-  document.getElementById('intro-overlay').style.display = 'none';
-  document.getElementById('game-container').style.display = 'block';
-});
+function commitTask(index) {
+    if (activeTask) {
+        alert("You already have an active task!");
+        return;
+    }
+    activeTask = tasks.splice(index, 1)[0];
+    updateActiveTaskDisplay();
+    loadTasks();
+}
+
+function updateActiveTaskDisplay() {
+    const activeTaskDetails = document.getElementById("active-task-details");
+    const completeTaskBtn = document.getElementById("completeTask");
+    if (activeTask) {
+        activeTaskDetails.innerHTML = `
+            <strong>${activeTask.name}</strong><br>
+            Giver: ${activeTask.giver}<br>
+            Steps: ${activeTask.steps.join(" → ")}
+        `;
+        completeTaskBtn.disabled = false;
+    } else {
+        activeTaskDetails.innerHTML = "No active tasks.";
+        completeTaskBtn.disabled = true;
+    }
+}
+
+function completeTask() {
+    if (activeTask) {
+        scores[activeTask.giver] += activeTask.reward;
+        totalScore += activeTask.reward;
+        activeTask = null;
+        updateScoreboard();
+        updateActiveTaskDisplay();
+    }
+}
+
+function updateScoreboard() {
+    document.getElementById("scoreboard").innerHTML = `
+        <p>IT Security: ${scores["IT Security"]}</p>
+        <p>HR Department: ${scores["HR Department"]}</p>
+        <p>Total: ${totalScore}</p>
+    `;
+}
 
 // Player Movement
-document.addEventListener('keydown', (e) => {
-  const step = 10;
-  if (e.key === 'ArrowUp') playerPosition.top -= step;
-  if (e.key === 'ArrowDown') playerPosition.top += step;
-  if (e.key === 'ArrowLeft') playerPosition.left -= step;
-  if (e.key === 'ArrowRight') playerPosition.left += step;
-
-  player.style.top = `${playerPosition.top}px`;
-  player.style.left = `${playerPosition.left}px`;
-
-  if (isInside(dispatch)) {
-    showTasks(availableTasksContainer, commitToTask);
-  } else {
-    availableTasksContainer.innerHTML = '';
-  }
+document.addEventListener("keydown", (e) => {
+    const step = 10;
+    const rect = player.getBoundingClientRect();
+    const parentRect = player.parentElement.getBoundingClientRect();
+    if (e.key === "ArrowUp" && rect.top > parentRect.top) player.style.top = `${player.offsetTop - step}px`;
+    if (e.key === "ArrowDown" && rect.bottom < parentRect.bottom) player.style.top = `${player.offsetTop + step}px`;
+    if (e.key === "ArrowLeft" && rect.left > parentRect.left) player.style.left = `${player.offsetLeft - step}px`;
+    if (e.key === "ArrowRight" && rect.right < parentRect.right) player.style.left = `${player.offsetLeft + step}px`;
 });
 
-function isInside(area) {
-  const rect = area.getBoundingClientRect();
-  const playerRect = player.getBoundingClientRect();
-  return (
-    playerRect.left >= rect.left &&
-    playerRect.right <= rect.right &&
-    playerRect.top >= rect.top &&
-    playerRect.bottom <= rect.bottom
-  );
-}
-
-function commitToTask(index) {
-  commitTask(index, activeTaskDetails);
-}
-
-document.getElementById('complete-task-btn').addEventListener('click', () => {
-  completeTask(activeTaskDetails, scoreboard);
-});
+// Initialize Game
+loadTasks();
