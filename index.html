@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Tycoon</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Tycoon</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game">
-        <header>
-            <h1>IT Tycoon</h1>
-            <div id="scoreboard">
-                <p>IT Security: 0</p>
-                <p>HR Department: 0</p>
-                <p>Total: 0</p>
-            </div>
-        </header>
-        <main>
-            <div id="available-tasks">
-                <h2>Available Tasks</h2>
-                <div id="tasks-list"></div>
-            </div>
-            <div id="game-area">
-                <div id="player"></div>
-                <div class="location" id="dispatch">Dispatch</div>
-                <div class="location" id="infrastructure">Infrastructure</div>
-                <div class="location" id="legal-dept">Legal Dept</div>
-                <div class="location" id="vendors">Vendors</div>
-            </div>
-            <div id="active-task">
-                <h2>Active Task</h2>
-                <div id="active-task-details">No active tasks.</div>
-                <button id="completeTask" disabled>Complete Task</button>
-            </div>
-        </main>
+  <div class="game-container">
+    <div class="scoreboard">
+      <h1>IT Tycoon</h1>
+      <div class="score-item">IT Security: <span id="it-security-score">0</span></div>
+      <div class="score-item">HR Department: <span id="hr-score">0</span></div>
+      <div class="score-item">Total: <span id="total-score">0</span></div>
     </div>
-    <script src="script.js"></script>
+    <div class="game-area">
+      <div class="locations">
+        <div id="dispatch" class="location">Dispatch</div>
+        <div id="infrastructure" class="location">Infrastructure</div>
+        <div id="legal-dept" class="location">Legal Dept</div>
+        <div id="vendors" class="location">Vendors</div>
+        <div id="player" class="player"></div>
+      </div>
+    </div>
+    <div class="panels">
+      <div class="available-tasks">
+        <h2>Available Tasks</h2>
+        <div id="tasks-list">Stand on Dispatch to see tasks.</div>
+      </div>
+      <div class="active-task">
+        <h2>Active Task</h2>
+        <div id="active-task">No active tasks.</div>
+        <button id="complete-task" disabled>Complete Task</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
