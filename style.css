@@ -24,7 +24,7 @@ header, footer {
   text-align: center;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   margin: 10px 0;
 }
 
@@ -51,8 +51,10 @@ main {
   flex: 1;
   padding: 20px;
   gap: 20px;
+  box-sizing: border-box;
 }
 
+/* Game Area Styles */
 #game-area {
   position: relative;
   flex: 2;
@@ -62,6 +64,7 @@ main {
   overflow: hidden; /* Prevent internal scrolling */
 }
 
+/* Location Styles */
 .location {
   position: absolute;
   width: 120px;
@@ -79,6 +82,7 @@ main {
   background-color: #27ae60 !important;
 }
 
+/* Player Styles */
 #player {
   position: absolute;
   width: 30px;
@@ -92,6 +96,7 @@ main {
   transition: top 0.2s, left 0.2s;
 }
 
+/* Task Panels Styles */
 #task-panels {
   flex: 1;
   display: flex;
@@ -105,12 +110,43 @@ main {
   border: 2px solid #ecf0f1;
   border-radius: 5px;
   height: 45%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent internal scrolling */
+}
+
+#active-task {
+  /* Additional styling if needed */
+}
+
+#available-tasks {
+  /* Make available tasks scrollable */
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+/* Steps List Styles */
+#task-steps {
+  margin-top: 10px;
+}
+
+#steps-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  max-height: 100px;
   overflow-y: auto;
 }
 
+#steps-list li {
+  margin-bottom: 5px;
+}
+
+/* Tasks List Styles */
 #tasks-list {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 #tasks-list li {
@@ -120,6 +156,8 @@ main {
   border-radius: 3px;
   transition: background-color 0.3s;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 #tasks-list li:hover {
@@ -168,6 +206,7 @@ main {
   border: none;
   border-radius: 3px;
   cursor: pointer;
+  align-self: flex-start;
   transition: background-color 0.3s;
 }
 
@@ -201,4 +240,76 @@ main {
   0% { opacity: 0.9; transform: translateY(0); }
   80% { opacity: 0.9; transform: translateY(-20px); }
   100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  /* Adjust game-area and task panels for smaller screens */
+  main {
+    flex-direction: column;
+  }
+
+  #game-area {
+    width: 100%;
+    height: 50%;
+  }
+
+  #task-panels {
+    width: 100%;
+    height: 50%;
+  }
+
+  /* Adjust task list items */
+  #tasks-list li {
+    font-size: 0.9em;
+  }
+
+  /* Adjust commit button size */
+  .commit-button {
+    padding: 5px 8px;
+    font-size: 0.8em;
+  }
+
+  /* Adjust scoreboard layout */
+  #scores {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Further adjustments for very small screens */
+  header, footer {
+    padding: 8px 10px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  h3, h4 {
+    font-size: 1em;
+  }
+
+  #scoreboard {
+    gap: 10px;
+  }
+
+  #scores {
+    gap: 10px;
+  }
+
+  /* Reduce task panel heights */
+  #active-task, #available-tasks {
+    height: 45%;
+  }
+
+  /* Make steps list scrollable */
+  #steps-list {
+    max-height: 80px;
+  }
 }
