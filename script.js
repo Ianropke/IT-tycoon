@@ -17,6 +17,9 @@ const gameState = {
   },
   activeTask: null,
   availableTasks: [],
+  systemUptime: 100,
+  stakeholderSatisfaction: 100,
+  compliance: 100,
 };
 
 // Locations
@@ -25,6 +28,8 @@ const locations = {
   Infrastructure: document.getElementById('infrastructure'),
   'Legal Department': document.getElementById('legal'),
   Vendors: document.getElementById('vendors'),
+  Labs: document.getElementById('labs'), // Expanded Location
+  Diagnostics: document.getElementById('diagnostics'), // Expanded Location
 };
 
 // UI Elements
@@ -33,10 +38,14 @@ const scoreboard = {
   totalRewards: document.getElementById('total-rewards'),
   itSecurity: document.getElementById('it-security'),
   hrDepartment: document.getElementById('hr-department'),
+  systemUptime: document.getElementById('system-uptime'),
+  stakeholderSatisfaction: document.getElementById('stakeholder-satisfaction'),
+  compliance: document.getElementById('compliance'),
 };
 
 const activeTaskDetails = document.getElementById('active-task-details');
 const tasksList = document.getElementById('tasks-list');
+const popupContainer = document.getElementById('popup-container');
 
 // Initialize Game
 function initGame() {
@@ -44,6 +53,8 @@ function initGame() {
   generateAvailableTasks();
   renderAvailableTasks();
   setupEventListeners();
+  startTaskUrgencyEscalation();
+  startSystemUptimeDecay();
 }
 
 // Update Scoreboard UI
@@ -52,9 +63,12 @@ function updateScoreboard() {
   scoreboard.totalRewards.textContent = gameState.totalRewards;
   scoreboard.itSecurity.textContent = gameState.departmentRewards['IT Security'];
   scoreboard.hrDepartment.textContent = gameState.departmentRewards['HR Department'];
+  scoreboard.systemUptime.textContent = `${gameState.systemUptime}%`;
+  scoreboard.stakeholderSatisfaction.textContent = `${gameState.stakeholderSatisfaction}%`;
+  scoreboard.compliance.textContent = `${gameState.compliance}%`;
 }
 
-// Generate Random Tasks
+// Generate Random Tasks with Urgency
 function generateAvailableTasks() {
   // Example: Generate 3 random tasks
   for (let i = 0; i < 3; i++) {
@@ -63,6 +77,7 @@ function generateAvailableTasks() {
     const departments = Object.keys(gameState.departmentRewards);
     const department = departments[Math.floor(Math.random() * departments.length)];
     const steps = getRandomTaskSteps();
+    const urgency = getRandomUrgency(); // Assign initial urgency
 
     const task = {
       id: Date.now() + i,
@@ -71,6 +86,7 @@ function generateAvailableTasks() {
       reward,
       steps,
       currentStep: 0,
+      urgency, // Added urgency
     };
 
     gameState.availableTasks.push(task);
@@ -93,6 +109,14 @@ function getRandomTaskSteps() {
   return steps;
 }
 
+// Get Random Urgency Level
+function getRandomUrgency() {
+  const rand = Math.random();
+  if (rand < 0.3) return 'high';
+  if (rand < 0.7) return 'medium';
+  return 'low';
+}
+
 // Render Available Tasks in UI
 function renderAvailableTasks() {
   tasksList.innerHTML = '';
@@ -104,6 +128,7 @@ function renderAvailableTasks() {
   gameState.availableTasks.forEach(task => {
     const li = document.createElement('li');
     li.textContent = `Task ${task.id}: ${task.department} - Reward: $${task.reward} - Risk: ${task.riskLevel}`;
+    li.classList.add(task.urgency); // Add urgency class for color-coding
     li.addEventListener('click', () => assignTask(task.id));
     tasksList.appendChild(li);
   });
@@ -112,7 +137,7 @@ function renderAvailableTasks() {
 // Assign Task to Active Task
 function assignTask(taskId) {
   if (gameState.activeTask) {
-    alert('You already have an active task.');
+    showPopup('You already have an active task.', 'error');
     return;
   }
 
@@ -122,6 +147,7 @@ function assignTask(taskId) {
   gameState.activeTask = gameState.availableTasks.splice(taskIndex, 1)[0];
   activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
   renderAvailableTasks();
+  showPopup(`Assigned Task ${gameState.activeTask.id}`, 'success');
 }
 
 // Format Active Task Details
@@ -142,15 +168,23 @@ function setupEventListeners() {
 function handleMovement(e) {
   switch (e.key) {
     case 'ArrowUp':
+    case 'w':
+    case 'W':
       player.position.top = Math.max(player.position.top - player.moveSpeed, 0);
       break;
     case 'ArrowDown':
+    case 's':
+    case 'S':
       player.position.top = Math.min(player.position.top + player.moveSpeed, 100);
       break;
     case 'ArrowLeft':
+    case 'a':
+    case 'A':
       player.position.left = Math.max(player.position.left - player.moveSpeed, 0);
       break;
     case 'ArrowRight':
+    case 'd':
+    case 'D':
       player.position.left = Math.min(player.position.left + player.moveSpeed, 100);
       break;
     default:
@@ -183,6 +217,7 @@ function checkDispatchStanding() {
       dispatchTimer = setTimeout(() => {
         generateAvailableTasks();
         renderAvailableTasks();
+        showPopup('New tasks available at Dispatch.', 'success');
         dispatchTimer = null;
       }, 3000); // 3 seconds
     }
@@ -206,28 +241,89 @@ function handleLocationVisit(locationName) {
     const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStep];
     if (locationName === currentStep) {
       gameState.activeTask.currentStep += 1;
+      showPopup(`Visited ${locationName}.`, 'success');
       if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
         completeTask();
       } else {
         activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
       }
     } else {
-      alert('Wrong location! Task failed.');
-      gameState.activeTask = null;
-      activeTaskDetails.textContent = 'No active task.';
+      showPopup('Wrong location! Task failed.', 'error');
+      failTask();
     }
   }
 }
 
 // Complete the Active Task
 function completeTask() {
-  alert('Task Completed!');
+  showPopup('Task Completed!', 'success');
   gameState.tasksCompleted += 1;
   gameState.totalRewards += gameState.activeTask.reward;
   gameState.departmentRewards[gameState.activeTask.department] += gameState.activeTask.reward;
+
+  // Update new metrics
+  gameState.systemUptime = Math.min(gameState.systemUptime + 1, 100); // Increment uptime
+  gameState.stakeholderSatisfaction = Math.min(gameState.stakeholderSatisfaction + 2, 100); // Increment satisfaction
+  gameState.compliance = Math.min(gameState.compliance + 1, 100); // Increment compliance
+
   gameState.activeTask = null;
   activeTaskDetails.textContent = 'No active task.';
   updateScoreboard();
+}
+
+// Fail the Active Task
+function failTask() {
+  gameState.activeTask = null;
+  activeTaskDetails.textContent = 'No active task.';
+  updateScoreboard();
+
+  // Decrease metrics due to failure
+  gameState.systemUptime = Math.max(gameState.systemUptime - 5, 0);
+  gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 10, 0);
+  gameState.compliance = Math.max(gameState.compliance - 2, 0);
+  updateScoreboard();
+}
+
+// Start Periodic Task Urgency Escalation
+function startTaskUrgencyEscalation() {
+  setInterval(() => {
+    gameState.availableTasks.forEach(task => {
+      if (task.urgency === 'low') {
+        task.urgency = 'medium';
+      } else if (task.urgency === 'medium') {
+        task.urgency = 'high';
+      }
+      // High urgency remains high
+    });
+    renderAvailableTasks();
+  }, 10000); // Every 10 seconds
+}
+
+// Start System Uptime Decay Over Time
+function startSystemUptimeDecay() {
+  setInterval(() => {
+    gameState.systemUptime = Math.max(gameState.systemUptime - 0.1, 0);
+    updateScoreboard();
+    if (gameState.systemUptime <= 0) {
+      showPopup('System Uptime Critical!', 'error');
+    }
+  }, 60000); // Every 60 seconds
+}
+
+// Function to show popup notifications
+function showPopup(message, type = 'success') {
+  const popup = document.createElement('div');
+  popup.classList.add('popup');
+  if (type === 'error') {
+    popup.classList.add('error');
+  }
+  popup.textContent = message;
+  popupContainer.appendChild(popup);
+
+  // Remove popup after animation
+  setTimeout(() => {
+    popup.remove();
+  }, 3000);
 }
 
 // Start the Game
