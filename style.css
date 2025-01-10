@@ -305,5 +305,40 @@ main {
 .modal-content p {
   font-size: 0.95rem;
   line-height: 1.4;
-  margin-bo
+  margin-bottom: 1rem;
+}
 
+#intro-ok-btn {
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+#intro-ok-btn:hover {
+  background-color: #2ecc71;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #grid-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 90%;
+  }
+  #intro-ok-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  #tasks-list li {
+    font-size: 0.75rem;
+  }
+}
