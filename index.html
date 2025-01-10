@@ -24,12 +24,22 @@
     </header>
     <main>
       <div id="game-area">
-        <!-- Lokationer -->
-        <div class="location" id="infrastruktur" style="top: 30%; left: 20%;">Infrastruktur</div>
-        <div class="location" id="informationssikkerhed" style="top: 30%; left: 80%;">Informationssikkerhed</div>
-        <div class="location" id="hospital" style="top: 60%; left: 50%;">Hospital</div>
-        <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 80%;">Medicinsk Udstyr</div>
-        <div class="location" id="cybersikkerhed" style="top: 70%; left: 30%;">Cybersikkerhed</div>
+        <!-- (1) More structured layout for the locations -->
+        <div class="location" id="infrastruktur" style="top: 25%; left: 25%;">
+          Infrastruktur
+        </div>
+        <div class="location" id="informationssikkerhed" style="top: 25%; left: 65%;">
+          Informationssikkerhed
+        </div>
+        <div class="location" id="hospital" style="top: 50%; left: 45%;">
+          Hospital
+        </div>
+        <div class="location" id="medicinsk-udstyr" style="top: 70%; left: 25%;">
+          Medicinsk Udstyr
+        </div>
+        <div class="location" id="cybersikkerhed" style="top: 70%; left: 65%;">
+          Cybersikkerhed
+        </div>
         <div id="player"></div>
       </div>
       <div id="task-panels">
@@ -58,27 +68,28 @@
     </footer>
   </div>
 
-  <!-- Modal til introduktion (3) -->
+  <!-- Intro modal (3) mentions Forvalter role -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
       <h2>Velkommen til IT Tycoon</h2>
       <p>
-        Du skal vedligeholde og udvikle systemet for Hospitalet. Sørg for at 
-        <strong>balancere</strong> <em>Sikkerhed</em>, <em>Stabilitet</em> og <em>Udvikling</em>, 
-        så Hospitalet forbliver tilfreds. 
+        Du er <strong>Forvalter</strong> for Hospitalet. Dit job er at vedligeholde systemet,
+        sikre stabil drift og udvikle nye funktioner, uden at gå på kompromis med sikkerheden.
       </p>
       <p>
-        Flyt spilleren (den blå cirkel) med piletaster eller WASD. 
-        Klik "Forpligt" for at tage en opgave. 
-        Følg trin-listen for at udføre opgaven. Hvis du vælger for mange 
-        stabilitetsopgaver, stagnerer udviklingen. Hvis du kun vælger udviklingsopgaver, 
-        kan systemet blive ustabilt og usikkert. 
+        Flyt den blå cirkel med piletaster eller WASD, og klik på opgaver i boksen
+        <em>“Mulige Opgaver”</em> for at se deres beskrivelser og forpligte dig til dem.
+        Følg trinnene for at fuldføre en opgave. 
+      </p>
+      <p>
+        Sørg for at balancere <em>Sikkerhed</em>, <em>Stabilitet</em> og <em>Udvikling</em>,
+        så Hospitalet forbliver tilfreds med dit arbejde.
       </p>
       <button id="intro-ok-btn">OK</button>
     </div>
   </div>
 
-  <!-- Popup Container -->
+  <!-- Popup notification container -->
   <div id="popup-container"></div>
 
   <script src="script.js"></script>
