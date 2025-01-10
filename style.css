@@ -3,14 +3,12 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  /* (1) Let the page scroll if needed */
-  overflow: auto; 
+  overflow: auto; /* let the content scroll if needed */
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background-color: #2c3e50;
   color: #ecf0f1;
 }
 
-/* Avoid forcing hidden content */
 *,
 *::before,
 *::after {
@@ -47,7 +45,7 @@ h1, h2, h3, h4 {
   align-items: center;
 }
 
-/* (2) Horizontal bars for security/stability/dev */
+/* Horizontal bars for Security/Stability/Development */
 #bars-container {
   display: flex;
   gap: 15px;
@@ -59,6 +57,7 @@ h1, h2, h3, h4 {
   flex-direction: column;
   align-items: flex-start;
   font-size: 0.85rem;
+  margin-right: 5px;
 }
 
 .bar-wrapper label {
@@ -81,7 +80,6 @@ h1, h2, h3, h4 {
   transition: width 0.5s;
 }
 
-/* The main layout container */
 main {
   flex: 1;
 }
@@ -90,8 +88,8 @@ main {
   display: flex;
   gap: 20px;
   padding: 20px;
+  min-height: 600px; 
   box-sizing: border-box;
-  min-height: 600px; /* enough space to see everything */
 }
 
 #game-area {
@@ -141,7 +139,7 @@ main {
   gap: 20px;
 }
 
-#active-task,
+#active-task, 
 #available-tasks {
   background-color: #34495e;
   padding: 15px;
@@ -256,7 +254,6 @@ main {
   background-color: #1c5980;
 }
 
-/* Popups */
 #popup-container {
   position: fixed;
   top: 20px;
@@ -319,34 +316,4 @@ main {
 
 .modal-content p {
   font-size: 0.95rem;
-  line-height: 1.4;
-  margin-bottom: 1rem;
-}
-
-#intro-ok-btn {
-  background-color: #27ae60;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 15px;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-#intro-ok-btn:hover {
-  background-color: #2ecc71;
-}
-
-/* Responsive tweaks */
-@media (max-width: 768px) {
-  #layout-container {
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 480px) {
-  #intro-ok-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-}
+  line-he
