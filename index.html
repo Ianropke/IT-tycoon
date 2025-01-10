@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- A simpler header that doesn't push content down too much -->
   <header>
     <h1>IT Tycoon</h1>
     <div id="scoreboard">
@@ -34,36 +35,41 @@
     </div>
   </header>
 
-  <div id="layout-container">
-    <div id="game-area">
-      <div class="location" id="infrastruktur" style="top: 20%; left: 25%;">Infrastruktur</div>
-      <div class="location" id="informationssikkerhed" style="top: 20%; left: 65%;">Informationssikkerhed</div>
-      <div class="location" id="hospital" style="top: 45%; left: 45%;">Hospital</div>
-      <div class="location" id="medicinsk-udstyr" style="top: 70%; left: 25%;">Medicinsk Udstyr</div>
-      <div class="location" id="cybersikkerhed" style="top: 70%; left: 65%;">Cybersikkerhed</div>
-      <div id="player"></div>
-    </div>
-    <div id="task-panels">
-      <div id="active-task">
-        <h2>Aktiv Opgave</h2>
-        <h3 id="active-task-headline" style="margin-bottom:4px;">Ingen aktiv opgave</h3>
-        <p id="active-task-details" style="margin-bottom:2px;"></p>
-        <p id="active-task-description" style="margin-bottom:8px;"></p>
-        <div id="task-steps">
-          <h4 style="margin-bottom:6px;">Trin at gennemføre:</h4>
-          <ul id="steps-list">
-            <li>Ingen aktiv opgave</li>
+  <!-- A simple 2-column layout: left is the game, right is tasks -->
+  <main>
+    <div id="main-layout">
+      <div id="game-area">
+        <div class="location" id="infrastruktur" style="top: 20%; left: 25%;">Infrastruktur</div>
+        <div class="location" id="informationssikkerhed" style="top: 20%; left: 65%;">Informationssikkerhed</div>
+        <div class="location" id="hospital" style="top: 45%; left: 45%;">Hospital</div>
+        <div class="location" id="medicinsk-udstyr" style="top: 70%; left: 25%;">Medicinsk Udstyr</div>
+        <div class="location" id="cybersikkerhed" style="top: 70%; left: 65%;">Cybersikkerhed</div>
+        <div id="player"></div>
+      </div>
+
+      <div id="task-panels">
+        <div id="active-task">
+          <h2>Aktiv Opgave</h2>
+          <h3 id="active-task-headline" style="margin-bottom:4px;">Ingen aktiv opgave</h3>
+          <p id="active-task-details" style="margin-bottom:2px;"></p>
+          <p id="active-task-description" style="margin-bottom:8px;"></p>
+          <div id="task-steps">
+            <h4 style="margin-bottom:6px;">Trin at gennemføre:</h4>
+            <ul id="steps-list">
+              <li>Ingen aktiv opgave</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="available-tasks">
+          <h2 style="margin-bottom:6px;">Mulige Opgaver</h2>
+          <ul id="tasks-list">
+            <li>Ingen opgaver tilgængelige</li>
           </ul>
         </div>
       </div>
-      <div id="available-tasks">
-        <h2 style="margin-bottom:6px;">Mulige Opgaver</h2>
-        <ul id="tasks-list">
-          <li>Ingen opgaver tilgængelige</li>
-        </ul>
-      </div>
     </div>
-  </div>
+  </main>
 
   <footer>
     <p>&copy; 2025 IT Tycoon A/S</p>
@@ -75,7 +81,7 @@
       <h2>Velkommen til IT Tycoon</h2>
       <p>
         Du er <strong>Forvalter</strong> for Hospitalet. Dit job er at sikre balance mellem
-        sikkerhed, stabilitet og udvikling.
+        sikkerhed, stabilitet og udvikling. 
       </p>
       <p>
         Flyt den blå cirkel med piletaster eller WASD, og vælg opgaver i “Mulige Opgaver”.
