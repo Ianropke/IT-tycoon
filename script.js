@@ -1,8 +1,8 @@
-/*********************************************
- * IT Tycoon – Example script.js with updateScoreboard fix
- *********************************************/
+/**********************************************
+ * Example script.js
+ **********************************************/
 
-// 1) Basic Player and Game State Setup
+// Basic Player State
 const player = {
   element: document.getElementById('player'),
   position: { top: 50, left: 50 },
@@ -10,6 +10,7 @@ const player = {
   isVisiting: null,
 };
 
+// Game State
 let gameState = {
   tasksCompleted: 0,
   totalRewards: 0,
@@ -24,38 +25,34 @@ let gameState = {
   shownFirstActivePopup: false,
 };
 
-// 2) References for scoreboard elements and bars
+// Scoreboard
 const scoreboard = {
   tasksCompleted: document.getElementById('tasks-completed'),
   totalRewards: document.getElementById('total-rewards'),
   hospitalSatisfaction: document.getElementById('hospital-satisfaction'),
 };
 
+// Horizontal Bars
 const securityBar = document.getElementById('security-bar');
 const stabilityBar = document.getElementById('stability-bar');
 const developmentBar = document.getElementById('development-bar');
 
-// 3) Define updateScoreboard() BEFORE using it
-function updateScoreboard() {
-  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
-  scoreboard.totalRewards.textContent = gameState.totalRewards;
-  scoreboard.hospitalSatisfaction.textContent = gameState.hospitalSatisfaction + "%";
-  updateBars();
-}
+// Active/Available Panels
+const activeTaskHeadline = document.getElementById('active-task-headline');
+const activeTaskDescription = document.getElementById('active-task-description');
+const activeTaskDetails = document.getElementById('active-task-details');
+const stepsList = document.getElementById('steps-list');
+const tasksList = document.getElementById('tasks-list');
 
-// Update the horizontal bars for Sikkerhed, Stabilitet, Udvikling
-function updateBars() {
-  const sec = Math.max(0, Math.min(gameState.security, 150));
-  const stab = Math.max(0, Math.min(gameState.stability, 150));
-  const dev = Math.max(0, Math.min(gameState.development, 150));
-  const maxWidth = 80;  // the bar width in px
+// Modal
+const introModal = document.getElementById('intro-modal');
+const introOkBtn = document.getElementById('intro-ok-btn');
+introOkBtn.addEventListener('click', () => {
+  introModal.style.display = 'none';
+  gameState.introModalOpen = false;
+});
 
-  securityBar.style.width = (sec / 150) * maxWidth + "px";
-  stabilityBar.style.width = (stab / 150) * maxWidth + "px";
-  developmentBar.style.width = (dev / 150) * maxWidth + "px";
-}
-
-// 4) References for Locations
+// Locations
 const locations = {
   Infrastruktur: document.getElementById('infrastruktur'),
   Informationssikkerhed: document.getElementById('informationssikkerhed'),
@@ -64,28 +61,13 @@ const locations = {
   Cybersikkerhed: document.getElementById('cybersikkerhed'),
 };
 
-// 5) Additional UI References (Active/Available tasks)
-const activeTaskHeadline = document.getElementById('active-task-headline');
-const activeTaskDescription = document.getElementById('active-task-description');
-const activeTaskDetails = document.getElementById('active-task-details');
-const stepsList = document.getElementById('steps-list');
-const tasksList = document.getElementById('tasks-list');
-
-// 6) Modal
-const introModal = document.getElementById('intro-modal');
-const introOkBtn = document.getElementById('intro-ok-btn');
-introOkBtn.addEventListener('click', () => {
-  introModal.style.display = 'none';
-  gameState.introModalOpen = false;
-});
-
-// 7) Example: Step Explanations, Pools, etc. (Adjust to match your code)
+/* Step Explanations & Pools */
 const stepExplanations = {
-  Infrastruktur: "Du opgraderer serverinfrastrukturen...",
-  Informationssikkerhed: "Du installerer en patch for informationssikkerhed...",
-  Hospital: "Du koordinerer opgaven med hospitalets ledelse...",
-  'Medicinsk Udstyr': "Du vedligeholder udstyrets software...",
-  Cybersikkerhed: "Du håndterer trusler i netværket...",
+  Infrastruktur: "Du opgraderer serverinfrastrukturen for at undgå nedetid.",
+  Informationssikkerhed: "Du installerer en patch for at forbedre sikkerheden.",
+  Hospital: "Du koordinerer ændringer med hospitalets ledelse.",
+  'Medicinsk Udstyr': "Du vedligeholder udstyrets software.",
+  Cybersikkerhed: "Du håndterer trusler i netværket.",
 };
 
 const stepsPool = {
@@ -109,138 +91,150 @@ const headlines = [
   "Sikkerhedspatch",
   "Brugerstyring",
 ];
-
 const descs = {
   stability: "(Stabilitetsopgave) Fokuser på drift og minimer nedetid.",
   development: "(Udviklingsopgave) Tilføj nye features eller forbedr systemet.",
   security: "(Sikkerhedsopgave) Håndtér trusler og styrk beskyttelse.",
 };
 
-// 8) Example: Generate tasks
-function generateTask() {
-  if (gameState.availableTasks.length >= 10) return; 
-  const r = Math.random();
-  let type = 'stability';
-  if (r < 0.33) type = 'stability';
-  else if (r < 0.66) type = 'development';
-  else type = 'security';
+// initGame
+function initGame() {
+  updateScoreboard();
+  // e.g. create 2 tasks at start
+  for(let i=0;i<2;i++){
+    generateTask();
+  }
+  renderTasks();
+  setupListeners();
 
-  const stepsArr = stepsPool[type][Math.floor(Math.random()*stepsPool[type].length)];
-  const risk = Math.floor(Math.random()*3)+1;
-  const reward = risk * 100;
-  const head = headlines[Math.floor(Math.random()*headlines.length)];
+  // Generate tasks every 10s if <10 tasks
+  setInterval(() => {
+    if(gameState.availableTasks.length<10){
+      generateTask();
+      renderTasks();
+    }
+  }, 10000);
+}
 
-  const newTask = {
-    id: Date.now() + Math.floor(Math.random()*1000),
-    taskType: type,
-    headline: head,
-    description: descs[type],
-    steps: stepsArr,
-    currentStep: 0,
-    urgency: getRandomUrgency(),
-    riskLevel: risk,
-    reward: reward,
+function generateTask(){
+  if(gameState.availableTasks.length>=10) return;
+  const r=Math.random();
+  let type='stability';
+  if(r<0.33) type='stability'; 
+  else if(r<0.66) type='development'; 
+  else type='security';
+
+  const stepsArr=stepsPool[type][Math.floor(Math.random()*stepsPool[type].length)];
+  const risk=Math.floor(Math.random()*3)+1;
+  const reward=risk*100;
+  const head=headlines[Math.floor(Math.random()*headlines.length)];
+  
+  const newTask={
+    id:Date.now()+Math.floor(Math.random()*1000),
+    taskType:type,
+    headline:head,
+    description:descs[type],
+    steps:stepsArr,
+    currentStep:0,
+    urgency:getRandomUrgency(),
+    riskLevel:risk,
+    reward:reward,
   };
   gameState.availableTasks.push(newTask);
 }
 
-function getRandomUrgency() {
-  const r = Math.random();
+function getRandomUrgency(){
+  const r=Math.random();
   if(r<0.3) return 'high';
-  else if(r<0.7) return 'medium';
+  if(r<0.7) return 'medium';
   return 'low';
 }
 
-// 9) Rendering tasks
-function renderTasks() {
-  tasksList.innerHTML = '';
-  if (!gameState.availableTasks.length) {
-    tasksList.innerHTML = '<li>Ingen opgaver tilgængelige</li>';
+function renderTasks(){
+  tasksList.innerHTML='';
+  if(!gameState.availableTasks.length){
+    tasksList.innerHTML='<li>Ingen opgaver tilgængelige</li>';
     return;
   }
-  gameState.availableTasks.forEach(t => {
-    const li = document.createElement('li');
+  gameState.availableTasks.forEach(t=>{
+    const li=document.createElement('li');
     li.classList.add(t.urgency);
-    li.innerHTML = `<strong>${t.headline}</strong>`;
-    const desc = document.createElement('p');
+    li.innerHTML=`<strong>${t.headline}</strong>`;
+    const desc=document.createElement('p');
     desc.classList.add('task-description');
-    desc.style.display = 'none';
-    desc.textContent = t.description;
+    desc.style.display='none';
+    desc.textContent=t.description;
 
-    const commitBtn = document.createElement('button');
+    const commitBtn=document.createElement('button');
     commitBtn.classList.add('commit-button');
-    commitBtn.textContent = 'Forpligt';
-    commitBtn.addEventListener('click', e => {
+    commitBtn.textContent='Forpligt';
+    commitBtn.addEventListener('click', e=>{
       e.stopPropagation();
       assignTask(t.id);
     });
-
-    li.addEventListener('click', () => {
-      document.querySelectorAll('.task-description').forEach(d => {
-        if (d !== desc) d.style.display='none';
+    li.addEventListener('click', ()=>{
+      document.querySelectorAll('.task-description').forEach(d=>{
+        if(d!==desc)d.style.display='none';
       });
-      desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
+      desc.style.display=desc.style.display==='none' ? 'block' : 'none';
     });
-
     li.appendChild(desc);
     li.appendChild(commitBtn);
     tasksList.appendChild(li);
   });
 }
 
-// 10) Assign a task
-function assignTask(taskId) {
-  if (gameState.activeTask) {
+function assignTask(taskId){
+  if(gameState.activeTask){
     showPopup("Du har allerede en aktiv opgave!", "error");
     return;
   }
-  const idx = gameState.availableTasks.findIndex(x => x.id === taskId);
-  if (idx === -1) return;
+  const idx=gameState.availableTasks.findIndex(x=>x.id===taskId);
+  if(idx===-1)return;
 
-  gameState.activeTask = gameState.availableTasks.splice(idx,1)[0];
-  activeTaskHeadline.textContent = gameState.activeTask.headline;
-  activeTaskDescription.textContent = gameState.activeTask.description;
-  activeTaskDetails.textContent = '';
+  gameState.activeTask=gameState.availableTasks.splice(idx,1)[0];
+  activeTaskHeadline.textContent=gameState.activeTask.headline;
+  activeTaskDescription.textContent=gameState.activeTask.description;
+  activeTaskDetails.textContent='';
   updateStepsList();
   renderTasks();
   checkImmediateStep();
 
-  if(!gameState.shownFirstActivePopup) {
-    showPopup("Du har nu en aktiv opgave! Se trinlisten for at løse den.", "info", 5000);
-    gameState.shownFirstActivePopup = true;
+  if(!gameState.shownFirstActivePopup){
+    showPopup("Aktiv opgave sat! Følg trinlisten i 'Aktiv Opgave'.", "info",4000);
+    gameState.shownFirstActivePopup=true;
   }
 }
 
-// 11) Steps
-function updateStepsList() {
+function updateStepsList(){
   stepsList.innerHTML='';
-  if(!gameState.activeTask) {
+  if(!gameState.activeTask){
     stepsList.innerHTML='<li>Ingen aktiv opgave</li>';
     return;
   }
   const arr=gameState.activeTask.steps;
   arr.forEach((locName,i)=>{
     const li=document.createElement('li');
-    let shortDesc = stepExplanations[locName] || "Du udfører en handling.";
-    if(i<gameState.activeTask.currentStep) {
+    let short=stepExplanations[locName]||"Du udfører en handling.";
+    if(i<gameState.activeTask.currentStep){
       li.style.textDecoration='line-through';
       li.style.color='#95a5a6';
     }
-    li.textContent = `Trin ${i+1}: [${locName}] ${shortDesc}`;
+    li.textContent=`Trin ${i+1}: [${locName}] ${short}`;
     stepsList.appendChild(li);
   });
 }
 
-function checkImmediateStep() {
-  if(!gameState.activeTask) return;
+function checkImmediateStep(){
+  if(!gameState.activeTask)return;
   const i=gameState.activeTask.currentStep;
-  if(i>=gameState.activeTask.steps.length) return;
-  const needed = gameState.activeTask.steps[i];
-  const locEl = locations[needed];
-  if(locEl && isColliding(player.element,locEl)) {
+  if(i>=gameState.activeTask.steps.length)return;
+  const needed=gameState.activeTask.steps[i];
+  const locEl=locations[needed];
+  if(locEl && isColliding(player.element, locEl)){
     gameState.activeTask.currentStep++;
-    showPopup(`Du står allerede på ${needed}, trin fuldført!`, "info");
-    if(gameState.activeTask.currentStep>=gameState.activeTask.steps.length) {
+    showPopup(`Du stod allerede på ${needed}!`, "info");
+    if(gameState.activeTask.currentStep>=gameState.activeTask.steps.length){
       completeTask();
     } else {
       updateStepsList();
@@ -248,10 +242,10 @@ function checkImmediateStep() {
   }
 }
 
-function completeTask() {
+function completeTask(){
   showPopup("Opgave fuldført!", "success");
   gameState.tasksCompleted++;
-  gameState.totalRewards += gameState.activeTask.reward;
+  gameState.totalRewards+=gameState.activeTask.reward;
   applyEffects(gameState.activeTask);
 
   gameState.activeTask=null;
@@ -262,8 +256,8 @@ function completeTask() {
   updateScoreboard();
 }
 
-function applyEffects(task) {
-  switch(task.taskType) {
+function applyEffects(task){
+  switch(task.taskType){
     case 'stability':
       gameState.stability=Math.min(gameState.stability+5,150);
       gameState.development=Math.max(gameState.development-2,0);
@@ -278,14 +272,14 @@ function applyEffects(task) {
       gameState.development=Math.max(gameState.development-1,0);
       break;
   }
-  if(gameState.security<50 || gameState.stability<50 || gameState.development<50) {
+  if(gameState.security<50||gameState.stability<50||gameState.development<50){
     gameState.hospitalSatisfaction=Math.max(gameState.hospitalSatisfaction-5,0);
   } else {
     gameState.hospitalSatisfaction=Math.min(gameState.hospitalSatisfaction+3,100);
   }
 }
 
-function failTask() {
+function failTask(){
   showPopup("Opgave mislykkedes! Ingen belønning.", "error");
   if(gameState.activeTask){
     gameState.security=Math.max(gameState.security-2,0);
@@ -300,14 +294,21 @@ function failTask() {
   updateScoreboard();
 }
 
-function showPopup(message, type="success", duration=3000) {
-  const el=document.createElement('div');
-  el.classList.add('popup');
-  if(type==="error") el.classList.add('error');
-  else if(type==="info") el.classList.add('info');
-  el.textContent=message;
-  document.getElementById('popup-container').appendChild(el);
-  setTimeout(()=>el.remove(),duration);
+function updateScoreboard(){
+  scoreboard.tasksCompleted.textContent=gameState.tasksCompleted;
+  scoreboard.totalRewards.textContent=gameState.totalRewards;
+  scoreboard.hospitalSatisfaction.textContent=gameState.hospitalSatisfaction+"%";
+  updateBars();
+}
+
+function updateBars(){
+  const sec=Math.max(0,Math.min(gameState.security,150));
+  const stab=Math.max(0,Math.min(gameState.stability,150));
+  const dev=Math.max(0,Math.min(gameState.development,150));
+  const maxW=80; 
+  securityBar.style.width=(sec/150)*maxW+"px";
+  stabilityBar.style.width=(stab/150)*maxW+"px";
+  developmentBar.style.width=(dev/150)*maxW+"px";
 }
 
 function isColliding(a,b){
@@ -321,26 +322,24 @@ function isColliding(a,b){
   );
 }
 
-// Example intervals to keep tasks coming, etc.
-function startTaskGenerator() {
-  setInterval(()=> {
-    if (gameState.availableTasks.length<10) {
-      generateTask();
-      renderTasks();
-      // ...
-    }
-  },10000);
+function showPopup(msg,type="success",duration=3000){
+  const el=document.createElement('div');
+  el.classList.add('popup');
+  if(type==="error") el.classList.add('error');
+  else if(type==="info") el.classList.add('info');
+  el.textContent=msg;
+  document.getElementById('popup-container').appendChild(el);
+  setTimeout(()=>el.remove(),duration);
 }
 
-// Movement, collisions
-function setupListeners() {
+function setupListeners(){
   document.addEventListener('keydown', handleMovement);
   requestAnimationFrame(checkCollisions);
 }
 
-function handleMovement(e) {
-  if(gameState.introModalOpen) return;
-  switch(e.key.toLowerCase()) {
+function handleMovement(e){
+  if(gameState.introModalOpen)return;
+  switch(e.key.toLowerCase()){
     case 'arrowup':
     case 'w':
       player.position.top=Math.max(player.position.top-player.moveSpeed,0);
@@ -362,17 +361,8 @@ function handleMovement(e) {
   player.element.style.left=`${player.position.left}%`;
 }
 
-function checkCollisions() {
-  for(const [locName, locEl] of Object.entries(locations)){
-    if(isColliding(player.element, locEl)){
-      handleLocationVisit(locName);
-    }
-  }
-  requestAnimationFrame(checkCollisions);
-}
-
 function handleLocationVisit(locName){
-  if(player.isVisiting===locName) return;
+  if(player.isVisiting===locName)return;
   player.isVisiting=locName;
 
   const locEl=locations[locName];
@@ -385,7 +375,7 @@ function handleLocationVisit(locName){
       const needed=gameState.activeTask.steps[idx];
       if(locName===needed){
         gameState.activeTask.currentStep++;
-        showPopup(`Rigtigt trin: ${locName}`, "info");
+        showPopup(`Rigtigt trin: ${locName}`,"info");
         if(gameState.activeTask.currentStep>=gameState.activeTask.steps.length){
           completeTask();
         } else {
@@ -397,16 +387,5 @@ function handleLocationVisit(locName){
   setTimeout(()=>{player.isVisiting=null;},1000);
 }
 
-// Finally, the init function
-function initGame() {
-  updateScoreboard(); // call our scoreboard function
-  // create some tasks, intervals, etc.
-  for(let i=0;i<2;i++){
-    generateTask();
-  }
-  renderTasks();
-  setupListeners();
-  // optionally startTaskGenerator or other intervals
-}
-
+// start
 initGame();
