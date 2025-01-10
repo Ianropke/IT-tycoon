@@ -13,27 +13,23 @@
       <div id="scoreboard">
         <h2>Resultattavle</h2>
         <div id="scores">
-          <!-- (8) Fjerner "IT-sikkerhed" og "HR-afdeling" -->
           <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
           <span>Point: <span id="total-rewards">0</span></span>
-          <!-- Systemoppetid, interessenttilfredshed, overholdelse bibeholdes men med ny logik (7) -->
-          <span>Systemoppetid: <span id="system-uptime">99.9%</span></span>
-          <span>Interessenttilfredshed: <span id="stakeholder-satisfaction">100.0%</span></span>
-          <span>Overholdelse: <span id="compliance">100.0%</span></span>
-          <!-- Nye for at vise stabilitet vs. udvikling -->
+          <span>Sikkerhed: <span id="security">100</span></span>
           <span>Stabilitet: <span id="stability">100</span></span>
-          <span>Udviklingsniveau: <span id="development">100</span></span>
+          <span>Udvikling: <span id="development">100</span></span>
+          <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100%</span></span>
         </div>
       </div>
     </header>
     <main>
       <div id="game-area">
-        <!-- (1) Øger boks-størrelsen via style.css, men holder her hvis needed -->
-        <div class="location" id="infrastruktur" style="top: 30%; left: 20%;" data-name="Infrastruktur">Infrastruktur</div>
-        <div class="location" id="informationssikkerhed" style="top: 30%; left: 80%;" data-name="Informationssikkerhed">Informationssikkerhed</div>
-        <div class="location" id="hospital" style="top: 60%; left: 50%;" data-name="Hospital">Hospital</div>
-        <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 80%;" data-name="Medicinsk Udstyr">Medicinsk Udstyr</div>
-        <div class="location" id="cybersikkerhed" style="top: 70%; left: 30%;" data-name="Cybersikkerhed">Cybersikkerhed</div>
+        <!-- Lokationer -->
+        <div class="location" id="infrastruktur" style="top: 30%; left: 20%;">Infrastruktur</div>
+        <div class="location" id="informationssikkerhed" style="top: 30%; left: 80%;">Informationssikkerhed</div>
+        <div class="location" id="hospital" style="top: 60%; left: 50%;">Hospital</div>
+        <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 80%;">Medicinsk Udstyr</div>
+        <div class="location" id="cybersikkerhed" style="top: 70%; left: 30%;">Cybersikkerhed</div>
         <div id="player"></div>
       </div>
       <div id="task-panels">
@@ -61,8 +57,30 @@
       <p>&copy; 2025 IT Tycoon A/S</p>
     </footer>
   </div>
-  <!-- Popups -->
+
+  <!-- Modal til introduktion (3) -->
+  <div id="intro-modal" class="modal">
+    <div class="modal-content">
+      <h2>Velkommen til IT Tycoon</h2>
+      <p>
+        Du skal vedligeholde og udvikle systemet for Hospitalet. Sørg for at 
+        <strong>balancere</strong> <em>Sikkerhed</em>, <em>Stabilitet</em> og <em>Udvikling</em>, 
+        så Hospitalet forbliver tilfreds. 
+      </p>
+      <p>
+        Flyt spilleren (den blå cirkel) med piletaster eller WASD. 
+        Klik "Forpligt" for at tage en opgave. 
+        Følg trin-listen for at udføre opgaven. Hvis du vælger for mange 
+        stabilitetsopgaver, stagnerer udviklingen. Hvis du kun vælger udviklingsopgaver, 
+        kan systemet blive ustabilt og usikkert. 
+      </p>
+      <button id="intro-ok-btn">OK</button>
+    </div>
+  </div>
+
+  <!-- Popup Container -->
   <div id="popup-container"></div>
+
   <script src="script.js"></script>
 </body>
 </html>
