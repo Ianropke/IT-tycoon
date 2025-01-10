@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>IT Tycoon</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="game-container">
     <header>
       <h1>IT Tycoon</h1>
-      <!-- Updated Scoreboard Layout -->
       <div id="scoreboard">
         <h2>Scoreboard</h2>
         <div id="scores">
@@ -26,13 +25,12 @@
     </header>
     <main>
       <div id="game-area">
-        <!-- Existing Locations -->
-        <div class="location" id="infrastructure" data-name="Infrastructure" style="top: 30%; left: 20%;">Infrastructure</div>
-        <div class="location" id="legal" data-name="Legal Department" style="top: 30%; left: 80%;">Legal Department</div>
-        <div class="location" id="vendors" data-name="Vendors" style="top: 60%; left: 50%;">Vendors</div>
-        <!-- Expanded Locations -->
-        <div class="location" id="labs" data-name="Labs" style="top: 50%; left: 80%;">Labs</div>
-        <div class="location" id="diagnostics" data-name="Diagnostics" style="top: 70%; left: 30%;">Diagnostics</div>
+        <!-- Locations -->
+        <div class="location" id="infrastructure" style="top: 30%; left: 20%;" data-name="Infrastructure">Infrastructure</div>
+        <div class="location" id="legal" style="top: 30%; left: 80%;" data-name="Legal Department">Legal Department</div>
+        <div class="location" id="vendors" style="top: 60%; left: 50%;" data-name="Vendors">Vendors</div>
+        <div class="location" id="labs" style="top: 50%; left: 80%;" data-name="Labs">Labs</div>
+        <div class="location" id="diagnostics" style="top: 70%; left: 30%;" data-name="Diagnostics">Diagnostics</div>
         <!-- Player -->
         <div id="player"></div>
       </div>
@@ -41,7 +39,7 @@
           <h2>Active Task</h2>
           <h3 id="active-task-headline">No active task.</h3>
           <p id="active-task-details"></p>
-          <p id="active-task-description"></p> <!-- Task Description -->
+          <p id="active-task-description"></p>
           <div id="task-steps">
             <h4>Steps to Complete:</h4>
             <ul id="steps-list">
@@ -68,4 +66,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
