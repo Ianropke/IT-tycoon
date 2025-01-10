@@ -47,15 +47,10 @@ h1, h2, h3, h4 {
   font-size: 0.9rem;
 }
 
-main {
-  flex: 1;
-  overflow: hidden;
-}
-
-/* (3) Grid layout to reduce empty space & expand tasks area */
+/* The main area using grid to reduce empty space, expand tasks area */
 #grid-container {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* half game, half tasks */
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
   height: 100%;
   padding: 20px;
@@ -117,9 +112,6 @@ main {
   border-radius: 5px;
   overflow: hidden;
   min-width: 0;
-}
-
-#active-task, #available-tasks {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -229,7 +221,7 @@ main {
   background-color: #1c5980;
 }
 
-/* Pie chart in scoreboard */
+/* The scoreboard pie chart area */
 #pie-wrapper {
   display: flex;
   align-items: center;
@@ -237,7 +229,7 @@ main {
 }
 
 #stats-pie {
-  background-color: #2c3e50; /* Or transparent if you prefer */
+  background-color: transparent;
 }
 
 /* Popups */
@@ -274,7 +266,7 @@ main {
   100% { opacity: 0; transform: translateY(-20px); }
 }
 
-/* The Intro Modal */
+/* Intro Modal */
 .modal {
   position: fixed;
   top: 0; left: 0;
@@ -322,7 +314,6 @@ main {
   background-color: #2ecc71;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   #grid-container {
     grid-template-columns: 1fr;
