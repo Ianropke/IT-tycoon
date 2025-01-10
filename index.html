@@ -15,8 +15,8 @@
         <div id="scores">
           <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
           <span>Point: <span id="total-rewards">0</span></span>
+          <!-- Display a pie chart for Sikkerhed, Stabilitet, Udvikling -->
           <span id="pie-wrapper">
-            <!-- 2) We’ll show a pie chart for Sikkerhed, Stabilitet, Udvikling -->
             <canvas id="stats-pie" width="130" height="130"></canvas>
           </span>
           <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100%</span></span>
@@ -24,25 +24,13 @@
       </div>
     </header>
     <main>
-      <!-- 3) Use a grid to reduce empty space & expand tasks area -->
       <div id="grid-container">
         <div id="game-area">
-          <!-- (1) A more structured layout of locations -->
-          <div class="location" id="infrastruktur" style="top: 20%; left: 25%;">
-            Infrastruktur
-          </div>
-          <div class="location" id="informationssikkerhed" style="top: 20%; left: 65%;">
-            Informationssikkerhed
-          </div>
-          <div class="location" id="hospital" style="top: 45%; left: 45%;">
-            Hospital
-          </div>
-          <div class="location" id="medicinsk-udstyr" style="top: 70%; left: 25%;">
-            Medicinsk Udstyr
-          </div>
-          <div class="location" id="cybersikkerhed" style="top: 70%; left: 65%;">
-            Cybersikkerhed
-          </div>
+          <div class="location" id="infrastruktur" style="top: 20%; left: 25%;">Infrastruktur</div>
+          <div class="location" id="informationssikkerhed" style="top: 20%; left: 65%;">Informationssikkerhed</div>
+          <div class="location" id="hospital" style="top: 45%; left: 45%;">Hospital</div>
+          <div class="location" id="medicinsk-udstyr" style="top: 70%; left: 25%;">Medicinsk Udstyr</div>
+          <div class="location" id="cybersikkerhed" style="top: 70%; left: 65%;">Cybersikkerhed</div>
           <div id="player"></div>
         </div>
         <div id="task-panels">
@@ -82,11 +70,11 @@
       </p>
       <p>
         Flyt den blå cirkel med piletaster eller WASD, og vælg opgaver i “Mulige Opgaver”.
-        Gennemfør trinene for at fuldføre en opgave. 
+        Gennemfør trinene for at fuldføre en opgave.
       </p>
       <p>
-        Sørg for at balancere <em>Sikkerhed</em>, <em>Stabilitet</em>, og <em>Udvikling</em>,
-        så Hospitalet forbliver tilfreds!
+        Sørg for at balancere <em>Sikkerhed</em>, <em>Stabilitet</em> og <em>Udvikling</em>,
+        så Hospitalet forbliver tilfreds.
       </p>
       <button id="intro-ok-btn">OK</button>
     </div>
