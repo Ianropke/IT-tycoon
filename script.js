@@ -1,32 +1,33 @@
-// Spiller-objekt
+/******************************************
+ * IT Tycoon (Re‑Revised)
+ ******************************************/
+
+// Spiller
 const player = {
   element: document.getElementById('player'),
   position: { top: 50, left: 50 },
   moveSpeed: 2,
-  isVisiting: null,
+  isVisiting: null, // track collisions
 };
 
-// gameState with new stability vs. development
+// Overordnet spilstate
 const gameState = {
   tasksCompleted: 0,
-  totalRewards: 0, 
+  totalRewards: 0,
+  // Kattegorier: Sikkerhed, Stabilitet, Udvikling
+  security: 100,
+  stability: 100,
+  development: 100,
+  hospitalSatisfaction: 100, // 3: only one stakeholder -> hospital
+
   activeTask: null,
   availableTasks: [],
-  systemUptime: 99.9,
-  stakeholderSatisfaction: 100.0,
-  compliance: 100.0,
-
-  // Ny: to track the player's approach
-  stability: 100,       // If you pick mostly stability tasks, it stays high, dev might drop
-  development: 100,     // If you pick mostly dev tasks, it stays high, stability might drop
-
-  // used to keep track of whether we've shown popups yet
-  shownIntro: false,
+  // first-time popups
   shownFirstTaskPopup: false,
   shownFirstActivePopup: false,
+  // modal
+  introModalOpen: true,
 };
-
-// (8) No more references to "IT-sikkerhed" or "HR-afdeling" in scoreboard
 
 // Lokationer
 const locations = {
@@ -41,11 +42,10 @@ const locations = {
 const scoreboard = {
   tasksCompleted: document.getElementById('tasks-completed'),
   totalRewards: document.getElementById('total-rewards'),
-  systemUptime: document.getElementById('system-uptime'),
-  stakeholderSatisfaction: document.getElementById('stakeholder-satisfaction'),
-  compliance: document.getElementById('compliance'),
+  security: document.getElementById('security'),
   stability: document.getElementById('stability'),
   development: document.getElementById('development'),
+  hospitalSatisfaction: document.getElementById('hospital-satisfaction'),
 };
 
 const activeTaskDetails = document.getElementById('active-task-details');
@@ -53,154 +53,116 @@ const activeTaskHeadline = document.getElementById('active-task-headline');
 const activeTaskDescription = document.getElementById('active-task-description');
 const stepsList = document.getElementById('steps-list');
 const tasksList = document.getElementById('tasks-list');
-const popupContainer = document.getElementById('popup-container');
 
-// (3) Show intro pop-up on load
-window.addEventListener('load', () => {
-  if (!gameState.shownIntro) {
-    showPopup("Velkommen til IT Tycoon! Tag dig god tid – opgaverne handler om at holde systemet stabilt eller udvikle nye funktioner. Men pas på ubalance!", "info", 5000);
-    gameState.shownIntro = true;
-  }
+// Modal references
+const introModal = document.getElementById('intro-modal');
+const introOkBtn = document.getElementById('intro-ok-btn');
+
+// Luk modal på "OK" (2)
+introOkBtn.addEventListener('click', () => {
+  introModal.style.display = 'none';
+  gameState.introModalOpen = false;
 });
 
-// Start
+// Start spil
 function initGame() {
   updateScoreboard();
-  // Generate some starting tasks
+  // generate a few tasks
   for (let i = 0; i < 2; i++) {
     generateTask();
   }
-  renderAvailableTasks();
-  setupEventListeners();
-  startTaskGenerator();
-  startUrgencyEscalation();
-  startSystemUptimeDecay();
+  renderTasks();
+  setupListeners();
 }
 
-// (2) Slow down intervals (longer) + (6) limit tasks to 10
-function startTaskGenerator() {
-  setInterval(() => {
-    if (gameState.availableTasks.length < 10) {
-      generateTask();
-      renderAvailableTasks();
-      // (4) If we haven't shown first task popup, show it
-      if (!gameState.shownFirstTaskPopup) {
-        showPopup("Nye opgaver er dukket op! Klik for at læse og 'Forpligt' for at påtage dig opgaven.", "info");
-        gameState.shownFirstTaskPopup = true;
-      }
-    }
-  }, 30000); // 30 seconds
-}
-
+// (6) Limit tasks to max 10
 function generateTask() {
-  // half tasks are "stability", half are "development"
-  // This is a simplistic approach
-  const rand = Math.random();
-  const type = rand < 0.5 ? "stability" : "development";
-  
-  // typical risk 1-3, reward = risk * 100
+  if (gameState.availableTasks.length >= 10) return;
+
+  // random type: "stability" vs. "development" vs. "security"
+  const r = Math.random();
+  let type;
+  if (r < 0.33) type = 'stability';
+  else if (r < 0.66) type = 'development';
+  else type = 'security';
+
   const riskLevel = Math.floor(Math.random() * 3) + 1;
   const reward = riskLevel * 100;
-  
+
   const newTask = {
-    id: Date.now() + Math.floor(Math.random() * 1000),
-    headline: type === "stability" ? "Stabilitetsopgave" : "Udviklingsopgave",
-    description: type === "stability" 
-      ? "Hjælp med at vedligeholde og stabilisere systemet." 
-      : "Tilføj eller forbedr nye funktioner i systemet.",
+    id: Date.now() + Math.floor(Math.random() * 100),
+    taskType: type,
+    headline: type === 'stability' 
+      ? 'Stabilitetsopgave' 
+      : (type === 'development' ? 'Udviklingsopgave' : 'Sikkerhedsopgave'),
+    description: type === 'stability'
+      ? 'Vedligehold systemet for at forblive stabilt.'
+      : (type === 'development' 
+        ? 'Tilføj nye funktioner og forbedr systemet.' 
+        : 'Øg sikkerhedsniveauet og håndtér trusler.'),
     steps: getRandomSteps(),
     currentStep: 0,
     urgency: getRandomUrgency(),
     riskLevel,
     reward,
-    taskType: type, // "stability" / "development"
   };
-  
+
   gameState.availableTasks.push(newTask);
 }
 
-// (7) If only do stability tasks, dev drops & hospital unsatisfied. If only dev tasks, system unstable
-function applyTaskTypeEffects(taskType) {
-  if (taskType === "stability") {
-    // do stability approach
-    gameState.stability = Math.min(gameState.stability + 5, 150);
-    // but development might stagnate
-    gameState.development = Math.max(gameState.development - 3, 0);
-    // eventually hospital is unsatisfied if dev < 50?
-    if (gameState.development < 50) {
-      // stakeholder satisfaction goes down
-      gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 2, 0);
-      showPopup("Hospitalet ønsker nye funktioner – udviklingen halter!", "info");
-    }
-  } else {
-    // dev approach
-    gameState.development = Math.min(gameState.development + 5, 150);
-    // but stability might drop
-    gameState.stability = Math.max(gameState.stability - 3, 0);
-    // if stability < 50, system is less stable and more expensive
-    if (gameState.stability < 50) {
-      // system uptime goes down
-      gameState.systemUptime = Math.max(gameState.systemUptime - 1, 0);
-      showPopup("Systemet mangler stabilitet, det bliver dyrere at vedligeholde!", "info");
-    }
-  }
-}
-
-// Random steps from the 5 locations
+// pseudo random steps from the 5 locations
 function getRandomSteps() {
   const locKeys = Object.keys(locations);
-  const stepsCount = Math.floor(Math.random() * 3) + 2;
+  const stepCount = Math.floor(Math.random() * 3) + 2;
   const steps = [];
-  while (steps.length < stepsCount) {
-    const candidate = locKeys[Math.floor(Math.random() * locKeys.length)];
-    if (!steps.includes(candidate)) {
-      steps.push(candidate);
-    }
+  while (steps.length < stepCount) {
+    const c = locKeys[Math.floor(Math.random() * locKeys.length)];
+    if (!steps.includes(c)) steps.push(c);
   }
   return steps;
 }
 
 function getRandomUrgency() {
   const r = Math.random();
-  if (r < 0.3) return "high";
-  else if (r < 0.7) return "medium";
-  else return "low";
+  if (r < 0.3) return 'high';
+  else if (r < 0.7) return 'medium';
+  else return 'low';
 }
 
 // Render tasks
-function renderAvailableTasks() {
-  tasksList.innerHTML = "";
+function renderTasks() {
+  tasksList.innerHTML = '';
   if (!gameState.availableTasks.length) {
     tasksList.innerHTML = '<li>Ingen opgaver tilgængelige</li>';
     return;
   }
-  gameState.availableTasks.forEach(task => {
-    const li = document.createElement("li");
-    li.classList.add(task.urgency);
+  gameState.availableTasks.forEach(t => {
+    const li = document.createElement('li');
+    li.classList.add(t.urgency);
     li.innerHTML = `
-      <strong>${task.headline}</strong><br/>
-      Belønning: ${task.reward} kr - Risiko: ${task.riskLevel}
+      <strong>${t.headline}</strong><br />
+      Belønning: ${t.reward} kr - Risiko: ${t.riskLevel}
     `;
-    const desc = document.createElement("p");
-    desc.textContent = task.description;
-    desc.classList.add("task-description");
-    desc.style.display = "none";
-    
-    const commitBtn = document.createElement("button");
-    commitBtn.classList.add("commit-button");
-    commitBtn.textContent = "Forpligt";
-    commitBtn.addEventListener("click", e => {
+    const desc = document.createElement('p');
+    desc.classList.add('task-description');
+    desc.textContent = t.description;
+    desc.style.display = 'none';
+
+    const btn = document.createElement('button');
+    btn.textContent = 'Forpligt';
+    btn.classList.add('commit-button');
+    btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      assignTask(task.id);
+      assignTask(t.id);
     });
-    li.addEventListener("click", () => {
-      document.querySelectorAll(".task-description").forEach(d => {
-        if (d !== desc) d.style.display = "none";
+    li.addEventListener('click', () => {
+      document.querySelectorAll('.task-description').forEach(d => {
+        if (d !== desc) d.style.display = 'none';
       });
-      desc.style.display = desc.style.display === "none" ? "block" : "none";
+      desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
     });
     li.appendChild(desc);
-    li.appendChild(commitBtn);
+    li.appendChild(btn);
     tasksList.appendChild(li);
   });
 }
@@ -208,66 +170,73 @@ function renderAvailableTasks() {
 // Tildel opgave
 function assignTask(taskId) {
   if (gameState.activeTask) {
-    showPopup("Du har allerede en aktiv opgave!", "error");
+    showPopup('Du har allerede en aktiv opgave!', 'error');
     return;
   }
-  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
+  const idx = gameState.availableTasks.findIndex(x => x.id === taskId);
   if (idx === -1) return;
+
   gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
-  
   activeTaskDetails.textContent = `Belønning: ${gameState.activeTask.reward} kr - Risiko: ${gameState.activeTask.riskLevel}`;
   activeTaskHeadline.textContent = gameState.activeTask.headline;
   activeTaskDescription.textContent = gameState.activeTask.description;
-  renderAvailableTasks();
   updateStepsList();
-  
-  // (5) Pop up first time active
+  renderTasks();
+
+  // (5) first time we have an active task
   if (!gameState.shownFirstActivePopup) {
-    showPopup("Du har nu en aktiv opgave – følg trinlisten for at fuldføre den!", "info", 5000);
+    showPopup('Nu har du en aktiv opgave! Følg trin-listen for at fuldføre den.', 'info', 5000);
     gameState.shownFirstActivePopup = true;
   }
 }
 
-// Opdater trin
+// Trin-liste
 function updateStepsList() {
-  stepsList.innerHTML = "";
+  stepsList.innerHTML = '';
   if (!gameState.activeTask) {
-    stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+    stepsList.innerHTML = '<li>Ingen aktiv opgave</li>';
     return;
   }
-  gameState.activeTask.steps.forEach((step, i) => {
-    const li = document.createElement("li");
-    li.textContent = `Trin ${i + 1}: Gå til ${step}`;
+  gameState.activeTask.steps.forEach((locName, i) => {
+    const li = document.createElement('li');
+    li.textContent = `Trin ${i + 1}: Gå til ${locName}`;
     if (i < gameState.activeTask.currentStep) {
-      li.style.textDecoration = "line-through";
-      li.style.color = "#95a5a6";
+      li.style.textDecoration = 'line-through';
+      li.style.color = '#95a5a6';
     }
     stepsList.appendChild(li);
   });
 }
 
-// Bevægelse / kollision
-function setupEventListeners() {
-  document.addEventListener("keydown", handleMovement);
+// Lyt efter bevægelse og kollision
+function setupListeners() {
+  document.addEventListener('keydown', handleMovement);
   requestAnimationFrame(checkCollisions);
+
+  // (4) pop up first time tasks appear (when we generate new tasks)
+  // We'll do it in startTaskGenerator when tasks are generated
 }
 
+// Bevægelse
 function handleMovement(e) {
+  // if intro modal open, ignore movement
+  if (gameState.introModalOpen) return;
+
   switch(e.key.toLowerCase()) {
-    case "arrowup":
-    case "w":
+    case 'arrowup':
+    case 'w':
       player.position.top = Math.max(player.position.top - player.moveSpeed, 0);
       break;
-    case "arrowdown":
-    case "s":
+    case 'arrowdown':
+    case 's':
       player.position.top = Math.min(player.position.top + player.moveSpeed, 100);
       break;
-    case "arrowleft":
-    case "a":
+    case 'arrowleft':
+    case 'a':
       player.position.left = Math.max(player.position.left - player.moveSpeed, 0);
       break;
-    case "arrowright":
-    case "d":
+    case 'arrowright':
+    case 'd':
       player.position.left = Math.min(player.position.left + player.moveSpeed, 100);
       break;
   }
@@ -279,48 +248,63 @@ function updatePlayerPosition() {
   player.element.style.left = `${player.position.left}%`;
 }
 
+// Kollision
 function checkCollisions() {
-  for (const [locName, locEl] of Object.entries(locations)) {
-    if (isColliding(player.element, locEl)) {
-      handleLocationVisit(locName);
+  Object.entries(locations).forEach(([name, el]) => {
+    if (isColliding(player.element, el)) {
+      handleLocationVisit(name);
     }
-  }
+  });
   requestAnimationFrame(checkCollisions);
 }
 
-function isColliding(el1, el2) {
-  const r1 = el1.getBoundingClientRect();
-  const r2 = el2.getBoundingClientRect();
+function isColliding(pEl, lEl) {
+  const pRect = pEl.getBoundingClientRect();
+  const lRect = lEl.getBoundingClientRect();
   return !(
-    r1.top > r2.bottom ||
-    r1.bottom < r2.top ||
-    r1.left > r2.right ||
-    r1.right < r2.left
+    pRect.top > lRect.bottom ||
+    pRect.bottom < lRect.top ||
+    pRect.left > lRect.right ||
+    pRect.right < lRect.left
   );
 }
 
-// Lokationsbesøg
+// (1) Problem: if user stands in correct loc, remains or returns => "wrong step"?
+// We'll only handle step progression if we haven't advanced the step for that location yet.
 function handleLocationVisit(locName) {
   if (player.isVisiting === locName) return;
   player.isVisiting = locName;
-  const locElement = locations[locName];
-  locElement.classList.add("visited");
-  setTimeout(() => locElement.classList.remove("visited"), 500);
+
+  const locEl = locations[locName];
+  locEl.classList.add('visited');
+  setTimeout(() => locEl.classList.remove('visited'), 500);
 
   if (gameState.activeTask) {
-    const currentStepIndex = gameState.activeTask.currentStep;
-    const neededLoc = gameState.activeTask.steps[currentStepIndex];
+    // needed location for current step
+    const neededLoc = gameState.activeTask.steps[gameState.activeTask.currentStep];
     if (locName === neededLoc) {
       gameState.activeTask.currentStep++;
-      showPopup(`Besøgte ${locName}`, "info");
+      showPopup(`Rigtigt trin: ${locName}`, 'info');
+      // next step or complete
       if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
         completeTask();
       } else {
         updateStepsList();
       }
-    } else {
-      showPopup("Forkert lokation! Opgaven mislykkedes.", "error");
-      failTask();
+    } 
+    else {
+      // If user tries same location again (and it’s not the needed step),
+      // we just ignore. We won't fail automatically unless it's truly a different location.
+      // => If locName != neededLoc and also not "the same as the last correct location"
+      const lastCorrectLoc = 
+        gameState.activeTask.currentStep > 0 
+          ? gameState.activeTask.steps[gameState.activeTask.currentStep - 1] 
+          : null;
+      if (locName !== lastCorrectLoc) {
+        // Then it’s truly the wrong step
+        showPopup('Forkert lokation! Opgaven mislykkedes.', 'error');
+        failTask();
+      }
     }
   }
 
@@ -329,117 +313,124 @@ function handleLocationVisit(locName) {
   }, 1000);
 }
 
-// Færdiggør opgave
+// Fuldfør
 function completeTask() {
-  showPopup("Opgave fuldført!", "success");
+  showPopup('Opgave fuldført!', 'success');
   gameState.tasksCompleted++;
-  gameState.totalRewards += gameState.activeTask.reward;
-
-  // (7) Stability vs. Development logic:
-  applyStabilityDevEffect(gameState.activeTask.taskType);
+  // For simplicity, risk => chance of losing security
+  // reward => we add to totalRewards
+  const t = gameState.activeTask;
+  gameState.totalRewards += t.reward;
+  // apply effect based on type
+  applyTaskEffect(t);
 
   gameState.activeTask = null;
-  activeTaskDetails.textContent = "";
-  activeTaskHeadline.textContent = "Ingen aktiv opgave";
-  activeTaskDescription.textContent = "";
-  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  activeTaskDetails.textContent = '';
+  activeTaskHeadline.textContent = 'Ingen aktiv opgave';
+  activeTaskDescription.textContent = '';
+  stepsList.innerHTML = '<li>Ingen aktiv opgave</li>';
   updateScoreboard();
 }
 
 function failTask() {
-  // If fails, also apply partial effect with penalty
+  // losing some security/stability/hospital satisfaction?
+  showPopup('Opgave fejlede! Ingen belønning.', 'error');
   if (gameState.activeTask) {
-    showPopup("Opgave fejlede. Ingen belønning!", "error");
-    // do partial negative effect
-    if (gameState.activeTask.taskType) {
-      applyStabilityDevEffect(gameState.activeTask.taskType, true); // pass a second arg to indicate fail
-    }
+    // small negative effect
+    gameState.security = Math.max(gameState.security - 2, 0);
+    gameState.stability = Math.max(gameState.stability - 2, 0);
+    gameState.hospitalSatisfaction = Math.max(gameState.hospitalSatisfaction - 3, 0);
   }
   gameState.activeTask = null;
-  activeTaskDetails.textContent = "";
-  activeTaskHeadline.textContent = "Ingen aktiv opgave";
-  activeTaskDescription.textContent = "";
-  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  activeTaskDetails.textContent = '';
+  activeTaskHeadline.textContent = 'Ingen aktiv opgave';
+  activeTaskDescription.textContent = '';
+  stepsList.innerHTML = '<li>Ingen aktiv opgave</li>';
   updateScoreboard();
 }
 
-// apply effect for stability dev approach
-function applyStabilityDevEffect(taskType, failed = false) {
-  if (taskType === "stability") {
-    if (!failed) {
-      // user chose stability -> stability up, dev down
-      gameState.stability = Math.min(gameState.stability + 5, 150);
-      gameState.development = Math.max(gameState.development - 3, 0);
-    } else {
-      // a failed stability approach
-      gameState.stability = Math.max(gameState.stability - 2, 0);
-    }
-    // if dev is too low -> stakeholders want new features
-    if (gameState.development < 50) {
-      gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 2, 0);
-    }
+// (7) simpler logic for balancing. We only have 3 stats: security, stability, development
+// + hospitalSatisfaction
+function applyTaskEffect(task) {
+  // e.g. if "stability" => stability + ...
+  if (task.taskType === 'stability') {
+    gameState.stability = Math.min(gameState.stability + 5, 150);
+    // but dev might stagnate => -2
+    gameState.development = Math.max(gameState.development - 2, 0);
+  }
+  else if (task.taskType === 'development') {
+    gameState.development = Math.min(gameState.development + 5, 150);
+    // system might get less stable => -2
+    gameState.stability = Math.max(gameState.stability - 2, 0);
+  }
+  else {
+    // security tasks
+    gameState.security = Math.min(gameState.security + 5, 150);
+    // a small negative effect on stability or dev => your choice
+    gameState.stability = Math.max(gameState.stability - 1, 0);
+    gameState.development = Math.max(gameState.development - 1, 0);
+  }
+
+  // If any stat is too low => hospital satisfaction goes down
+  if (gameState.security < 50 || gameState.stability < 50 || gameState.development < 50) {
+    gameState.hospitalSatisfaction = Math.max(gameState.hospitalSatisfaction - 5, 0);
   } else {
-    // development
-    if (!failed) {
-      gameState.development = Math.min(gameState.development + 5, 150);
-      gameState.stability = Math.max(gameState.stability - 3, 0);
-    } else {
-      // a failed dev approach
-      gameState.development = Math.max(gameState.development - 2, 0);
-    }
-    if (gameState.stability < 50) {
-      gameState.systemUptime = Math.max(gameState.systemUptime - 1, 0);
-    }
+    // if everything is balanced => hospital is happier
+    gameState.hospitalSatisfaction = Math.min(gameState.hospitalSatisfaction + 2, 100);
   }
 }
 
-// Eskaler opgavernes haster
+// opdater scoreboard
+function updateScoreboard() {
+  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
+  scoreboard.totalRewards.textContent = gameState.totalRewards;
+  scoreboard.security.textContent = gameState.security;
+  scoreboard.stability.textContent = gameState.stability;
+  scoreboard.development.textContent = gameState.development;
+  scoreboard.hospitalSatisfaction.textContent = gameState.hospitalSatisfaction + '%';
+}
+
+// Simple intervals
+function startTaskGenerator() {
+  setInterval(() => {
+    if (gameState.availableTasks.length < 10) {
+      generateTask();
+      renderTasks();
+      if (!gameState.shownFirstTaskPopup) {
+        showPopup('Nye opgaver er kommet! Klik for at se detaljer og "Forpligt" for at tage en.', 'info', 6000);
+        gameState.shownFirstTaskPopup = true;
+      }
+    }
+  }, 30000); // slowed to 30s
+}
+
 function startUrgencyEscalation() {
   setInterval(() => {
-    gameState.availableTasks.forEach(task => {
-      if (task.urgency === "low") {
-        task.urgency = "medium";
-      } else if (task.urgency === "medium") {
-        task.urgency = "high";
-      }
+    gameState.availableTasks.forEach(t => {
+      if (t.urgency === 'low') t.urgency = 'medium';
+      else if (t.urgency === 'medium') t.urgency = 'high';
     });
-    renderAvailableTasks();
-  }, 60000); // slowed to 1 minute
+    renderTasks();
+  }, 60000); // 1 min
 }
 
-// System-oppetid falder gradvist
 function startSystemUptimeDecay() {
-  setInterval(() => {
-    gameState.systemUptime = Math.max(gameState.systemUptime - 0.05, 0);
-    updateScoreboard();
-    if (gameState.systemUptime <= 0) {
-      showPopup("Systemoppetid kritisk! Spillet slutter snart?", "error");
-    }
-  }, 45000); // every 45s for demonstration
+  // optional if you want to degrade e.g. security/stability over time
+  // or skip if not needed
 }
 
-// Simpel pop-up
-function showPopup(message, type = "success", duration = 3000) {
-  const popup = document.createElement("div");
-  popup.classList.add("popup");
-  if (type === "error") popup.classList.add("error");
-  else if (type === "info") popup.classList.add("info");
+// Show popup with or w/o fade
+function showPopup(message, type = 'success', duration = 3000) {
+  const popup = document.createElement('div');
+  popup.classList.add('popup');
+  if (type === 'error') popup.classList.add('error');
+  else if (type === 'info') popup.classList.add('info');
   popup.textContent = message;
-  popupContainer.appendChild(popup);
+  document.getElementById('popup-container').appendChild(popup);
 
   setTimeout(() => {
     popup.remove();
   }, duration);
-}
-
-function updateScoreboard() {
-  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
-  scoreboard.totalRewards.textContent = gameState.totalRewards;
-  scoreboard.systemUptime.textContent = `${gameState.systemUptime.toFixed(1)}%`;
-  scoreboard.stakeholderSatisfaction.textContent = `${gameState.stakeholderSatisfaction.toFixed(1)}%`;
-  scoreboard.compliance.textContent = `${gameState.compliance.toFixed(1)}%`;
-  scoreboard.stability.textContent = gameState.stability;
-  scoreboard.development.textContent = gameState.development;
 }
 
 initGame();
