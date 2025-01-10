@@ -15,51 +15,55 @@
         <div id="scores">
           <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
           <span>Point: <span id="total-rewards">0</span></span>
-          <span>Sikkerhed: <span id="security">100</span></span>
-          <span>Stabilitet: <span id="stability">100</span></span>
-          <span>Udvikling: <span id="development">100</span></span>
+          <span id="pie-wrapper">
+            <!-- 2) We’ll show a pie chart for Sikkerhed, Stabilitet, Udvikling -->
+            <canvas id="stats-pie" width="130" height="130"></canvas>
+          </span>
           <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100%</span></span>
         </div>
       </div>
     </header>
     <main>
-      <div id="game-area">
-        <!-- (1) More structured layout for the locations -->
-        <div class="location" id="infrastruktur" style="top: 25%; left: 25%;">
-          Infrastruktur
+      <!-- 3) Use a grid to reduce empty space & expand tasks area -->
+      <div id="grid-container">
+        <div id="game-area">
+          <!-- (1) A more structured layout of locations -->
+          <div class="location" id="infrastruktur" style="top: 20%; left: 25%;">
+            Infrastruktur
+          </div>
+          <div class="location" id="informationssikkerhed" style="top: 20%; left: 65%;">
+            Informationssikkerhed
+          </div>
+          <div class="location" id="hospital" style="top: 45%; left: 45%;">
+            Hospital
+          </div>
+          <div class="location" id="medicinsk-udstyr" style="top: 70%; left: 25%;">
+            Medicinsk Udstyr
+          </div>
+          <div class="location" id="cybersikkerhed" style="top: 70%; left: 65%;">
+            Cybersikkerhed
+          </div>
+          <div id="player"></div>
         </div>
-        <div class="location" id="informationssikkerhed" style="top: 25%; left: 65%;">
-          Informationssikkerhed
-        </div>
-        <div class="location" id="hospital" style="top: 50%; left: 45%;">
-          Hospital
-        </div>
-        <div class="location" id="medicinsk-udstyr" style="top: 70%; left: 25%;">
-          Medicinsk Udstyr
-        </div>
-        <div class="location" id="cybersikkerhed" style="top: 70%; left: 65%;">
-          Cybersikkerhed
-        </div>
-        <div id="player"></div>
-      </div>
-      <div id="task-panels">
-        <div id="active-task">
-          <h2>Aktiv Opgave</h2>
-          <h3 id="active-task-headline">Ingen aktiv opgave</h3>
-          <p id="active-task-details"></p>
-          <p id="active-task-description"></p>
-          <div id="task-steps">
-            <h4>Trin at gennemføre:</h4>
-            <ul id="steps-list">
-              <li>Ingen aktiv opgave</li>
+        <div id="task-panels">
+          <div id="active-task">
+            <h2>Aktiv Opgave</h2>
+            <h3 id="active-task-headline">Ingen aktiv opgave</h3>
+            <p id="active-task-details"></p>
+            <p id="active-task-description"></p>
+            <div id="task-steps">
+              <h4>Trin at gennemføre:</h4>
+              <ul id="steps-list">
+                <li>Ingen aktiv opgave</li>
+              </ul>
+            </div>
+          </div>
+          <div id="available-tasks">
+            <h2>Mulige Opgaver</h2>
+            <ul id="tasks-list">
+              <li>Ingen opgaver tilgængelige</li>
             </ul>
           </div>
-        </div>
-        <div id="available-tasks">
-          <h2>Mulige Opgaver</h2>
-          <ul id="tasks-list">
-            <li>Ingen opgaver tilgængelige</li>
-          </ul>
         </div>
       </div>
     </main>
@@ -68,7 +72,7 @@
     </footer>
   </div>
 
-  <!-- Intro modal (3) mentions Forvalter role -->
+  <!-- Intro modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
       <h2>Velkommen til IT Tycoon</h2>
@@ -77,19 +81,18 @@
         sikre stabil drift og udvikle nye funktioner, uden at gå på kompromis med sikkerheden.
       </p>
       <p>
-        Flyt den blå cirkel med piletaster eller WASD, og klik på opgaver i boksen
-        <em>“Mulige Opgaver”</em> for at se deres beskrivelser og forpligte dig til dem.
-        Følg trinnene for at fuldføre en opgave. 
+        Flyt den blå cirkel med piletaster eller WASD, og vælg opgaver i “Mulige Opgaver”.
+        Gennemfør trinene for at fuldføre en opgave. 
       </p>
       <p>
-        Sørg for at balancere <em>Sikkerhed</em>, <em>Stabilitet</em> og <em>Udvikling</em>,
-        så Hospitalet forbliver tilfreds med dit arbejde.
+        Sørg for at balancere <em>Sikkerhed</em>, <em>Stabilitet</em>, og <em>Udvikling</em>,
+        så Hospitalet forbliver tilfreds!
       </p>
       <button id="intro-ok-btn">OK</button>
     </div>
   </div>
 
-  <!-- Popup notification container -->
+  <!-- Popup container -->
   <div id="popup-container"></div>
 
   <script src="script.js"></script>
