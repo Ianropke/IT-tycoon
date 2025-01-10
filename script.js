@@ -1,69 +1,34 @@
-// JavaScript for IT Tycoon in Danish
-
 // Spiller-objekt
 const player = {
   element: document.getElementById('player'),
-  position: { top: 50, left: 50 }, // Procentbaseret position
-  moveSpeed: 2, 
+  position: { top: 50, left: 50 },
+  moveSpeed: 2,
   isVisiting: null,
 };
 
-// Opgavebeskrivelser (forenklet / eksempel)
-const taskDescriptions = {
-  Hospital: [
-    'Håndter patientdata sikkert.',
-    'Opdatér systemer til hospitalsudstyr.',
-    'Tjek lager for medicinsk udstyr.'
-  ],
-  Infrastruktur: [
-    'Opgradér serverinfrastruktur.',
-    'Udfør rutinetjek af netværk.',
-    'Installer nye sikkerhedskopier.'
-  ],
-  Cybersikkerhed: [
-    'Implementér firewall-opdateringer.',
-    'Foretag sikkerhedsgennemgang.',
-    'Håndter phishing-hændelse.'
-  ],
-};
-
-// Opgave-overskrifter (forenklet / eksempel)
-const taskHeadlines = {
-  Hospital: [
-    'Patientdatabeskyttelse',
-    'Udstyrsopdatering',
-    'Medicinsk Beholdningstjek',
-  ],
-  Infrastruktur: [
-    'Serveropgradering',
-    'Netværkstjek',
-    'Backup-installation',
-  ],
-  Cybersikkerhed: [
-    'Firewall Implementation',
-    'Sikkerhedsgennemgang',
-    'Phishing Reaktion',
-  ],
-};
-
-// Ny og forenklet scoringsmodel
-// "Point" = Samlet belønning. "Fuldførte opgaver" = total tasks completed.
-
+// gameState with new stability vs. development
 const gameState = {
   tasksCompleted: 0,
   totalRewards: 0, 
-  departmentRewards: {
-    'IT-sikkerhed': 0,
-    'HR-afdeling': 0,
-  },
   activeTask: null,
   availableTasks: [],
   systemUptime: 99.9,
   stakeholderSatisfaction: 100.0,
   compliance: 100.0,
+
+  // Ny: to track the player's approach
+  stability: 100,       // If you pick mostly stability tasks, it stays high, dev might drop
+  development: 100,     // If you pick mostly dev tasks, it stays high, stability might drop
+
+  // used to keep track of whether we've shown popups yet
+  shownIntro: false,
+  shownFirstTaskPopup: false,
+  shownFirstActivePopup: false,
 };
 
-// Lokationer (ny navngivning)
+// (8) No more references to "IT-sikkerhed" or "HR-afdeling" in scoreboard
+
+// Lokationer
 const locations = {
   Infrastruktur: document.getElementById('infrastruktur'),
   Informationssikkerhed: document.getElementById('informationssikkerhed'),
@@ -72,15 +37,15 @@ const locations = {
   Cybersikkerhed: document.getElementById('cybersikkerhed'),
 };
 
-// UI-elementer
+// UI references
 const scoreboard = {
   tasksCompleted: document.getElementById('tasks-completed'),
   totalRewards: document.getElementById('total-rewards'),
-  itSecurity: document.getElementById('it-security'),
-  hrDepartment: document.getElementById('hr-department'),
   systemUptime: document.getElementById('system-uptime'),
   stakeholderSatisfaction: document.getElementById('stakeholder-satisfaction'),
   compliance: document.getElementById('compliance'),
+  stability: document.getElementById('stability'),
+  development: document.getElementById('development'),
 };
 
 const activeTaskDetails = document.getElementById('active-task-details');
@@ -90,255 +55,271 @@ const stepsList = document.getElementById('steps-list');
 const tasksList = document.getElementById('tasks-list');
 const popupContainer = document.getElementById('popup-container');
 
-// Initialiser spillet
+// (3) Show intro pop-up on load
+window.addEventListener('load', () => {
+  if (!gameState.shownIntro) {
+    showPopup("Velkommen til IT Tycoon! Tag dig god tid – opgaverne handler om at holde systemet stabilt eller udvikle nye funktioner. Men pas på ubalance!", "info", 5000);
+    gameState.shownIntro = true;
+  }
+});
+
+// Start
 function initGame() {
   updateScoreboard();
-  generateStartingTasks();
+  // Generate some starting tasks
+  for (let i = 0; i < 2; i++) {
+    generateTask();
+  }
   renderAvailableTasks();
   setupEventListeners();
-  startTaskGeneration();
-  startTaskUrgencyEscalation();
+  startTaskGenerator();
+  startUrgencyEscalation();
   startSystemUptimeDecay();
 }
 
-// Opdater scoreboard
-function updateScoreboard() {
-  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
-  scoreboard.totalRewards.textContent = gameState.totalRewards;
-  // Evt. kan IT-sikkerhed og HR-afdeling udelades hvis du ikke bruger dem i den nye model
-  scoreboard.itSecurity.textContent = gameState.departmentRewards['IT-sikkerhed'];
-  scoreboard.hrDepartment.textContent = gameState.departmentRewards['HR-afdeling'];
-  scoreboard.systemUptime.textContent = `${gameState.systemUptime.toFixed(1)}%`;
-  scoreboard.stakeholderSatisfaction.textContent = `${gameState.stakeholderSatisfaction.toFixed(1)}%`;
-  scoreboard.compliance.textContent = `${gameState.compliance.toFixed(1)}%`;
+// (2) Slow down intervals (longer) + (6) limit tasks to 10
+function startTaskGenerator() {
+  setInterval(() => {
+    if (gameState.availableTasks.length < 10) {
+      generateTask();
+      renderAvailableTasks();
+      // (4) If we haven't shown first task popup, show it
+      if (!gameState.shownFirstTaskPopup) {
+        showPopup("Nye opgaver er dukket op! Klik for at læse og 'Forpligt' for at påtage dig opgaven.", "info");
+        gameState.shownFirstTaskPopup = true;
+      }
+    }
+  }, 30000); // 30 seconds
 }
 
-// Generér startopgaver
-function generateStartingTasks() {
-  for (let i = 0; i < 3; i++) {
-    generateTask();
-  }
-}
-
-// Generér én opgave
 function generateTask() {
-  // Nogle mulige opgavegivere: Hospital, Infrastruktur, Cybersikkerhed
-  const givers = ['Hospital', 'Infrastruktur', 'Cybersikkerhed'];
-  const giver = givers[Math.floor(Math.random() * givers.length)];
-
-  const riskLevel = Math.floor(Math.random() * 3) + 1; 
-  const reward = riskLevel * 100; 
-  const steps = getRandomStepsFromGiver(giver);
-  const urgency = getRandomUrgency();
-  const headline = getRandomHeadline(giver);
-  const description = getRandomDescription(giver);
-
+  // half tasks are "stability", half are "development"
+  // This is a simplistic approach
+  const rand = Math.random();
+  const type = rand < 0.5 ? "stability" : "development";
+  
+  // typical risk 1-3, reward = risk * 100
+  const riskLevel = Math.floor(Math.random() * 3) + 1;
+  const reward = riskLevel * 100;
+  
   const newTask = {
     id: Date.now() + Math.floor(Math.random() * 1000),
-    giver, 
+    headline: type === "stability" ? "Stabilitetsopgave" : "Udviklingsopgave",
+    description: type === "stability" 
+      ? "Hjælp med at vedligeholde og stabilisere systemet." 
+      : "Tilføj eller forbedr nye funktioner i systemet.",
+    steps: getRandomSteps(),
+    currentStep: 0,
+    urgency: getRandomUrgency(),
     riskLevel,
     reward,
-    steps,
-    currentStep: 0,
-    urgency,
-    headline,
-    description
+    taskType: type, // "stability" / "development"
   };
-
+  
   gameState.availableTasks.push(newTask);
 }
 
-// Hjælpefunktioner for opgave-generation
-function getRandomStepsFromGiver(giver) {
-  // Fx hver giver har en standard-lokation
-  const locationKeys = Object.keys(locations);
+// (7) If only do stability tasks, dev drops & hospital unsatisfied. If only dev tasks, system unstable
+function applyTaskTypeEffects(taskType) {
+  if (taskType === "stability") {
+    // do stability approach
+    gameState.stability = Math.min(gameState.stability + 5, 150);
+    // but development might stagnate
+    gameState.development = Math.max(gameState.development - 3, 0);
+    // eventually hospital is unsatisfied if dev < 50?
+    if (gameState.development < 50) {
+      // stakeholder satisfaction goes down
+      gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 2, 0);
+      showPopup("Hospitalet ønsker nye funktioner – udviklingen halter!", "info");
+    }
+  } else {
+    // dev approach
+    gameState.development = Math.min(gameState.development + 5, 150);
+    // but stability might drop
+    gameState.stability = Math.max(gameState.stability - 3, 0);
+    // if stability < 50, system is less stable and more expensive
+    if (gameState.stability < 50) {
+      // system uptime goes down
+      gameState.systemUptime = Math.max(gameState.systemUptime - 1, 0);
+      showPopup("Systemet mangler stabilitet, det bliver dyrere at vedligeholde!", "info");
+    }
+  }
+}
+
+// Random steps from the 5 locations
+function getRandomSteps() {
+  const locKeys = Object.keys(locations);
   const stepsCount = Math.floor(Math.random() * 3) + 2;
   const steps = [];
   while (steps.length < stepsCount) {
-    const loc = locationKeys[Math.floor(Math.random() * locationKeys.length)];
-    if (!steps.includes(loc)) steps.push(loc);
+    const candidate = locKeys[Math.floor(Math.random() * locKeys.length)];
+    if (!steps.includes(candidate)) {
+      steps.push(candidate);
+    }
   }
   return steps;
 }
 
 function getRandomUrgency() {
-  const rand = Math.random();
-  if (rand < 0.3) return 'high';
-  if (rand < 0.7) return 'medium';
-  return 'low';
+  const r = Math.random();
+  if (r < 0.3) return "high";
+  else if (r < 0.7) return "medium";
+  else return "low";
 }
 
-function getRandomHeadline(giver) {
-  const list = taskHeadlines[giver] || ['Generel Opgave'];
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-function getRandomDescription(giver) {
-  const list = taskDescriptions[giver] || ['Udfør den nødvendige opgave.'];
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-// Render liste over ledige opgaver
+// Render tasks
 function renderAvailableTasks() {
-  tasksList.innerHTML = '';
+  tasksList.innerHTML = "";
   if (!gameState.availableTasks.length) {
     tasksList.innerHTML = '<li>Ingen opgaver tilgængelige</li>';
     return;
   }
-
   gameState.availableTasks.forEach(task => {
-    const li = document.createElement('li');
+    const li = document.createElement("li");
     li.classList.add(task.urgency);
     li.innerHTML = `
-      <strong>${task.headline}</strong><br />
+      <strong>${task.headline}</strong><br/>
       Belønning: ${task.reward} kr - Risiko: ${task.riskLevel}
     `;
-
-    // Beskrivelse
-    const desc = document.createElement('p');
+    const desc = document.createElement("p");
     desc.textContent = task.description;
-    desc.classList.add('task-description');
-    desc.style.display = 'none';
-
-    // Commit-knap
-    const commitButton = document.createElement('button');
-    commitButton.textContent = 'Forpligt';
-    commitButton.classList.add('commit-button');
-    commitButton.addEventListener('click', (e) => {
+    desc.classList.add("task-description");
+    desc.style.display = "none";
+    
+    const commitBtn = document.createElement("button");
+    commitBtn.classList.add("commit-button");
+    commitBtn.textContent = "Forpligt";
+    commitBtn.addEventListener("click", e => {
       e.stopPropagation();
       assignTask(task.id);
     });
-
-    // Klik for at vise/skjule beskrivelse
-    li.addEventListener('click', () => {
-      document.querySelectorAll('.task-description').forEach(el => {
-        if (el !== desc) el.style.display = 'none';
+    li.addEventListener("click", () => {
+      document.querySelectorAll(".task-description").forEach(d => {
+        if (d !== desc) d.style.display = "none";
       });
-      desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
+      desc.style.display = desc.style.display === "none" ? "block" : "none";
     });
-
     li.appendChild(desc);
-    li.appendChild(commitButton);
+    li.appendChild(commitBtn);
     tasksList.appendChild(li);
   });
 }
 
-// Tildel opgave til aktiv
+// Tildel opgave
 function assignTask(taskId) {
   if (gameState.activeTask) {
-    showPopup('Der er allerede en aktiv opgave!', 'error');
+    showPopup("Du har allerede en aktiv opgave!", "error");
     return;
   }
-
   const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
   if (idx === -1) return;
-
   gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
-  activeTaskDetails.textContent = `Opgave fra ${gameState.activeTask.giver} - Belønning: ${gameState.activeTask.reward} kr`;
+  
+  activeTaskDetails.textContent = `Belønning: ${gameState.activeTask.reward} kr - Risiko: ${gameState.activeTask.riskLevel}`;
   activeTaskHeadline.textContent = gameState.activeTask.headline;
   activeTaskDescription.textContent = gameState.activeTask.description;
   renderAvailableTasks();
   updateStepsList();
-
-  showPopup(`Ny opgave fra ${gameState.activeTask.giver}`, 'success');
+  
+  // (5) Pop up first time active
+  if (!gameState.shownFirstActivePopup) {
+    showPopup("Du har nu en aktiv opgave – følg trinlisten for at fuldføre den!", "info", 5000);
+    gameState.shownFirstActivePopup = true;
+  }
 }
 
-// Opdatér trin-listen
+// Opdater trin
 function updateStepsList() {
-  stepsList.innerHTML = '';
+  stepsList.innerHTML = "";
   if (!gameState.activeTask) {
-    stepsList.innerHTML = '<li>Ingen aktiv opgave</li>';
+    stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
     return;
   }
   gameState.activeTask.steps.forEach((step, i) => {
-    const li = document.createElement('li');
+    const li = document.createElement("li");
     li.textContent = `Trin ${i + 1}: Gå til ${step}`;
     if (i < gameState.activeTask.currentStep) {
-      li.style.textDecoration = 'line-through';
-      li.style.color = '#95a5a6';
+      li.style.textDecoration = "line-through";
+      li.style.color = "#95a5a6";
     }
     stepsList.appendChild(li);
   });
 }
 
-// Lyt efter bevægelser og kollisioner
+// Bevægelse / kollision
 function setupEventListeners() {
-  document.addEventListener('keydown', handleMovement);
+  document.addEventListener("keydown", handleMovement);
   requestAnimationFrame(checkCollisions);
 }
 
-// Håndtér bevægelse
 function handleMovement(e) {
-  switch (e.key.toLowerCase()) {
-    case 'arrowup':
-    case 'w':
+  switch(e.key.toLowerCase()) {
+    case "arrowup":
+    case "w":
       player.position.top = Math.max(player.position.top - player.moveSpeed, 0);
       break;
-    case 'arrowdown':
-    case 's':
+    case "arrowdown":
+    case "s":
       player.position.top = Math.min(player.position.top + player.moveSpeed, 100);
       break;
-    case 'arrowleft':
-    case 'a':
+    case "arrowleft":
+    case "a":
       player.position.left = Math.max(player.position.left - player.moveSpeed, 0);
       break;
-    case 'arrowright':
-    case 'd':
+    case "arrowright":
+    case "d":
       player.position.left = Math.min(player.position.left + player.moveSpeed, 100);
       break;
   }
   updatePlayerPosition();
 }
 
-// Opdatér spillerens position
 function updatePlayerPosition() {
   player.element.style.top = `${player.position.top}%`;
   player.element.style.left = `${player.position.left}%`;
 }
 
-// Kollisionstjek
 function checkCollisions() {
-  for (const [name, locEl] of Object.entries(locations)) {
+  for (const [locName, locEl] of Object.entries(locations)) {
     if (isColliding(player.element, locEl)) {
-      handleLocationVisit(name);
+      handleLocationVisit(locName);
     }
   }
   requestAnimationFrame(checkCollisions);
 }
 
-function isColliding(playerEl, locationEl) {
-  const pRect = playerEl.getBoundingClientRect();
-  const lRect = locationEl.getBoundingClientRect();
+function isColliding(el1, el2) {
+  const r1 = el1.getBoundingClientRect();
+  const r2 = el2.getBoundingClientRect();
   return !(
-    pRect.top > lRect.bottom ||
-    pRect.bottom < lRect.top ||
-    pRect.left > lRect.right ||
-    pRect.right < lRect.left
+    r1.top > r2.bottom ||
+    r1.bottom < r2.top ||
+    r1.left > r2.right ||
+    r1.right < r2.left
   );
 }
 
-// Håndter lokationsbesøg
+// Lokationsbesøg
 function handleLocationVisit(locName) {
   if (player.isVisiting === locName) return;
   player.isVisiting = locName;
-
-  const locEl = locations[locName];
-  locEl.classList.add('visited');
-  setTimeout(() => locEl.classList.remove('visited'), 500);
+  const locElement = locations[locName];
+  locElement.classList.add("visited");
+  setTimeout(() => locElement.classList.remove("visited"), 500);
 
   if (gameState.activeTask) {
-    const currentStepName = gameState.activeTask.steps[gameState.activeTask.currentStep];
-    if (locName === currentStepName) {
+    const currentStepIndex = gameState.activeTask.currentStep;
+    const neededLoc = gameState.activeTask.steps[currentStepIndex];
+    if (locName === neededLoc) {
       gameState.activeTask.currentStep++;
-      showPopup(`Besøgte ${locName}`, 'success');
+      showPopup(`Besøgte ${locName}`, "info");
       if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
         completeTask();
       } else {
         updateStepsList();
-        activeTaskDetails.textContent = `Opgave fra ${gameState.activeTask.giver} - Belønning: ${gameState.activeTask.reward} kr`;
       }
     } else {
-      showPopup('Forkert lokation! Opgaven fejlede.', 'error');
+      showPopup("Forkert lokation! Opgaven mislykkedes.", "error");
       failTask();
     }
   }
@@ -348,91 +329,117 @@ function handleLocationVisit(locName) {
   }, 1000);
 }
 
-// Fuldfør opgave
+// Færdiggør opgave
 function completeTask() {
-  showPopup('Opgave fuldført!', 'success');
+  showPopup("Opgave fuldført!", "success");
   gameState.tasksCompleted++;
   gameState.totalRewards += gameState.activeTask.reward;
 
-  // Forenklet scoring – alt i "Point" (totalRewards)
-  // Lidt effekt på system og tilfredshed
-  gameState.systemUptime = Math.min(gameState.systemUptime + 0.5, 100);
-  gameState.stakeholderSatisfaction = Math.min(gameState.stakeholderSatisfaction + 1, 100);
-  gameState.compliance = Math.min(gameState.compliance + 0.5, 100);
+  // (7) Stability vs. Development logic:
+  applyStabilityDevEffect(gameState.activeTask.taskType);
 
   gameState.activeTask = null;
-  activeTaskDetails.textContent = '';
-  activeTaskHeadline.textContent = 'Ingen aktiv opgave';
-  activeTaskDescription.textContent = '';
-  stepsList.innerHTML = '<li>Ingen aktiv opgave</li>';
+  activeTaskDetails.textContent = "";
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDescription.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
   updateScoreboard();
 }
 
-// Fejl ved opgave
 function failTask() {
+  // If fails, also apply partial effect with penalty
+  if (gameState.activeTask) {
+    showPopup("Opgave fejlede. Ingen belønning!", "error");
+    // do partial negative effect
+    if (gameState.activeTask.taskType) {
+      applyStabilityDevEffect(gameState.activeTask.taskType, true); // pass a second arg to indicate fail
+    }
+  }
   gameState.activeTask = null;
-  activeTaskDetails.textContent = '';
-  activeTaskHeadline.textContent = 'Ingen aktiv opgave';
-  activeTaskDescription.textContent = '';
-  stepsList.innerHTML = '<li>Ingen aktiv opgave</li>';
-
-  // Straf for fejlet opgave
-  gameState.systemUptime = Math.max(gameState.systemUptime - 2, 0);
-  gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 5, 0);
-  gameState.compliance = Math.max(gameState.compliance - 1, 0);
-  showPopup('Opgave mislykkedes!', 'error');
-
+  activeTaskDetails.textContent = "";
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDescription.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
   updateScoreboard();
 }
 
-// Start generering af opgaver
-function startTaskGeneration() {
-  setInterval(() => {
-    generateTask();
-    renderAvailableTasks();
-    if (gameState.availableTasks.length > 0) {
-      showPopup('Nye opgaver er tilgængelige!', 'success');
+// apply effect for stability dev approach
+function applyStabilityDevEffect(taskType, failed = false) {
+  if (taskType === "stability") {
+    if (!failed) {
+      // user chose stability -> stability up, dev down
+      gameState.stability = Math.min(gameState.stability + 5, 150);
+      gameState.development = Math.max(gameState.development - 3, 0);
+    } else {
+      // a failed stability approach
+      gameState.stability = Math.max(gameState.stability - 2, 0);
     }
-  }, 10000);
+    // if dev is too low -> stakeholders want new features
+    if (gameState.development < 50) {
+      gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 2, 0);
+    }
+  } else {
+    // development
+    if (!failed) {
+      gameState.development = Math.min(gameState.development + 5, 150);
+      gameState.stability = Math.max(gameState.stability - 3, 0);
+    } else {
+      // a failed dev approach
+      gameState.development = Math.max(gameState.development - 2, 0);
+    }
+    if (gameState.stability < 50) {
+      gameState.systemUptime = Math.max(gameState.systemUptime - 1, 0);
+    }
+  }
 }
 
-// Eskalér risiko over tid
-function startTaskUrgencyEscalation() {
+// Eskaler opgavernes haster
+function startUrgencyEscalation() {
   setInterval(() => {
     gameState.availableTasks.forEach(task => {
-      if (task.urgency === 'low') {
-        task.urgency = 'medium';
-      } else if (task.urgency === 'medium') {
-        task.urgency = 'high';
+      if (task.urgency === "low") {
+        task.urgency = "medium";
+      } else if (task.urgency === "medium") {
+        task.urgency = "high";
       }
     });
     renderAvailableTasks();
-  }, 20000);
+  }, 60000); // slowed to 1 minute
 }
 
-// Systemoppetid falder løbende
+// System-oppetid falder gradvist
 function startSystemUptimeDecay() {
   setInterval(() => {
-    gameState.systemUptime = Math.max(gameState.systemUptime - 0.1, 0);
+    gameState.systemUptime = Math.max(gameState.systemUptime - 0.05, 0);
     updateScoreboard();
     if (gameState.systemUptime <= 0) {
-      showPopup('Systemoppetid kritisk!', 'error');
+      showPopup("Systemoppetid kritisk! Spillet slutter snart?", "error");
     }
-  }, 60000);
+  }, 45000); // every 45s for demonstration
 }
 
-// Popup-beskeder
-function showPopup(message, type = 'success') {
-  const popup = document.createElement('div');
-  popup.classList.add('popup');
-  if (type === 'error') popup.classList.add('error');
+// Simpel pop-up
+function showPopup(message, type = "success", duration = 3000) {
+  const popup = document.createElement("div");
+  popup.classList.add("popup");
+  if (type === "error") popup.classList.add("error");
+  else if (type === "info") popup.classList.add("info");
   popup.textContent = message;
   popupContainer.appendChild(popup);
 
   setTimeout(() => {
     popup.remove();
-  }, 3000);
+  }, duration);
 }
 
-// Start spillet
+function updateScoreboard() {
+  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
+  scoreboard.totalRewards.textContent = gameState.totalRewards;
+  scoreboard.systemUptime.textContent = `${gameState.systemUptime.toFixed(1)}%`;
+  scoreboard.stakeholderSatisfaction.textContent = `${gameState.stakeholderSatisfaction.toFixed(1)}%`;
+  scoreboard.compliance.textContent = `${gameState.compliance.toFixed(1)}%`;
+  scoreboard.stability.textContent = gameState.stability;
+  scoreboard.development.textContent = gameState.development;
+}
+
 initGame();
