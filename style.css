@@ -1,34 +1,34 @@
-/* Prevent scrolling */
+/* 1. RESET AND BASE LAYOUT */
 html, body {
-  height: 100%;
   margin: 0;
-  overflow: hidden; /* Disable scrolling */
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Disable page scrolling */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  box-sizing: border-box;
 }
 
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* 2. CONTAINER STRUCTURE */
 #game-container {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-/* General Styles */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #2c3e50;
-  color: #ecf0f1;
-}
-
-header, footer {
+header,
+footer {
   background-color: #34495e;
-  padding: 10px 20px;
   text-align: center;
+  padding: 10px 20px;
 }
 
-h1, h2, h3, h4 {
-  margin: 10px 0;
-}
-
-/* Updated Scoreboard Styles for Horizontal Layout */
+/* 3. SCOREBOARD LAYOUT */
 #scoreboard {
   display: flex;
   justify-content: center;
@@ -46,26 +46,25 @@ h1, h2, h3, h4 {
   white-space: nowrap;
 }
 
+/* 4. MAIN AND GAME AREA */
 main {
   display: flex;
   flex: 1;
-  padding: 20px;
   gap: 20px;
-  box-sizing: border-box;
-  overflow: hidden; /* Prevent main content from overflowing */
+  padding: 20px;
+  overflow: hidden;
 }
 
-/* Game Area Styles */
 #game-area {
   position: relative;
   flex: 2;
   background-color: #34495e;
   border: 2px solid #ecf0f1;
   border-radius: 10px;
-  overflow: hidden; /* Prevent internal scrolling */
+  overflow: hidden;
 }
 
-/* Location Styles */
+/* 5. LOCATIONS AND PLAYER */
 .location {
   position: absolute;
   width: 120px;
@@ -77,14 +76,14 @@ main {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s;
-  font-size: 0.9em; /* Reduced font size */
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .location.visited {
   background-color: #27ae60 !important;
 }
 
-/* Player Styles */
 #player {
   position: absolute;
   width: 30px;
@@ -98,58 +97,72 @@ main {
   transition: top 0.2s, left 0.2s;
 }
 
-/* Task Panels Styles */
+/* 6. TASK PANELS */
 #task-panels {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  overflow: hidden; /* Prevent task panels from pushing content */
+  overflow: hidden;
 }
 
-#active-task, #available-tasks {
+#active-task,
+#available-tasks {
   background-color: #34495e;
   padding: 15px;
   border: 2px solid #ecf0f1;
   border-radius: 5px;
-  flex: 1; /* Equally divide space between active and available tasks */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Prevent internal scrolling */
-  min-width: 0; /* Prevent flex items from overflowing */
+  overflow: hidden;
+  min-width: 0;
 }
 
-#active-task {
-  /* Additional styling if needed */
+/* 7. ACTIVE TASK PANEL */
+#active-task-headline {
+  color: #1abc9c;
+  font-size: 1rem;
+  margin-bottom: 5px;
 }
 
-#available-tasks {
-  overflow-y: auto; /* Make available tasks scrollable */
+#active-task-description {
+  margin-top: 10px;
+  font-style: italic;
+  color: #bdc3c7;
+  line-height: 1.4;
+  font-size: 0.85rem;
 }
 
-#active-task, #available-tasks {
-  min-width: 0; /* Prevent flex items from overflowing */
+#active-task-details {
+  margin: 5px 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
-/* Steps List Styles */
 #task-steps {
   margin-top: 10px;
-  flex: 1; /* Allow steps to take remaining space */
-  overflow-y: auto; /* Make steps scrollable if too long */
+  flex: 1;
+  overflow-y: auto;
 }
 
 #steps-list {
   list-style-type: disc;
   padding-left: 20px;
   margin: 0;
-  line-height: 1.4; /* Adjusted line-height to prevent double spacing */
+  line-height: 1.4;
+  font-size: 0.85rem;
 }
 
 #steps-list li {
   margin-bottom: 5px;
 }
 
-/* Tasks List Styles */
+/* 8. AVAILABLE TASKS */
+#available-tasks {
+  overflow-y: auto;
+}
+
 #tasks-list {
   list-style-type: none;
   padding: 0;
@@ -162,10 +175,10 @@ main {
   padding: 10px;
   border-radius: 3px;
   transition: background-color 0.3s;
-  position: relative;
   display: flex;
   flex-direction: column;
-  font-size: 0.95em; /* Reduced font size */
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 #tasks-list li:hover {
@@ -173,7 +186,7 @@ main {
   cursor: pointer;
 }
 
-/* Urgency Color Coding */
+/* URGENCY COLOR CODING */
 #tasks-list li.low {
   background-color: #2c3e50;
 }
@@ -186,33 +199,16 @@ main {
   background-color: #e74c3c;
 }
 
-/* Task Description Styles */
+/* TASK DESCRIPTION AND BUTTON */
 .task-description {
   margin-top: 5px;
-  font-size: 0.85em; /* Reduced font size */
   color: #bdc3c7;
-  line-height: 1.4; /* Adjusted line-height to prevent double spacing */
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
-/* Active Task Description Styles */
-#active-task-description {
-  margin-top: 10px;
-  font-style: italic;
-  color: #bdc3c7;
-  line-height: 1.4; /* Adjusted line-height to prevent double spacing */
-  font-size: 0.9em; /* Reduced font size */
-}
-
-/* Active Task Headline Styles */
-#active-task-headline {
-  color: #1abc9c;
-  font-size: 1em; /* Reduced font size */
-  margin-bottom: 5px; /* Reduced margin to prevent excessive spacing */
-}
-
-/* Commit Button Styles */
 .commit-button {
-  margin-top: 10px;
+  margin-top: 8px;
   padding: 5px 10px;
   background-color: #2980b9;
   color: #fff;
@@ -221,14 +217,14 @@ main {
   cursor: pointer;
   align-self: flex-start;
   transition: background-color 0.3s;
-  font-size: 0.85em; /* Reduced font size */
+  font-size: 0.8rem;
 }
 
 .commit-button:hover {
   background-color: #1c5980;
 }
 
-/* Popup Notification Styles */
+/* 9. POPUP NOTIFICATIONS */
 #popup-container {
   position: fixed;
   top: 20px;
@@ -239,12 +235,12 @@ main {
 .popup {
   background-color: #27ae60;
   color: #fff;
-  padding: 10px 15px; /* Reduced padding */
+  padding: 10px 15px;
   margin-bottom: 10px;
   border-radius: 5px;
+  font-size: 0.9rem;
   opacity: 0.9;
   animation: fadeOut 3s forwards;
-  font-size: 0.9em; /* Reduced font size */
 }
 
 .popup.error {
@@ -252,14 +248,22 @@ main {
 }
 
 @keyframes fadeOut {
-  0% { opacity: 0.9; transform: translateY(0); }
-  80% { opacity: 0.9; transform: translateY(-20px); }
-  100% { opacity: 0; transform: translateY(-20px); }
+  0% {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
 
-/* Responsive Design */
+/* 10. RESPONSIVE DESIGN */
 @media (max-width: 768px) {
-  /* Adjust game-area and task panels for smaller screens */
   main {
     flex-direction: column;
   }
@@ -274,57 +278,54 @@ main {
     height: 50%;
   }
 
-  /* Adjust task list items */
-  #tasks-list li {
-    font-size: 0.9em;
-  }
-
-  /* Adjust commit button size */
-  .commit-button {
-    padding: 5px 8px;
-    font-size: 0.8em;
-  }
-
-  /* Adjust scoreboard layout */
   #scores {
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+  }
+
+  #tasks-list li {
+    font-size: 0.85rem;
+  }
+
+  .commit-button {
+    padding: 4px 8px;
+    font-size: 0.75rem;
   }
 }
 
 @media (max-width: 480px) {
-  /* Further adjustments for very small screens */
-  header, footer {
+  header,
+  footer {
     padding: 8px 10px;
   }
 
   h1 {
-    font-size: 1.5em;
+    font-size: 1.4rem;
   }
 
   h2 {
-    font-size: 1.2em;
+    font-size: 1.1rem;
   }
 
-  h3, h4 {
-    font-size: 1em;
+  h3,
+  h4 {
+    font-size: 1rem;
   }
 
-  #scoreboard {
-    gap: 10px;
-  }
-
-  #scores {
-    gap: 10px;
-  }
-
-  /* Reduce task panel heights */
-  #active-task, #available-tasks {
+  #game-area {
     height: 45%;
   }
 
-  /* Make steps list scrollable */
+  #task-panels {
+    height: 55%;
+  }
+
   #steps-list {
     max-height: 80px;
+  }
+
+  #tasks-list li {
+    font-size: 0.8rem;
   }
 }
