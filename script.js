@@ -3,12 +3,12 @@
 // Player Object
 const player = {
   element: document.getElementById('player'),
-  position: { top: 50, left: 50 }, // Percentage
-  moveSpeed: 2, // Percentage per key press
-  isVisiting: null, // To prevent multiple triggers
+  position: { top: 50, left: 50 }, // percentage-based
+  moveSpeed: 2, // movement increment
+  isVisiting: null, // to prevent repeated collision checks
 };
 
-// Task Descriptions Pool
+// Task Descriptions Pool (Sample)
 const taskDescriptions = {
   'IT Security': [
     'Implement a new firewall to enhance network security.',
@@ -36,18 +36,18 @@ const taskDescriptions = {
     'Integrate the vendor’s new API into existing applications.',
   ],
   'Labs': [
-    'Set up new laboratory information management systems (LIMS).',
+    'Set up a new LIMS for the lab.',
     'Troubleshoot connectivity issues in diagnostic equipment.',
-    'Deploy updates to the lab data analysis tools.',
+    'Deploy updates to lab data analysis tools.',
   ],
   'Diagnostics': [
-    'Enhance the diagnostic system’s data processing speed.',
-    'Fix the integration between EHR and diagnostic tools.',
+    'Enhance diagnostic system speed.',
+    'Fix EHR-diagnostic tool integration.',
     'Implement new diagnostic software updates.',
   ],
 };
 
-// Task Headlines Pool
+// Task Headlines Pool (Sample)
 const taskHeadlines = {
   'IT Security': [
     'Firewall Implementation',
@@ -101,13 +101,13 @@ const gameState = {
   compliance: 100,
 };
 
-// Locations
+// Location Elements
 const locations = {
   Infrastructure: document.getElementById('infrastructure'),
   'Legal Department': document.getElementById('legal'),
   Vendors: document.getElementById('vendors'),
-  Labs: document.getElementById('labs'), // Expanded Location
-  Diagnostics: document.getElementById('diagnostics'), // Expanded Location
+  Labs: document.getElementById('labs'),
+  Diagnostics: document.getElementById('diagnostics'),
 };
 
 // UI Elements
@@ -122,24 +122,24 @@ const scoreboard = {
 };
 
 const activeTaskDetails = document.getElementById('active-task-details');
-const activeTaskHeadline = document.getElementById('active-task-headline'); // Headline Element
-const activeTaskDescription = document.getElementById('active-task-description'); // Description Element
-const stepsList = document.getElementById('steps-list'); // Steps List Element
+const activeTaskHeadline = document.getElementById('active-task-headline');
+const activeTaskDescription = document.getElementById('active-task-description');
+const stepsList = document.getElementById('steps-list');
 const tasksList = document.getElementById('tasks-list');
 const popupContainer = document.getElementById('popup-container');
 
 // Initialize Game
 function initGame() {
   updateScoreboard();
-  generateAvailableTasks(); // Initial Task Generation
+  generateAvailableTasks(); // initial tasks
   renderAvailableTasks();
   setupEventListeners();
-  startTaskGenerator(); // Continuous Task Generation
+  startTaskGenerator();
   startTaskUrgencyEscalation();
   startSystemUptimeDecay();
 }
 
-// Update Scoreboard UI
+// Update Scoreboard
 function updateScoreboard() {
   scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
   scoreboard.totalRewards.textContent = gameState.totalRewards;
@@ -150,17 +150,17 @@ function updateScoreboard() {
   scoreboard.compliance.textContent = `${gameState.compliance.toFixed(1)}%`;
 }
 
-// Generate Random Tasks with Urgency and Descriptions
+// Generate Random Tasks
 function generateAvailableTasks() {
-  if (gameState.availableTasks.length >= 10) return; // Max 10 tasks
-  const riskLevel = Math.floor(Math.random() * 3) + 1; // 1 to 3
-  const reward = riskLevel * 100; // Example reward calculation
-  const departments = Object.keys(gameState.departmentRewards);
-  const department = departments[Math.floor(Math.random() * departments.length)];
+  if (gameState.availableTasks.length >= 10) return; // max 10 tasks
+  const riskLevel = Math.floor(Math.random() * 3) + 1; // 1-3
+  const reward = riskLevel * 100;
+  const departmentNames = Object.keys(gameState.departmentRewards);
+  const department = departmentNames[Math.floor(Math.random() * departmentNames.length)];
   const steps = getRandomTaskSteps();
-  const urgency = getRandomUrgency(); // Assign initial urgency
-  const headline = getRandomHeadline(department); // Assign headline
-  const description = getRandomDescription(department); // Assign description
+  const urgency = getRandomUrgency();
+  const headline = getRandomHeadline(department);
+  const description = getRandomDescription(department);
 
   const task = {
     id: Date.now(),
@@ -169,18 +169,18 @@ function generateAvailableTasks() {
     reward,
     steps,
     currentStep: 0,
-    urgency, // Added urgency
-    headline, // Added headline
-    description, // Added description
+    urgency,
+    headline,
+    description,
   };
 
   gameState.availableTasks.push(task);
 }
 
-// Get Random Task Steps (Sequence of Locations)
+// Task Steps
 function getRandomTaskSteps() {
   const locationKeys = Object.keys(locations);
-  const stepsCount = Math.floor(Math.random() * 3) + 2; // 2 to 4 steps
+  const stepsCount = Math.floor(Math.random() * 3) + 2; // 2-4 steps
   const steps = [];
 
   while (steps.length < stepsCount) {
@@ -189,11 +189,9 @@ function getRandomTaskSteps() {
       steps.push(loc);
     }
   }
-
   return steps;
 }
 
-// Get Random Urgency Level
 function getRandomUrgency() {
   const rand = Math.random();
   if (rand < 0.3) return 'high';
@@ -201,27 +199,17 @@ function getRandomUrgency() {
   return 'low';
 }
 
-// Get Random Headline Based on Department
 function getRandomHeadline(department) {
-  const headlines = taskHeadlines[department] || [
-    'General Task',
-    'Standard Procedure',
-    'Routine Maintenance',
-  ];
-  return headlines[Math.floor(Math.random() * headlines.length)];
+  const list = taskHeadlines[department] || ['General Task', 'Routine Maintenance'];
+  return list[Math.floor(Math.random() * list.length)];
 }
 
-// Get Random Description Based on Department
 function getRandomDescription(department) {
-  const descriptions = taskDescriptions[department] || [
-    'Complete the assigned task efficiently.',
-    'Ensure all requirements are met.',
-    'Coordinate with relevant teams to accomplish the task.',
-  ];
-  return descriptions[Math.floor(Math.random() * descriptions.length)];
+  const list = taskDescriptions[department] || ['Complete assigned task efficiently.', 'Ensure all requirements are met.'];
+  return list[Math.floor(Math.random() * list.length)];
 }
 
-// Render Available Tasks in UI
+// Render Available Tasks
 function renderAvailableTasks() {
   tasksList.innerHTML = '';
   if (gameState.availableTasks.length === 0) {
@@ -229,78 +217,76 @@ function renderAvailableTasks() {
     return;
   }
 
-  gameState.availableTasks.forEach(task => {
+  gameState.availableTasks.forEach((task) => {
     const li = document.createElement('li');
+    li.classList.add(task.urgency);
     li.innerHTML = `<strong>${task.headline}</strong><br>Reward: $${task.reward} - Risk: ${task.riskLevel}`;
-    li.classList.add(task.urgency); // Add urgency class for color-coding
 
-    // Create a description element
+    // Description
     const desc = document.createElement('p');
     desc.textContent = task.description;
     desc.classList.add('task-description');
-    desc.style.display = 'none'; // Hidden by default
+    desc.style.display = 'none';
 
-    // Create a commit button
+    // Commit Button
     const commitButton = document.createElement('button');
-    commitButton.textContent = 'Commit';
     commitButton.classList.add('commit-button');
+    commitButton.textContent = 'Commit';
     commitButton.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent triggering the description toggle
+      e.stopPropagation();
       assignTask(task.id);
     });
 
-    // Toggle description on tap/click (excluding commit button)
+    // Toggle description on click (excluding commit button)
     li.addEventListener('click', () => {
-      // Hide all other descriptions
-      document.querySelectorAll('.task-description').forEach(p => {
-        if (p !== desc) p.style.display = 'none';
+      // Hide other descriptions
+      document.querySelectorAll('.task-description').forEach((el) => {
+        if (el !== desc) {
+          el.style.display = 'none';
+        }
       });
-      // Toggle current description
+      // Toggle this description
       desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
     });
 
     li.appendChild(desc);
-    li.appendChild(commitButton); // Append commit button
+    li.appendChild(commitButton);
     tasksList.appendChild(li);
   });
 }
 
-// Assign Task to Active Task
+// Assign Task
 function assignTask(taskId) {
   if (gameState.activeTask) {
     showPopup('You already have an active task.', 'error');
     return;
   }
 
-  const taskIndex = gameState.availableTasks.findIndex(task => task.id === taskId);
-  if (taskIndex === -1) return;
+  const idx = gameState.availableTasks.findIndex((t) => t.id === taskId);
+  if (idx === -1) return;
 
-  gameState.activeTask = gameState.availableTasks.splice(taskIndex, 1)[0];
-  activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
-  activeTaskHeadline.textContent = `${gameState.activeTask.headline}`; // Set headline without task ID
-  activeTaskDescription.textContent = gameState.activeTask.description; // Display description
+  const task = gameState.availableTasks.splice(idx, 1)[0];
+  gameState.activeTask = task;
+  activeTaskDetails.textContent = `Task (${task.department}) - Reward: $${task.reward}`;
+  activeTaskHeadline.textContent = `${task.headline}`;
+  activeTaskDescription.textContent = task.description;
   renderAvailableTasks();
   updateStepsList();
-  showPopup(`Assigned Task: ${gameState.activeTask.headline}`, 'success');
+
+  showPopup(`Assigned Task: ${task.headline}`, 'success');
 }
 
-// Format Active Task Details
-function formatActiveTask(task) {
-  return `Task (${task.department}) - Reward: $${task.reward}`;
-}
-
-// Update Steps List in Active Task Panel
+// Update Steps List
 function updateStepsList() {
   stepsList.innerHTML = '';
   if (!gameState.activeTask) {
     stepsList.innerHTML = '<li>No active task.</li>';
     return;
   }
-
-  gameState.activeTask.steps.forEach((step, index) => {
+  gameState.activeTask.steps.forEach((step, idx) => {
     const li = document.createElement('li');
-    li.textContent = `Step ${index + 1}: Visit ${step}`;
-    if (index < gameState.activeTask.currentStep) {
+    li.textContent = `Step ${idx + 1}: Visit ${step}`;
+    if (idx < gameState.activeTask.currentStep) {
       li.style.textDecoration = 'line-through';
       li.style.color = '#95a5a6';
     }
@@ -308,33 +294,29 @@ function updateStepsList() {
   });
 }
 
-// Setup Keyboard and Collision Event Listeners
+// Setup Events
 function setupEventListeners() {
   document.addEventListener('keydown', handleMovement);
-  requestAnimationFrame(checkCollisions); // Start collision detection loop
+  requestAnimationFrame(checkCollisions);
 }
 
-// Handle Player Movement via Arrow Keys and WASD
+// Movement Handling
 function handleMovement(e) {
-  switch (e.key) {
-    case 'ArrowUp':
+  switch (e.key.toLowerCase()) {
+    case 'arrowup':
     case 'w':
-    case 'W':
       player.position.top = Math.max(player.position.top - player.moveSpeed, 0);
       break;
-    case 'ArrowDown':
+    case 'arrowdown':
     case 's':
-    case 'S':
       player.position.top = Math.min(player.position.top + player.moveSpeed, 100);
       break;
-    case 'ArrowLeft':
+    case 'arrowleft':
     case 'a':
-    case 'A':
       player.position.left = Math.max(player.position.left - player.moveSpeed, 0);
       break;
-    case 'ArrowRight':
+    case 'arrowright':
     case 'd':
-    case 'D':
       player.position.left = Math.min(player.position.left + player.moveSpeed, 100);
       break;
     default:
@@ -343,56 +325,50 @@ function handleMovement(e) {
   updatePlayerPosition();
 }
 
-// Update Player's Position in the UI
 function updatePlayerPosition() {
   player.element.style.top = `${player.position.top}%`;
   player.element.style.left = `${player.position.left}%`;
 }
 
-// Check for Collisions between Player and Locations
+// Collision Detection
 function checkCollisions() {
-  for (const [name, location] of Object.entries(locations)) {
-    if (isColliding(player.element, location)) {
+  Object.entries(locations).forEach(([name, elem]) => {
+    if (isColliding(player.element, elem)) {
       handleLocationVisit(name);
     }
-  }
-  requestAnimationFrame(checkCollisions); // Continue the loop
+  });
+  requestAnimationFrame(checkCollisions);
 }
 
-// Simple Collision Detection
 function isColliding(playerEl, locationEl) {
-  const playerRect = playerEl.getBoundingClientRect();
-  const locationRect = locationEl.getBoundingClientRect();
-
+  const pRect = playerEl.getBoundingClientRect();
+  const lRect = locationEl.getBoundingClientRect();
   return !(
-    playerRect.top > locationRect.bottom ||
-    playerRect.bottom < locationRect.top ||
-    playerRect.left > locationRect.right ||
-    playerRect.right < locationRect.left
+    pRect.top > lRect.bottom ||
+    pRect.bottom < lRect.top ||
+    pRect.left > lRect.right ||
+    pRect.right < lRect.left
   );
 }
 
-// Handle Visiting a Location
+// Location Visit
 function handleLocationVisit(locationName) {
-  // Prevent multiple visits for the same collision
   if (player.isVisiting === locationName) return;
   player.isVisiting = locationName;
 
-  // Visual Feedback
   const location = locations[locationName];
   location.classList.add('visited');
   setTimeout(() => location.classList.remove('visited'), 500);
 
-  // If there's an active task, check the next step
   if (gameState.activeTask) {
-    const currentStep = gameState.activeTask.steps[gameState.activeTask.currentStep];
-    if (locationName === currentStep) {
-      gameState.activeTask.currentStep += 1;
+    const currStep = gameState.activeTask.steps[gameState.activeTask.currentStep];
+    if (locationName === currStep) {
+      gameState.activeTask.currentStep++;
       showPopup(`Visited ${locationName}.`, 'success');
       if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
         completeTask();
       } else {
-        activeTaskDetails.textContent = formatActiveTask(gameState.activeTask);
+        activeTaskDetails.textContent = `Task (${gameState.activeTask.department}) - Reward: $${gameState.activeTask.reward}`;
         updateStepsList();
       }
     } else {
@@ -401,49 +377,48 @@ function handleLocationVisit(locationName) {
     }
   }
 
-  // Reset visit status after a short delay to allow re-visiting if needed
   setTimeout(() => {
     player.isVisiting = null;
   }, 1000);
 }
 
-// Complete the Active Task
+// Complete Task
 function completeTask() {
   showPopup('Task Completed!', 'success');
-  gameState.tasksCompleted += 1;
+  gameState.tasksCompleted++;
   gameState.totalRewards += gameState.activeTask.reward;
   gameState.departmentRewards[gameState.activeTask.department] += gameState.activeTask.reward;
 
-  // Update new metrics
-  gameState.systemUptime = Math.min(gameState.systemUptime + 1, 100); // Increment uptime
-  gameState.stakeholderSatisfaction = Math.min(gameState.stakeholderSatisfaction + 2, 100); // Increment satisfaction
-  gameState.compliance = Math.min(gameState.compliance + 1, 100); // Increment compliance
+  // Update scoreboard metrics
+  gameState.systemUptime = Math.min(gameState.systemUptime + 1, 100);
+  gameState.stakeholderSatisfaction = Math.min(gameState.stakeholderSatisfaction + 2, 100);
+  gameState.compliance = Math.min(gameState.compliance + 1, 100);
 
   gameState.activeTask = null;
-  activeTaskDetails.textContent = 'No active task.';
+  activeTaskDetails.textContent = '';
   activeTaskHeadline.textContent = 'No active task.';
-  activeTaskDescription.textContent = ''; // Clear description
-  stepsList.innerHTML = '<li>No active task.</li>'; // Reset steps list
+  activeTaskDescription.textContent = '';
+  stepsList.innerHTML = '<li>No active task.</li>';
   updateScoreboard();
 }
 
-// Fail the Active Task
+// Fail Task
 function failTask() {
   gameState.activeTask = null;
-  activeTaskDetails.textContent = 'No active task.';
+  activeTaskDetails.textContent = '';
   activeTaskHeadline.textContent = 'No active task.';
-  activeTaskDescription.textContent = ''; // Clear description
-  stepsList.innerHTML = '<li>No active task.</li>'; // Reset steps list
+  activeTaskDescription.textContent = '';
+  stepsList.innerHTML = '<li>No active task.</li>';
   updateScoreboard();
 
-  // Decrease metrics due to failure
+  // Decrease metrics
   gameState.systemUptime = Math.max(gameState.systemUptime - 5, 0);
   gameState.stakeholderSatisfaction = Math.max(gameState.stakeholderSatisfaction - 10, 0);
   gameState.compliance = Math.max(gameState.compliance - 2, 0);
   showPopup('Task Failed!', 'error');
 }
 
-// Start Continuous Task Generation with Max 10 Tasks
+// Task Generator
 function startTaskGenerator() {
   setInterval(() => {
     generateAvailableTasks();
@@ -451,25 +426,24 @@ function startTaskGenerator() {
     if (gameState.availableTasks.length > 0) {
       showPopup('New tasks available.', 'success');
     }
-  }, 10000); // Increased interval from 5s to 10s
+  }, 10000);
 }
 
-// Start Periodic Task Urgency Escalation
+// Urgency Escalation
 function startTaskUrgencyEscalation() {
   setInterval(() => {
-    gameState.availableTasks.forEach(task => {
+    gameState.availableTasks.forEach((task) => {
       if (task.urgency === 'low') {
         task.urgency = 'medium';
       } else if (task.urgency === 'medium') {
         task.urgency = 'high';
       }
-      // High urgency remains high
     });
     renderAvailableTasks();
-  }, 20000); // Increased interval from 10s to 20s
+  }, 20000);
 }
 
-// Start System Uptime Decay Over Time
+// System Uptime Decay
 function startSystemUptimeDecay() {
   setInterval(() => {
     gameState.systemUptime = Math.max(gameState.systemUptime - 0.1, 0);
@@ -477,24 +451,19 @@ function startSystemUptimeDecay() {
     if (gameState.systemUptime <= 0) {
       showPopup('System Uptime Critical!', 'error');
     }
-  }, 60000); // Every 60 seconds
+  }, 60000);
 }
 
-// Function to show popup notifications
+// Show Popup
 function showPopup(message, type = 'success') {
   const popup = document.createElement('div');
   popup.classList.add('popup');
-  if (type === 'error') {
-    popup.classList.add('error');
-  }
+  if (type === 'error') popup.classList.add('error');
   popup.textContent = message;
   popupContainer.appendChild(popup);
 
-  // Remove popup after animation
-  setTimeout(() => {
-    popup.remove();
-  }, 3000);
+  setTimeout(() => popup.remove(), 3000);
 }
 
-// Start the Game
+// Start
 initGame();
