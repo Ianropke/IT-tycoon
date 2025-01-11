@@ -48,7 +48,7 @@ header h1 {
   min-height: 0;
 }
 
-/* 1) Increase icon size triple => .loc-icon  */
+/* triple icon size */
 .loc-icon {
   font-size: 2rem; /* or 2.5rem if you want bigger */
   margin-right: 6px;
@@ -56,10 +56,10 @@ header h1 {
   vertical-align: middle;
 }
 
-/* 5) Each location a toned-down color. We'll do background overrides here. */
+/* different color classes */
 .location {
   position: absolute; 
-  width: 170px; /* slightly bigger for readability */
+  width: 170px; 
   height: 65px; 
   border: 2px solid #bdc3c7;
   border-radius: 5px; 
@@ -67,33 +67,31 @@ header h1 {
   font-size: 0.9rem;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: background-color 0.3s;
-  color: #ecf0f1; /* ensure text is readable */
+  color: #ecf0f1;
 }
-
-/* Toned down pastel-ish colors */
 .location.infrastruktur {
-  background-color: #5D6D7E; /* greyish-blue */
+  background-color: #5D6D7E;
 }
 .location.informationssikkerhed {
-  background-color: #7D3C98; /* toned purple */
+  background-color: #7D3C98;
 }
 .location.hospital {
-  background-color: #2874A6; /* bluish */
+  background-color: #2874A6;
 }
 .location.leverandor {
-  background-color: #6E2C00; /* brownish */
+  background-color: #6E2C00;
 }
 .location.medicinsk-udstyr {
-  background-color: #2E4053; /* dark-ish */
+  background-color: #2E4053;
 }
 .location.it-jura {
-  background-color: #424949; /* dark grey */
+  background-color: #424949;
 }
 .location.cybersikkerhed {
-  background-color: #4C4C9D; /* tinted darkblue */
+  background-color: #4C4C9D;
 }
 .location.dokumentation {
-  background-color: #7B7D7D; /* grey */
+  background-color: #7B7D7D;
 }
 
 .location:hover {
@@ -192,41 +190,33 @@ footer {
   text-align: left; 
 }
 
-/* scenario-modal for each location (consistency with other modals) */
+/* scenario-modal for each location => consistent pop-up */
 #scenario-modal-content {
-  background-color: #2c3e50; 
   color: #fff;
 }
 #scenario-a-btn, #scenario-b-btn {
-  background-color: #2980b9;
-  color: #fff;
+  background-color: #2980b9; color: #fff;
   border: none; border-radius: 3px;
-  padding: 6px 12px; 
-  margin-top: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
+  padding: 6px 12px; margin-top: 4px;
+  cursor: pointer; font-size: 0.85rem;
 }
 #scenario-a-btn:hover, #scenario-b-btn:hover {
   background-color: #1c5980;
 }
 
-/* end time modal */
+/* end-of-time modal, cab modals, etc. */
 #end-modal { display: flex; }
 #end-modal-content {
   width: 60%; max-width: 600px; 
   background-color: #2c3e50; 
   border: 3px solid #bdc3c7;
   border-radius: 8px; 
-  padding: 16px; 
-  text-align: left;
+  padding: 16px; text-align: left;
 }
 #end-ok-btn {
-  background-color: #e74c3c; 
-  color: #fff;
+  background-color: #e74c3c; color: #fff;
   border: none; border-radius: 5px;
-  padding: 6px 12px; 
-  font-size: 0.85rem; 
-  cursor: pointer;
+  padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
 }
 
 #cab-modal, #cab-result-modal {
@@ -234,17 +224,11 @@ footer {
 }
 #cab-modal-content, #cab-result-content {
   width: 60%; max-width: 600px;
-  background-color: #2c3e50;
-  border: 3px solid #bdc3c7;
-  border-radius: 8px; 
-  padding: 16px; 
-  text-align: left;
+  background-color: #2c3e50; border: 3px solid #bdc3c7;
+  border-radius: 8px; padding: 16px; text-align: left;
 }
 #cab-ok-btn, #cab-result-ok-btn {
-  background-color: #2ecc71; 
-  color: #fff;
+  background-color: #2ecc71; color: #fff;
   border: none; border-radius: 5px;
-  padding: 6px 12px; 
-  font-size: 0.85rem; 
-  cursor: pointer;
+  padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
 }
