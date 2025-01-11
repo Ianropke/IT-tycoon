@@ -1,11 +1,13 @@
-/************************************************
- * script.js implementing:
- * 1) Risk–Reward 
- * 2) Mini Dialog at each step 
- * 7) Penalties for ignoring High-Priority tasks
- ************************************************/
+/*******************************************************
+ * script.js
+ * Implements:
+ * - No repeated popups for the same step
+ * - Location-specific scenario dialogs
+ * - Per-step finalization (not entire task)
+ * - Clear risk–reward
+ * - High-priority tasks with penalty if ignored
+ *******************************************************/
 
-/** Player **/
 const player = {
   element: document.getElementById('player'),
   position: { top: 50, left: 50 },
@@ -13,7 +15,6 @@ const player = {
   isVisiting: null,
 };
 
-/** Game State **/
 let gameState = {
   tasksCompleted: 0,
   totalRewards: 0,
@@ -28,13 +29,13 @@ let gameState = {
   shownFirstTaskPopup: false,
   shownFirstActivePopup: false,
 
-  // (7) "neglect" counters for ignoring high-priority tasks
+  // For skipping high-priority tasks
   securityNeglect: 0,
   developmentNeglect: 0,
   stabilityNeglect: 0,
 };
 
-/** Locations **/
+// Locations
 const locations = {
   Infrastruktur: document.getElementById('infrastruktur'),
   Informationssikkerhed: document.getElementById('informationssikkerhed'),
@@ -45,7 +46,7 @@ const locations = {
   'IT Jura': document.getElementById('it-jura'),
 };
 
-/** Scoreboard & Bars **/
+// Scoreboard
 const scoreboard = {
   tasksCompleted: document.getElementById('tasks-completed'),
   totalRewards: document.getElementById('total-rewards'),
@@ -56,14 +57,14 @@ const securityBar = document.getElementById('security-bar');
 const stabilityBar = document.getElementById('stability-bar');
 const developmentBar = document.getElementById('development-bar');
 
-/** UI References for Active/Available tasks **/
+// Active/Available tasks
 const activeTaskHeadline = document.getElementById('active-task-headline');
-const activeTaskDescription = document.getElementById('active-task-description');
-const activeTaskDetails = document.getElementById('active-task-details');
-const stepsList = document.getElementById('steps-list');
-const tasksList = document.getElementById('tasks-list');
+const activeTaskDescription= document.getElementById('active-task-description');
+const activeTaskDetails= document.getElementById('active-task-details');
+const stepsList= document.getElementById('steps-list');
+const tasksList= document.getElementById('tasks-list');
 
-/** Intro Modal **/
+// Intro modal
 const introModal = document.getElementById('intro-modal');
 const introOkBtn = document.getElementById('intro-ok-btn');
 introOkBtn.addEventListener('click', () => {
@@ -71,155 +72,241 @@ introOkBtn.addEventListener('click', () => {
   gameState.introModalOpen = false;
 });
 
-/** Step Explanations **/
-const stepExplanations = {
-  Infrastruktur: "Du opgraderer serverinfrastrukturen.",
-  Informationssikkerhed: "Du installerer en patch for bedre sikkerhed.",
-  Hospital: "Du koordinerer ændringer med hospitalet.",
-  'Medicinsk Udstyr': "Du vedligeholder udstyrets software.",
-  Cybersikkerhed: "Du håndterer trusler i netværket.",
-  Leverandør: "Du bestiller udvikling hos leverandøren.",
-  'IT Jura': "Du tjekker kontrakter og juridiske krav.",
+// Location-specific scenario dialogs
+const locationScenarios = {
+  "Hospital": {
+    question: "Hospitalet kræver ekstra tests. Håndterer du dem?",
+    choices: [
+      {
+        label: "Udfør ekstra test (Bedre stabilitet)",
+        effect: () => {
+          gameState.stability = Math.min(gameState.stability+2,150);
+        }
+      },
+      {
+        label: "Spring test over (hurtigere, men risikabelt)",
+        effect: () => {
+          gameState.stability = Math.max(gameState.stability-2,0);
+        }
+      }
+    ]
+  },
+  "IT Jura": {
+    question: "IT Jura: Vil du indføre strenge kontraktkrav?",
+    choices: [
+      {
+        label: "Ja, strengere (+2 Security, −1 Satisfaction)",
+        effect: ()=>{
+          gameState.security = Math.min(gameState.security+2,150);
+          gameState.hospitalSatisfaction=Math.max(gameState.hospitalSatisfaction-1,0);
+        }
+      },
+      {
+        label: "Nej, standard",
+        effect: ()=>{/* minimal effect */}
+      }
+    ]
+  },
+  "Leverandør": {
+    question: "Leverandøren vil have forhåndsbetaling. Håndtere du det?",
+    choices: [
+      {
+        label: "Betal (+1 Development, −1 Rewards)",
+        effect: ()=>{
+          gameState.development=Math.min(gameState.development+1,150);
+          gameState.totalRewards=Math.max(gameState.totalRewards-1,0);
+        }
+      },
+      {
+        label: "Afslå (risiko for forsinkelser)",
+        effect: ()=>{
+          gameState.stability=Math.max(gameState.stability-1,0);
+        }
+      }
+    ]
+  },
+  "Infrastruktur": {
+    question: "Skal du opgradere netværkets kerne eller patche server?",
+    choices: [
+      {
+        label: "Kerneopgradering (+2 Stability)",
+        effect: ()=>{
+          gameState.stability=Math.min(gameState.stability+2,150);
+        }
+      },
+      {
+        label: "Kun patch (mindre effekt)",
+        effect: ()=>{
+          gameState.stability=Math.min(gameState.stability+1,150);
+        }
+      }
+    ]
+  },
+  "Informationssikkerhed": {
+    question: "Tilføj ekstra logs? Eller hold baseline?",
+    choices: [
+      {
+        label: "Mere logging (+2 Security)",
+        effect: ()=>{
+          gameState.security=Math.min(gameState.security+2,150);
+        }
+      },
+      {
+        label: "Baseline (ingen ændring)",
+        effect: ()=>{}
+      }
+    ]
+  },
+  "Medicinsk Udstyr": {
+    question: "Udstyret skal vedligeholdes. Gør du det grundigt?",
+    choices: [
+      {
+        label: "Ja (øger stabilitet, −1 dev)",
+        effect: ()=>{
+          gameState.stability=Math.min(gameState.stability+2,150);
+          gameState.development=Math.max(gameState.development-1,0);
+        }
+      },
+      {
+        label: "Nej (hurtigt fix, −2 stability)",
+        effect: ()=>{
+          gameState.stability=Math.max(gameState.stability-2,0);
+        }
+      }
+    ]
+  },
+  "Cybersikkerhed": {
+    question: "Skal du gennemføre en dyb scanning af netværket?",
+    choices: [
+      {
+        label: "Ja, dyb scanning (+2 Security, −1 Rewards)",
+        effect: ()=>{
+          gameState.security=Math.min(gameState.security+2,150);
+          gameState.totalRewards=Math.max(gameState.totalRewards-1,0);
+        }
+      },
+      {
+        label: "Nej, overfladisk scanning (−2 Security)",
+        effect: ()=>{
+          gameState.security=Math.max(gameState.security-2,0);
+        }
+      }
+    ]
+  }
 };
 
-/**
- * (1) Risk–Reward: riskLevel 1–3 => bigger payoff, bigger penalty if fail
- * (7) High Priority: if risk >= 3 or a special property => skipping => neglect
- */
-
-// Example step pools
+// Steps pool
 const stepsPool = {
   stability: [
     ["Hospital", "Infrastruktur"],
-    ["Hospital", "Leverandør", "Infrastruktur"],
+    ["Hospital", "Leverandør", "Infrastruktur"]
   ],
   development: [
     ["Hospital", "Leverandør", "IT Jura"],
-    ["Hospital", "Informationssikkerhed"],
+    ["Hospital", "Informationssikkerhed"]
   ],
   security: [
     ["Cybersikkerhed", "IT Jura"],
-    ["Informationssikkerhed", "Cybersikkerhed", "Hospital"],
+    ["Informationssikkerhed", "Cybersikkerhed", "Hospital"]
   ]
 };
 
-// Sample headlines + descriptions
+// Some headlines & descriptions
 const headlines = ["Netværkstjek", "Systemoptimering", "Sikkerhedspatch", "Brugerstyring", "Stort Udviklingsprojekt"];
 const descs = {
-  stability: "(Stabilitetsopgave) Minimer nedetid.",
-  development: "(Udviklingsopgave) Tilføj/forbedr systemet.",
-  security: "(Sikkerhedsopgave) Håndtér trusler.",
+  stability: "(Stabilitetsopgave) Holder systemet kørende.",
+  development: "(Udviklingsopgave) Forbedr systemet.",
+  security: "(Sikkerhedsopgave) Håndtér trusler."
 };
 
-/** Collisions & Listeners **/
-function checkCollisions() {
-  for (const [locName, locEl] of Object.entries(locations)) {
-    if (isColliding(player.element, locEl)) {
-      handleLocationVisit(locName);
-    }
+// Track if we have shown scenario for step
+function showStepDialog(locationName, stepIndex) {
+  // ensure we only show once
+  if(!gameState.activeTask.decisionMadeForStep) {
+    gameState.activeTask.decisionMadeForStep = {};
   }
-  requestAnimationFrame(checkCollisions);
-}
-function setupListeners() {
-  document.addEventListener('keydown', handleMovement);
-  requestAnimationFrame(checkCollisions);
-}
+  if(gameState.activeTask.decisionMadeForStep[stepIndex]) return;
+  gameState.activeTask.decisionMadeForStep[stepIndex] = true;
 
-/** isColliding + location visit logic (2) mini decisions at each location **/
-function isColliding(aEl, bEl){
-  const r1=aEl.getBoundingClientRect();
-  const r2=bEl.getBoundingClientRect();
-  return !(
-    r1.top>r2.bottom ||
-    r1.bottom<r2.top ||
-    r1.left>r2.right ||
-    r1.right<r2.left
-  );
-}
-function handleLocationVisit(locName) {
-  if (player.isVisiting === locName) return;
-  player.isVisiting = locName;
-
-  const locEl = locations[locName];
-  locEl.classList.add('visited');
-  setTimeout(()=> locEl.classList.remove('visited'), 500);
-
-  if (gameState.activeTask) {
-    const idx = gameState.activeTask.currentStep;
-    if (idx < gameState.activeTask.steps.length) {
-      const needed = gameState.activeTask.steps[idx];
-      if (locName === needed) {
-        // Step is correct => but show a small "mini decision" dialogue
-        showStepDialog(locName);
-      }
-    }
+  const scenario = locationScenarios[locationName];
+  if(!scenario) {
+    // fallback generic
+    genericDialog(locationName, stepIndex);
+    return;
   }
-  setTimeout(() => { player.isVisiting = null; }, 1000);
-}
-
-/** showStepDialog => mini popup with a choice. If choice is “bad”, might cause partial fail, etc. **/
-function showStepDialog(locName) {
-  // Example: a 2-choice mini dialog for each location
+  // build a popup
   const popup = document.createElement('div');
   popup.classList.add('popup', 'info');
-  popup.style.animation = "none"; // so it doesn't fade out automatically
+  popup.style.animation = "none"; // so it won't auto-fade
 
-  // Each location might have different minor decisions
-  // We'll define a simple approach:
-  let question = `Ved ${locName}, vil du være grundig eller hurtig?`;
-  let optionA = "Grundig (bedre chance for success)";
-  let optionB = "Hurtig (risiker delvis fejl)";
+  let html = `<strong>${locationName}</strong><br/>${scenario.question}<br/><br/>`;
+  scenario.choices.forEach((c, idxC) => {
+    html += `<button id="choice-${idxC}" style="margin-right:6px;">${c.label}</button>`;
+  });
+  popup.innerHTML = html;
+  document.getElementById('popup-container').appendChild(popup);
 
-  // If you want more location-specific text:
-  if (locName==="IT Jura") {
-    question = "IT Jura: Vil du kræve strengere kontrakt?";
-    optionA = "Ja, streng (bedre stabilitet men risk leverandør relation)";
-    optionB = "Nej, lempelig (mindre immediate risk men...)";
-  }
+  // add events
+  scenario.choices.forEach((c, idxC) => {
+    const btn = document.getElementById(`choice-${idxC}`);
+    btn.addEventListener('click', () => {
+      // apply effect
+      c.effect();
+      popup.remove();
+      finalizeStep(stepIndex);
+    });
+  });
+}
 
-  popup.innerHTML = `
-    <strong>${locName}</strong><br />
-    ${question}<br /><br />
-    <button id="choiceA">A: ${optionA}</button>
-    <button id="choiceB">B: ${optionB}</button>
+// fallback generic
+function genericDialog(locationName, stepIndex){
+  const popup=document.createElement('div');
+  popup.classList.add('popup','info');
+  popup.style.animation="none";
+  popup.innerHTML=`
+    <strong>${locationName}</strong><br/>
+    Standard valg:
+    <button id="genA">Grundigt</button>
+    <button id="genB">Hurtigt</button>
   `;
   document.getElementById('popup-container').appendChild(popup);
 
-  // If choose A => success. If choose B => partial penalty
-  document.getElementById('choiceA').addEventListener('click', () => {
+  document.getElementById('genA').addEventListener('click',()=>{
+    // small bonus
+    gameState.stability=Math.min(gameState.stability+1,150);
     popup.remove();
-    finalizeStep(locName, "A");
+    finalizeStep(stepIndex);
   });
-  document.getElementById('choiceB').addEventListener('click', () => {
+  document.getElementById('genB').addEventListener('click',()=>{
+    // small penalty
+    gameState.stability=Math.max(gameState.stability-1,0);
     popup.remove();
-    finalizeStep(locName, "B");
+    finalizeStep(stepIndex);
   });
 }
 
-/** finalizeStep => complete this step or partially fail */
-function finalizeStep(locName, choice) {
-  if (!gameState.activeTask) return;
+function finalizeStep(stepIndex) {
+  if(!gameState.activeTask)return;
   gameState.activeTask.currentStep++;
-
-  if (choice==="B") {
-    // partial penalty for choosing "fast & sloppy" approach
-    showPopup("Valgte hurtig løsning => risiko for fejl", "info");
-    // e.g. minus 1 stability or dev?
-    gameState.stability = Math.max(gameState.stability-1, 0);
-  }
-
-  if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
-    // finish
+  if (gameState.activeTask.currentStep>=gameState.activeTask.steps.length) {
     completeTask();
   } else {
     updateStepsList();
   }
 }
 
-/** Movement **/
-function handleMovement(e) {
-  if (gameState.introModalOpen) return;
-  switch(e.key.toLowerCase()) {
+// Collisions
+function checkCollisions(){
+  Object.entries(locations).forEach(([locName, locEl])=>{
+    if(isColliding(player.element, locEl)){
+      handleLocationVisit(locName);
+    }
+  });
+  requestAnimationFrame(checkCollisions);
+}
+function handleMovement(e){
+  if(gameState.introModalOpen) return;
+  switch(e.key.toLowerCase()){
     case 'arrowup':
     case 'w':
       player.position.top=Math.max(player.position.top-player.moveSpeed,0);
@@ -241,87 +328,78 @@ function handleMovement(e) {
   player.element.style.left=player.position.left+"%";
 }
 
-/** Generating tasks with (1) Risk–Reward, plus (7) High Priority if risk=3 => skipping => penalty */
-function generateTask() {
-  if (gameState.availableTasks.length>=10) return;
-  const r = Math.random();
+// Risk + high priority
+function generateTask(){
+  if(gameState.availableTasks.length>=10)return;
+  const r=Math.random();
   let type='stability';
-  if(r<0.33) type='stability';
-  else if(r<0.66) type='development';
-  else type='security';
+  if(r<0.33) type='stability'; else if(r<0.66) type='development'; else type='security';
 
-  const stepArr = stepsPool[type][Math.floor(Math.random()*stepsPool[type].length)];
-  const riskLevel = Math.floor(Math.random()*3)+1; // 1-3
-  // bigger reward if risk=3
-  const baseReward = riskLevel*80; // for instance
-  const head = headlines[Math.floor(Math.random()*headlines.length)];
+  const stepArr=stepsPool[type][Math.floor(Math.random()*stepsPool[type].length)];
+  const riskLevel=Math.floor(Math.random()*3)+1; //1..3
+  const baseReward=riskLevel*80;
+  const head=headlines[Math.floor(Math.random()*headlines.length)];
 
-  const newTask = {
-    id: Date.now()+Math.floor(Math.random()*1000),
-    taskType: type,
-    headline: head,
+  const newTask={
+    id:Date.now()+Math.floor(Math.random()*1000),
+    taskType:type,
+    headline:head,
     description: descs[type],
     steps: stepArr,
-    currentStep: 0,
+    currentStep:0,
     riskLevel: riskLevel,
     baseReward: baseReward,
-    isHighPriority: (riskLevel===3), // (7) if risk=3 => high priority
+    isHighPriority:(riskLevel===3),
+    decisionMadeForStep:{} // track per-step dialog
   };
   gameState.availableTasks.push(newTask);
   renderTasks();
 }
 
-/** Render tasks => show risk color code + “High Priority” label if isHighPriority */
-function renderTasks() {
+function renderTasks(){
   tasksList.innerHTML="";
   if(!gameState.availableTasks.length){
     tasksList.innerHTML="<li>Ingen opgaver tilgængelige</li>";
     return;
   }
-  gameState.availableTasks.forEach(task => {
-    const li = document.createElement('li');
+  gameState.availableTasks.forEach(t=>{
+    const li=document.createElement('li');
 
-    // color code risk: low=green, med=orange, high=red
-    if (task.riskLevel===3) { 
+    // color code border by risk
+    if(t.riskLevel===3){
       li.style.borderColor="red"; 
       li.style.borderWidth="2px";
-    } else if (task.riskLevel===2) {
-      li.style.borderColor="orange"; 
+    } else if(t.riskLevel===2){
+      li.style.borderColor="orange";
     } else {
       li.style.borderColor="green";
     }
 
-    // Show “HIGH PRIORITY” if risk=3
-    const pLabel = task.isHighPriority? " (HØJPRIORITET)" : "";
-    li.innerHTML=`<strong>${task.headline}${pLabel}</strong><br/>
-      Risiko: ${task.riskLevel} - Belønning: ~${task.baseReward} 
-      <p class="task-description" style="display:none;">${task.description}</p>
+    const priorityLabel=t.isHighPriority?" (HØJPRIORITET)":"";
+    li.innerHTML=`
+      <strong>${t.headline}${priorityLabel}</strong><br/>
+      Risiko: ${t.riskLevel} - Belønning: ~${t.baseReward}
+      <p class="task-description" style="display:none;">${t.description}</p>
     `;
-
-    const commitBtn = document.createElement('button');
+    const commitBtn=document.createElement('button');
     commitBtn.classList.add('commit-button');
     commitBtn.textContent="Forpligt";
-    commitBtn.addEventListener("click", (e) => {
+    commitBtn.addEventListener('click',(e)=>{
       e.stopPropagation();
-      assignTask(task.id);
+      assignTask(t.id);
     });
-
-    // show/hide description
-    li.addEventListener("click", ()=>{
-      li.querySelectorAll(".task-description").forEach(d=>{
+    li.addEventListener('click',()=>{
+      li.querySelectorAll('.task-description').forEach(d=>{
         if(d.style.display==="none") d.style.display="block"; else d.style.display="none";
       });
     });
-
     li.appendChild(commitBtn);
     tasksList.appendChild(li);
   });
 }
 
-/** (7) If we skip or never pick a high priority task => penalty => track “neglect” */
-function skipHighPriority(task) {
-  if(!task.isHighPriority) return;
-  // increment neglect in that category
+function skipHighPriority(task){
+  if(!task.isHighPriority)return;
   if(task.taskType==="security"){
     gameState.securityNeglect++;
   } else if(task.taskType==="development"){
@@ -331,103 +409,84 @@ function skipHighPriority(task) {
   }
   checkNeglectPenalties();
 }
-
-/** if neglect counters get too high => random penalty or event */
-function checkNeglectPenalties() {
+function checkNeglectPenalties(){
   if(gameState.securityNeglect>=3){
-    showPopup("Du har ignoreret for mange Sikkerhedsopgaver! Systemet er sårbart!", "error");
+    showPopup("Du har ignoreret for mange Sikkerhedsopgaver! -5 Security", "error");
     gameState.security=Math.max(gameState.security-5,0);
-    gameState.securityNeglect=0; // reset or reduce
+    gameState.securityNeglect=0;
     updateScoreboard();
   }
   if(gameState.developmentNeglect>=3){
-    showPopup("Du har ignoreret for mange Udviklingsopgaver! Systemet bliver forældet!", "error");
+    showPopup("Du har ignoreret for mange Udviklingsopgaver! -5 Udvikling", "error");
     gameState.development=Math.max(gameState.development-5,0);
     gameState.developmentNeglect=0;
     updateScoreboard();
   }
   if(gameState.stabilityNeglect>=3){
-    showPopup("Du har ignoreret for mange Stabilitetsopgaver! Oppetid truet!", "error");
+    showPopup("Du har ignoreret for mange Stabilitetsopgaver! -5 Stabilitet", "error");
     gameState.stability=Math.max(gameState.stability-5,0);
     gameState.stabilityNeglect=0;
     updateScoreboard();
   }
 }
 
-/** Assign Task => check risk => if risk=3 => confirm? (1) bigger reward bigger penalty if fail */
-function assignTask(taskId) {
-  if (gameState.activeTask) {
+function assignTask(taskId){
+  if(gameState.activeTask){
     showPopup("Du har allerede en aktiv opgave!", "error");
     return;
   }
-  const idx=gameState.availableTasks.findIndex(t=>t.id===taskId);
+  const idx=gameState.availableTasks.findIndex(x=>x.id===taskId);
   if(idx===-1)return;
   const task=gameState.availableTasks[idx];
 
-  // if risk=3 => show a quick "are you sure?" popup
   if(task.riskLevel===3){
+    // show a confirm popup
     const confirmDiv=document.createElement('div');
-    confirmDiv.classList.add('popup', 'info');
+    confirmDiv.classList.add('popup','info');
     confirmDiv.style.animation="none";
     confirmDiv.innerHTML=`
       <strong>Høj Risiko!</strong><br/>
-      Denne opgave kan give stor gevinst men stor straf ved fejl.<br/>
+      Stor gevinst men stor straf ved fejl.<br/>
       <button id="confirmYes">Fortsæt</button>
       <button id="confirmNo">Fortryd</button>
     `;
     document.getElementById('popup-container').appendChild(confirmDiv);
 
-    document.getElementById('confirmYes').addEventListener('click', ()=>{
+    document.getElementById('confirmYes').addEventListener('click',()=>{
       confirmDiv.remove();
       finalizeAssign(taskId, idx);
     });
-    document.getElementById('confirmNo').addEventListener('click', ()=>{
+    document.getElementById('confirmNo').addEventListener('click',()=>{
       confirmDiv.remove();
-      // skip => treat as user ignoring
+      // skip => mark as ignoring high-priority
       gameState.availableTasks.splice(idx,1);
       skipHighPriority(task);
       renderTasks();
     });
   } else {
-    // normal risk => just proceed
     finalizeAssign(taskId, idx);
   }
 }
-function finalizeAssign(taskId, idx) {
+function finalizeAssign(taskId, idx){
   gameState.activeTask=gameState.availableTasks.splice(idx,1)[0];
   activeTaskHeadline.textContent=gameState.activeTask.headline;
   activeTaskDescription.textContent=gameState.activeTask.description;
   activeTaskDetails.textContent="";
   updateStepsList();
   renderTasks();
-  checkImmediateStep();
-
-  if(!gameState.shownFirstActivePopup){
-    showPopup("Aktiv opgave valgt! Tjek trinlisten.", "info", 4000);
-    gameState.shownFirstActivePopup=true;
-  }
 }
 
-/** if user never picks a high priority task => we skip it or remove => skipHighPriority => track */
-function checkImmediateStep(){
-  if(!gameState.activeTask)return;
-  const i=gameState.activeTask.currentStep;
-  if(i>=gameState.activeTask.steps.length)return;
-  const needed=gameState.activeTask.steps[i];
-  const locEl=locations[needed];
-  if(locEl && isColliding(player.element, locEl)){
-    showStepDialog(needed);
-  }
-}
-function updateStepsList() {
+function updateStepsList(){
   stepsList.innerHTML="";
   if(!gameState.activeTask){
     stepsList.innerHTML="<li>Ingen aktiv opgave</li>";
     return;
   }
-  gameState.activeTask.steps.forEach((locName,i)=>{
+  gameState.activeTask.steps.forEach((locName, i)=>{
     const li=document.createElement("li");
-    const short=stepExplanations[locName]||"Du udfører en handling.";
+    let short=(locationScenarios[locName] && locationScenarios[locName].question) 
+       ? locationScenarios[locName].question 
+       : "Generisk trin.";
     if(i<gameState.activeTask.currentStep){
       li.style.textDecoration="line-through";
       li.style.color="#95a5a6";
@@ -437,27 +496,25 @@ function updateStepsList() {
   });
 }
 
-/** If complete => apply bigger reward if success, bigger penalty if fail. 
-   We'll define "fail chance" based on some logic or skip that for now. 
-*/
-function completeTask() {
+/** finish => apply bigger reward, or if we had fail chance => penalty. For simplicity, auto success. */
+function completeTask(){
   showPopup("Opgave fuldført!", "success");
   gameState.tasksCompleted++;
 
-  // reward = baseReward + risk-based bonus
-  // e.g. if risk=3 => + (some stats)
   const t=gameState.activeTask;
-  let finalReward = t.baseReward;
-  // let's do e.g. +1 to a relevant stat
+  // e.g. baseReward plus a small bonus
+  let reward=t.baseReward;
   if(t.taskType==="security"){
-    gameState.security=Math.min(gameState.security+5+(t.riskLevel*2),150);
+    gameState.security=Math.min(gameState.security + 5 + t.riskLevel*2,150);
+    showPopup(`+${5+t.riskLevel*2} Security, +${reward} belønning`, "info",4000);
   } else if(t.taskType==="development"){
-    gameState.development=Math.min(gameState.development+5+(t.riskLevel*2),150);
+    gameState.development=Math.min(gameState.development + 5 + t.riskLevel*2,150);
+    showPopup(`+${5+t.riskLevel*2} Udvikling, +${reward} belønning`, "info",4000);
   } else {
-    gameState.stability=Math.min(gameState.stability+5+(t.riskLevel*2),150);
+    gameState.stability=Math.min(gameState.stability + 5 + t.riskLevel*2,150);
+    showPopup(`+${5+t.riskLevel*2} Stabilitet, +${reward} belønning`, "info",4000);
   }
-  // add finalReward to total
-  gameState.totalRewards += finalReward;
+  gameState.totalRewards+=reward;
 
   gameState.activeTask=null;
   activeTaskHeadline.textContent="Ingen aktiv opgave";
@@ -467,10 +524,8 @@ function completeTask() {
   updateScoreboard();
 }
 
-/** If we wanted random fail chance, we'd define it and do penalty, but let's skip for brevity. */
-
-/** Scoreboard & Bars **/
-function updateScoreboard() {
+/** scoreboard & bars */
+function updateScoreboard(){
   scoreboard.tasksCompleted.textContent=gameState.tasksCompleted;
   scoreboard.totalRewards.textContent=gameState.totalRewards;
   scoreboard.hospitalSatisfaction.textContent=gameState.hospitalSatisfaction+"%";
@@ -481,36 +536,34 @@ function updateBars(){
   const stab=Math.max(0,Math.min(gameState.stability,150));
   const dev=Math.max(0,Math.min(gameState.development,150));
   const maxW=80;
-  securityBar.style.width   =(sec /150)*maxW+"px";
-  stabilityBar.style.width  =(stab/150)*maxW+"px";
-  developmentBar.style.width=(dev /150)*maxW+"px";
+  securityBar.style.width=(sec/150)*maxW+"px";
+  stabilityBar.style.width=(stab/150)*maxW+"px";
+  developmentBar.style.width=(dev/150)*maxW+"px";
 }
 
-/** showPopup => for messages */
-function showPopup(msg, type="success", duration=3000) {
-  const el = document.createElement("div");
+/** popups */
+function showPopup(msg,type="success",duration=3000){
+  const el=document.createElement("div");
   el.classList.add("popup");
   if(type==="error") el.classList.add("error");
   else if(type==="info") el.classList.add("info");
+  el.style.animation="none"; // no auto fade if you want
   el.textContent=msg;
   document.getElementById("popup-container").appendChild(el);
 
-  setTimeout(()=> {
-    if(el) el.remove();
-  }, duration);
+  setTimeout(()=>el.remove(),duration);
 }
 
 /** initGame */
-function initGame() {
+function initGame(){
   updateScoreboard();
-  // generate some start tasks
-  for(let i=0; i<2;i++){
+  for(let i=0;i<2;i++){
     generateTask();
   }
   renderTasks();
   setupListeners();
 
-  // keep generating tasks every 10s if <10 tasks
+  // tasks every 10s
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
