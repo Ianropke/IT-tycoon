@@ -3,7 +3,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: auto; 
+  overflow: auto;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background-color: #2c3e50;
   color: #ecf0f1;
@@ -11,40 +11,46 @@ html, body {
 
 header {
   background-color: #34495e;
-  padding: 8px 20px;
+  padding: 6px 20px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  margin-bottom: 2px;
 }
+
 header h1 {
-  margin: 0 20px 0 0; 
+  margin: 0 20px 0 0;
   font-size: 1.6rem;
 }
 
 #scoreboard { margin: 0; }
+
 #scores {
   display: flex;
   gap: 16px;
   align-items: center;
 }
+
 #scores span {
   white-space: nowrap;
   font-size: 0.9rem;
 }
 
-/* Bars container for security/stability/dev */
+/* Bars container */
 #bars-container {
   display: flex;
   gap: 12px;
   align-items: center;
 }
+
 .bar-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   font-size: 0.85rem;
 }
+
 .bar-bg {
   width: 80px;
   height: 8px;
@@ -53,6 +59,7 @@ header h1 {
   position: relative;
   overflow: hidden;
 }
+
 .bar-fill {
   background-color: #27ae60;
   width: 100%;
@@ -60,17 +67,17 @@ header h1 {
   transition: width 0.5s;
 }
 
-/* Main container with game left, tasks right */
+/* Main container: narrower game area, more space for tasks */
 #main-container {
   display: flex;
-  height: 80vh; /* approximate height to keep it visible */
-  margin: 10px 20px;
-  gap: 20px;
+  height: 80vh;
+  margin: 8px 20px;
+  gap: 16px;
   box-sizing: border-box;
 }
 
 #game-area {
-  flex: 2;
+  flex: 1; /* narrower game area */
   background-color: #34495e;
   border: 2px solid #ecf0f1;
   border-radius: 10px;
@@ -78,20 +85,20 @@ header h1 {
   min-height: 0;
 }
 
-/* Task side with two boxes for active & available tasks */
 #task-side {
-  flex: 1;
+  flex: 2; /* more horizontal space for tasks */
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-height: 0; 
 }
 
+/* Active & available tasks each scroll if too tall */
 #active-task, #available-tasks {
   background-color: #34495e;
   border: 2px solid #ecf0f1;
   border-radius: 5px;
-  padding: 10px;
+  padding: 8px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -99,16 +106,15 @@ header h1 {
   min-height: 0;
 }
 
-#active-task h2,
-#available-tasks h2 {
-  margin: 0 0 6px 0;
+#active-task h2, #available-tasks h2 {
+  margin: 0 0 4px 0;
   font-size: 1.1rem;
 }
 
 .location {
   position: absolute;
-  width: 150px;
-  height: 60px;
+  width: 140px;
+  height: 55px;
   background-color: #7f8c8d;
   border: 2px solid #bdc3c7;
   border-radius: 5px;
@@ -125,8 +131,8 @@ header h1 {
 
 #player {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   background-color: #3498db;
   border-radius: 50%;
   top: 50%;
@@ -135,12 +141,12 @@ header h1 {
   transition: top 0.2s, left 0.2s;
 }
 
-/* Steps list: slightly bigger text, minimal spacing */
+/* Steps list: smaller margins, bigger text */
 #steps-list li {
-  margin-bottom: 6px;
-  font-size: 0.95rem;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
   background: rgba(255,255,255,0.1);
-  padding: 4px;
+  padding: 3px;
   border-radius: 4px;
 }
 
@@ -151,8 +157,8 @@ header h1 {
 }
 #tasks-list li {
   background-color: #2c3e50;
-  margin: 5px 0;
-  padding: 8px;
+  margin: 4px 0;
+  padding: 6px;
   border-radius: 3px;
   transition: background-color 0.3s;
   display: flex;
@@ -165,8 +171,8 @@ header h1 {
 }
 
 .commit-button {
-  margin-top: 5px;
-  padding: 5px 10px;
+  margin-top: 4px;
+  padding: 4px 8px;
   background-color: #2980b9;
   color: #fff;
   border: none;
@@ -183,7 +189,7 @@ footer {
   background-color: #34495e;
   text-align: center;
   padding: 6px 20px;
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
 /* Popups, modal, etc. */
@@ -196,8 +202,8 @@ footer {
 .popup {
   background-color: #27ae60;
   color: #fff;
-  padding: 6px 10px;
-  margin-bottom: 10px;
+  padding: 5px 8px;
+  margin-bottom: 6px;
   border-radius: 5px;
   font-size: 0.85rem;
   animation: fadeOut 3s forwards;
@@ -211,8 +217,8 @@ footer {
 }
 
 @keyframes fadeOut {
-  0% { opacity: 0.9; transform: translateY(0); }
-  80% { opacity: 0.9; transform: translateY(-20px); }
+  0%   { opacity: 0.9; transform: translateY(0); }
+  80%  { opacity: 0.9; transform: translateY(-20px); }
   100% { opacity: 0; transform: translateY(-20px); }
 }
 
@@ -233,7 +239,7 @@ footer {
   background-color: #2c3e50;
   border: 3px solid #bdc3c7;
   border-radius: 8px;
-  padding: 20px;
+  padding: 16px;
   text-align: left;
 }
 #intro-ok-btn {
@@ -241,7 +247,7 @@ footer {
   color: #fff;
   border: none;
   border-radius: 5px;
-  padding: 8px 15px;
+  padding: 6px 12px;
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -250,7 +256,7 @@ footer {
 @media (max-width: 768px) {
   #main-container {
     flex-direction: column;
-    height: auto; 
+    height: auto;
   }
   #game-area {
     min-height: 300px;
