@@ -2,16 +2,15 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Tycoon</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>IT Tycoon</h1>
+    <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Time & money, plus stats -->
         <span>Tid tilbage: <span id="time-left">100</span></span>
         <span>Penge: <span id="money-left">1000</span></span>
 
@@ -37,22 +36,20 @@
     <div id="game-area">
       <!-- Spread out locations -->
       <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">Infrastruktur</div>
-      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">Informationssikkerhed</div>
+      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">Infosec</div>
 
       <div class="location" id="hospital" style="top: 30%; left: 25%;">Hospital</div>
       <div class="location" id="leverandor" style="top: 30%; left: 55%;">Leverandør</div>
 
-      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">Medicinsk Udstyr</div>
+      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">MediTek</div>
       <div class="location" id="it-jura" style="top: 50%; left: 40%;">IT Jura</div>
-      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">Cybersikkerhed</div>
+      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">CyberScan</div>
 
-      <!-- physically we still have Dokumentation, but final is CAB pop-up -->
+      <!-- Dokumentation step (second to last) -->
       <div class="location" id="dokumentation" style="top: 70%; left: 30%;">Dokumentation</div>
-      <!-- can skip doc or do it, then final CAB is a pop-up after doc is done -->
     </div>
 
     <div id="task-side">
-      <!-- Halved spacing to 2px -->
       <div id="active-task" style="padding-bottom: 2px;">
         <h2>Aktiv Opgave</h2>
         <h3 id="active-task-headline">Ingen aktiv opgave</h3>
@@ -75,31 +72,28 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 IT Tycoon A/S</p>
+    <p>&copy; 2025 IT Tycoon ApS</p>
   </footer>
 
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon</h2>
+      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
-        Du er <strong>Forvalter</strong> for Hospitalet! 
-        Du har 100 tidsenheder og 1000 penge.
+        Du er forvalter af LIMS (Laboratory Information Management System) 
+        på et stort hospital. Du har 100 tidsenheder og 1000 kroner 
+        til at forbedre systemerne, sikre sikkerhed, udvide funktionalitet 
+        og gøre hospitalet tilfreds.
       </p>
       <p>
-        Hver lokation har to valg: en mere omfattende løsning, der koster 
-        mere tid og penge, eller en hurtigere/billigere tilgang, men højere 
-        sandsynlighed for fejl. Dokumentation er valgfrit - springer du over 
-        stiger fejlchancen ved CAB.
-      </p>
-      <p style="color:#8e44ad;">
-        CAB er nu et pop-up til sidst, hvor dit projekt kan blive godkendt 
-        eller afvist baseret på dine valg!
+        Hvert valg koster tid og måske penge – eller øger risikoen for fejl.
+        Undlader du Dokumentation, øger du chancen for afvisning ved CAB.
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
+  <!-- Popup container -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
@@ -118,6 +112,15 @@
       <h2>Endelig CAB-godkendelse</h2>
       <p id="cab-summary"></p>
       <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
+    </div>
+  </div>
+
+  <!-- CAB result popup -->
+  <div id="cab-result-modal" class="modal" style="display:none;">
+    <div class="modal-content" id="cab-result-content">
+      <h2 id="cab-result-title"></h2>
+      <p id="cab-result-text"></p>
+      <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
     </div>
   </div>
 
