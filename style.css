@@ -48,58 +48,35 @@ header h1 {
   min-height: 0;
 }
 
-/* triple icon size */
+/* Triple icon size */
 .loc-icon {
-  font-size: 2rem; /* or 2.5rem if you want bigger */
+  font-size: 2rem; 
   margin-right: 6px;
-  display: inline-block;
-  vertical-align: middle;
+  display: inline-block; vertical-align: middle;
 }
 
-/* different color classes */
+/* Different color classes for locations */
 .location {
   position: absolute; 
-  width: 170px; 
-  height: 65px; 
+  width: 170px; height: 65px;
   border: 2px solid #bdc3c7;
-  border-radius: 5px; 
-  text-align: center; 
-  font-size: 0.9rem;
-  display: flex; align-items: center; justify-content: center;
+  border-radius: 5px; text-align: center;
+  font-size: 0.9rem; display: flex;
+  align-items: center; justify-content: center;
   cursor: pointer; transition: background-color 0.3s;
   color: #ecf0f1;
 }
-.location.infrastruktur {
-  background-color: #5D6D7E;
-}
-.location.informationssikkerhed {
-  background-color: #7D3C98;
-}
-.location.hospital {
-  background-color: #2874A6;
-}
-.location.leverandor {
-  background-color: #6E2C00;
-}
-.location.medicinsk-udstyr {
-  background-color: #2E4053;
-}
-.location.it-jura {
-  background-color: #424949;
-}
-.location.cybersikkerhed {
-  background-color: #4C4C9D;
-}
-.location.dokumentation {
-  background-color: #7B7D7D;
-}
+.location.infrastruktur { background-color: #5D6D7E; }
+.location.informationssikkerhed { background-color: #7D3C98; }
+.location.hospital { background-color: #2874A6; }
+.location.leverandor { background-color: #6E2C00; }
+.location.medicinsk-udstyr { background-color: #2E4053; }
+.location.it-jura { background-color: #424949; }
+.location.cybersikkerhed { background-color: #4C4C9D; }
+.location.dokumentation { background-color: #7B7D7D; }
 
-.location:hover {
-  filter: brightness(1.15);
-}
-.location.visited {
-  background-color: #27ae60 !important;
-}
+.location:hover { filter: brightness(1.15); }
+.location.visited { background-color: #27ae60 !important; }
 
 #steps-list li {
   margin-bottom: 4px; font-size: 0.9rem;
@@ -116,9 +93,7 @@ header h1 {
   border-radius: 3px; transition: background-color 0.3s, border 0.3s;
   display: flex; flex-direction: column; font-size: 0.85rem;
 }
-#tasks-list li:hover {
-  background-color: #1abc9c; cursor: pointer;
-}
+#tasks-list li:hover { background-color: #1abc9c; cursor: pointer; }
 
 .commit-button {
   margin-top: 4px; padding: 4px 8px;
@@ -127,9 +102,7 @@ header h1 {
   font-size: 0.75rem; align-self: flex-start;
   transition: background-color 0.3s;
 }
-.commit-button:hover {
-  background-color: #1c5980;
-}
+.commit-button:hover { background-color: #1c5980; }
 
 footer {
   background-color: #34495e;
@@ -137,9 +110,10 @@ footer {
   margin-top: 6px;
 }
 
-/* popups */
+/* Popups */
 #popup-container {
-  position: fixed; top: 20px; right: 20px; z-index: 100;
+  position: fixed; top: 20px; right: 20px;
+  z-index: 100;
 }
 .popup {
   background-color: #27ae60; color: #fff;
@@ -147,17 +121,13 @@ footer {
   border-radius: 5px; font-size: 0.85rem;
   max-width: 320px; animation: fadeOut 4s forwards;
 }
-.popup.error {
-  background-color: #e74c3c;
-}
-.popup.info {
-  background-color: #8e44ad;
-}
+.popup.error { background-color: #e74c3c; }
+.popup.info { background-color: #8e44ad; }
 
 @keyframes fadeOut {
-  0% { opacity: 0.9; transform: translateY(0);}
-  80%{ opacity: 0.9; transform: translateY(-20px);}
-  100%{ opacity: 0; transform: translateY(-20px);}
+  0% { opacity: 0.9; transform: translateY(0); }
+  80% { opacity: 0.9; transform: translateY(-20px); }
+  100% { opacity: 0; transform: translateY(-20px); }
 }
 
 #floating-text-container {
@@ -170,9 +140,9 @@ footer {
   animation: floatUp 2s forwards; text-shadow: 0 0 2px #000;
 }
 @keyframes floatUp {
-  0% { opacity:1; transform: translateY(0);}
-  80%{ opacity:0.9; transform: translateY(-40px);}
-  100%{ opacity:0; transform: translateY(-60px);}
+  0% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 0.9; transform: translateY(-40px); }
+  100% { opacity: 0; transform: translateY(-60px); }
 }
 
 .modal {
@@ -183,35 +153,26 @@ footer {
 }
 .modal-content {
   width: 60%; max-width: 800px;
-  background-color: #2c3e50; 
-  border: 3px solid #bdc3c7;
-  border-radius: 8px; 
-  padding: 16px; 
-  text-align: left; 
+  background-color: #2c3e50; border: 3px solid #bdc3c7;
+  border-radius: 8px; padding: 16px; text-align: left;
 }
 
-/* scenario-modal for each location => consistent pop-up */
-#scenario-modal-content {
-  color: #fff;
-}
+/* Scenario Modal */
+#scenario-modal-content { color: #fff; }
 #scenario-a-btn, #scenario-b-btn {
   background-color: #2980b9; color: #fff;
   border: none; border-radius: 3px;
   padding: 6px 12px; margin-top: 4px;
   cursor: pointer; font-size: 0.85rem;
 }
-#scenario-a-btn:hover, #scenario-b-btn:hover {
-  background-color: #1c5980;
-}
+#scenario-a-btn:hover, #scenario-b-btn:hover { background-color: #1c5980; }
 
-/* end-of-time modal, cab modals, etc. */
+/* End Modal and CAB Modals */
 #end-modal { display: flex; }
 #end-modal-content {
-  width: 60%; max-width: 600px; 
-  background-color: #2c3e50; 
-  border: 3px solid #bdc3c7;
-  border-radius: 8px; 
-  padding: 16px; text-align: left;
+  width: 60%; max-width: 600px;
+  background-color: #2c3e50; border: 3px solid #bdc3c7;
+  border-radius: 8px; padding: 16px; text-align: left;
 }
 #end-ok-btn {
   background-color: #e74c3c; color: #fff;
@@ -231,4 +192,12 @@ footer {
   background-color: #2ecc71; color: #fff;
   border: none; border-radius: 5px;
   padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  #main-container { flex-direction: column; height: auto; }
+  #game-area { min-height: 300px; }
+}
+@media (max-width: 480px) {
+  header h1 { font-size: 1.3rem; }
 }
