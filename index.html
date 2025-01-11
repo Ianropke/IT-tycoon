@@ -11,7 +11,6 @@
     <h1>IT Tycoon</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Show time left, plus numeric values for Security/Stability/Development -->
         <span>Tid tilbage: <span id="time-left">100</span></span>
 
         <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
@@ -34,20 +33,26 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Spread out locations so they don’t overlap -->
-      <div class="location" id="infrastruktur" style="top: 15%; left: 10%;">Infrastruktur</div>
-      <div class="location" id="informationssikkerhed" style="top: 15%; left: 70%;">Informationssikkerhed</div>
+      <!-- Spread out so no overlap -->
+      <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">Infrastruktur</div>
+      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">Informationssikkerhed</div>
 
-      <div class="location" id="hospital" style="top: 35%; left: 25%;">Hospital</div>
-      <div class="location" id="leverandor" style="top: 35%; left: 55%;">Leverandør</div>
+      <div class="location" id="hospital" style="top: 30%; left: 25%;">Hospital</div>
+      <div class="location" id="leverandor" style="top: 30%; left: 55%;">Leverandør</div>
 
-      <div class="location" id="medicinsk-udstyr" style="top: 55%; left: 10%;">Medicinsk Udstyr</div>
-      <div class="location" id="it-jura" style="top: 55%; left: 40%;">IT Jura</div>
-      <div class="location" id="cybersikkerhed" style="top: 55%; left: 70%;">Cybersikkerhed</div>
+      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">Medicinsk Udstyr</div>
+      <div class="location" id="it-jura" style="top: 50%; left: 40%;">IT Jura</div>
+      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">Cybersikkerhed</div>
+
+      <!-- (1) New final step location: CAB -->
+      <div class="location" id="cab" style="top: 70%; left: 25%;">CAB</div>
+
+      <!-- (2) New optional second-to-last step: Documentation -->
+      <div class="location" id="dokumentation" style="top: 70%; left: 55%;">Dokumentation</div>
     </div>
 
     <div id="task-side">
-      <!-- Reduced spacing further (padding-bottom from 4px -> 2px) -->
+      <!-- (1) Halved spacing from previous 4px -> 2px again -->
       <div id="active-task" style="padding-bottom: 2px;">
         <h2>Aktiv Opgave</h2>
         <h3 id="active-task-headline">Ingen aktiv opgave</h3>
@@ -78,24 +83,22 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon</h2>
       <p style="color:#f1c40f;">
-        Du er <strong>Forvalter</strong> for Hospitalet! 
-        Din mission er at afveje Sikkerhed, Stabilitet og Udvikling,
-        og samtidig holde Hospitalet tilfreds.
+        Du er <strong>Forvalter</strong> for Hospitalet!
+        Du har 100 tidsenheder til at klare så meget som muligt.
       </p>
       <p>
-        Du har <strong>100 tidsenheder</strong> til at klare så meget som muligt.
-        Hver gang du færdiggør et trin, koster det tid. Når tiden er op, 
-        evalueres du på, hvor godt du har balanceret systemet!
+        Hvis du vælger at springe Dokumentation over,
+        stiger risikoen for fejl i dine opgaver.
+        Afslut altid i CAB for at få endelig godkendelse!
       </p>
       <p style="color:#8e44ad;">
-        Klik på lokationerne for at gennemføre trin. 
-        Vælg dine opgaver med omhu! 
+        Held og lykke med at balancere Sikkerhed, Stabilitet
+        og Udvikling, mens du holder Hospitalet tilfreds!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Popup container & floating text -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
