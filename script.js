@@ -1,16 +1,10 @@
 /***************************************************
  * script.js
- * 1) Point-and-click => no WASD
- * 2) No overlapping, use given positions
- * 3) No bar graphics => use numeric scoreboard
- * 4) Highlight gains/losses up front
- * 5) Show summary popup at task completion
- * 6) Step-by-step impact => floating text
- * 7) Slightly different outcomes for “A” vs. “B”
- * 8) High-Priority neglect
- * 9) Reduce repetition
+ * Fix: "tasksList not defined" => define tasksList
+ * More colorful, longer intro text in HTML
  ***************************************************/
 
+// scoreboard references
 const securityValueEl     = document.getElementById('security-value');
 const stabilityValueEl    = document.getElementById('stability-value');
 const developmentValueEl  = document.getElementById('development-value');
@@ -21,6 +15,13 @@ const scoreboard = {
   hospitalSatisfaction: document.getElementById('hospital-satisfaction'),
 };
 
+// define tasksList
+const tasksList = document.getElementById('tasks-list'); 
+const stepsList = document.getElementById('steps-list');
+const activeTaskHeadline = document.getElementById('active-task-headline');
+const activeTaskDescription = document.getElementById('active-task-description');
+
+// game state
 let gameState = {
   security: 100,
   stability: 100,
@@ -35,104 +36,102 @@ let gameState = {
   introModalOpen: true,
   shownFirstActivePopup: false,
 
-  // high priority neglect
   secNeglect: 0,
   devNeglect: 0,
   stabNeglect: 0,
 };
 
-// Remove WASD => Use location clicks
-const locations = {
-  Infrastruktur: document.getElementById('infrastruktur'),
-  Informationssikkerhed: document.getElementById('informationssikkerhed'),
-  Hospital: document.getElementById('hospital'),
-  Leverandør: document.getElementById('leverandor'),
-  'Medicinsk Udstyr': document.getElementById('medicinsk-udstyr'),
-  'IT Jura': document.getElementById('it-jura'),
-  Cybersikkerhed: document.getElementById('cybersikkerhed'),
-};
-
-Object.entries(locations).forEach(([name, el]) => {
-  el.addEventListener('click', () => {
-    handleLocationClick(name);
-  });
-});
-
-document.getElementById('intro-ok-btn').addEventListener('click', () => {
+document.getElementById('intro-ok-btn').addEventListener('click',()=>{
   document.getElementById('intro-modal').style.display='none';
   gameState.introModalOpen=false;
 });
 
-// Mini scenario / location logic
-const locationScenarios = {
-  "Hospital": {
-    question: "Ekstra test? (A) Gennemføre, (B) Spring over",
-    A: { text:"A: +2 Stability", effect:()=>applyStatChange("stability", +2) },
-    B: { text:"B: −2 Stability", effect:()=>applyStatChange("stability", -2) },
+/** No WASD => Just location click */
+const locations={
+  Infrastruktur:       document.getElementById('infrastruktur'),
+  Informationssikkerhed: document.getElementById('informationssikkerhed'),
+  Hospital:           document.getElementById('hospital'),
+  Leverandør:         document.getElementById('leverandor'),
+  'Medicinsk Udstyr': document.getElementById('medicinsk-udstyr'),
+  'IT Jura':          document.getElementById('it-jura'),
+  Cybersikkerhed:     document.getElementById('cybersikkerhed'),
+};
+
+Object.entries(locations).forEach(([locName, el])=>{
+  el.addEventListener('click',()=>{
+    handleLocationClick(locName);
+  });
+});
+
+// scenario data
+const locationScenarios={
+  "Hospital":{
+    question:"Hospitalet vil have ekstra tests",
+    A:{ text:"(A) Gennemfør: +2 Stability", effect:()=> applyStatChange("stability",+2)},
+    B:{ text:"(B) Spring over: -2 Stability", effect:()=> applyStatChange("stability",-2)}
   },
-  "IT Jura": {
-    question: "Strenge kontrakter? (A) Ja, (B) Nej",
-    A: { text:"A: +2 Security, −1 Satisfaction", effect:()=>{
-      applyStatChange("security", +2);
-      applyStatChange("hospitalSatisfaction", -1);
+  "IT Jura":{
+    question:"IT Jura: strengere kontraktkrav?",
+    A:{ text:"Ja (+2 Security, -1 Satisfaction)", effect:()=>{
+      applyStatChange("security",+2);
+      applyStatChange("hospitalSatisfaction",-1);
     }},
-    B: { text:"B: Uændret", effect:()=>{} },
+    B:{ text:"Nej (0 effect)", effect:()=>{} }
   },
-  "Leverandør": {
-    question: "Leverandør: Forhåndsbetaling? (A) Betal, (B) Afslå",
-    A: { text:"A: +1 Dev, -2 Reward", effect:()=>{
-      applyStatChange("development", +1);
+  "Leverandør":{
+    question:"Leverandør vil have forhåndsbetaling",
+    A:{ text:"Betal: +1 Dev, -2 Rewards", effect:()=>{
+      applyStatChange("development",+1);
       gameState.totalRewards=Math.max(gameState.totalRewards-2,0);
       updateScoreboard();
     }},
-    B: { text:"B: -1 Stability (forsinkelse)", effect:()=>applyStatChange("stability", -1) }
+    B:{ text:"Afslå: -1 Stability (forsinkelse)", effect:()=>applyStatChange("stability",-1)}
   },
-  "Infrastruktur": {
-    question:"Infrastruktur: (A) Stor opgradering, (B) Lidt patch",
-    A:{ text:"A: +2 Stability", effect:()=>applyStatChange("stability",+2)},
-    B:{ text:"B: +1 Stability", effect:()=>applyStatChange("stability",+1)}
+  "Infrastruktur":{
+    question:"Infrastruktur: stor opgradering eller lille?",
+    A:{ text:"Stor: +2 Stability", effect:()=>applyStatChange("stability",+2)},
+    B:{ text:"Lille: +1 Stability", effect:()=>applyStatChange("stability",+1)}
   },
   "Informationssikkerhed":{
-    question:"Infosikkerhed: (A) Ekstra logs, (B) baseline",
-    A:{ text:"A: +2 Security", effect:()=>applyStatChange("security",+2)},
-    B:{ text:"B: 0 effect", effect:()=>{}}
+    question:"Infosikkerhed: +2 Security vs 0 effect",
+    A:{ text:"Tilføj ekstra logs (+2 Security)", effect:()=>applyStatChange("security",+2)},
+    B:{ text:"Baseline", effect:()=>{}}
   },
   "Medicinsk Udstyr":{
-    question:"Medicinsk: (A) Grundig vedligehold, (B) Hurtig fix",
-    A:{ text:"A: +2 Stability, -1 Dev", effect:()=>{
+    question:"Medicinsk vedligehold grundigt eller hurtigt?",
+    A:{ text:"Grundigt: +2 Stability, -1 Dev", effect:()=>{
       applyStatChange("stability",+2);
       applyStatChange("development",-1);
     }},
-    B:{ text:"B: -2 Stability", effect:()=>applyStatChange("stability",-2)}
+    B:{ text:"Hurtigt: -2 Stability", effect:()=>applyStatChange("stability",-2)}
   },
   "Cybersikkerhed":{
-    question:"Cybersikkerhed: (A) Dyb scanning, (B) overfladisk",
-    A:{ text:"A: +2 Security, -1 Reward", effect:()=>{
+    question:"Cybersikkerhed: dyb scanning eller overfladisk?",
+    A:{ text:"Dyb: +2 Security, -1 Rewards", effect:()=>{
       applyStatChange("security",+2);
       gameState.totalRewards=Math.max(gameState.totalRewards-1,0);
       updateScoreboard();
     }},
-    B:{ text:"B: -2 Security", effect:()=>applyStatChange("security",-2)}
+    B:{ text:"Overfladisk: -2 Security", effect:()=>applyStatChange("security",-2)}
   }
 };
 
-// tasks data
-const stepsPool = {
+// step pools
+const stepsPool={
   stability:[
     ["Hospital","Infrastruktur"],
-    ["Hospital","Leverandør","Infrastruktur"],
+    ["Hospital","Leverandør","Infrastruktur"]
   ],
   development:[
     ["Hospital","Leverandør","IT Jura"],
-    ["Hospital","Informationssikkerhed"],
+    ["Hospital","Informationssikkerhed"]
   ],
   security:[
     ["Cybersikkerhed","IT Jura"],
     ["Informationssikkerhed","Cybersikkerhed","Hospital"]
   ]
 };
-
-const headlines = ["Netværkstjek","Systemoptimering","Sikkerhedspatch","Brugerstyring","Migrering"];
+const headlines=["Netværkstjek","Systemoptimering","Sikkerhedspatch","Brugerstyring","Migrering"];
 const descs={
   stability:"(Stabilitetsopgave) Vedligehold drift",
   development:"(Udviklingsopgave) Udvikl/forbedr systemet",
@@ -140,81 +139,71 @@ const descs={
 };
 
 function handleLocationClick(locName){
-  if(!gameState.activeTask) return; // no active task => ignore
+  if(!gameState.activeTask) return;
   const idx=gameState.activeTask.currentStep;
   if(idx>=gameState.activeTask.steps.length) return;
 
   const needed=gameState.activeTask.steps[idx];
-  if(locName!==needed) return; // not correct step => do nothing
+  if(locName!==needed)return; // not correct => no effect
 
-  // show scenario
-  showLocationScenario(locName);
+  // show scenario once per step
+  if(!gameState.activeTask.decisionMadeForStep) gameState.activeTask.decisionMadeForStep={};
+  if(gameState.activeTask.decisionMadeForStep[idx]) return; // already done
+
+  gameState.activeTask.decisionMadeForStep[idx]=true;
+  showScenarioPopup(locName, idx);
 }
 
-// show location scenario => user picks A or B => finalize step
-function showLocationScenario(locName){
-  if(!gameState.activeTask) return;
-  // ensure only 1 scenario per step
-  if(!gameState.activeTask.decisionMadeForStep){
-    gameState.activeTask.decisionMadeForStep={};
-  }
-  const i=gameState.activeTask.currentStep;
-  if(gameState.activeTask.decisionMadeForStep[i]) return;
-
-  gameState.activeTask.decisionMadeForStep[i]=true;
-
-  // build popup
+function showScenarioPopup(locName, stepIndex){
   const scenario=locationScenarios[locName];
   if(!scenario){
-    // fallback
-    genericPopup(locName);
+    genericPopup(locName, stepIndex);
     return;
   }
-  const popup=document.createElement('div');
-  popup.classList.add('popup','info');
-  popup.style.animation="none";
+  const pop=document.createElement('div');
+  pop.classList.add('popup','info');
+  pop.style.animation="none";
 
-  popup.innerHTML=`
+  pop.innerHTML=`
     <strong>${locName}</strong><br/>
     ${scenario.question}<br/><br/>
-    <button id="scenarioA">${scenario.A.text}</button>
-    <button id="scenarioB">${scenario.B.text}</button>
+    <button id="choA">${scenario.A.text}</button>
+    <button id="choB">${scenario.B.text}</button>
   `;
-  document.getElementById('popup-container').appendChild(popup);
+  document.getElementById('popup-container').appendChild(pop);
 
-  document.getElementById('scenarioA').addEventListener('click',()=>{
+  document.getElementById('choA').addEventListener('click',()=>{
     scenario.A.effect();
-    popup.remove();
+    pop.remove();
     finalizeStep();
   });
-  document.getElementById('scenarioB').addEventListener('click',()=>{
+  document.getElementById('choB').addEventListener('click',()=>{
     scenario.B.effect();
-    popup.remove();
+    pop.remove();
     finalizeStep();
   });
 }
-
-function genericPopup(locName){
-  const popup=document.createElement('div');
-  popup.classList.add('popup','info');
-  popup.style.animation="none";
-  popup.innerHTML=`
+function genericPopup(locName, stepIndex){
+  const pop=document.createElement('div');
+  pop.classList.add('popup','info');
+  pop.style.animation="none";
+  pop.innerHTML=`
     <strong>${locName}</strong><br/>
-    (A) Grundig, (B) Hurtig
+    (A) +1 Stability, (B) -1 Stability
     <br/><br/>
     <button id="genA">A</button>
     <button id="genB">B</button>
   `;
-  document.getElementById('popup-container').appendChild(popup);
+  document.getElementById('popup-container').appendChild(pop);
 
   document.getElementById('genA').addEventListener('click',()=>{
     applyStatChange("stability",+1);
-    popup.remove();
+    pop.remove();
     finalizeStep();
   });
   document.getElementById('genB').addEventListener('click',()=>{
     applyStatChange("stability",-1);
-    popup.remove();
+    pop.remove();
     finalizeStep();
   });
 }
@@ -224,7 +213,7 @@ function finalizeStep(){
   gameState.activeTask.currentStep++;
   if(gameState.activeTask.currentStep>=gameState.activeTask.steps.length){
     completeTask();
-  }else{
+  } else {
     updateStepsList();
   }
 }
@@ -236,45 +225,43 @@ function applyStatChange(stat, delta){
 }
 
 function showFloatingText(txt, stat){
-  const ctn=document.getElementById('floating-text-container');
-  const div=document.createElement('div');
-  div.classList.add('floating-text');
+  const container=document.getElementById("floating-text-container");
+  const div=document.createElement("div");
+  div.classList.add("floating-text");
   div.style.left="50%";
   div.style.top="50%";
-  if(stat==="security")   div.style.color="#ff4444";
+  if(stat==="security") div.style.color="#ff4444";
   else if(stat==="stability") div.style.color="#44ff44";
-  else if(stat==="development")div.style.color="#4444ff";
+  else if(stat==="development") div.style.color="#4444ff";
   else if(stat==="hospitalSatisfaction") div.style.color="#ffc107";
   else div.style.color="#ffffff";
 
   div.textContent=txt;
-  ctn.appendChild(div);
-
-  setTimeout(()=> div.remove(),2000);
+  container.appendChild(div);
+  setTimeout(()=>div.remove(),2000);
 }
 
 function generateTask(){
   if(gameState.availableTasks.length>=10)return;
   const r=Math.random();
   let type='stability';
-  if(r<0.33) type='stability'; else if(r<0.66) type='development'; else type='security';
-
+  if(r<0.33)type='stability'; else if(r<0.66)type='development'; else type='security';
   const stepArr=stepsPool[type][Math.floor(Math.random()*stepsPool[type].length)];
-  const riskLevel=Math.floor(Math.random()*3)+1; //1..3
+  const riskLevel=Math.floor(Math.random()*3)+1; 
   const baseReward=riskLevel*80;
   const head=headlines[Math.floor(Math.random()*headlines.length)];
 
   const newTask={
-    id: Date.now()+Math.floor(Math.random()*1000),
+    id:Date.now()+Math.floor(Math.random()*1000),
     taskType:type,
-    headline: head,
-    description: descs[type],
-    steps: stepArr,
+    headline:head,
+    description:descs[type],
+    steps:stepArr,
     currentStep:0,
-    riskLevel: riskLevel,
-    baseReward: baseReward,
+    riskLevel,
+    baseReward,
     isHighPriority:(riskLevel===3),
-    decisionMadeForStep:{} 
+    decisionMadeForStep:{}
   };
   gameState.availableTasks.push(newTask);
   renderTasks();
@@ -287,22 +274,21 @@ function renderTasks(){
     return;
   }
   gameState.availableTasks.forEach(t=>{
-    const li=document.createElement('li');
+    const li=document.createElement("li");
 
     if(t.riskLevel===3){
-      li.style.borderColor="red";
+      li.style.borderColor="red"; 
       li.style.borderWidth="2px";
-    }else if(t.riskLevel===2){
+    } else if(t.riskLevel===2){
       li.style.borderColor="orange";
-    }else{
+    } else {
       li.style.borderColor="green";
     }
 
-    // (4) highlight gains/losses
-    let potentialGain="+"+(5+t.riskLevel*2)+" til "+t.taskType; 
-    let potentialLoss="(ved fail, men vi do auto success for simplicity)";
-
     let priorityLabel=t.isHighPriority?" (HØJPRIORITET)":"";
+    let potentialGain=`+${5+t.riskLevel*2} ${t.taskType}`;
+    let potentialLoss=`(ved fail - men auto success i denne demo)`;
+
     li.innerHTML=`
       <strong>${t.headline}${priorityLabel}</strong><br/>
       Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
@@ -312,12 +298,12 @@ function renderTasks(){
     const commitBtn=document.createElement('button');
     commitBtn.classList.add('commit-button');
     commitBtn.textContent="Forpligt";
-    commitBtn.addEventListener('click', (e)=>{
+    commitBtn.addEventListener("click", e=>{
       e.stopPropagation();
       assignTask(t.id);
     });
-    li.addEventListener('click',()=>{
-      li.querySelectorAll('.task-description').forEach(d=>{
+    li.addEventListener("click",()=>{
+      li.querySelectorAll(".task-description").forEach(d=>{
         d.style.display=(d.style.display==="none"?"block":"none");
       });
     });
@@ -333,6 +319,7 @@ function skipHighPriority(task){
   else gameState.stabNeglect++;
   checkNeglectPenalties();
 }
+
 function checkNeglectPenalties(){
   if(gameState.secNeglect>=3){
     showPopup("Ignorerede for mange Sikkerhedsopgaver! -5 Security","error");
@@ -361,13 +348,12 @@ function assignTask(taskId){
   const t=gameState.availableTasks[idx];
 
   if(t.riskLevel===3){
-    // confirm
     const pop=document.createElement('div');
     pop.classList.add('popup','info');
     pop.style.animation="none";
     pop.innerHTML=`
       <strong>Høj Risiko</strong><br/>
-      Denne opgave har stor gevinst men stor straf hvis fejler.<br/>
+      Stor gevinst men stor straf hvis du fejler.<br/>
       <button id="yes">Fortsæt</button>
       <button id="no">Fortryd</button>
     `;
@@ -383,7 +369,7 @@ function assignTask(taskId){
       skipHighPriority(t);
       renderTasks();
     });
-  }else{
+  } else {
     finalizeAssign(taskId,idx);
   }
 }
@@ -394,14 +380,13 @@ function finalizeAssign(taskId, idx){
   updateStepsList();
   renderTasks();
 }
-
 function updateStepsList(){
   stepsList.innerHTML="";
   if(!gameState.activeTask){
     stepsList.innerHTML="<li>Ingen aktiv opgave</li>";
     return;
   }
-  gameState.activeTask.steps.forEach((locName,i)=>{
+  gameState.activeTask.steps.forEach((locName, i)=>{
     let done=(i<gameState.activeTask.currentStep);
     const li=document.createElement('li');
     li.textContent=`Trin ${i+1}: [${locName}]`;
@@ -414,34 +399,33 @@ function updateStepsList(){
 }
 
 function completeTask(){
-  showPopup("Opgave fuldført! (Se opsummering nedenfor)","success",4000);
+  showPopup("Opgave fuldført! (Se detaljer)", "success",4000);
   gameState.tasksCompleted++;
 
-  // summary popup (#5)
-  const sumPop=document.createElement('div');
-  sumPop.classList.add('popup');
-  sumPop.style.animation="none";
+  const t=gameState.activeTask;
+  let plus=(5+t.riskLevel*2);
   let summary="";
-
-  let plus=(5+gameState.activeTask.riskLevel*2);
-  if(gameState.activeTask.taskType==="security"){
-    applyStatChange("security",+plus);
+  if(t.taskType==="security"){
+    applyStatChange("security",plus);
     summary=`+${plus} Sikkerhed`;
-  } else if(gameState.activeTask.taskType==="development"){
-    applyStatChange("development",+plus);
+  } else if(t.taskType==="development"){
+    applyStatChange("development",plus);
     summary=`+${plus} Udvikling`;
-  } else{
-    applyStatChange("stability",+plus);
+  } else {
+    applyStatChange("stability",plus);
     summary=`+${plus} Stabilitet`;
   }
 
-  gameState.totalRewards+=gameState.activeTask.baseReward;
-  summary+=`, +${gameState.activeTask.baseReward} point`;
-  
+  gameState.totalRewards+=t.baseReward;
+  summary+=`, +${t.baseReward} point`;
+
+  // show summary popup
+  const sumPop=document.createElement('div');
+  sumPop.classList.add('popup');
+  sumPop.style.animation="none";
   sumPop.textContent=`Opsummering: ${summary}`;
   document.getElementById('popup-container').appendChild(sumPop);
-
-  setTimeout(()=> sumPop.remove(),4000);
+  setTimeout(()=>sumPop.remove(),4000);
 
   gameState.activeTask=null;
   activeTaskHeadline.textContent="Ingen aktiv opgave";
@@ -451,7 +435,6 @@ function completeTask(){
   updateScoreboard();
 }
 
-// scoreboard
 function updateScoreboard(){
   scoreboard.tasksCompleted.textContent=gameState.tasksCompleted;
   scoreboard.totalRewards.textContent=gameState.totalRewards;
@@ -469,14 +452,12 @@ function showPopup(msg,type="success",duration=3000){
   else if(type==="info") el.classList.add('info');
   el.style.animation="none";
   el.textContent=msg;
-  document.getElementById('popup-container').appendChild(el);
-  setTimeout(()=> el.remove(), duration);
+  document.getElementById("popup-container").appendChild(el);
+  setTimeout(()=>el.remove(),duration);
 }
 
 function initGame(){
   updateScoreboard();
-
-  // generate some tasks
   for(let i=0;i<2;i++){
     generateTask();
   }
