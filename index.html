@@ -13,6 +13,7 @@
       <div id="scores">
         <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
         <span>Point: <span id="total-rewards">0</span></span>
+
         <div id="bars-container">
           <div class="bar-wrapper">
             <label>Sikkerhed</label>
@@ -27,15 +28,15 @@
             <div class="bar-bg"><div class="bar-fill" id="development-bar"></div></div>
           </div>
         </div>
-        <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100%</span></span>
+
+        <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100</span>%</span>
       </div>
     </div>
   </header>
 
-  <!-- 50-50 Layout: Game on left, Tasks on right -->
   <div id="main-container">
+    <!-- 50%: game area -->
     <div id="game-area">
-      <!-- Existing + new locations -->
       <div class="location" id="infrastruktur" style="top: 15%; left: 18%;">Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 15%; left: 57%;">Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 40%; left: 38%;">Hospital</div>
@@ -47,6 +48,7 @@
       <div id="player"></div>
     </div>
 
+    <!-- 50%: tasks side -->
     <div id="task-side">
       <div id="active-task">
         <h2 style="margin-bottom:2px;">Aktiv Opgave</h2>
@@ -90,9 +92,7 @@
     </div>
   </div>
 
-  <!-- Popup container (for messages/mini-decisions) -->
   <div id="popup-container"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
