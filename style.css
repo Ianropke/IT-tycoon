@@ -3,8 +3,6 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  /* We allow the entire page to scroll if needed, 
-     but we also manage an internal height for #main-container. */
   overflow: auto; 
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background-color: #2c3e50;
@@ -24,35 +22,29 @@ header h1 {
   font-size: 1.6rem;
 }
 
-#scoreboard {
-  margin: 0;
-}
-
+#scoreboard { margin: 0; }
 #scores {
   display: flex;
   gap: 16px;
   align-items: center;
 }
-
 #scores span {
   white-space: nowrap;
   font-size: 0.9rem;
 }
 
-/* Bars container */
+/* Bars container for security/stability/dev */
 #bars-container {
   display: flex;
   gap: 12px;
   align-items: center;
 }
-
 .bar-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   font-size: 0.85rem;
 }
-
 .bar-bg {
   width: 80px;
   height: 8px;
@@ -68,41 +60,34 @@ header h1 {
   transition: width 0.5s;
 }
 
-/* The main container that holds the game and tasks, 
-   with a controlled height so tasks can scroll inside their own area 
-   rather than pushing the entire page down. */
+/* Main container with game left, tasks right */
 #main-container {
   display: flex;
-  /* e.g. occupy 80% of the viewport height, 
-     so there's some space for the footer, etc. */
-  height: 80vh; 
+  height: 80vh; /* approximate height to keep it visible */
   margin: 10px 20px;
   gap: 20px;
   box-sizing: border-box;
 }
 
-/* The game area is one column */
 #game-area {
-  flex: 2; /* more space for the game map */
+  flex: 2;
   background-color: #34495e;
   border: 2px solid #ecf0f1;
   border-radius: 10px;
   position: relative;
-  min-height: 0; /* flex child fix */
+  min-height: 0;
 }
 
-/* The tasks side is another column */
+/* Task side with two boxes for active & available tasks */
 #task-side {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0; /* fix for flex overflow */
+  min-height: 0; 
 }
 
-/* Active Task and Available Tasks share space in #task-side */
-#active-task,
-#available-tasks {
+#active-task, #available-tasks {
   background-color: #34495e;
   border: 2px solid #ecf0f1;
   border-radius: 5px;
@@ -110,16 +95,16 @@ header h1 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* fix for scrolling inside if needed */
-  overflow: auto; /* scroll within the panel if content is large */
+  overflow: auto;
+  min-height: 0;
 }
 
 #active-task h2,
 #available-tasks h2 {
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
 }
 
-/* Location styling, plus player styling, same as before */
 .location {
   position: absolute;
   width: 150px;
@@ -150,7 +135,7 @@ header h1 {
   transition: top 0.2s, left 0.2s;
 }
 
-/* Steps list slightly bigger, background highlight */
+/* Steps list: slightly bigger text, minimal spacing */
 #steps-list li {
   margin-bottom: 6px;
   font-size: 0.95rem;
@@ -159,7 +144,6 @@ header h1 {
   border-radius: 4px;
 }
 
-/* Tasks list styling */
 #tasks-list {
   list-style-type: none;
   padding: 0;
@@ -195,7 +179,6 @@ header h1 {
   background-color: #1c5980;
 }
 
-/* Footer */
 footer {
   background-color: #34495e;
   text-align: center;
@@ -203,7 +186,7 @@ footer {
   margin-top: 10px;
 }
 
-/* Popups, modal, etc. same as usual */
+/* Popups, modal, etc. */
 #popup-container {
   position: fixed;
   top: 20px;
@@ -263,10 +246,11 @@ footer {
   cursor: pointer;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   #main-container {
     flex-direction: column;
-    height: auto; /* let it adapt for smaller screens */
+    height: auto; 
   }
   #game-area {
     min-height: 300px;
