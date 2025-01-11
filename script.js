@@ -1,8 +1,3 @@
-/************************************************
- * script.js (unchanged except for 33% chance 
- * for dev tasks, ensuring they appear)
- ************************************************/
-
 const player = {
   element: document.getElementById('player'),
   position: { top: 50, left: 50 },
@@ -25,7 +20,6 @@ let gameState = {
   shownFirstActivePopup: false,
 };
 
-// New + Old Locations
 const locations = {
   Infrastruktur: document.getElementById('infrastruktur'),
   Informationssikkerhed: document.getElementById('informationssikkerhed'),
@@ -71,7 +65,6 @@ const stepExplanations = {
   'IT Jura': "Du tjekker kontrakter og juridiske krav for it-projekter.",
 };
 
-// Step Pools
 const stepsPool = {
   stability: [
     ["Hospital", "Infrastruktur", "Hospital"],
@@ -156,7 +149,6 @@ function handleLocationVisit(locName){
   setTimeout(()=>{player.isVisiting=null;},1000);
 }
 
-// Movement
 function handleMovement(e){
   if(gameState.introModalOpen)return;
   switch(e.key.toLowerCase()){
@@ -181,13 +173,13 @@ function handleMovement(e){
   player.element.style.left=player.position.left+"%";
 }
 
-// Generate & Render
+// Tasks
 function generateTask(){
   if(gameState.availableTasks.length>=10)return;
   const r=Math.random();
   let type='stability';
-  if(r<0.33)type='stability';
-  else if(r<0.66)type='development';
+  if(r<0.33) type='stability'; 
+  else if(r<0.66) type='development';
   else type='security';
 
   const stepOptions=stepsPool[type];
@@ -360,7 +352,6 @@ function applyEffects(task){
     gameState.hospitalSatisfaction=Math.min(gameState.hospitalSatisfaction+3,100);
   }
 }
-
 function updateScoreboard(){
   scoreboard.tasksCompleted.textContent=gameState.tasksCompleted;
   scoreboard.totalRewards.textContent=gameState.totalRewards;
@@ -372,7 +363,7 @@ function updateBars(){
   const stab=Math.max(0,Math.min(gameState.stability,150));
   const dev=Math.max(0,Math.min(gameState.development,150));
   const maxW=80;
-  securityBar.style.width=(sec /150)*maxW+"px";
+  securityBar.style.width=(sec/150)*maxW+"px";
   stabilityBar.style.width=(stab/150)*maxW+"px";
   developmentBar.style.width=(dev/150)*maxW+"px";
 }
@@ -395,7 +386,6 @@ function initGame(){
   renderTasks();
   setupListeners();
 
-  // tasks every 10s
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
