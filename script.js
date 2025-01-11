@@ -1,8 +1,8 @@
 /************************************************************
  * script.js
- * IT Tycoon: LIMS Forvaltning – Udvidet version med detaljerede scenarier
- * og logik, så en opgave kræver minimum 3 og maximum 7 lokationsbesøg,
- * der matcher opgavetypen.
+ * IT Tycoon: LIMS Forvaltning – Fuldt integreret version med:
+ * - Detaljerede scenarier (10 scenarier pr. lokation, undtagen Dokumentation)
+ * - Opgaver, der kræver 3 til 7 lokationsbesøg, ud fra opgavetypen.
  ************************************************************/
 
 /* Elementreferencer fra index.html */
@@ -62,7 +62,7 @@ document.getElementById('intro-ok-btn').addEventListener('click', () => {
   gameState.introModalOpen = false;
 });
 
-/* Globale opgave- og spiltilstandsvariabler */
+/* Globale spiltilstandsvariabler */
 let gameState = {
   time: 100,
   money: 1000,
@@ -78,7 +78,7 @@ let gameState = {
   docSkipCount: 0,
   riskyTotal: 0,
   finalFailChance: 0,
-  usedTasks: new Set() // For at undgå dubletter
+  usedTasks: new Set()
 };
 
 /* Opgavenavne for hver kategori */
@@ -119,15 +119,14 @@ const secTasks = [
   "Fysisk Security-Audit i PatologiAfdeling"
 ];
 
-/* Tilladte lokationer for hver opgavetype. 
-   Bemærk: Id'erne skal matche de faktiske id'er i index.html (alt i små bogstaver og fx "it-jura") */
+/* Tilladte lokationer for hver opgavetype – brug id'erne fra index.html (i små bogstaver) */
 const allowedLocationsForTask = {
   security: ["cybersikkerhed", "informationssikkerhed", "it-jura"],
   development: ["hospital", "leverandor", "medicinsk-udstyr", "it-jura"],
   stability: ["hospital", "infrastruktur", "leverandor", "dokumentation"]
 };
 
-/* Funktion til opgavebeskrivelse */
+/* Funktion der returnerer en kort opgavebeskrivelse */
 function getTaskDescription(category) {
   if (category === "stability") {
     return "(Stabilitetsopgave) For at sikre pålidelig drift i LIMS.";
@@ -144,262 +143,252 @@ function getTaskDescription(category) {
 const detailedScenarios = {
   "hospital": [
     {
-      description: "Personalet oplever, at det nuværende LIMS-modul til patologi er langsomt og ineffektivt.",
-      A: {
-        label: "Konservativ Udvidelse",
-        text: "Invester 2 tid og 50 kr for at opdatere brugerfladen – +1 stabilitet og +1 hospitalstilfredshed.",
-        time: 2,
-        money: 50,
-        effects: { stability: 1, hospitalSatisfaction: 1 },
-        failBonus: 0
-      },
-      B: {
-        label: "Stor Modernisering",
-        text: "Brug 5 tid og 150 kr for en komplet opgradering – +3 hospitalstilfredshed og +2 udvikling, 5 % fejlrisiko.",
-        time: 5,
-        money: 150,
-        effects: { hospitalSatisfaction: 3, development: 2 },
-        failBonus: 0.05
-      }
-    },
-    // Scenarie 2 til 10 for hospital (eksempeldata, tilpas efter dine tabeller)
-    {
-      description: "Immunologiske analyser er forældede og ineffektive.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 hospitalstilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 hospitalstilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      description: "Personalet oplever, at LIMS-modulet til patologi er langsomt.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 hospitalstilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 hospitalstilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
-      description: "Biokemi-afdelingen får ikke de nødvendige data.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      description: "Immunologiske analyser er forældede.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 hospitalstilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 hospitalstilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
-      description: "Brugerfladen er forældet og forringer arbejdsgangen.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      description: "Biokemi-afdelingen mangler vigtige data.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
-      description: "Behov for et ekstra modul til realtidsrapportering.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      description: "Brugerfladen er forældet.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
-      description: "Efterspørgsel efter flere værktøjer til dataanalyse.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      description: "Behov for et ekstra modul til rapportering.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
-      description: "Manuelle indtastninger forstyrrer den daglige drift.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      description: "Efterspørgsel efter flere analyseværktøjer.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
-      description: "Forældede processer forårsager forstyrrelser.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      description: "Manuelle indtastninger skaber fejl.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+    },
+    {
+      description: "Forældede processer forstyrrer driften.",
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
       description: "Behov for et feedbacksystem til brugertilfredshed.",
-      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet og +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
-      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed og +2 udvikling, 5 % fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
+      A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
+      B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     }
   ],
   "it-jura": [
     {
       description: "Leverandørkontrakter med ScanCare er komplekse og usikre.",
-      A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed og +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
-      description: "Uklarheder om betalingsbetingelser i kontrakten med Genomio Labs.",
+      description: "Uklarheder om betalingsbetingelser med Genomio Labs.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Kontrakter dækker ikke alle EU-krav.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Tidligere konflikter med kunder.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Manglende klare ansvarsfordelinger i kontrakten.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
-      description: "Manglende klare exit-strategier i kontrakten.",
+      description: "Manglende klare exit-strategier.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "For mange tekniske uoverensstemmelser.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Leverandøren kræver fuld forudbetaling uden garantier.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
-      description: "Usikkerhed omkring supportvilkår i kontrakten.",
+      description: "Usikkerhed omkring supportvilkår.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Kontrakten mangler incitamenter for kvalitet.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10 % fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     }
   ],
   "leverandor": [
     {
-      description: "Systemløsningen fra Teknova Solutions opfylder kravene i patologi?",
+      description: "Systemløsningen fra Teknova Solutions vurderes.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
       description: "Løsningen skal understøtte et nyt bioinformatikmodul.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
-      description: "Systemets skalerbarhed kritiseres af tidligere kunder.",
+      description: "Skalerbarheden kritiseres af tidligere kunder.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
       description: "Krav fra klinisk genetik skal opfyldes.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
       description: "Integration af systemets moduler skal sikres.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
-      description: "Fejl i rapportering af kritiske data.",
+      description: "Fejl i rapporteringen af kritiske data.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
       description: "Leverandørens evne til at levere en fuld løsning er usikker.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
-      description: "Utilstrækkelig support i kontrakter.",
+      description: "Utilstrækkelig support i eksisterende kontrakter.",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     },
     {
       description: "Tilpasning af løsningen til et specialområde (fx klinisk genetik).",
       A: { label: "Omfattende Kvalitetssikring", text: "6 tid, 200 kr; +2 stabilitet og +1 sikkerhed.", time: 6, money: 200, effects: { stability: 2, security: 1 }, failBonus: 0 },
-      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10 % fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
+      B: { label: "Hurtig Leverance", text: "2 tid, 50 kr; +1 stabilitet, men med 10% fejlrisiko.", time: 2, money: 50, effects: { stability: 1 }, failBonus: 0.10 }
     }
   ],
   "infrastruktur": [
     {
       description: "Serverparken er aldrende og forårsager nedbrud.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
       description: "Driftsafbrydelser i biokemi-afdelingen.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
-      description: "Netværkslatens påvirker hastigheden på LIMS-applikationer.",
+      description: "Netværkslatens påvirker hastigheden på applikationer.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
-      description: "Datacenteret i patologi er ofte overbelastet.",
+      description: "Datacenteret er ofte overbelastet.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
-      description: "Ældre hardware forårsager hyppige nedbrud.",
+      description: "Ældre hardware forårsager nedbrud.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
-      description: "Driftsikkerheden i serverparken for klinisk genetik er ustabil.",
+      description: "Driftsikkerheden for klinisk genetik er ustabil.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
       description: "Netværkets skalerbarhed er utilstrækkelig.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
-      description: "Mangelfuld redundans fører til tab af data.",
+      description: "Mangelfuld redundans fører til datatab.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     },
     {
-      description: "Overgangen til en hybrid cloud-løsning kræver opgradering af det fysiske setup.",
+      description: "Overgang til hybrid cloud kræver fysisk opgradering.",
       A: { label: "Stor Modernisering", text: "5 tid, 200 kr; +2 stabilitet og +2 udvikling.", time: 5, money: 200, effects: { stability: 2, development: 2 }, failBonus: 0 },
-      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5 % fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
+      B: { label: "Minimal Patch", text: "1 tid, 50 kr; +1 stabilitet, men med 5% fejlrisiko.", time: 1, money: 50, effects: { stability: 1 }, failBonus: 0.05 }
     }
   ],
   "informationssikkerhed": [
     {
       description: "Systemet udviser alvorlige sikkerhedshuller ved dataoverførsler.",
-      A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed og +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
       description: "Patientdata sendes ukrypteret.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
       description: "Uautoriserede adgangsforsøg forekommer sporadisk.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
       description: "Forældede firewall-regler nedgraderer sikkerheden.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
       description: "Logdata afslører uregelmæssigheder.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
-      description: "GDPR-krav kræver en opgradering af datasikkerheden.",
+      description: "GDPR-krav kræver datasikkerhedsopgradering.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
       description: "Mistænkelig netværkstrafik observeres.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
-      description: "Hackerangreb rammer LIMS gentagne gange.",
+      description: "Hackerangreb rammer gentagne gange.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
       description: "Dataoverførsler sker med en usikker protokol.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
       description: "Centraliseret loghåndtering mangler.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10 % fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
+    },
+    {
+      description: "IT-afdelingen skal forberede sig på nye cybertrusler.",
+      A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 80 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 80, effects: { security: 2, stability: 1 }, failBonus: 0 },
+      B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 30 kr; +1 sikkerhed, men med 10% fejlrisiko.", time: 2, money: 30, effects: { security: 1 }, failBonus: 0.10 }
     }
   ],
   "dokumentation": [
@@ -411,8 +400,18 @@ const detailedScenarios = {
 };
 
 /* --------------------------------------------- */
-/* Funktioner                                    */
+/* Hjælpefunktioner                              */
 /* --------------------------------------------- */
+function updateScoreboard() {
+  timeLeftEl.textContent   = gameState.time;
+  moneyLeftEl.textContent  = gameState.money;
+  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
+  scoreboard.totalRewards.textContent   = gameState.totalRewards;
+  scoreboard.hospitalSatisfaction.textContent = gameState.hospitalSatisfaction;
+  securityValueEl.textContent   = gameState.security;
+  stabilityValueEl.textContent  = gameState.stability;
+  developmentValueEl.textContent = gameState.development;
+}
 
 function updateStepsList() {
   stepsList.innerHTML = "";
@@ -440,7 +439,7 @@ function handleLocationClick(locName) {
   if (idx >= gameState.activeTask.steps.length) return;
 
   const needed = gameState.activeTask.steps[idx];
-  // Brug lowercase til at sikre match (eftersom id'er er småbogstaver)
+  // Sammenlign i lowercase for konsistens
   if (locName.toLowerCase() !== needed.toLowerCase()) {
     if (needed.toLowerCase() === "dokumentation") {
       skipDocumentation();
@@ -454,7 +453,6 @@ function handleLocationClick(locName) {
   if (gameState.activeTask.decisionMadeForStep[idx]) return;
   gameState.activeTask.decisionMadeForStep[idx] = true;
 
-  // Vis scenariet for den trykkede lokation
   showScenarioModal(locName);
 }
 
@@ -467,7 +465,6 @@ function showScenarioModal(locName) {
   scenarioModal.style.display = "flex";
   const scenarios = detailedScenarios[locName.toLowerCase()];
   if (!scenarios || scenarios.length === 0) {
-    // fallback-scenarie
     scenarioTitle.textContent = locName;
     scenarioDescription.textContent = "(Standard scenarie)";
     scenarioALabel.textContent = "Mulighed A (standard)";
@@ -488,11 +485,9 @@ function showScenarioModal(locName) {
     };
     return;
   }
-  // Vælg et tilfældigt scenarie for lokationen
   const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
   scenarioTitle.textContent = `${locName} – ${sc.description}`;
   scenarioDescription.textContent = "";
-  // Mulighed A
   scenarioALabel.textContent = sc.A.label;
   scenarioAText.textContent = sc.A.text;
   scenarioAButton.onclick = () => {
@@ -505,7 +500,6 @@ function showScenarioModal(locName) {
     scenarioModal.style.display = "none";
     finalizeStep();
   };
-  // Mulighed B
   scenarioBLabel.textContent = sc.B.label;
   scenarioBText.textContent = sc.B.text;
   scenarioBButton.onclick = () => {
@@ -644,25 +638,23 @@ function showFloatingText(txt, stat) {
   setTimeout(() => div.remove(), 2000);
 }
 
-/* ------------------------------------------------- */
-/* Opgavegenerering: Opgaver har en bestemt type og kræver et antal besøg (3–7) */
-/* ------------------------------------------------- */
+/* --------------------------------------------- */
+/* Opgavegenerering: Opgaver skal have en bestemt type og kræve 3-7 lokationsbesøg */
+/* --------------------------------------------- */
 function generateTask() {
   if (gameState.time <= 0) return;
   if (gameState.availableTasks.length >= 10) return;
-
+  
   const categories = ["stability", "development", "security"];
   const category = categories[Math.floor(Math.random() * categories.length)];
-
-  // Få de tilladte lokationer for den valgte opgavetype (alle i små bogstaver)
+  
+  // Få de tilladte lokationer for denne opgavetype
   const allowed = allowedLocationsForTask[category];
-
-  // Vælg antal lokationer (besøg) – mest sandsynligt 5-6 besøg
+  
+  // Vælg antal besøg – med vægt på 5-6
   const choices = [3, 4, 5, 6, 7];
   const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
-  let r = Math.random();
-  let numSteps = 3;
-  let total = 0;
+  let r = Math.random(), total = 0, numSteps = 3;
   for (let i = 0; i < choices.length; i++) {
     total += weights[i];
     if (r < total) {
@@ -670,8 +662,8 @@ function generateTask() {
       break;
     }
   }
-
-  // Vælg "steps" (lokationer) fra de tilladte lokationer – uden gentagelse hvis muligt
+  
+  // Vælg de nødvendige lokationer fra allowed – uden gentagelser hvis muligt
   let steps = [];
   if (allowed.length >= numSteps) {
     let copy = allowed.slice();
@@ -684,8 +676,8 @@ function generateTask() {
       steps.push(allowed[Math.floor(Math.random() * allowed.length)]);
     }
   }
-
-  // Vælg et opgavenavn baseret på kategori
+  
+  // Vælg et opgavenavn ud fra typen
   let taskName = "";
   if (category === "stability") {
     taskName = pickUniqueName(stabilityTasks);
@@ -695,16 +687,16 @@ function generateTask() {
     taskName = pickUniqueName(secTasks);
   }
   if (!taskName) return;
-
+  
   const riskLevel = Math.floor(Math.random() * 3) + 1;
   const baseReward = riskLevel * 80;
-
+  
   const newTask = {
     id: Date.now() + Math.floor(Math.random() * 1000),
     taskType: category,
     headline: taskName,
     description: getTaskDescription(category),
-    steps: steps, // Lokationerne, som skal besøges (brug de små bogstaver, fx "cybersikkerhed")
+    steps: steps, // De lokationer, som spilleren skal besøge
     currentStep: 0,
     riskLevel: riskLevel,
     baseReward: baseReward,
@@ -830,9 +822,9 @@ function endGame() {
   endGameSummary.innerHTML = sumText;
 }
 
-/* ------------------------------------------------- */
-/* Initiering af spillet */
-/* ------------------------------------------------- */
+/* --------------------------------------------- */
+/* Initiering af spillet                         */
+/* --------------------------------------------- */
 function initGame() {
   updateScoreboard();
   // Generer initialt 2 opgaver
