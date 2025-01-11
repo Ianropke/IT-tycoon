@@ -48,14 +48,14 @@ header h1 {
   min-height: 0;
 }
 
-/* Triple icon size */
+/* Lokationsikoner */
 .loc-icon {
   font-size: 2rem; 
   margin-right: 6px;
   display: inline-block; vertical-align: middle;
 }
 
-/* Different color classes for locations */
+/* Forskellige farver for lokationer */
 .location {
   position: absolute; 
   width: 170px; height: 65px;
@@ -167,7 +167,7 @@ footer {
 }
 #scenario-a-btn:hover, #scenario-b-btn:hover { background-color: #1c5980; }
 
-/* End Modal and CAB Modals */
+/* End Modal og CAB Modals */
 #end-modal { display: flex; }
 #end-modal-content {
   width: 60%; max-width: 600px;
