@@ -33,7 +33,7 @@
   </header>
 
   <div id="main-container">
-    <!-- (1) Game area narrower -->
+    <!-- (1) 10% narrower => #game-area flex changed from 1 -> 0.9 -->
     <div id="game-area">
       <div class="location" id="infrastruktur" style="top: 15%; left: 18%;">Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 15%; left: 57%;">Informationssikkerhed</div>
@@ -45,24 +45,22 @@
       <div id="player"></div>
     </div>
 
-    <!-- (2) Task side bigger -->
     <div id="task-side">
-      <!-- 50% less spacing in Active Task area -->
+      <!-- (2) Less spacing in Aktiv Opgave, plus (3) half spacing under titles -->
       <div id="active-task">
         <h2 style="margin-bottom:2px;">Aktiv Opgave</h2>
-        <h3 id="active-task-headline" style="margin-bottom:1px;">Ingen aktiv opgave</h3>
+        <h3 id="active-task-headline" style="margin-bottom:1.5px;">Ingen aktiv opgave</h3>
         <p id="active-task-details" style="margin-bottom:1px; font-size:0.85rem;"></p>
         <p id="active-task-description" style="margin-bottom:2px; font-size:0.85rem;"></p>
         <div id="task-steps">
-          <h4 style="margin-bottom:2px;">Trin at gennemføre:</h4>
+          <h4 style="margin-bottom:2.5px;">Trin at gennemføre:</h4>
           <ul id="steps-list">
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
       </div>
-
       <div id="available-tasks">
-        <h2 style="margin-bottom:2px;">Mulige Opgaver</h2>
+        <h2 style="margin-bottom:4px;">Mulige Opgaver</h2>
         <ul id="tasks-list">
           <li>Ingen opgaver tilgængelige</li>
         </ul>
@@ -74,19 +72,22 @@
     <p>&copy; 2025 IT Tycoon A/S</p>
   </footer>
 
-  <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
       <h2>Velkommen til IT Tycoon</h2>
-      <p>Du er <strong>Forvalter</strong> for Hospitalet. Dit job er at sikre balance mellem sikkerhed, stabilitet og udvikling.</p>
-      <p>Flyt den blå cirkel med piletaster eller WASD, og vælg opgaver i “Mulige Opgaver”. Gennemfør meningsfulde trin for at løse opgaven.</p>
+      <p>
+        Du er <strong>Forvalter</strong> for Hospitalet. Dit job er at sikre balance
+        mellem sikkerhed, stabilitet og udvikling.
+      </p>
+      <p>
+        Flyt den blå cirkel med piletaster eller WASD, og vælg opgaver i “Mulige Opgaver”.
+        Gennemfør meningsfulde trin for at løse opgaven.
+      </p>
       <button id="intro-ok-btn">OK</button>
     </div>
   </div>
 
-  <!-- Popup container -->
   <div id="popup-container"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
