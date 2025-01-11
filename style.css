@@ -221,6 +221,7 @@ footer {
   cursor: pointer;
 }
 
+/* end-of-time modal */
 #end-modal {
   display: flex; 
   background-color: rgba(0,0,0,0.6);
