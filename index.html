@@ -34,7 +34,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Icons triple size, each location a different toned-down color. -->
+      <!-- Icons triple size, each location with toned-down color. -->
       <div 
         class="location infrastruktur" 
         id="infrastruktur" 
@@ -127,20 +127,22 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
-        Du er forvalter af LIMS (Laboratory Information Management System) 
-        på et stort hospital. Du har 100 tidsenheder og 1000 kr 
-        til at forbedre systemerne, sikre sikkerhed, udvide funktionalitet 
-        og gøre hospitalet tilfreds.
+        Du er overordnet ansvarlig for at håndtere en række LIMS-systemer 
+        for specialer som biokemi, patologi, immunologi, mikrobiologi, 
+        klinisk genetik og genomisk medicin.
       </p>
       <p>
-        Hvert valg koster tid og måske penge – eller øger risikoen for fejl.
-        Undlader du Dokumentation, øger du chancen for afvisning ved CAB.
+        Din opgave er at forbedre, vedligeholde og sikre systemerne. 
+        Du har 100 tidsenheder og 1000 kr. under budget, men alt overskud 
+        eller sparet tid kommer hospitalet til gode. Hvert valg koster tid 
+        eller penge (eller øger risici), og husk at hvis du springer 
+        “Dokumentation” over, vil CAB være skeptiske!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Scenario modal for each location (2) -->
+  <!-- Scenario modal: consistent pop-up -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content" id="scenario-modal-content">
       <h2 id="scenario-title"></h2>
@@ -163,7 +165,6 @@
     </div>
   </div>
 
-  <!-- Popup container -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
