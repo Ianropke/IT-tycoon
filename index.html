@@ -25,7 +25,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationer – hvert element har et id, som bruges i scriptet -->
+      <!-- Lokationer med id'er der skal matche brugen i script.js -->
       <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡 Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
@@ -61,20 +61,20 @@
     <p>&copy; 2025 IT Tycoon ApS</p>
   </footer>
 
-  <!-- Popups, modals mv. -->
+  <!-- Modals -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
   
-  <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
-      <p style="color:#f1c40f;">Du er forvalter af LIMS på et stort hospital. Forbedr systemerne og undgå fejl – tiden og pengene er knappe ressourcer.</p>
+      <p style="color:#f1c40f;">
+        Du er forvalter af LIMS på et stort hospital. Forbedr systemerne og undgå fejl – tiden og pengene er knappe ressourcer.
+      </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Scenario Modal -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="scenario-title"></h2>
@@ -94,7 +94,6 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Tiden er gået!</h2>
@@ -103,7 +102,6 @@
     </div>
   </div>
 
-  <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>CAB Gennemgang</h2>
@@ -112,7 +110,129 @@
     </div>
   </div>
 
-  <!-- CAB Result Modal -->
+  <div id="cab-result-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="cab-result-title"></h2>
+      <p id="cab-result-text"></p>
+      <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Tycoon: LIMS Forvaltning</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>IT Tycoon: LIMS Forvaltning</h1>
+    <div id="scoreboard">
+      <div id="scores">
+        <span>Tid tilbage: <span id="time-left">100</span></span>
+        <span>Penge: <span id="money-left">1000</span></span>
+        <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
+        <span>Samlet belønning: <span id="total-rewards">0</span></span>
+        <span>Sikkerhed: <span id="security-value">100</span></span>
+        <span>Stabilitet: <span id="stability-value">100</span></span>
+        <span>Udvikling: <span id="development-value">100</span></span>
+        <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100</span>%</span>
+      </div>
+    </div>
+  </header>
+
+  <div id="main-container">
+    <div id="game-area">
+      <!-- Lokationer med id'er der skal matche brugen i script.js -->
+      <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
+      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡 Informationssikkerhed</div>
+      <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
+      <div class="location" id="leverandor" style="top: 30%; left: 55%;">📦 Leverandør</div>
+      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">🩺 Medicinsk Udstyr</div>
+      <div class="location" id="it-jura" style="top: 50%; left: 40%;">⚖️ IT Jura</div>
+      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">💻 Cybersikkerhed</div>
+      <div class="location" id="dokumentation" style="top: 70%; left: 30%;">📄 Dokumentation</div>
+    </div>
+
+    <div id="task-side">
+      <div id="active-task">
+        <h2>Aktiv Opgave</h2>
+        <h3 id="active-task-headline">Ingen aktiv opgave</h3>
+        <p id="active-task-description"></p>
+        <div id="task-steps">
+          <h4>Trin:</h4>
+          <ul id="steps-list">
+            <li>Ingen aktiv opgave</li>
+          </ul>
+        </div>
+      </div>
+      <div id="available-tasks">
+        <h2>Mulige Opgaver</h2>
+        <ul id="tasks-list">
+          <li>Ingen opgaver tilgængelige</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 IT Tycoon ApS</p>
+  </footer>
+
+  <!-- Modals -->
+  <div id="popup-container"></div>
+  <div id="floating-text-container"></div>
+  
+  <div id="intro-modal" class="modal">
+    <div class="modal-content">
+      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
+      <p style="color:#f1c40f;">
+        Du er forvalter af LIMS på et stort hospital. Forbedr systemerne og undgå fejl – tiden og pengene er knappe ressourcer.
+      </p>
+      <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
+    </div>
+  </div>
+
+  <div id="scenario-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="scenario-title"></h2>
+      <p id="scenario-description"></p>
+      <div id="scenario-optionA">
+        <strong>A: </strong><span id="scenario-a-label"></span><br/>
+        <em id="scenario-a-text"></em>
+      </div>
+      <div id="scenario-optionB" style="margin-top:8px;">
+        <strong>B: </strong><span id="scenario-b-label"></span><br/>
+        <em id="scenario-b-text"></em>
+      </div>
+      <div style="margin-top:12px;">
+        <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
+        <button id="scenario-b-btn">Vælg B</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="end-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Tiden er gået!</h2>
+      <p id="end-game-summary"></p>
+      <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
+    </div>
+  </div>
+
+  <div id="cab-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>CAB Gennemgang</h2>
+      <p id="cab-summary"></p>
+      <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
+    </div>
+  </div>
+
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
