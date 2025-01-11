@@ -11,6 +11,7 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
+        <!-- Time & money, plus stats -->
         <span>Tid tilbage: <span id="time-left">100</span></span>
         <span>Penge: <span id="money-left">1000</span></span>
 
@@ -34,19 +35,19 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Spread out locations -->
-      <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">Infrastruktur</div>
-      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">Infosec</div>
+      <!-- We add simple icons/emoji next to the location name. -->
+      <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
+      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡️ Infosec</div>
 
-      <div class="location" id="hospital" style="top: 30%; left: 25%;">Hospital</div>
-      <div class="location" id="leverandor" style="top: 30%; left: 55%;">Leverandør</div>
+      <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
+      <div class="location" id="leverandor" style="top: 30%; left: 55%;">📦 Leverandør</div>
 
-      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">MediTek</div>
-      <div class="location" id="it-jura" style="top: 50%; left: 40%;">IT Jura</div>
-      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">CyberScan</div>
+      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">🩺 MediTek</div>
+      <div class="location" id="it-jura" style="top: 50%; left: 40%;">⚖️ IT Jura</div>
+      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">💻 CyberScan</div>
 
       <!-- Dokumentation step (second to last) -->
-      <div class="location" id="dokumentation" style="top: 70%; left: 30%;">Dokumentation</div>
+      <div class="location" id="dokumentation" style="top: 70%; left: 30%;">📄 Dokumentation</div>
     </div>
 
     <div id="task-side">
@@ -109,7 +110,7 @@
   <!-- CAB final approval modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-modal-content">
-      <h2>Endelig CAB-godkendelse</h2>
+      <h2>Endelig CAB-gennemgang</h2>
       <p id="cab-summary"></p>
       <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
     </div>
