@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon</title>
+  <title>IT Tycoon: LIMS Forvaltning</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,6 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Time & money, plus stats -->
         <span>Tid tilbage: <span id="time-left">100</span></span>
         <span>Penge: <span id="money-left">1000</span></span>
 
@@ -35,19 +34,66 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- We add simple icons/emoji next to the location name. -->
-      <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
-      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡️ Infosec</div>
+      <!-- Icons triple size, each location a different toned-down color. -->
+      <div 
+        class="location infrastruktur" 
+        id="infrastruktur" 
+        style="top: 10%; left: 10%;"
+      >
+        <span class="loc-icon">🔧</span> Infrastruktur
+      </div>
+      <div 
+        class="location informationssikkerhed" 
+        id="informationssikkerhed" 
+        style="top: 10%; left: 70%;"
+      >
+        <span class="loc-icon">🛡️</span> Informationssikkerhed
+      </div>
 
-      <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
-      <div class="location" id="leverandor" style="top: 30%; left: 55%;">📦 Leverandør</div>
+      <div 
+        class="location hospital"
+        id="hospital" 
+        style="top: 30%; left: 25%;"
+      >
+        <span class="loc-icon">🏥</span> Hospital
+      </div>
+      <div 
+        class="location leverandor"
+        id="leverandor" 
+        style="top: 30%; left: 55%;"
+      >
+        <span class="loc-icon">📦</span> Leverandør
+      </div>
 
-      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">🩺 MediTek</div>
-      <div class="location" id="it-jura" style="top: 50%; left: 40%;">⚖️ IT Jura</div>
-      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">💻 CyberScan</div>
+      <div 
+        class="location medicinsk-udstyr"
+        id="medicinsk-udstyr" 
+        style="top: 50%; left: 10%;"
+      >
+        <span class="loc-icon">🩺</span> Medicinsk Udstyr
+      </div>
+      <div 
+        class="location it-jura"
+        id="it-jura" 
+        style="top: 50%; left: 40%;"
+      >
+        <span class="loc-icon">⚖️</span> IT Jura
+      </div>
+      <div 
+        class="location cybersikkerhed"
+        id="cybersikkerhed" 
+        style="top: 50%; left: 70%;"
+      >
+        <span class="loc-icon">💻</span> Cybersikkerhed
+      </div>
 
-      <!-- Dokumentation step (second to last) -->
-      <div class="location" id="dokumentation" style="top: 70%; left: 30%;">📄 Dokumentation</div>
+      <div 
+        class="location dokumentation"
+        id="dokumentation" 
+        style="top: 70%; left: 30%;"
+      >
+        <span class="loc-icon">📄</span> Dokumentation
+      </div>
     </div>
 
     <div id="task-side">
@@ -82,7 +128,7 @@
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
         Du er forvalter af LIMS (Laboratory Information Management System) 
-        på et stort hospital. Du har 100 tidsenheder og 1000 kroner 
+        på et stort hospital. Du har 100 tidsenheder og 1000 kr 
         til at forbedre systemerne, sikre sikkerhed, udvide funktionalitet 
         og gøre hospitalet tilfreds.
       </p>
@@ -91,6 +137,29 @@
         Undlader du Dokumentation, øger du chancen for afvisning ved CAB.
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
+    </div>
+  </div>
+
+  <!-- Scenario modal for each location (2) -->
+  <div id="scenario-modal" class="modal" style="display:none;">
+    <div class="modal-content" id="scenario-modal-content">
+      <h2 id="scenario-title"></h2>
+      <p id="scenario-description"></p>
+
+      <div id="scenario-optionA">
+        <strong>A: </strong><span id="scenario-a-label"></span><br/>
+        <em id="scenario-a-text"></em>
+      </div>
+
+      <div id="scenario-optionB" style="margin-top:8px;">
+        <strong>B: </strong><span id="scenario-b-label"></span><br/>
+        <em id="scenario-b-text"></em>
+      </div>
+
+      <div style="margin-top:12px;">
+        <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
+        <button id="scenario-b-btn">Vælg B</button>
+      </div>
     </div>
   </div>
 
