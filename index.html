@@ -11,15 +11,15 @@
     <h1>IT Tycoon</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- (3) Just show numeric values for Security/Stability/Development -->
+        <!-- Numeric stats for Security/Stability/Development -->
         <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
         <span>Point: <span id="total-rewards">0</span></span>
 
-        <span>Sikkerhed: <span id="security-value">100</span></span>
-        <span>Stabilitet: <span id="stability-value">100</span></span>
-        <span>Udvikling: <span id="development-value">100</span></span>
+        <span style="color:#ff4444;">Sikkerhed:</span> <span id="security-value">100</span>
+        <span style="color:#44ff44;">Stabilitet:</span> <span id="stability-value">100</span>
+        <span style="color:#4444ff;">Udvikling:</span> <span id="development-value">100</span>
 
-        <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100</span>%</span>
+        <span style="color:#ffc107;">Hospitalstilfredshed:</span> <span id="hospital-satisfaction">100</span>%
       </div>
     </div>
   </header>
@@ -27,7 +27,7 @@
   <!-- 50-50 Layout -->
   <div id="main-container">
     <div id="game-area">
-      <!-- (2) Spread out so they don’t overlap -->
+      <!-- Spread out so they don’t overlap -->
       <div class="location" id="infrastruktur" style="top: 15%; left: 10%;">Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 15%; left: 70%;">Informationssikkerhed</div>
 
@@ -68,17 +68,31 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2>Velkommen til IT Tycoon</h2>
-      <p>Du er <strong>Forvalter</strong> for Hospitalet. Dit job er at sikre balance mellem sikkerhed, stabilitet og udvikling.</p>
-      <p>
-        Klik på lokationerne for at udføre trin. Vælg opgaver i “Mulige Opgaver” 
-        og hold øje med gevinster og tab.
+      <!-- (2) More interesting, colorful, longer text -->
+      <h2 style="color:#1abc9c;">Velkommen til <em>IT Tycoon</em></h2>
+      <p style="color:#f1c40f;">
+        Du er <strong>Forvalter</strong> for Hospitalet! Din mission er at finde den perfekte
+        balance mellem <span style="color:#ff4444;">Sikkerhed</span>, <span style="color:#44ff44;">Stabilitet</span> og 
+        <span style="color:#4444ff;">Udvikling</span>. 
       </p>
-      <button id="intro-ok-btn">OK</button>
+      <p>
+        Som Forvalter skal du overveje <strong>risiko</strong> og <strong>belønning</strong> for hver opgave. 
+        Højrisiko-opgaver kan give store gevinster, men også fatale tab hvis de fejler. 
+      </p>
+      <p>
+        Hospitalet forventer hurtige løsninger, men <em>IT Jura</em>, <em>Leverandør</em>, 
+        <em>Infrastruktur</em> og flere steder <span style="color:#c0392b;">kræver</span> 
+        din opmærksomhed. Klik på lokationerne for at udføre trin og vælg opgaver med 
+        <strong>omhu</strong> i “Mulige Opgaver.” 
+      </p>
+      <p style="color:#8e44ad;">
+        Vil du fokusere på sikkerhed? Eller udvikle nye features, 
+        men risikere stabilitetsproblemer? Dine valg afgør hospitalets fremtid!
+      </p>
+      <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Container for popups and floating text -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
