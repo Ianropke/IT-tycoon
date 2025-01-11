@@ -1,9 +1,8 @@
-/************************************************************
+/*******************************************************
  * script.js
- * 1) #active-task spacing halved again -> 2px
- * 2) Introduce time mechanism: Start with 100 time points.
- *    Each step consumes e.g. 5 time. When time <= 0 => end game
- ************************************************************/
+ * Ensures 'stepsPool' is declared only once
+ * You can move on from intro after fix
+ *******************************************************/
 
 const securityValueEl    = document.getElementById('security-value');
 const stabilityValueEl   = document.getElementById('stability-value');
@@ -21,19 +20,18 @@ const stepsList          = document.getElementById('steps-list');
 const activeTaskHeadline = document.getElementById('active-task-headline');
 const activeTaskDesc     = document.getElementById('active-task-description');
 
-// Add end-of-time modal references
+// end-of-time modal references
 const endModal           = document.getElementById('end-modal');
 const endGameSummary     = document.getElementById('end-game-summary');
 const endOkBtn           = document.getElementById('end-ok-btn');
-
 endOkBtn.addEventListener('click',()=>{
   endModal.style.display="none";
-  // Optionally reload or do something else
+  // optionally refresh or do something else
   // location.reload();
 });
 
 let gameState={
-  time:100, // (2) new time mechanism
+  time:100, // time-based mechanism
   security:100,
   stability:100,
   development:100,
@@ -51,21 +49,19 @@ let gameState={
   stabNeglect:0,
 };
 
-// Intro
 document.getElementById('intro-ok-btn').addEventListener('click',()=>{
   document.getElementById('intro-modal').style.display='none';
   gameState.introModalOpen=false;
 });
 
-// No WASD => location click
 const locations={
-  Infrastruktur:document.getElementById('infrastruktur'),
+  Infrastruktur:        document.getElementById('infrastruktur'),
   Informationssikkerhed:document.getElementById('informationssikkerhed'),
-  Hospital:document.getElementById('hospital'),
-  Leverandør:document.getElementById('leverandor'),
-  'Medicinsk Udstyr':document.getElementById('medicinsk-udstyr'),
-  'IT Jura':document.getElementById('it-jura'),
-  Cybersikkerhed:document.getElementById('cybersikkerhed'),
+  Hospital:            document.getElementById('hospital'),
+  Leverandør:          document.getElementById('leverandor'),
+  'Medicinsk Udstyr':  document.getElementById('medicinsk-udstyr'),
+  'IT Jura':           document.getElementById('it-jura'),
+  Cybersikkerhed:      document.getElementById('cybersikkerhed'),
 };
 
 Object.entries(locations).forEach(([locName,el])=>{
@@ -74,7 +70,7 @@ Object.entries(locations).forEach(([locName,el])=>{
   });
 });
 
-// location scenarios with negative consequences
+// location scenarios (only once!)
 const locationScenarios={
   "Hospital":{
     question:"Hospitalet: Tag en sikker men tidskrævende løsning eller en hurtig men usikker?",
@@ -132,7 +128,7 @@ const locationScenarios={
   },
   "Informationssikkerhed":{
     question:"Ekstra logs vs baseline",
-    safeTxt:"+2 Sikkerhed, -2 Stabilitet (besværligt)",
+    safeTxt:"+2 Sikkerhed, -2 Stabilitet",
     riskTxt:"+2 Udvikling, -2 Sikkerhed",
     safeFn:()=>{
       applyStatChange("security",+2);
@@ -158,7 +154,7 @@ const locationScenarios={
     }
   },
   "Cybersikkerhed":{
-    question:"Dyb scanning vs. overfladisk check",
+    question:"Dyb scanning vs overfladisk check",
     safeTxt:"+2 Sikkerhed, -2 Udvikling",
     riskTxt:"+2 Udvikling, -2 Sikkerhed",
     safeFn:()=>{
@@ -172,7 +168,7 @@ const locationScenarios={
   }
 };
 
-// step pools
+// stepsPool - declared only once
 const stepsPool={
   stability:[
     ["Hospital","Infrastruktur"],
@@ -195,53 +191,50 @@ const descs={
   security:"(Sikkerhedsopgave) Beskyt systemet, men skaber bureaukrati"
 };
 
-// handle location click
 function handleLocationClick(locName){
-  if(!gameState.activeTask) return;
-  if(gameState.time<=0) return; // out of time => no effect
+  if(!gameState.activeTask)return;
+  if(gameState.time<=0)return;
 
   const i=gameState.activeTask.currentStep;
-  if(i>=gameState.activeTask.steps.length) return;
+  if(i>=gameState.activeTask.steps.length)return;
   const needed=gameState.activeTask.steps[i];
   if(locName!==needed)return;
 
-  if(!gameState.activeTask.decisionMadeForStep){
-    gameState.activeTask.decisionMadeForStep={};
-  }
+  if(!gameState.activeTask.decisionMadeForStep) gameState.activeTask.decisionMadeForStep={};
   if(gameState.activeTask.decisionMadeForStep[i])return;
   gameState.activeTask.decisionMadeForStep[i]=true;
 
   showScenarioPopup(locName);
 }
 
-// show scenario
 function showScenarioPopup(locName){
-  const scenario=locationScenarios[locName];
-  if(!scenario){
+  const sc=locationScenarios[locName];
+  if(!sc){
     fallbackPopup(locName);
     return;
   }
   const pop=document.createElement('div');
   pop.classList.add('popup','info');
   pop.style.animation="none";
+
   pop.innerHTML=`
     <strong>${locName}</strong><br/>
-    ${scenario.question}<br/><br/>
-    (A) ${scenario.safeTxt}<br/>
-    (B) ${scenario.riskTxt}
+    ${sc.question}<br/><br/>
+    (A) ${sc.safeTxt}<br/>
+    (B) ${sc.riskTxt}
     <br/><br/>
-    <button id="aBtn">A</button>
-    <button id="bBtn">B</button>
+    <button id="btnA">A</button>
+    <button id="btnB">B</button>
   `;
   document.getElementById('popup-container').appendChild(pop);
 
-  document.getElementById('aBtn').addEventListener('click',()=>{
-    scenario.safeFn();
+  document.getElementById('btnA').addEventListener('click',()=>{
+    sc.safeFn();
     pop.remove();
     finalizeStep();
   });
-  document.getElementById('bBtn').addEventListener('click',()=>{
-    scenario.riskFn();
+  document.getElementById('btnB').addEventListener('click',()=>{
+    sc.riskFn();
     pop.remove();
     finalizeStep();
   });
@@ -278,11 +271,10 @@ function fallbackPopup(locName){
 
 function finalizeStep(){
   if(!gameState.activeTask)return;
-  // (2) each step costs 5 time
+
+  // each step costs e.g. 5 time
   gameState.time=Math.max(gameState.time-5,0);
   timeLeftEl.textContent=gameState.time;
-  
-  // if time <=0 => end game now
   if(gameState.time<=0){
     endGame();
     return;
@@ -291,21 +283,18 @@ function finalizeStep(){
   gameState.activeTask.currentStep++;
   if(gameState.activeTask.currentStep>=gameState.activeTask.steps.length){
     completeTask();
-  } else {
+  }else{
     updateStepsList();
   }
 }
 
-// end of game => show final modal
 function endGame(){
   showPopup("Tiden er gået!", "info",3000);
-  // remove active task
   gameState.activeTask=null;
   activeTaskHeadline.textContent="Ingen aktiv opgave";
   activeTaskDesc.textContent="";
   stepsList.innerHTML="<li>Ingen aktiv opgave</li>";
 
-  // show end modal
   document.getElementById('end-modal').style.display="flex";
   const sumText=`
     <strong>Slutresultat:</strong><br/>
@@ -319,25 +308,24 @@ function endGame(){
   document.getElementById('end-game-summary').innerHTML=sumText;
 }
 
-// apply stat changes
 function applyStatChange(stat,delta){
   gameState[stat]=Math.min(Math.max(gameState[stat]+delta,0),150);
   updateScoreboard();
   showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat,stat);
 }
 
-// floating text
 function showFloatingText(txt,stat){
   const container=document.getElementById('floating-text-container');
   const div=document.createElement('div');
   div.classList.add("floating-text");
   div.style.left="50%";
   div.style.top="50%";
-  if(stat==="security") div.style.color="#ff4444";
-  else if(stat==="stability") div.style.color="#44ff44";
+
+  if(stat==="security")          div.style.color="#ff4444";
+  else if(stat==="stability")   div.style.color="#44ff44";
   else if(stat==="development") div.style.color="#4444ff";
   else if(stat==="hospitalSatisfaction") div.style.color="#ffc107";
-  else div.style.color="#ffffff";
+  else                          div.style.color="#ffffff";
 
   div.textContent=txt;
   container.appendChild(div);
@@ -345,49 +333,28 @@ function showFloatingText(txt,stat){
 }
 
 // tasks logic
-const stepsPool={
-  stability:[
-    ["Hospital","Infrastruktur"],
-    ["Hospital","Leverandør","Infrastruktur"]
-  ],
-  development:[
-    ["Hospital","Leverandør","IT Jura"],
-    ["Hospital","Informationssikkerhed"]
-  ],
-  security:[
-    ["Cybersikkerhed","IT Jura"],
-    ["Informationssikkerhed","Cybersikkerhed","Hospital"]
-  ]
-};
-const headlines=["Netværkstjek","Systemoptimering","Sikkerhedspatch","Brugerstyring","Migrering"];
-const descs={
-  stability:"(Stabilitetsopgave) Mindre nedetid.",
-  development:"(Udviklingsopgave) Nye features, men koster ressourcer",
-  security:"(Sikkerhedsopgave) Beskyt systemet, men skaber bureaukrati"
-};
-
 function generateTask(){
-  if(gameState.time<=0) return; // no more tasks if time up
+  if(gameState.time<=0) return; 
   if(gameState.availableTasks.length>=10)return;
 
   const r=Math.random();
   let type='stability';
-  if(r<0.33) type='stability';
+  if(r<0.33)      type='stability';
   else if(r<0.66) type='development';
-  else type='security';
+  else            type='security';
 
   const stepArr=stepsPool[type][Math.floor(Math.random()*stepsPool[type].length)];
-  const riskLevel=Math.floor(Math.random()*3)+1; 
+  const riskLevel=Math.floor(Math.random()*3)+1;
   const baseReward=riskLevel*80;
   const head=headlines[Math.floor(Math.random()*headlines.length)];
 
   const newTask={
     id: Date.now()+Math.floor(Math.random()*1000),
-    taskType:type,
-    headline:head,
+    taskType: type,
+    headline: head,
     description: descs[type],
     steps: stepArr,
-    currentStep:0,
+    currentStep: 0,
     riskLevel,
     baseReward,
     isHighPriority:(riskLevel===3),
@@ -407,7 +374,7 @@ function renderTasks(){
     const li=document.createElement("li");
 
     if(t.riskLevel===3){
-      li.style.borderColor="red"; 
+      li.style.borderColor="red";
       li.style.borderWidth="2px";
     } else if(t.riskLevel===2){
       li.style.borderColor="orange";
@@ -444,9 +411,9 @@ function renderTasks(){
 
 function skipHighPriority(task){
   if(!task.isHighPriority)return;
-  if(task.taskType==="security") gameState.secNeglect++;
+  if(task.taskType==="security")       gameState.secNeglect++;
   else if(task.taskType==="development") gameState.devNeglect++;
-  else gameState.stabNeglect++;
+  else                                 gameState.stabNeglect++;
   checkNeglectPenalties();
 }
 function checkNeglectPenalties(){
@@ -506,7 +473,6 @@ function assignTask(taskId){
     finalizeAssign(taskId, idx);
   }
 }
-
 function finalizeAssign(taskId, idx){
   gameState.activeTask=gameState.availableTasks.splice(idx,1)[0];
   activeTaskHeadline.textContent=gameState.activeTask.headline;
@@ -554,7 +520,6 @@ function completeTask(){
   gameState.totalRewards+=t.baseReward;
   summary+=`, +${t.baseReward} belønning`;
 
-  // summary popup
   const sumPop=document.createElement('div');
   sumPop.classList.add('popup');
   sumPop.style.animation="none";
@@ -574,8 +539,8 @@ function updateScoreboard(){
   scoreboard.tasksCompleted.textContent=gameState.tasksCompleted;
   scoreboard.totalRewards.textContent=gameState.totalRewards;
   scoreboard.hospitalSatisfaction.textContent=gameState.hospitalSatisfaction;
-  timeLeftEl.textContent=gameState.time;
 
+  timeLeftEl.textContent=gameState.time;
   securityValueEl.textContent=gameState.security;
   stabilityValueEl.textContent=gameState.stability;
   developmentValueEl.textContent=gameState.development;
@@ -589,7 +554,7 @@ function showPopup(msg,type="success",duration=3000){
   el.style.animation="none";
   el.textContent=msg;
   document.getElementById("popup-container").appendChild(el);
-  setTimeout(()=> el.remove(), duration);
+  setTimeout(()=>el.remove(),duration);
 }
 
 function initGame(){
