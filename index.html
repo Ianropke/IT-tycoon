@@ -11,7 +11,9 @@
     <h1>IT Tycoon</h1>
     <div id="scoreboard">
       <div id="scores">
+        <!-- Time & money, plus stats -->
         <span>Tid tilbage: <span id="time-left">100</span></span>
+        <span>Penge: <span id="money-left">1000</span></span>
 
         <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
         <span>Samlet belønning: <span id="total-rewards">0</span></span>
@@ -33,7 +35,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Spread out so no overlap -->
+      <!-- Spread out locations -->
       <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">Informationssikkerhed</div>
 
@@ -44,15 +46,13 @@
       <div class="location" id="it-jura" style="top: 50%; left: 40%;">IT Jura</div>
       <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">Cybersikkerhed</div>
 
-      <!-- (1) New final step location: CAB -->
-      <div class="location" id="cab" style="top: 70%; left: 25%;">CAB</div>
-
-      <!-- (2) New optional second-to-last step: Documentation -->
-      <div class="location" id="dokumentation" style="top: 70%; left: 55%;">Dokumentation</div>
+      <!-- physically we still have Dokumentation, but final is CAB pop-up -->
+      <div class="location" id="dokumentation" style="top: 70%; left: 30%;">Dokumentation</div>
+      <!-- can skip doc or do it, then final CAB is a pop-up after doc is done -->
     </div>
 
     <div id="task-side">
-      <!-- (1) Halved spacing from previous 4px -> 2px again -->
+      <!-- Halved spacing to 2px -->
       <div id="active-task" style="padding-bottom: 2px;">
         <h2>Aktiv Opgave</h2>
         <h3 id="active-task-headline">Ingen aktiv opgave</h3>
@@ -83,17 +83,18 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon</h2>
       <p style="color:#f1c40f;">
-        Du er <strong>Forvalter</strong> for Hospitalet!
-        Du har 100 tidsenheder til at klare så meget som muligt.
+        Du er <strong>Forvalter</strong> for Hospitalet! 
+        Du har 100 tidsenheder og 1000 penge.
       </p>
       <p>
-        Hvis du vælger at springe Dokumentation over,
-        stiger risikoen for fejl i dine opgaver.
-        Afslut altid i CAB for at få endelig godkendelse!
+        Hver lokation har to valg: en mere omfattende løsning, der koster 
+        mere tid og penge, eller en hurtigere/billigere tilgang, men højere 
+        sandsynlighed for fejl. Dokumentation er valgfrit - springer du over 
+        stiger fejlchancen ved CAB.
       </p>
       <p style="color:#8e44ad;">
-        Held og lykke med at balancere Sikkerhed, Stabilitet
-        og Udvikling, mens du holder Hospitalet tilfreds!
+        CAB er nu et pop-up til sidst, hvor dit projekt kan blive godkendt 
+        eller afvist baseret på dine valg!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -108,6 +109,15 @@
       <h2>Tiden er gået!</h2>
       <p id="end-game-summary"></p>
       <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
+    </div>
+  </div>
+
+  <!-- CAB final approval modal -->
+  <div id="cab-modal" class="modal" style="display:none;">
+    <div class="modal-content" id="cab-modal-content">
+      <h2>Endelig CAB-godkendelse</h2>
+      <p id="cab-summary"></p>
+      <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
     </div>
   </div>
 
