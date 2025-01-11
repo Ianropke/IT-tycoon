@@ -32,31 +32,29 @@
     </div>
   </header>
 
-  <!-- main-container with narrower game-area and more space for tasks -->
   <div id="main-container">
+    <!-- (1) Game area narrower -->
     <div id="game-area">
-      <!-- Existing Locations -->
       <div class="location" id="infrastruktur" style="top: 15%; left: 18%;">Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 15%; left: 57%;">Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 40%; left: 38%;">Hospital</div>
       <div class="location" id="medicinsk-udstyr" style="top: 65%; left: 18%;">Medicinsk Udstyr</div>
       <div class="location" id="cybersikkerhed" style="top: 65%; left: 57%;">Cybersikkerhed</div>
-
-      <!-- Newer Locations -->
       <div class="location" id="leverandor" style="top: 40%; left: 57%;">Leverandør</div>
       <div class="location" id="it-jura" style="top: 65%; left: 38%;">IT Jura</div>
-
       <div id="player"></div>
     </div>
 
+    <!-- (2) Task side bigger -->
     <div id="task-side">
+      <!-- 50% less spacing in Active Task area -->
       <div id="active-task">
-        <h2 style="margin-bottom:4px;">Aktiv Opgave</h2>
-        <h3 id="active-task-headline" style="margin-bottom:3px;">Ingen aktiv opgave</h3>
-        <p id="active-task-details" style="margin-bottom:2px; font-size:0.85rem;"></p>
-        <p id="active-task-description" style="margin-bottom:4px; font-size:0.85rem;"></p>
+        <h2 style="margin-bottom:2px;">Aktiv Opgave</h2>
+        <h3 id="active-task-headline" style="margin-bottom:1px;">Ingen aktiv opgave</h3>
+        <p id="active-task-details" style="margin-bottom:1px; font-size:0.85rem;"></p>
+        <p id="active-task-description" style="margin-bottom:2px; font-size:0.85rem;"></p>
         <div id="task-steps">
-          <h4 style="margin-bottom:3px;">Trin at gennemføre:</h4>
+          <h4 style="margin-bottom:2px;">Trin at gennemføre:</h4>
           <ul id="steps-list">
             <li>Ingen aktiv opgave</li>
           </ul>
@@ -64,7 +62,7 @@
       </div>
 
       <div id="available-tasks">
-        <h2 style="margin-bottom:4px;">Mulige Opgaver</h2>
+        <h2 style="margin-bottom:2px;">Mulige Opgaver</h2>
         <ul id="tasks-list">
           <li>Ingen opgaver tilgængelige</li>
         </ul>
