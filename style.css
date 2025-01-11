@@ -80,7 +80,7 @@ header h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer; /* for point & click */
+  cursor: pointer;
   transition: background-color 0.3s;
 }
 .location:hover {
@@ -164,7 +164,13 @@ footer {
   background-color: #8e44ad;
 }
 
-/* floating text for step-by-step impact (#6) */
+@keyframes fadeOut {
+  0% { opacity: 0.9; transform: translateY(0);}
+  80% { opacity: 0.9; transform: translateY(-20px);}
+  100%{ opacity: 0; transform: translateY(-20px);}
+}
+
+/* floating text for step-by-step impact */
 #floating-text-container {
   position: fixed;
   top: 0; left: 0;
@@ -177,12 +183,6 @@ footer {
   font-size: 1rem;
   animation: floatUp 2s forwards;
   text-shadow: 0 0 2px #000;
-}
-
-@keyframes fadeOut {
-  0% { opacity: 0.9; transform: translateY(0);}
-  80% { opacity: 0.9; transform: translateY(-20px);}
-  100%{ opacity: 0; transform: translateY(-20px);}
 }
 
 @keyframes floatUp {
