@@ -47,6 +47,7 @@ header h1 {
   display: flex; flex-direction: column; overflow: auto;
   min-height: 0;
 }
+
 .location {
   position: absolute; width: 150px; height: 60px;
   background-color: #7f8c8d; border: 2px solid #bdc3c7;
@@ -97,7 +98,6 @@ footer {
   margin-top: 6px;
 }
 
-/* popup container */
 #popup-container {
   position: fixed; top: 20px; right: 20px;
   z-index: 100;
@@ -167,7 +167,6 @@ footer {
   padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
 }
 
-/* CAB final approval modal */
 #cab-modal {
   display: flex; background-color: rgba(0,0,0,0.6);
 }
@@ -182,7 +181,6 @@ footer {
   padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
 }
 
-/* CAB result modal (approved or failed) */
 #cab-result-modal {
   display: flex; background-color: rgba(0,0,0,0.6);
 }
