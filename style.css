@@ -1,125 +1,110 @@
 html, body {
-  margin: 0; padding: 0;
-  width: 100%; height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
   overflow: auto;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background-color: #2c3e50;
   color: #ecf0f1;
 }
 
+/* Header og Scoreboard - større font og ekstra plads */
 header {
   background-color: #34495e;
-  padding: 8px 20px;
-  display: flex; flex-wrap: wrap;
-  justify-content: center; align-items: center;
-  margin-bottom: 2px;
+  padding: 16px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 4px;
 }
 header h1 {
-  margin: 0 20px 0 0; 
-  font-size: 1.6rem;
+  margin: 0 20px 0 0;
+  font-size: 2rem;
 }
-#scoreboard { margin: 0; }
+#scoreboard {
+  margin: 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  font-size: 1.3rem;
+}
 #scores {
-  display: flex; gap: 16px; align-items: center;
+  display: flex;
+  gap: 16px;
+  align-items: center;
 }
 #scores span {
-  white-space: nowrap; font-size: 0.9rem;
+  white-space: nowrap;
+  font-size: 1.1rem;
 }
 
+/* Placering af game area og task side */
 #main-container {
-  display: flex; height: 80vh;
-  margin: 8px 20px; gap: 16px;
+  display: flex;
+  height: calc(100vh - 120px);
+  margin: 8px 20px;
+  gap: 16px;
   box-sizing: border-box;
 }
 #game-area {
-  flex: 1; background-color: #34495e;
-  border: 2px solid #ecf0f1; border-radius: 10px;
-  position: relative; min-height: 0;
+  flex: 1;
+  position: relative;
+  background-color: #34495e;
+  border: 2px solid #ecf0f1;
+  border-radius: 10px;
+  min-height: 0;
 }
 #task-side {
-  flex: 1; display: flex; flex-direction: column;
-  gap: 10px; min-height: 0;
-}
-
-#active-task, #available-tasks {
-  background-color: #34495e; border: 2px solid #ecf0f1;
-  border-radius: 5px; padding: 8px; flex: 1;
-  display: flex; flex-direction: column; overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   min-height: 0;
 }
 
-/* Lokationsikoner */
-.loc-icon {
-  font-size: 2rem; 
-  margin-right: 6px;
-  display: inline-block; vertical-align: middle;
-}
-
-/* Forskellige farver for lokationer */
+/* Lokationer */
 .location {
-  position: absolute; 
-  width: 170px; height: 65px;
+  position: absolute;
+  width: 170px;
+  height: 65px;
   border: 2px solid #bdc3c7;
-  border-radius: 5px; text-align: center;
-  font-size: 0.9rem; display: flex;
-  align-items: center; justify-content: center;
-  cursor: pointer; transition: background-color 0.3s;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
   color: #ecf0f1;
 }
-.location.infrastruktur { background-color: #5D6D7E; }
-.location.informationssikkerhed { background-color: #7D3C98; }
-.location.hospital { background-color: #2874A6; }
-.location.leverandor { background-color: #6E2C00; }
-.location.medicinsk-udstyr { background-color: #2E4053; }
-.location.it-jura { background-color: #424949; }
-.location.cybersikkerhed { background-color: #4C4C9D; }
-.location.dokumentation { background-color: #7B7D7D; }
-
-.location:hover { filter: brightness(1.15); }
-.location.visited { background-color: #27ae60 !important; }
-
-#steps-list li {
-  margin-bottom: 4px; font-size: 0.9rem;
-  background: rgba(255,255,255,0.1); padding: 3px;
-  border-radius: 4px;
+.location:hover {
+  filter: brightness(1.15);
 }
 
-#tasks-list {
-  list-style-type: none; padding: 0; margin: 0;
+/* Stil for opgave-lister */
+#steps-list, #tasks-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
-#tasks-list li {
-  background-color: #2c3e50;
-  margin: 4px 0; padding: 8px;
-  border-radius: 3px; transition: background-color 0.3s, border 0.3s;
-  display: flex; flex-direction: column; font-size: 0.85rem;
-}
-#tasks-list li:hover { background-color: #1abc9c; cursor: pointer; }
-
-.commit-button {
-  margin-top: 4px; padding: 4px 8px;
-  background-color: #2980b9; color: #fff;
-  border: none; border-radius: 3px;
-  font-size: 0.75rem; align-self: flex-start;
-  transition: background-color 0.3s;
-}
-.commit-button:hover { background-color: #1c5980; }
-
-footer {
-  background-color: #34495e;
-  text-align: center; padding: 6px 20px;
-  margin-top: 6px;
+#steps-list li, #tasks-list li {
+  margin-bottom: 4px;
+  font-size: 1rem;
 }
 
-/* Popups */
-#popup-container {
-  position: fixed; top: 20px; right: 20px;
-  z-index: 100;
-}
+/* Popups og modals (kan tilpasses yderligere) */
 .popup {
-  background-color: #27ae60; color: #fff;
-  padding: 6px 10px; margin-bottom: 10px;
-  border-radius: 5px; font-size: 0.85rem;
-  max-width: 320px; animation: fadeOut 4s forwards;
+  background-color: #27ae60;
+  color: #fff;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  max-width: 320px;
+  animation: fadeOut 4s forwards;
 }
 .popup.error { background-color: #e74c3c; }
 .popup.info { background-color: #8e44ad; }
@@ -131,13 +116,19 @@ footer {
 }
 
 #floating-text-container {
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%; pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   z-index: 999;
 }
 .floating-text {
-  position: absolute; font-size: 1rem;
-  animation: floatUp 2s forwards; text-shadow: 0 0 2px #000;
+  position: absolute;
+  font-size: 1.5rem;
+  animation: floatUp 2s forwards;
+  text-shadow: 0 0 2px #000;
 }
 @keyframes floatUp {
   0% { opacity: 1; transform: translateY(0); }
@@ -145,57 +136,35 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
+/* Generelle modal-indstillinger */
 .modal {
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
-  display: flex; justify-content: center; align-items: center;
-  background-color: rgba(0,0,0,0.6); z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 999;
 }
 .modal-content {
-  width: 60%; max-width: 800px;
-  background-color: #2c3e50; border: 3px solid #bdc3c7;
-  border-radius: 8px; padding: 16px; text-align: left;
+  width: 60%;
+  max-width: 800px;
+  background-color: #2c3e50;
+  border: 3px solid #bdc3c7;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: left;
 }
 
-/* Scenario Modal */
-#scenario-modal-content { color: #fff; }
-#scenario-a-btn, #scenario-b-btn {
-  background-color: #2980b9; color: #fff;
-  border: none; border-radius: 3px;
-  padding: 6px 12px; margin-top: 4px;
-  cursor: pointer; font-size: 0.85rem;
-}
-#scenario-a-btn:hover, #scenario-b-btn:hover { background-color: #1c5980; }
-
-/* End Modal og CAB Modals */
-#end-modal { display: flex; }
-#end-modal-content {
-  width: 60%; max-width: 600px;
-  background-color: #2c3e50; border: 3px solid #bdc3c7;
-  border-radius: 8px; padding: 16px; text-align: left;
-}
-#end-ok-btn {
-  background-color: #e74c3c; color: #fff;
-  border: none; border-radius: 5px;
-  padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
-}
-
-#cab-modal, #cab-result-modal {
-  display: flex; background-color: rgba(0,0,0,0.6);
-}
-#cab-modal-content, #cab-result-content {
-  width: 60%; max-width: 600px;
-  background-color: #2c3e50; border: 3px solid #bdc3c7;
-  border-radius: 8px; padding: 16px; text-align: left;
-}
-#cab-ok-btn, #cab-result-ok-btn {
-  background-color: #2ecc71; color: #fff;
-  border: none; border-radius: 5px;
-  padding: 6px 12px; font-size: 0.85rem; cursor: pointer;
-}
-
+/* Responsivitet */
 @media (max-width: 768px) {
-  #main-container { flex-direction: column; height: auto; }
+  #main-container {
+    flex-direction: column;
+    height: auto;
+  }
   #game-area { min-height: 300px; }
 }
 @media (max-width: 480px) {
