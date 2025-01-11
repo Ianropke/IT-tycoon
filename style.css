@@ -1,8 +1,6 @@
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
   overflow: auto;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background-color: #2c3e50;
@@ -12,25 +10,21 @@ html, body {
 header {
   background-color: #34495e;
   padding: 8px 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: center;
   margin-bottom: 2px;
 }
 header h1 {
   margin: 0 20px 0 0; 
   font-size: 1.6rem;
 }
+
 #scoreboard { margin: 0; }
 #scores {
-  display: flex;
-  gap: 16px;
-  align-items: center;
+  display: flex; gap: 16px; align-items: center;
 }
 #scores span {
-  white-space: nowrap;
-  font-size: 0.9rem;
+  white-space: nowrap; font-size: 0.9rem;
 }
 
 #main-container {
@@ -40,6 +34,7 @@ header h1 {
   gap: 16px;
   box-sizing: border-box;
 }
+
 #game-area {
   flex: 1;
   background-color: #34495e;
@@ -48,12 +43,11 @@ header h1 {
   position: relative;
   min-height: 0;
 }
+
 #task-side {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 0;
+  display: flex; flex-direction: column;
+  gap: 10px; min-height: 0;
 }
 
 #active-task, #available-tasks {
@@ -62,26 +56,21 @@ header h1 {
   border-radius: 5px;
   padding: 8px;
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   overflow: auto;
   min-height: 0;
 }
 
+/* The new locations */
 .location {
   position: absolute;
-  width: 150px;
-  height: 60px;
+  width: 150px; height: 60px;
   background-color: #7f8c8d;
   border: 2px solid #bdc3c7;
   border-radius: 5px;
-  text-align: center;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  text-align: center; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background-color 0.3s;
 }
 .location:hover {
   background-color: #95a5a6;
@@ -91,42 +80,30 @@ header h1 {
 }
 
 #steps-list li {
-  margin-bottom: 4px;
-  font-size: 0.9rem;
+  margin-bottom: 4px; font-size: 0.9rem;
   background: rgba(255,255,255,0.1);
-  padding: 3px;
-  border-radius: 4px;
+  padding: 3px; border-radius: 4px;
 }
 
 #tasks-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+  list-style-type: none; padding: 0; margin: 0;
 }
 #tasks-list li {
   background-color: #2c3e50;
-  margin: 4px 0;
-  padding: 8px;
-  border-radius: 3px;
-  transition: background-color 0.3s, border 0.3s;
-  display: flex;
-  flex-direction: column;
+  margin: 4px 0; padding: 8px;
+  border-radius: 3px; transition: background-color 0.3s, border 0.3s;
+  display: flex; flex-direction: column;
   font-size: 0.85rem;
 }
 #tasks-list li:hover {
-  background-color: #1abc9c;
-  cursor: pointer;
+  background-color: #1abc9c; cursor: pointer;
 }
 
 .commit-button {
-  margin-top: 4px;
-  padding: 4px 8px;
-  background-color: #2980b9;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  font-size: 0.75rem;
-  align-self: flex-start;
+  margin-top: 4px; padding: 4px 8px;
+  background-color: #2980b9; color: #fff;
+  border: none; border-radius: 3px;
+  font-size: 0.75rem; align-self: flex-start;
   transition: background-color 0.3s;
 }
 .commit-button:hover {
@@ -136,26 +113,18 @@ header h1 {
 footer {
   background-color: #34495e;
   text-align: center;
-  padding: 6px 20px;
-  margin-top: 6px;
+  padding: 6px 20px; margin-top: 6px;
 }
 
-/* popup container */
 #popup-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  position: fixed; top: 20px; right: 20px;
   z-index: 100;
 }
 .popup {
-  background-color: #27ae60;
-  color: #fff;
-  padding: 6px 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  font-size: 0.85rem;
-  max-width: 320px;
-  animation: fadeOut 4s forwards; 
+  background-color: #27ae60; color: #fff;
+  padding: 6px 10px; margin-bottom: 10px;
+  border-radius: 5px; font-size: 0.85rem;
+  max-width: 320px; animation: fadeOut 4s forwards;
 }
 .popup.error {
   background-color: #e74c3c;
@@ -166,96 +135,70 @@ footer {
 
 @keyframes fadeOut {
   0% { opacity: 0.9; transform: translateY(0);}
-  80% { opacity: 0.9; transform: translateY(-20px);}
+  80%{ opacity: 0.9; transform: translateY(-20px);}
   100%{ opacity: 0; transform: translateY(-20px);}
 }
 
-/* floating text for step-by-step impact */
+/* floating text */
 #floating-text-container {
-  position: fixed;
-  top: 0; left: 0;
+  position: fixed; top: 0; left: 0;
   width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 999;
+  pointer-events: none; z-index: 999;
 }
 .floating-text {
-  position: absolute;
-  font-size: 1rem;
+  position: absolute; font-size: 1rem;
   animation: floatUp 2s forwards;
   text-shadow: 0 0 2px #000;
 }
 
 @keyframes floatUp {
   0% { opacity:1; transform: translateY(0);}
-  80% { opacity:0.9; transform: translateY(-40px);}
+  80%{ opacity:0.9; transform: translateY(-40px);}
   100%{ opacity:0; transform: translateY(-60px);}
 }
 
 .modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; 
-  height: 100%;
-  display: flex; 
-  justify-content: center; 
-  align-items: center;
-  background-color: rgba(0,0,0,0.6);
-  z-index: 999;
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; justify-content: center; align-items: center;
+  background-color: rgba(0,0,0,0.6); z-index: 999;
 }
 .modal-content {
-  width: 60%;
-  max-width: 800px;
+  width: 60%; max-width: 800px;
   background-color: #2c3e50;
   border: 3px solid #bdc3c7;
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 8px; padding: 16px;
   text-align: left;
 }
 #intro-ok-btn {
-  background-color: #27ae60;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
+  background-color: #27ae60; color: #fff;
+  border: none; border-radius: 5px;
+  padding: 6px 12px; font-size: 0.85rem;
   cursor: pointer;
 }
-
-/* end-of-time modal */
-#end-modal {
-  display: flex; 
-  background-color: rgba(0,0,0,0.6);
-}
+#end-modal { display: flex; background-color: rgba(0,0,0,0.6); }
 #end-modal-content {
-  width: 60%;
-  max-width: 600px;
+  width: 60%; max-width: 600px;
   background-color: #2c3e50;
   border: 3px solid #bdc3c7;
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 8px; padding: 16px;
   text-align: left;
 }
 #end-ok-btn {
-  background-color: #e74c3c;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
+  background-color: #e74c3c; color: #fff;
+  border: none; border-radius: 5px;
+  padding: 6px 12px; font-size: 0.85rem;
   cursor: pointer;
 }
 
 @media (max-width: 768px) {
   #main-container {
-    flex-direction: column;
-    height: auto;
+    flex-direction: column; height: auto;
   }
   #game-area {
     min-height: 300px;
   }
 }
 @media (max-width: 480px) {
-  header h1 {
-    font-size: 1.3rem;
-  }
+  header h1 { font-size: 1.3rem; }
 }
