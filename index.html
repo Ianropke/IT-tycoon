@@ -13,19 +13,14 @@
       <div id="scores">
         <span>Tid tilbage: <span id="time-left">100</span></span>
         <span>Penge: <span id="money-left">1000</span></span>
-
         <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
         <span>Samlet belønning: <span id="total-rewards">0</span></span>
-
         <span style="color:#ff4444;">Sikkerhed:</span> 
         <span id="security-value">100</span>
-
         <span style="color:#44ff44;">Stabilitet:</span> 
         <span id="stability-value">100</span>
-
         <span style="color:#4444ff;">Udvikling:</span> 
         <span id="development-value">100</span>
-
         <span style="color:#ffc107;">Hospitalstilfredshed:</span> 
         <span id="hospital-satisfaction">100</span>%
       </div>
@@ -34,64 +29,29 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Icons triple størrelse, hver lokation med en unik farve -->
-      <div 
-        class="location infrastruktur" 
-        id="infrastruktur" 
-        style="top: 10%; left: 10%;"
-      >
+      <!-- Lokationer -->
+      <div class="location infrastruktur" id="infrastruktur" style="top: 10%; left: 10%;">
         <span class="loc-icon">🔧</span> Infrastruktur
       </div>
-      <div 
-        class="location informationssikkerhed" 
-        id="informationssikkerhed" 
-        style="top: 10%; left: 70%;"
-      >
+      <div class="location informationssikkerhed" id="informationssikkerhed" style="top: 10%; left: 70%;">
         <span class="loc-icon">🛡️</span> Informationssikkerhed
       </div>
-
-      <div 
-        class="location hospital"
-        id="hospital" 
-        style="top: 30%; left: 25%;"
-      >
+      <div class="location hospital" id="hospital" style="top: 30%; left: 25%;">
         <span class="loc-icon">🏥</span> Hospital
       </div>
-      <div 
-        class="location leverandor"
-        id="leverandor" 
-        style="top: 30%; left: 55%;"
-      >
+      <div class="location leverandor" id="leverandor" style="top: 30%; left: 55%;">
         <span class="loc-icon">📦</span> Leverandør
       </div>
-
-      <div 
-        class="location medicinsk-udstyr"
-        id="medicinsk-udstyr" 
-        style="top: 50%; left: 10%;"
-      >
+      <div class="location medicinsk-udstyr" id="medicinsk-udstyr" style="top: 50%; left: 10%;">
         <span class="loc-icon">🩺</span> Medicinsk Udstyr
       </div>
-      <div 
-        class="location it-jura"
-        id="it-jura" 
-        style="top: 50%; left: 40%;"
-      >
+      <div class="location it-jura" id="it-jura" style="top: 50%; left: 40%;">
         <span class="loc-icon">⚖️</span> IT Jura
       </div>
-      <div 
-        class="location cybersikkerhed"
-        id="cybersikkerhed" 
-        style="top: 50%; left: 70%;"
-      >
+      <div class="location cybersikkerhed" id="cybersikkerhed" style="top: 50%; left: 70%;">
         <span class="loc-icon">💻</span> Cybersikkerhed
       </div>
-
-      <div 
-        class="location dokumentation"
-        id="dokumentation" 
-        style="top: 70%; left: 30%;"
-      >
+      <div class="location dokumentation" id="dokumentation" style="top: 70%; left: 30%;">
         <span class="loc-icon">📄</span> Dokumentation
       </div>
     </div>
@@ -137,31 +97,25 @@
     </div>
   </div>
 
-  <!-- Scenario Modal (brugt til alle lokationer) -->
+  <!-- Scenario Modal -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content" id="scenario-modal-content">
       <h2 id="scenario-title"></h2>
       <p id="scenario-description"></p>
-
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
       </div>
-
       <div id="scenario-optionB" style="margin-top:8px;">
         <strong>B: </strong><span id="scenario-b-label"></span><br/>
         <em id="scenario-b-text"></em>
       </div>
-
       <div style="margin-top:12px;">
         <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn">Vælg B</button>
       </div>
     </div>
   </div>
-
-  <div id="popup-container"></div>
-  <div id="floating-text-container"></div>
 
   <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
@@ -189,6 +143,9 @@
       <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
     </div>
   </div>
+
+  <div id="popup-container"></div>
+  <div id="floating-text-container"></div>
 
   <script src="script.js"></script>
 </body>
