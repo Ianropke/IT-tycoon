@@ -34,7 +34,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Icons triple size, each location with toned-down color. -->
+      <!-- Icons triple størrelse, hver lokation med en unik farve -->
       <div 
         class="location infrastruktur" 
         id="infrastruktur" 
@@ -127,22 +127,17 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
-        Du er overordnet ansvarlig for at håndtere en række LIMS-systemer 
-        for specialer som biokemi, patologi, immunologi, mikrobiologi, 
-        klinisk genetik og genomisk medicin.
+        Du er forvalter af LIMS (Laboratory Information Management System) 
+        på et stort hospital med afdelinger inden for biokemi, patologi, immunologi, mikrobiologi, klinisk genetik og genomisk medicin.
       </p>
       <p>
-        Din opgave er at forbedre, vedligeholde og sikre systemerne. 
-        Du har 100 tidsenheder og 1000 kr. under budget, men alt overskud 
-        eller sparet tid kommer hospitalet til gode. Hvert valg koster tid 
-        eller penge (eller øger risici), og husk at hvis du springer 
-        “Dokumentation” over, vil CAB være skeptiske!
+        Din opgave er at forbedre, vedligeholde og sikre systemerne. Du har 100 tidsenheder og 1000 kr til rådighed. Hvert valg koster tid og penge – og øger risici, hvis du ikke vælger omhyggeligt. Undlader du at udfylde dokumentationen, bliver CAB ekstra skeptiske!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Scenario modal: consistent pop-up -->
+  <!-- Scenario Modal (brugt til alle lokationer) -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content" id="scenario-modal-content">
       <h2 id="scenario-title"></h2>
@@ -168,7 +163,7 @@
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
-  <!-- End-of-time modal -->
+  <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content" id="end-modal-content">
       <h2>Tiden er gået!</h2>
@@ -177,7 +172,7 @@
     </div>
   </div>
 
-  <!-- CAB final approval modal -->
+  <!-- CAB Final Approval Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-modal-content">
       <h2>Endelig CAB-gennemgang</h2>
@@ -186,7 +181,7 @@
     </div>
   </div>
 
-  <!-- CAB result popup -->
+  <!-- CAB Result Popup -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-result-content">
       <h2 id="cab-result-title"></h2>
