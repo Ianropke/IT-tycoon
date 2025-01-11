@@ -2,8 +2,8 @@
  * script.js
  * IT Tycoon: LIMS Forvaltning – Fuldt integreret version med:
  * - Detaljerede scenarier (10 pr. lokation, undtagen Dokumentation)
- * - Opgaver med 3-7 lokationsbesøg (uden dubletter)
- * - Automatisk håndtering af "Dokumentation" som trin (springes over)
+ * - Opgaver med 3-7 unikke lokationsbesøg
+ * - Sikring af at opgaver altid slutter med "dokumentation" og aldrig starter med den
  ************************************************************/
 
 /* Elementreferencer fra index.html */
@@ -120,14 +120,14 @@ const secTasks = [
   "Fysisk Security-Audit i PatologiAfdeling"
 ];
 
-/* Tilladte lokationer for hver opgavetype (brug id'erne, som er i små bogstaver) */
+/* Tilladte lokationer for hver opgavetype – id'erne skal stemme overens med index.html (små bogstaver) */
 const allowedLocationsForTask = {
   security: ["cybersikkerhed", "informationssikkerhed", "it-jura"],
   development: ["hospital", "leverandor", "medicinsk-udstyr", "it-jura"],
   stability: ["hospital", "infrastruktur", "leverandor", "dokumentation"]
 };
 
-/* Returner en kort opgavebeskrivelse */
+/* Returner kort opgavebeskrivelse */
 function getTaskDescription(category) {
   if (category === "stability") {
     return "(Stabilitetsopgave) For at sikre pålidelig drift i LIMS.";
@@ -148,7 +148,7 @@ const detailedScenarios = {
       A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 hospitalstilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
       B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 hospitalstilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
-    // (7 yderligere scenarier – se dine tabeller; her er eksempler)
+    // Yderligere 9 scenarier til "hospital" (eksempeldata)
     {
       description: "Immunologiske analyser er forældede.",
       A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 hospitalstilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
@@ -175,7 +175,7 @@ const detailedScenarios = {
       B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
     {
-      description: "Manuelle indtastninger skaber fejl.",
+      description: "Manuelle indtastninger forstyrrer den daglige drift.",
       A: { label: "Konservativ Udvidelse", text: "2 tid, 50 kr; +1 stabilitet, +1 tilfredshed.", time: 2, money: 50, effects: { stability: 1, hospitalSatisfaction: 1 }, failBonus: 0 },
       B: { label: "Stor Modernisering", text: "5 tid, 150 kr; +3 tilfredshed, +2 udvikling, 5% fejlrisiko.", time: 5, money: 150, effects: { hospitalSatisfaction: 3, development: 2 }, failBonus: 0.05 }
     },
@@ -194,52 +194,52 @@ const detailedScenarios = {
     {
       description: "Leverandørkontrakter med ScanCare er komplekse.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Uklarheder om betalingsbetingelser med Genomio Labs.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Kontrakter dækker ikke alle EU-krav.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Tidligere konflikter med kunder.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Manglende klare ansvarsfordelinger.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Manglende klare exit-strategier.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "For mange tekniske uoverensstemmelser.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Leverandøren kræver fuld forudbetaling.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Usikkerhed omkring supportvilkår.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     },
     {
       description: "Kontrakten mangler incitamenter.",
       A: { label: "Grundig Kontraktrevision", text: "4 tid, 150 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 150, effects: { security: 2, stability: 1 }, failBonus: 0 },
-      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, +10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
+      B: { label: "Minimal Revision", text: "1 tid, 0 kr; ingen bonus, 10% fejlrisiko.", time: 1, money: 0, effects: { }, failBonus: 0.10 }
     }
   ],
   "leverandor": [
@@ -363,7 +363,7 @@ const detailedScenarios = {
       B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
     {
-      description: "GDPR-krav kræver opgradering af datasikkerheden.",
+      description: "GDPR-krav kræver datasikkerhedsopgradering.",
       A: { label: "Fuld Kryptering og Overvågning", text: "4 tid, 60 kr; +2 sikkerhed, +1 stabilitet.", time: 4, money: 60, effects: { security: 2, stability: 1 }, failBonus: 0 },
       B: { label: "Basal Sikkerhedsløsning", text: "2 tid, 0 kr; +1 sikkerhed, 10% fejlrisiko.", time: 2, money: 0, effects: { security: 1 }, failBonus: 0.10 }
     },
@@ -396,7 +396,7 @@ const detailedScenarios = {
   "dokumentation": [
     {
       description: "Dokumentér alle systemændringer for audit.",
-      A: { label: "Dokumentation Udført", text: "Brug 3 tid og 10 kr for en detaljeret rapport – mindsker CAB-mistillid.", time: 3, money: 10, effects: { }, failBonus: 0 }
+      A: { label: "Dokumentation Udført", text: "Brug 3 tid og 10 kr – mindsker CAB-mistillid.", time: 3, money: 10, effects: { }, failBonus: 0 }
     }
   ]
 };
@@ -435,7 +435,7 @@ function updateStepsList() {
 
 /* Når en lokation klikkes */
 function handleLocationClick(locName) {
-  // Hvis der ikke er en aktiv opgave, vis en fejlbesked
+  // Hvis ingen opgave er forpligtet, skal der vises en besked
   if (!gameState.activeTask) {
     showPopup("Vælg en opgave først!", "error");
     return;
@@ -446,604 +446,7 @@ function handleLocationClick(locName) {
   if (idx >= gameState.activeTask.steps.length) return;
   
   const needed = gameState.activeTask.steps[idx];
-  // Sammenlign i lowercase for konsistens
-  if (locName.toLowerCase() !== needed.toLowerCase()) {
-    // Hvis det forventede trin er dokumentation, springes det automatisk over
-    if (needed.toLowerCase() === "dokumentation") {
-      skipDocumentation();
-    }
-    return;
-  }
-  
-  if (!gameState.activeTask.decisionMadeForStep) {
-    gameState.activeTask.decisionMadeForStep = {};
-  }
-  if (gameState.activeTask.decisionMadeForStep[idx]) return;
-  gameState.activeTask.decisionMadeForStep[idx] = true;
-  
-  showScenarioModal(locName);
-}
-
-function skipDocumentation() {
-  gameState.docSkipCount++;
-  finalizeStep();
-}
-
-function showScenarioModal(locName) {
-  scenarioModal.style.display = "flex";
-  const scenarios = detailedScenarios[locName.toLowerCase()];
-  if (!scenarios || scenarios.length === 0) {
-    scenarioTitle.textContent = locName;
-    scenarioDescription.textContent = "(Standard scenarie)";
-    scenarioALabel.textContent = "Mulighed A (standard)";
-    scenarioAText.textContent = "Giver +2 stabilitet, -50 kr";
-    scenarioAButton.onclick = () => {
-      applyTimeCost(2);
-      applyMoneyCost(50);
-      applyStatChange("stability", 2);
-      scenarioModal.style.display = "none";
-      finalizeStep();
-    };
-    scenarioBLabel.textContent = "Mulighed B (hurtig)";
-    scenarioBText.textContent = "Billigere, men 10% fejlrisiko";
-    scenarioBButton.onclick = () => {
-      gameState.riskyTotal += 0.10;
-      scenarioModal.style.display = "none";
-      finalizeStep();
-    };
-    return;
-  }
-  const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
-  scenarioTitle.textContent = `${locName} – ${sc.description}`;
-  scenarioDescription.textContent = "";
-  scenarioALabel.textContent = sc.A.label;
-  scenarioAText.textContent = sc.A.text;
-  scenarioAButton.onclick = () => {
-    applyTimeCost(sc.A.time);
-    applyMoneyCost(sc.A.money);
-    for (const stat in sc.A.effects) {
-      applyStatChange(stat, sc.A.effects[stat]);
-    }
-    gameState.riskyTotal += sc.A.failBonus || 0;
-    scenarioModal.style.display = "none";
-    finalizeStep();
-  };
-  scenarioBLabel.textContent = sc.B.label;
-  scenarioBText.textContent = sc.B.text;
-  scenarioBButton.onclick = () => {
-    applyTimeCost(sc.B.time);
-    applyMoneyCost(sc.B.money);
-    for (const stat in sc.B.effects) {
-      applyStatChange(stat, sc.B.effects[stat]);
-    }
-    gameState.riskyTotal += sc.B.failBonus || 0;
-    scenarioModal.style.display = "none";
-    finalizeStep();
-  };
-}
-
-function finalizeStep() {
-  if (!gameState.activeTask) return;
-  applyTimeCost(5);
-  gameState.activeTask.currentStep++;
-  if (gameState.time <= 0) {
-    endGame();
-    return;
-  }
-  if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
-    showCABModal();
-  } else {
-    updateStepsList();
-  }
-}
-
-function showCABModal() {
-  let fail = gameState.riskyTotal + (gameState.docSkipCount * 0.15);
-  fail = Math.max(0, Math.min(fail, 1));
-  gameState.finalFailChance = fail;
-  cabModal.style.display = "flex";
-  cabSummary.innerHTML = `
-    <strong>CAB Gennemgang</strong><br/>
-    Hurtige valg: ${(gameState.riskyTotal * 100).toFixed(0)}%<br/>
-    Skip af dokumentation: ${gameState.docSkipCount} gang(e) => +${(gameState.docSkipCount * 15)}%<br/>
-    Samlet fejlchance: ${(fail * 100).toFixed(0)}%
-  `;
-}
-
-function finalizeCABResult() {
-  cabModal.style.display = "none";
-  if (Math.random() < gameState.finalFailChance) {
-    showCABResult(false);
-  } else {
-    showCABResult(true);
-  }
-}
-
-function showCABResult(isSuccess) {
-  cabResultModal.style.display = "flex";
-  if (isSuccess) {
-    cabResultTitle.textContent = "CAB: Godkendt!";
-    cabResultText.textContent = "CAB accepterer ændringerne. Opgaven er en succes.";
-    completeTaskCAB();
-  } else {
-    cabResultTitle.textContent = "CAB: Afvist!";
-    cabResultText.textContent = "CAB finder for stor risiko eller manglende dokumentation. Opgaven mislykkes.";
-    failTaskCAB();
-  }
-}
-
-function failTaskCAB() {
-  gameState.tasksCompleted++;
-  applyStatChange("hospitalSatisfaction", -10);
-  gameState.activeTask = null;
-  activeTaskHeadline.textContent = "Ingen aktiv opgave";
-  activeTaskDesc.textContent = "";
-  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
-  updateScoreboard();
-}
-
-function completeTaskCAB() {
-  gameState.tasksCompleted++;
-  if (!gameState.activeTask) return;
-  const t = gameState.activeTask;
-  let plus = 5 + t.riskLevel * 2;
-  if (t.taskType === "security") {
-    applyStatChange("security", plus);
-  } else if (t.taskType === "development") {
-    applyStatChange("development", plus);
-  } else {
-    applyStatChange("stability", plus);
-  }
-  gameState.totalRewards += t.baseReward;
-  showPopup(`Opgave fuldført: +${plus} til relevant stat, +${t.baseReward} belønning`, "success", 4000);
-  gameState.activeTask = null;
-  activeTaskHeadline.textContent = "Ingen aktiv opgave";
-  activeTaskDesc.textContent = "";
-  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
-  updateScoreboard();
-}
-
-function showPopup(msg, type = "success", duration = 3000) {
-  const el = document.createElement('div');
-  el.classList.add('popup');
-  if (type === "error") el.classList.add('error');
-  else if (type === "info") el.classList.add('info');
-  el.style.animation = "none";
-  el.textContent = msg;
-  document.getElementById("popup-container").appendChild(el);
-  setTimeout(() => el.remove(), duration);
-}
-
-function applyTimeCost(t) {
-  gameState.time = Math.max(gameState.time - t, 0);
-  updateScoreboard();
-}
-
-function applyMoneyCost(m) {
-  gameState.money = Math.max(gameState.money - m, 0);
-  updateScoreboard();
-}
-
-function applyStatChange(stat, delta) {
-  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
-  updateScoreboard();
-  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
-}
-
-function showFloatingText(txt, stat) {
-  const c = document.getElementById('floating-text-container');
-  const div = document.createElement('div');
-  div.classList.add('floating-text');
-  div.style.left = "50%";
-  div.style.top = "50%";
-  if (stat === "security") div.style.color = "#ff4444";
-  else if (stat === "stability") div.style.color = "#44ff44";
-  else if (stat === "development") div.style.color = "#4444ff";
-  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
-  else div.style.color = "#ffffff";
-  div.textContent = txt;
-  c.appendChild(div);
-  setTimeout(() => div.remove(), 2000);
-}
-
-/* ------------------------------------------------- */
-/* Opgavegenerering: En opgave har en bestemt type og kræver 3-7 unikke lokationsbesøg */
-/* ------------------------------------------------- */
-function generateTask() {
-  if (gameState.time <= 0) return;
-  if (gameState.availableTasks.length >= 10) return;
-  
-  const categories = ["stability", "development", "security"];
-  const category = categories[Math.floor(Math.random() * categories.length)];
-  
-  // Hent de tilladte lokationer for denne opgave (id'erne er små)
-  const allowed = allowedLocationsForTask[category];
-  
-  // Juster antallet af besøg til ikke at overstige antallet af unikke lokationer
-  // Hvis f.eks. der er 4 mulige lokationer, skal numSteps maksimalt være 4.
-  const choices = [3, 4, 5, 6, 7];
-  const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
-  let r = Math.random(), total = 0, numSteps = 3;
-  for (let i = 0; i < choices.length; i++) {
-    total += weights[i];
-    if (r < total) {
-      numSteps = choices[i];
-      break;
-    }
-  }
-  numSteps = Math.min(numSteps, allowed.length);
-  
-  // Vælg unikke lokationer (steps) fra de tilladte
-  let steps = [];
-  let copy = allowed.slice();
-  for (let i = 0; i < numSteps; i++) {
-    let idx = Math.floor(Math.random() * copy.length);
-    steps.push(copy.splice(idx, 1)[0]);
-  }
-  
-  // Vælg et opgavenavn ud fra typen
-  let taskName = "";
-  if (category === "stability") {
-    taskName = pickUniqueName(stabilityTasks);
-  } else if (category === "development") {
-    taskName = pickUniqueName(devTasks);
-  } else {
-    taskName = pickUniqueName(secTasks);
-  }
-  if (!taskName) return;
-  
-  const riskLevel = Math.floor(Math.random() * 3) + 1;
-  const baseReward = riskLevel * 80;
-  
-  const newTask = {
-    id: Date.now() + Math.floor(Math.random() * 1000),
-    taskType: category,
-    headline: taskName,
-    description: getTaskDescription(category),
-    steps: steps, // De unikke lokationer, der skal besøges
-    currentStep: 0,
-    riskLevel: riskLevel,
-    baseReward: baseReward,
-    isHighPriority: (riskLevel === 3),
-    decisionMadeForStep: {}
-  };
-  gameState.availableTasks.push(newTask);
-  renderTasks();
-}
-
-function pickUniqueName(taskArray) {
-  const available = taskArray.filter(n => !gameState.usedTasks.has(n));
-  if (!available.length) return null;
-  const name = available[Math.floor(Math.random() * available.length)];
-  gameState.usedTasks.add(name);
-  return name;
-}
-
-/* Renders tilgængelige opgaver */
-function renderTasks() {
-  tasksList.innerHTML = "";
-  if (!gameState.availableTasks.length) {
-    tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
-    return;
-  }
-  gameState.availableTasks.forEach(t => {
-    const li = document.createElement("li");
-    if (t.riskLevel === 3) {
-      li.style.borderColor = "red"; 
-      li.style.borderWidth = "2px";
-    } else if (t.riskLevel === 2) {
-      li.style.borderColor = "orange";
-    } else {
-      li.style.borderColor = "green";
-    }
-    let priorityLabel = t.isHighPriority ? " (HØJPRIORITET)" : "";
-    let potentialGain = `+${5 + t.riskLevel * 2} til ${t.taskType}`;
-    li.innerHTML = `
-      <strong>${t.headline}${priorityLabel}</strong><br/>
-      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
-      Potentielt: ${potentialGain}<br/>
-      <p class="task-description" style="display:none;">${t.description}</p>
-    `;
-    const commitBtn = document.createElement('button');
-    commitBtn.classList.add('commit-button');
-    commitBtn.textContent = "Forpligt";
-    commitBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      assignTask(t.id);
-    });
-    li.addEventListener("click", () => {
-      li.querySelectorAll(".task-description").forEach(d => {
-        d.style.display = (d.style.display === "none" ? "block" : "none");
-      });
-    });
-    li.appendChild(commitBtn);
-    tasksList.appendChild(li);
-  });
-}
-
-/* Når en opgave forpligtes */
-function assignTask(taskId) {
-  if (gameState.activeTask) {
-    showPopup("Allerede en aktiv opgave!", "error");
-    return;
-  }
-  if (gameState.time <= 0) {
-    endGame();
-    return;
-  }
-  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
-  if (idx === -1) return;
-  const task = gameState.availableTasks[idx];
-  if (task.riskLevel === 3) {
-    const pop = document.createElement('div');
-    pop.classList.add('popup', 'info');
-    pop.style.animation = "none";
-    pop.innerHTML = `
-      <strong>Høj Risiko</strong><br/>
-      Udviklerne advarer om stor risiko for fejl. Vil du fortsætte?
-      <br/><button id="hrYes">Fortsæt</button>
-      <button id="hrNo">Fortryd</button>
-    `;
-    document.getElementById('popup-container').appendChild(pop);
-    document.getElementById('hrYes').addEventListener('click', () => {
-      pop.remove();
-      finalizeAssign(taskId, idx);
-    });
-    document.getElementById('hrNo').addEventListener('click', () => {
-      pop.remove();
-      gameState.availableTasks.splice(idx, 1);
-      renderTasks();
-    });
-  } else {
-    finalizeAssign(taskId, idx);
-  }
-}
-
-function finalizeAssign(taskId, idx) {
-  gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
-  activeTaskHeadline.textContent = gameState.activeTask.headline;
-  activeTaskDesc.textContent = gameState.activeTask.description;
-  updateStepsList();
-  renderTasks();
-}
-
-function endGame() {
-  showPopup("Tiden er gået!", "info", 3000);
-  gameState.activeTask = null;
-  activeTaskHeadline.textContent = "Ingen aktiv opgave";
-  activeTaskDesc.textContent = "";
-  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
-  endModal.style.display = "flex";
-  const sumText = `
-    <strong>Slutresultat:</strong><br/>
-    Resterende Penge: ${gameState.money}<br/>
-    Sikkerhed: ${gameState.security}<br/>
-    Stabilitet: ${gameState.stability}<br/>
-    Udvikling: ${gameState.development}<br/>
-    Hospitalstilfredshed: ${gameState.hospitalSatisfaction}%<br/>
-    Fuldførte opgaver: ${gameState.tasksCompleted}<br/>
-    Samlet belønning: ${gameState.totalRewards}
-  `;
-  endGameSummary.innerHTML = sumText;
-}
-
-function showPopup(msg, type = "success", duration = 3000) {
-  const el = document.createElement('div');
-  el.classList.add('popup');
-  if (type === "error") el.classList.add('error');
-  else if (type === "info") el.classList.add('info');
-  el.style.animation = "none";
-  el.textContent = msg;
-  document.getElementById("popup-container").appendChild(el);
-  setTimeout(() => el.remove(), duration);
-}
-
-function applyTimeCost(t) {
-  gameState.time = Math.max(gameState.time - t, 0);
-  updateScoreboard();
-}
-
-function applyMoneyCost(m) {
-  gameState.money = Math.max(gameState.money - m, 0);
-  updateScoreboard();
-}
-
-function applyStatChange(stat, delta) {
-  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
-  updateScoreboard();
-  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
-}
-
-function showFloatingText(txt, stat) {
-  const c = document.getElementById('floating-text-container');
-  const div = document.createElement('div');
-  div.classList.add('floating-text');
-  div.style.left = "50%";
-  div.style.top = "50%";
-  if (stat === "security") div.style.color = "#ff4444";
-  else if (stat === "stability") div.style.color = "#44ff44";
-  else if (stat === "development") div.style.color = "#4444ff";
-  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
-  else div.style.color = "#ffffff";
-  div.textContent = txt;
-  c.appendChild(div);
-  setTimeout(() => div.remove(), 2000);
-}
-
-/* ------------------------------------------------- */
-/* Opgavegenerering: En opgave har en bestemt type og kræver 3-7 unikke lokationsbesøg */
-/* ------------------------------------------------- */
-function generateTask() {
-  if (gameState.time <= 0) return;
-  if (gameState.availableTasks.length >= 10) return;
-  
-  const categories = ["stability", "development", "security"];
-  const category = categories[Math.floor(Math.random() * categories.length)];
-  
-  // Hent de tilladte lokationer for opgavetypen (alle id'er er små)
-  const allowed = allowedLocationsForTask[category];
-  
-  // Vælg antal besøg – med en fordeling der favoriserer 5-6
-  const choices = [3, 4, 5, 6, 7];
-  const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
-  let r = Math.random(), total = 0, numSteps = 3;
-  for (let i = 0; i < choices.length; i++) {
-    total += weights[i];
-    if (r < total) {
-      numSteps = choices[i];
-      break;
-    }
-  }
-  // Sørg for, at vi ikke vælger flere besøg end mulige unikke lokationer
-  numSteps = Math.min(numSteps, allowed.length);
-  
-  // Vælg unikke lokationer (steps) fra de tilladte
-  let steps = [];
-  let copy = allowed.slice();
-  for (let i = 0; i < numSteps; i++) {
-    let idx = Math.floor(Math.random() * copy.length);
-    steps.push(copy.splice(idx, 1)[0]);
-  }
-  
-  // Vælg opgavenavn ud fra opgavetypen
-  let taskName = "";
-  if (category === "stability") {
-    taskName = pickUniqueName(stabilityTasks);
-  } else if (category === "development") {
-    taskName = pickUniqueName(devTasks);
-  } else {
-    taskName = pickUniqueName(secTasks);
-  }
-  if (!taskName) return;
-  
-  const riskLevel = Math.floor(Math.random() * 3) + 1;
-  const baseReward = riskLevel * 80;
-  
-  const newTask = {
-    id: Date.now() + Math.floor(Math.random() * 1000),
-    taskType: category,
-    headline: taskName,
-    description: getTaskDescription(category),
-    steps: steps, // De unikke lokationer, som skal besøges
-    currentStep: 0,
-    riskLevel: riskLevel,
-    baseReward: baseReward,
-    isHighPriority: (riskLevel === 3),
-    decisionMadeForStep: {}
-  };
-  gameState.availableTasks.push(newTask);
-  renderTasks();
-}
-
-function pickUniqueName(taskArray) {
-  const available = taskArray.filter(n => !gameState.usedTasks.has(n));
-  if (!available.length) return null;
-  const name = available[Math.floor(Math.random() * available.length)];
-  gameState.usedTasks.add(name);
-  return name;
-}
-
-/* Renders tilgængelige opgaver */
-function renderTasks() {
-  tasksList.innerHTML = "";
-  if (!gameState.availableTasks.length) {
-    tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
-    return;
-  }
-  gameState.availableTasks.forEach(t => {
-    const li = document.createElement("li");
-    if (t.riskLevel === 3) {
-      li.style.borderColor = "red"; 
-      li.style.borderWidth = "2px";
-    } else if (t.riskLevel === 2) {
-      li.style.borderColor = "orange";
-    } else {
-      li.style.borderColor = "green";
-    }
-    let priorityLabel = t.isHighPriority ? " (HØJPRIORITET)" : "";
-    let potentialGain = `+${5 + t.riskLevel * 2} til ${t.taskType}`;
-    li.innerHTML = `
-      <strong>${t.headline}${priorityLabel}</strong><br/>
-      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
-      Potentielt: ${potentialGain}<br/>
-      <p class="task-description" style="display:none;">${t.description}</p>
-    `;
-    const commitBtn = document.createElement('button');
-    commitBtn.classList.add('commit-button');
-    commitBtn.textContent = "Forpligt";
-    commitBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      assignTask(t.id);
-    });
-    li.addEventListener("click", () => {
-      li.querySelectorAll(".task-description").forEach(d => {
-        d.style.display = (d.style.display === "none" ? "block" : "none");
-      });
-    });
-    li.appendChild(commitBtn);
-    tasksList.appendChild(li);
-  });
-}
-
-/* Når en opgave forpligtes */
-function assignTask(taskId) {
-  if (gameState.activeTask) {
-    showPopup("Allerede en aktiv opgave!", "error");
-    return;
-  }
-  if (gameState.time <= 0) {
-    endGame();
-    return;
-  }
-  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
-  if (idx === -1) return;
-  const task = gameState.availableTasks[idx];
-  if (task.riskLevel === 3) {
-    const pop = document.createElement('div');
-    pop.classList.add('popup', 'info');
-    pop.style.animation = "none";
-    pop.innerHTML = `
-      <strong>Høj Risiko</strong><br/>
-      Udviklerne advarer om stor risiko for fejl. Vil du fortsætte?
-      <br/><button id="hrYes">Fortsæt</button>
-      <button id="hrNo">Fortryd</button>
-    `;
-    document.getElementById('popup-container').appendChild(pop);
-    document.getElementById('hrYes').addEventListener('click', () => {
-      pop.remove();
-      finalizeAssign(taskId, idx);
-    });
-    document.getElementById('hrNo').addEventListener('click', () => {
-      pop.remove();
-      gameState.availableTasks.splice(idx, 1);
-      renderTasks();
-    });
-  } else {
-    finalizeAssign(taskId, idx);
-  }
-}
-
-function finalizeAssign(taskId, idx) {
-  gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
-  activeTaskHeadline.textContent = gameState.activeTask.headline;
-  activeTaskDesc.textContent = gameState.activeTask.description;
-  updateStepsList();
-  renderTasks();
-}
-
-/* Når en lokation klikkes */
-function handleLocationClick(locName) {
-  if (!gameState.activeTask) {
-    showPopup("Vælg en opgave først!", "error");
-    return;
-  }
-  if (gameState.time <= 0) return;
-  
-  const idx = gameState.activeTask.currentStep;
-  if (idx >= gameState.activeTask.steps.length) return;
-  
-  const needed = gameState.activeTask.steps[idx];
-  // Hvis det næste trin er "dokumentation", springes det altid over
+  // Hvis det næste trin er "dokumentation", skal det håndteres separat
   if (needed.toLowerCase() === "dokumentation") {
     skipDocumentation();
     return;
@@ -1199,16 +602,1956 @@ function completeTaskCAB() {
   updateScoreboard();
 }
 
-/* --------------------------------------------- */
-/* Initiering af spillet                         */
-/* --------------------------------------------- */
+function showPopup(msg, type = "success", duration = 3000) {
+  const el = document.createElement('div');
+  el.classList.add('popup');
+  if (type === "error") el.classList.add('error');
+  else if (type === "info") el.classList.add('info');
+  el.style.animation = "none";
+  el.textContent = msg;
+  document.getElementById("popup-container").appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+function applyTimeCost(t) {
+  gameState.time = Math.max(gameState.time - t, 0);
+  updateScoreboard();
+}
+
+function applyMoneyCost(m) {
+  gameState.money = Math.max(gameState.money - m, 0);
+  updateScoreboard();
+}
+
+function applyStatChange(stat, delta) {
+  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
+  updateScoreboard();
+  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
+}
+
+function showFloatingText(txt, stat) {
+  const c = document.getElementById('floating-text-container');
+  const div = document.createElement('div');
+  div.classList.add('floating-text');
+  div.style.left = "50%";
+  div.style.top = "50%";
+  if (stat === "security") div.style.color = "#ff4444";
+  else if (stat === "stability") div.style.color = "#44ff44";
+  else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
+  else div.style.color = "#ffffff";
+  div.textContent = txt;
+  c.appendChild(div);
+  setTimeout(() => div.remove(), 2000);
+}
+
+/* ------------------------------------------------- */
+/* Opgavegenerering: En opgave har en bestemt type og kræver 3-7 unikke lokationsbesøg.
+   SÆT: Opgaver skal ALDRIG starte med "dokumentation", men skal altid SLUTTE med "dokumentation". */
+/* ------------------------------------------------- */
+function generateTask() {
+  if (gameState.time <= 0) return;
+  if (gameState.availableTasks.length >= 10) return;
+  
+  const categories = ["stability", "development", "security"];
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  
+  // Hent de tilladte lokationer (alle id'er i allowedLocationsForTask er små bogstaver)
+  const allowed = allowedLocationsForTask[category].slice(); // Lav en kopi
+  
+  // Fjern "dokumentation" fra den tilfældige udvælgelse, så vi kan sikre at det KUN er sidst
+  const filteredAllowed = allowed.filter(loc => loc.toLowerCase() !== "dokumentation");
+  
+  // Vælg antal besøg – mest sandsynligt 5-6 – men husk at der altid skal være dokumentation til sidst
+  const choices = [3, 4, 5, 6, 7];
+  const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
+  let r = Math.random(), total = 0, numSteps = 3;
+  for (let i = 0; i < choices.length; i++) {
+    total += weights[i];
+    if (r < total) {
+      numSteps = choices[i];
+      break;
+    }
+  }
+  // Sikr at antallet af trin ikke overstiger antallet af unikke lokationer uden dokumentation
+  numSteps = Math.min(numSteps, filteredAllowed.length);
+  
+  // Vælg unikke lokationer fra filteredAllowed
+  let steps = [];
+  let copy = filteredAllowed.slice();
+  for (let i = 0; i < numSteps; i++) {
+    let idx = Math.floor(Math.random() * copy.length);
+    steps.push(copy.splice(idx, 1)[0]);
+  }
+  
+  // Sørg for, at "dokumentation" kommer som sidste trin
+  steps.push("dokumentation");
+  
+  // Vælg opgavenavn baseret på opgavetypen
+  let taskName = "";
+  if (category === "stability") {
+    taskName = pickUniqueName(stabilityTasks);
+  } else if (category === "development") {
+    taskName = pickUniqueName(devTasks);
+  } else {
+    taskName = pickUniqueName(secTasks);
+  }
+  if (!taskName) return;
+  
+  const riskLevel = Math.floor(Math.random() * 3) + 1;
+  const baseReward = riskLevel * 80;
+  
+  const newTask = {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    taskType: category,
+    headline: taskName,
+    description: getTaskDescription(category),
+    steps: steps, // Unikke lokationer (uden dokumentation midt i opgaven) + "dokumentation" som sidste
+    currentStep: 0,
+    riskLevel: riskLevel,
+    baseReward: baseReward,
+    isHighPriority: (riskLevel === 3),
+    decisionMadeForStep: {}
+  };
+  gameState.availableTasks.push(newTask);
+  renderTasks();
+}
+
+function pickUniqueName(taskArray) {
+  const available = taskArray.filter(n => !gameState.usedTasks.has(n));
+  if (!available.length) return null;
+  const name = available[Math.floor(Math.random() * available.length)];
+  gameState.usedTasks.add(name);
+  return name;
+}
+
+/* Renders tilgængelige opgaver */
+function renderTasks() {
+  tasksList.innerHTML = "";
+  if (!gameState.availableTasks.length) {
+    tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
+    return;
+  }
+  gameState.availableTasks.forEach(t => {
+    const li = document.createElement("li");
+    if (t.riskLevel === 3) {
+      li.style.borderColor = "red"; 
+      li.style.borderWidth = "2px";
+    } else if (t.riskLevel === 2) {
+      li.style.borderColor = "orange";
+    } else {
+      li.style.borderColor = "green";
+    }
+    let priorityLabel = t.isHighPriority ? " (HØJPRIORITET)" : "";
+    let potentialGain = `+${5 + t.riskLevel * 2} til ${t.taskType}`;
+    li.innerHTML = `
+      <strong>${t.headline}${priorityLabel}</strong><br/>
+      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
+      Potentielt: ${potentialGain}<br/>
+      <p class="task-description" style="display:none;">${t.description}</p>
+    `;
+    const commitBtn = document.createElement('button');
+    commitBtn.classList.add('commit-button');
+    commitBtn.textContent = "Forpligt";
+    commitBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      assignTask(t.id);
+    });
+    li.addEventListener("click", () => {
+      li.querySelectorAll(".task-description").forEach(d => {
+        d.style.display = (d.style.display === "none" ? "block" : "none");
+      });
+    });
+    li.appendChild(commitBtn);
+    tasksList.appendChild(li);
+  });
+}
+
+/* Når en opgave forpligtes */
+function assignTask(taskId) {
+  if (gameState.activeTask) {
+    showPopup("Allerede en aktiv opgave!", "error");
+    return;
+  }
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
+  if (idx === -1) return;
+  const task = gameState.availableTasks[idx];
+  if (task.riskLevel === 3) {
+    const pop = document.createElement('div');
+    pop.classList.add('popup', 'info');
+    pop.style.animation = "none";
+    pop.innerHTML = `
+      <strong>Høj Risiko</strong><br/>
+      Udviklerne advarer om stor risiko for fejl. Vil du fortsætte?
+      <br/><button id="hrYes">Fortsæt</button>
+      <button id="hrNo">Fortryd</button>
+    `;
+    document.getElementById('popup-container').appendChild(pop);
+    document.getElementById('hrYes').addEventListener('click', () => {
+      pop.remove();
+      finalizeAssign(taskId, idx);
+    });
+    document.getElementById('hrNo').addEventListener('click', () => {
+      pop.remove();
+      gameState.availableTasks.splice(idx, 1);
+      renderTasks();
+    });
+  } else {
+    finalizeAssign(taskId, idx);
+  }
+}
+
+function finalizeAssign(taskId, idx) {
+  gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
+  activeTaskHeadline.textContent = gameState.activeTask.headline;
+  activeTaskDesc.textContent = gameState.activeTask.description;
+  updateStepsList();
+  renderTasks();
+}
+
+/* Når en lokation klikkes */
+function handleLocationClick(locName) {
+  if (!gameState.activeTask) {
+    showPopup("Vælg en opgave først!", "error");
+    return;
+  }
+  if (gameState.time <= 0) return;
+  
+  const idx = gameState.activeTask.currentStep;
+  if (idx >= gameState.activeTask.steps.length) return;
+  
+  const needed = gameState.activeTask.steps[idx];
+  // Hvis det næste trin er dokumentation, skal det håndteres separat (det skal ALDRIG være første)
+  if (needed.toLowerCase() === "dokumentation") {
+    skipDocumentation();
+    return;
+  }
+  
+  if (locName.toLowerCase() !== needed.toLowerCase()) return;
+  
+  if (!gameState.activeTask.decisionMadeForStep) {
+    gameState.activeTask.decisionMadeForStep = {};
+  }
+  if (gameState.activeTask.decisionMadeForStep[idx]) return;
+  gameState.activeTask.decisionMadeForStep[idx] = true;
+  
+  showScenarioModal(locName);
+}
+
+function skipDocumentation() {
+  gameState.docSkipCount++;
+  finalizeStep();
+}
+
+function showScenarioModal(locName) {
+  scenarioModal.style.display = "flex";
+  const scenarios = detailedScenarios[locName.toLowerCase()];
+  if (!scenarios || scenarios.length === 0) {
+    scenarioTitle.textContent = locName;
+    scenarioDescription.textContent = "(Standard scenarie)";
+    scenarioALabel.textContent = "Mulighed A (standard)";
+    scenarioAText.textContent = "Giver +2 stabilitet, -50 kr";
+    scenarioAButton.onclick = () => {
+      applyTimeCost(2);
+      applyMoneyCost(50);
+      applyStatChange("stability", 2);
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    scenarioBLabel.textContent = "Mulighed B (hurtig)";
+    scenarioBText.textContent = "Billigere, men 10% fejlrisiko";
+    scenarioBButton.onclick = () => {
+      gameState.riskyTotal += 0.10;
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    return;
+  }
+  const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
+  scenarioTitle.textContent = `${locName} – ${sc.description}`;
+  scenarioDescription.textContent = "";
+  scenarioALabel.textContent = sc.A.label;
+  scenarioAText.textContent = sc.A.text;
+  scenarioAButton.onclick = () => {
+    applyTimeCost(sc.A.time);
+    applyMoneyCost(sc.A.money);
+    for (const stat in sc.A.effects) {
+      applyStatChange(stat, sc.A.effects[stat]);
+    }
+    gameState.riskyTotal += sc.A.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+  scenarioBLabel.textContent = sc.B.label;
+  scenarioBText.textContent = sc.B.text;
+  scenarioBButton.onclick = () => {
+    applyTimeCost(sc.B.time);
+    applyMoneyCost(sc.B.money);
+    for (const stat in sc.B.effects) {
+      applyStatChange(stat, sc.B.effects[stat]);
+    }
+    gameState.riskyTotal += sc.B.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+}
+
+function finalizeStep() {
+  if (!gameState.activeTask) return;
+  applyTimeCost(5);
+  gameState.activeTask.currentStep++;
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
+    showCABModal();
+  } else {
+    updateStepsList();
+  }
+}
+
+function showCABModal() {
+  let fail = gameState.riskyTotal + (gameState.docSkipCount * 0.15);
+  fail = Math.max(0, Math.min(fail, 1));
+  gameState.finalFailChance = fail;
+  cabModal.style.display = "flex";
+  cabSummary.innerHTML = `
+    <strong>CAB Gennemgang</strong><br/>
+    Hurtige valg: ${(gameState.riskyTotal * 100).toFixed(0)}%<br/>
+    Skip af dokumentation: ${gameState.docSkipCount} gang(e) => +${(gameState.docSkipCount * 15)}%<br/>
+    Samlet fejlchance: ${(fail * 100).toFixed(0)}%
+  `;
+}
+
+function finalizeCABResult() {
+  cabModal.style.display = "none";
+  if (Math.random() < gameState.finalFailChance) {
+    showCABResult(false);
+  } else {
+    showCABResult(true);
+  }
+}
+
+function showCABResult(isSuccess) {
+  cabResultModal.style.display = "flex";
+  if (isSuccess) {
+    cabResultTitle.textContent = "CAB: Godkendt!";
+    cabResultText.textContent = "CAB accepterer ændringerne. Opgaven er en succes.";
+    completeTaskCAB();
+  } else {
+    cabResultTitle.textContent = "CAB: Afvist!";
+    cabResultText.textContent = "CAB finder for stor risiko eller manglende dokumentation. Opgaven mislykkes.";
+    failTaskCAB();
+  }
+}
+
+function failTaskCAB() {
+  gameState.tasksCompleted++;
+  applyStatChange("hospitalSatisfaction", -10);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function completeTaskCAB() {
+  gameState.tasksCompleted++;
+  if (!gameState.activeTask) return;
+  const t = gameState.activeTask;
+  let plus = 5 + t.riskLevel * 2;
+  if (t.taskType === "security") {
+    applyStatChange("security", plus);
+  } else if (t.taskType === "development") {
+    applyStatChange("development", plus);
+  } else {
+    applyStatChange("stability", plus);
+  }
+  gameState.totalRewards += t.baseReward;
+  showPopup(`Opgave fuldført: +${plus} til relevant stat, +${t.baseReward} belønning`, "success", 4000);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function showPopup(msg, type = "success", duration = 3000) {
+  const el = document.createElement('div');
+  el.classList.add('popup');
+  if (type === "error") el.classList.add('error');
+  else if (type === "info") el.classList.add('info');
+  el.style.animation = "none";
+  el.textContent = msg;
+  document.getElementById("popup-container").appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+function applyTimeCost(t) {
+  gameState.time = Math.max(gameState.time - t, 0);
+  updateScoreboard();
+}
+
+function applyMoneyCost(m) {
+  gameState.money = Math.max(gameState.money - m, 0);
+  updateScoreboard();
+}
+
+function applyStatChange(stat, delta) {
+  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
+  updateScoreboard();
+  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
+}
+
+function showFloatingText(txt, stat) {
+  const c = document.getElementById('floating-text-container');
+  const div = document.createElement('div');
+  div.classList.add('floating-text');
+  div.style.left = "50%";
+  div.style.top = "50%";
+  if (stat === "security") div.style.color = "#ff4444";
+  else if (stat === "stability") div.style.color = "#44ff44";
+  else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
+  else div.style.color = "#ffffff";
+  div.textContent = txt;
+  c.appendChild(div);
+  setTimeout(() => div.remove(), 2000);
+}
+
+/* ------------------------------------------------- */
+/* Opgavegenerering: En opgave har en bestemt type og kræver 3-7 unikke lokationsbesøg.
+   VIGTIGT: Opgaven skal ALDRIG starte med "dokumentation" – denne lokation tilføjes altid som sidste trin. */
+/* ------------------------------------------------- */
+function generateTask() {
+  if (gameState.time <= 0) return;
+  if (gameState.availableTasks.length >= 10) return;
+  
+  const categories = ["stability", "development", "security"];
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  
+  // Hent de tilladte lokationer for denne opgave (alle er i små bogstaver)
+  const allowed = allowedLocationsForTask[category];
+  
+  // Fjern "dokumentation" fra den tilfældige udvælgelse
+  const nonDocAllowed = allowed.filter(loc => loc.toLowerCase() !== "dokumentation");
+  
+  // Vælg antal besøg – mest sandsynligt 5-6 – men sørg for at vi kun vælger fra non-dokumentation lokationer
+  const choices = [3, 4, 5, 6, 7];
+  const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
+  let r = Math.random(), total = 0, numSteps = 3;
+  for (let i = 0; i < choices.length; i++) {
+    total += weights[i];
+    if (r < total) {
+      numSteps = choices[i];
+      break;
+    }
+  }
+  numSteps = Math.min(numSteps, nonDocAllowed.length);
+  
+  // Vælg unikke lokationer fra nonDocAllowed
+  let steps = [];
+  let copy = nonDocAllowed.slice();
+  for (let i = 0; i < numSteps; i++) {
+    let idx = Math.floor(Math.random() * copy.length);
+    steps.push(copy.splice(idx, 1)[0]);
+  }
+  
+  // Tilføj "dokumentation" som sidste trin
+  steps.push("dokumentation");
+  
+  // Vælg et opgavenavn ud fra typen
+  let taskName = "";
+  if (category === "stability") {
+    taskName = pickUniqueName(stabilityTasks);
+  } else if (category === "development") {
+    taskName = pickUniqueName(devTasks);
+  } else {
+    taskName = pickUniqueName(secTasks);
+  }
+  if (!taskName) return;
+  
+  const riskLevel = Math.floor(Math.random() * 3) + 1;
+  const baseReward = riskLevel * 80;
+  
+  const newTask = {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    taskType: category,
+    headline: taskName,
+    description: getTaskDescription(category),
+    steps: steps, // Unikke lokationer + "dokumentation" som sidste
+    currentStep: 0,
+    riskLevel: riskLevel,
+    baseReward: baseReward,
+    isHighPriority: (riskLevel === 3),
+    decisionMadeForStep: {}
+  };
+  gameState.availableTasks.push(newTask);
+  renderTasks();
+}
+
+function pickUniqueName(taskArray) {
+  const available = taskArray.filter(n => !gameState.usedTasks.has(n));
+  if (!available.length) return null;
+  const name = available[Math.floor(Math.random() * available.length)];
+  gameState.usedTasks.add(name);
+  return name;
+}
+
+/* Renders tilgængelige opgaver */
+function renderTasks() {
+  tasksList.innerHTML = "";
+  if (!gameState.availableTasks.length) {
+    tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
+    return;
+  }
+  gameState.availableTasks.forEach(t => {
+    const li = document.createElement("li");
+    if (t.riskLevel === 3) {
+      li.style.borderColor = "red"; 
+      li.style.borderWidth = "2px";
+    } else if (t.riskLevel === 2) {
+      li.style.borderColor = "orange";
+    } else {
+      li.style.borderColor = "green";
+    }
+    let priorityLabel = t.isHighPriority ? " (HØJPRIORITET)" : "";
+    let potentialGain = `+${5 + t.riskLevel * 2} til ${t.taskType}`;
+    li.innerHTML = `
+      <strong>${t.headline}${priorityLabel}</strong><br/>
+      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
+      Potentielt: ${potentialGain}<br/>
+      <p class="task-description" style="display:none;">${t.description}</p>
+    `;
+    const commitBtn = document.createElement('button');
+    commitBtn.classList.add('commit-button');
+    commitBtn.textContent = "Forpligt";
+    commitBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      assignTask(t.id);
+    });
+    li.addEventListener("click", () => {
+      li.querySelectorAll(".task-description").forEach(d => {
+        d.style.display = (d.style.display === "none" ? "block" : "none");
+      });
+    });
+    li.appendChild(commitBtn);
+    tasksList.appendChild(li);
+  });
+}
+
+/* Når en opgave forpligtes */
+function assignTask(taskId) {
+  if (gameState.activeTask) {
+    showPopup("Allerede en aktiv opgave!", "error");
+    return;
+  }
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
+  if (idx === -1) return;
+  const task = gameState.availableTasks[idx];
+  if (task.riskLevel === 3) {
+    const pop = document.createElement('div');
+    pop.classList.add('popup', 'info');
+    pop.style.animation = "none";
+    pop.innerHTML = `
+      <strong>Høj Risiko</strong><br/>
+      Udviklerne advarer om stor risiko for fejl. Vil du fortsætte?
+      <br/><button id="hrYes">Fortsæt</button>
+      <button id="hrNo">Fortryd</button>
+    `;
+    document.getElementById('popup-container').appendChild(pop);
+    document.getElementById('hrYes').addEventListener('click', () => {
+      pop.remove();
+      finalizeAssign(taskId, idx);
+    });
+    document.getElementById('hrNo').addEventListener('click', () => {
+      pop.remove();
+      gameState.availableTasks.splice(idx, 1);
+      renderTasks();
+    });
+  } else {
+    finalizeAssign(taskId, idx);
+  }
+}
+
+function finalizeAssign(taskId, idx) {
+  gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
+  activeTaskHeadline.textContent = gameState.activeTask.headline;
+  activeTaskDesc.textContent = gameState.activeTask.description;
+  updateStepsList();
+  renderTasks();
+}
+
+/* Når en lokation klikkes */
+function handleLocationClick(locName) {
+  if (!gameState.activeTask) {
+    showPopup("Vælg en opgave først!", "error");
+    return;
+  }
+  if (gameState.time <= 0) return;
+  
+  const idx = gameState.activeTask.currentStep;
+  if (idx >= gameState.activeTask.steps.length) return;
+  
+  const needed = gameState.activeTask.steps[idx];
+  // "dokumentation" skal ALDRIG være det første trin, og det skal altid være til sidst.
+  if (needed.toLowerCase() === "dokumentation") {
+    skipDocumentation();
+    return;
+  }
+  
+  if (locName.toLowerCase() !== needed.toLowerCase()) return;
+  
+  if (!gameState.activeTask.decisionMadeForStep) {
+    gameState.activeTask.decisionMadeForStep = {};
+  }
+  if (gameState.activeTask.decisionMadeForStep[idx]) return;
+  gameState.activeTask.decisionMadeForStep[idx] = true;
+  
+  showScenarioModal(locName);
+}
+
+function skipDocumentation() {
+  gameState.docSkipCount++;
+  finalizeStep();
+}
+
+function showScenarioModal(locName) {
+  scenarioModal.style.display = "flex";
+  const scenarios = detailedScenarios[locName.toLowerCase()];
+  if (!scenarios || scenarios.length === 0) {
+    scenarioTitle.textContent = locName;
+    scenarioDescription.textContent = "(Standard scenarie)";
+    scenarioALabel.textContent = "Mulighed A (standard)";
+    scenarioAText.textContent = "Giver +2 stabilitet, -50 kr";
+    scenarioAButton.onclick = () => {
+      applyTimeCost(2);
+      applyMoneyCost(50);
+      applyStatChange("stability", 2);
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    scenarioBLabel.textContent = "Mulighed B (hurtig)";
+    scenarioBText.textContent = "Billigere, men 10% fejlrisiko";
+    scenarioBButton.onclick = () => {
+      gameState.riskyTotal += 0.10;
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    return;
+  }
+  const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
+  scenarioTitle.textContent = `${locName} – ${sc.description}`;
+  scenarioDescription.textContent = "";
+  scenarioALabel.textContent = sc.A.label;
+  scenarioAText.textContent = sc.A.text;
+  scenarioAButton.onclick = () => {
+    applyTimeCost(sc.A.time);
+    applyMoneyCost(sc.A.money);
+    for (const stat in sc.A.effects) {
+      applyStatChange(stat, sc.A.effects[stat]);
+    }
+    gameState.riskyTotal += sc.A.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+  scenarioBLabel.textContent = sc.B.label;
+  scenarioBText.textContent = sc.B.text;
+  scenarioBButton.onclick = () => {
+    applyTimeCost(sc.B.time);
+    applyMoneyCost(sc.B.money);
+    for (const stat in sc.B.effects) {
+      applyStatChange(stat, sc.B.effects[stat]);
+    }
+    gameState.riskyTotal += sc.B.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+}
+
+function finalizeStep() {
+  if (!gameState.activeTask) return;
+  applyTimeCost(5);
+  gameState.activeTask.currentStep++;
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
+    showCABModal();
+  } else {
+    updateStepsList();
+  }
+}
+
+function showCABModal() {
+  let fail = gameState.riskyTotal + (gameState.docSkipCount * 0.15);
+  fail = Math.max(0, Math.min(fail, 1));
+  gameState.finalFailChance = fail;
+  cabModal.style.display = "flex";
+  cabSummary.innerHTML = `
+    <strong>CAB Gennemgang</strong><br/>
+    Hurtige valg: ${(gameState.riskyTotal * 100).toFixed(0)}%<br/>
+    Skip af dokumentation: ${gameState.docSkipCount} gang(e) => +${(gameState.docSkipCount * 15)}%<br/>
+    Samlet fejlchance: ${(fail * 100).toFixed(0)}%
+  `;
+}
+
+function finalizeCABResult() {
+  cabModal.style.display = "none";
+  if (Math.random() < gameState.finalFailChance) {
+    showCABResult(false);
+  } else {
+    showCABResult(true);
+  }
+}
+
+function showCABResult(isSuccess) {
+  cabResultModal.style.display = "flex";
+  if (isSuccess) {
+    cabResultTitle.textContent = "CAB: Godkendt!";
+    cabResultText.textContent = "CAB accepterer ændringerne. Opgaven er en succes.";
+    completeTaskCAB();
+  } else {
+    cabResultTitle.textContent = "CAB: Afvist!";
+    cabResultText.textContent = "CAB finder for stor risiko eller manglende dokumentation. Opgaven mislykkes.";
+    failTaskCAB();
+  }
+}
+
+function failTaskCAB() {
+  gameState.tasksCompleted++;
+  applyStatChange("hospitalSatisfaction", -10);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function completeTaskCAB() {
+  gameState.tasksCompleted++;
+  if (!gameState.activeTask) return;
+  const t = gameState.activeTask;
+  let plus = 5 + t.riskLevel * 2;
+  if (t.taskType === "security") {
+    applyStatChange("security", plus);
+  } else if (t.taskType === "development") {
+    applyStatChange("development", plus);
+  } else {
+    applyStatChange("stability", plus);
+  }
+  gameState.totalRewards += t.baseReward;
+  showPopup(`Opgave fuldført: +${plus} til relevant stat, +${t.baseReward} belønning`, "success", 4000);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function showPopup(msg, type = "success", duration = 3000) {
+  const el = document.createElement('div');
+  el.classList.add('popup');
+  if (type === "error") el.classList.add('error');
+  else if (type === "info") el.classList.add('info');
+  el.style.animation = "none";
+  el.textContent = msg;
+  document.getElementById("popup-container").appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+function applyTimeCost(t) {
+  gameState.time = Math.max(gameState.time - t, 0);
+  updateScoreboard();
+}
+
+function applyMoneyCost(m) {
+  gameState.money = Math.max(gameState.money - m, 0);
+  updateScoreboard();
+}
+
+function applyStatChange(stat, delta) {
+  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
+  updateScoreboard();
+  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
+}
+
+function showFloatingText(txt, stat) {
+  const c = document.getElementById('floating-text-container');
+  const div = document.createElement('div');
+  div.classList.add('floating-text');
+  div.style.left = "50%";
+  div.style.top = "50%";
+  if (stat === "security") div.style.color = "#ff4444";
+  else if (stat === "stability") div.style.color = "#44ff44";
+  else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
+  else div.style.color = "#ffffff";
+  div.textContent = txt;
+  c.appendChild(div);
+  setTimeout(() => div.remove(), 2000);
+}
+
+/* ------------------------------------------------- */
+/* Opgavegenerering: En opgave skal have en bestemt type og
+   kræve 3-7 unikke lokationsbesøg, hvorefter "dokumentation" 
+   altid tilføjes som det sidste trin – og opgaven starter aldrig med det. */
+/* ------------------------------------------------- */
+function generateTask() {
+  if (gameState.time <= 0) return;
+  if (gameState.availableTasks.length >= 10) return;
+  
+  const categories = ["stability", "development", "security"];
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  
+  // Hent de tilladte lokationer (id'er som er i små bogstaver)
+  const allowed = allowedLocationsForTask[category];
+  
+  // Fjern "dokumentation" fra udvælgelsen, så den ikke udvælges som en af de tilfældige lokationer
+  const nonDocAllowed = allowed.filter(loc => loc.toLowerCase() !== "dokumentation");
+  
+  // Vælg antal besøg – mest sandsynligt 5-6 – fra nonDocAllowed
+  const choices = [3, 4, 5, 6, 7];
+  const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
+  let r = Math.random(), total = 0, numSteps = 3;
+  for (let i = 0; i < choices.length; i++) {
+    total += weights[i];
+    if (r < total) {
+      numSteps = choices[i];
+      break;
+    }
+  }
+  numSteps = Math.min(numSteps, nonDocAllowed.length);
+  
+  // Vælg unikke lokationer fra nonDocAllowed
+  let steps = [];
+  let copy = nonDocAllowed.slice();
+  for (let i = 0; i < numSteps; i++) {
+    let idx = Math.floor(Math.random() * copy.length);
+    steps.push(copy.splice(idx, 1)[0]);
+  }
+  
+  // Tilføj "dokumentation" som den sidste lokation
+  steps.push("dokumentation");
+  
+  // Vælg et opgavenavn ud fra typen
+  let taskName = "";
+  if (category === "stability") {
+    taskName = pickUniqueName(stabilityTasks);
+  } else if (category === "development") {
+    taskName = pickUniqueName(devTasks);
+  } else {
+    taskName = pickUniqueName(secTasks);
+  }
+  if (!taskName) return;
+  
+  const riskLevel = Math.floor(Math.random() * 3) + 1;
+  const baseReward = riskLevel * 80;
+  
+  const newTask = {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    taskType: category,
+    headline: taskName,
+    description: getTaskDescription(category),
+    steps: steps, // Unikke lokationer (uden "dokumentation" før sidste trin) og med "dokumentation" som sidste trin
+    currentStep: 0,
+    riskLevel: riskLevel,
+    baseReward: baseReward,
+    isHighPriority: (riskLevel === 3),
+    decisionMadeForStep: {}
+  };
+  
+  gameState.availableTasks.push(newTask);
+  renderTasks();
+}
+
+function pickUniqueName(taskArray) {
+  const available = taskArray.filter(n => !gameState.usedTasks.has(n));
+  if (!available.length) return null;
+  const name = available[Math.floor(Math.random() * available.length)];
+  gameState.usedTasks.add(name);
+  return name;
+}
+
+/* Renders tilgængelige opgaver */
+function renderTasks() {
+  tasksList.innerHTML = "";
+  if (!gameState.availableTasks.length) {
+    tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
+    return;
+  }
+  gameState.availableTasks.forEach(t => {
+    const li = document.createElement("li");
+    if (t.riskLevel === 3) {
+      li.style.borderColor = "red"; 
+      li.style.borderWidth = "2px";
+    } else if (t.riskLevel === 2) {
+      li.style.borderColor = "orange";
+    } else {
+      li.style.borderColor = "green";
+    }
+    let priorityLabel = t.isHighPriority ? " (HØJPRIORITET)" : "";
+    let potentialGain = `+${5 + t.riskLevel * 2} til ${t.taskType}`;
+    li.innerHTML = `
+      <strong>${t.headline}${priorityLabel}</strong><br/>
+      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
+      Potentielt: ${potentialGain}<br/>
+      <p class="task-description" style="display:none;">${t.description}</p>
+    `;
+    const commitBtn = document.createElement('button');
+    commitBtn.classList.add('commit-button');
+    commitBtn.textContent = "Forpligt";
+    commitBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      assignTask(t.id);
+    });
+    li.addEventListener("click", () => {
+      li.querySelectorAll(".task-description").forEach(d => {
+        d.style.display = (d.style.display === "none" ? "block" : "none");
+      });
+    });
+    li.appendChild(commitBtn);
+    tasksList.appendChild(li);
+  });
+}
+
+/* Når en opgave forpligtes */
+function assignTask(taskId) {
+  if (gameState.activeTask) {
+    showPopup("Allerede en aktiv opgave!", "error");
+    return;
+  }
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
+  if (idx === -1) return;
+  const task = gameState.availableTasks[idx];
+  if (task.riskLevel === 3) {
+    const pop = document.createElement('div');
+    pop.classList.add('popup', 'info');
+    pop.style.animation = "none";
+    pop.innerHTML = `
+      <strong>Høj Risiko</strong><br/>
+      Udviklerne advarer om stor risiko for fejl. Vil du fortsætte?
+      <br/><button id="hrYes">Fortsæt</button>
+      <button id="hrNo">Fortryd</button>
+    `;
+    document.getElementById('popup-container').appendChild(pop);
+    document.getElementById('hrYes').addEventListener('click', () => {
+      pop.remove();
+      finalizeAssign(taskId, idx);
+    });
+    document.getElementById('hrNo').addEventListener('click', () => {
+      pop.remove();
+      gameState.availableTasks.splice(idx, 1);
+      renderTasks();
+    });
+  } else {
+    finalizeAssign(taskId, idx);
+  }
+}
+
+function finalizeAssign(taskId, idx) {
+  gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
+  activeTaskHeadline.textContent = gameState.activeTask.headline;
+  activeTaskDesc.textContent = gameState.activeTask.description;
+  updateStepsList();
+  renderTasks();
+}
+
+/* Når en lokation klikkes */
+function handleLocationClick(locName) {
+  if (!gameState.activeTask) {
+    showPopup("Vælg en opgave først!", "error");
+    return;
+  }
+  if (gameState.time <= 0) return;
+  
+  const idx = gameState.activeTask.currentStep;
+  if (idx >= gameState.activeTask.steps.length) return;
+  
+  const needed = gameState.activeTask.steps[idx];
+  // Hvis det næste trin er "dokumentation", skal det håndteres automatisk
+  if (needed.toLowerCase() === "dokumentation") {
+    skipDocumentation();
+    return;
+  }
+  
+  if (locName.toLowerCase() !== needed.toLowerCase()) return;
+  
+  if (!gameState.activeTask.decisionMadeForStep) {
+    gameState.activeTask.decisionMadeForStep = {};
+  }
+  if (gameState.activeTask.decisionMadeForStep[idx]) return;
+  gameState.activeTask.decisionMadeForStep[idx] = true;
+  
+  showScenarioModal(locName);
+}
+
+function skipDocumentation() {
+  gameState.docSkipCount++;
+  finalizeStep();
+}
+
+function showScenarioModal(locName) {
+  scenarioModal.style.display = "flex";
+  const scenarios = detailedScenarios[locName.toLowerCase()];
+  if (!scenarios || scenarios.length === 0) {
+    scenarioTitle.textContent = locName;
+    scenarioDescription.textContent = "(Standard scenarie)";
+    scenarioALabel.textContent = "Mulighed A (standard)";
+    scenarioAText.textContent = "Giver +2 stabilitet, -50 kr";
+    scenarioAButton.onclick = () => {
+      applyTimeCost(2);
+      applyMoneyCost(50);
+      applyStatChange("stability", 2);
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    scenarioBLabel.textContent = "Mulighed B (hurtig)";
+    scenarioBText.textContent = "Billigere, men 10% fejlrisiko";
+    scenarioBButton.onclick = () => {
+      gameState.riskyTotal += 0.10;
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    return;
+  }
+  const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
+  scenarioTitle.textContent = `${locName} – ${sc.description}`;
+  scenarioDescription.textContent = "";
+  scenarioALabel.textContent = sc.A.label;
+  scenarioAText.textContent = sc.A.text;
+  scenarioAButton.onclick = () => {
+    applyTimeCost(sc.A.time);
+    applyMoneyCost(sc.A.money);
+    for (const stat in sc.A.effects) {
+      applyStatChange(stat, sc.A.effects[stat]);
+    }
+    gameState.riskyTotal += sc.A.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+  scenarioBLabel.textContent = sc.B.label;
+  scenarioBText.textContent = sc.B.text;
+  scenarioBButton.onclick = () => {
+    applyTimeCost(sc.B.time);
+    applyMoneyCost(sc.B.money);
+    for (const stat in sc.B.effects) {
+      applyStatChange(stat, sc.B.effects[stat]);
+    }
+    gameState.riskyTotal += sc.B.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+}
+
+function finalizeStep() {
+  if (!gameState.activeTask) return;
+  applyTimeCost(5);
+  gameState.activeTask.currentStep++;
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
+    showCABModal();
+  } else {
+    updateStepsList();
+  }
+}
+
+function showCABModal() {
+  let fail = gameState.riskyTotal + (gameState.docSkipCount * 0.15);
+  fail = Math.max(0, Math.min(fail, 1));
+  gameState.finalFailChance = fail;
+  cabModal.style.display = "flex";
+  cabSummary.innerHTML = `
+    <strong>CAB Gennemgang</strong><br/>
+    Hurtige valg: ${(gameState.riskyTotal * 100).toFixed(0)}%<br/>
+    Skip af dokumentation: ${gameState.docSkipCount} gang(e) => +${(gameState.docSkipCount * 15)}%<br/>
+    Samlet fejlchance: ${(fail * 100).toFixed(0)}%
+  `;
+}
+
+function finalizeCABResult() {
+  cabModal.style.display = "none";
+  if (Math.random() < gameState.finalFailChance) {
+    showCABResult(false);
+  } else {
+    showCABResult(true);
+  }
+}
+
+function showCABResult(isSuccess) {
+  cabResultModal.style.display = "flex";
+  if (isSuccess) {
+    cabResultTitle.textContent = "CAB: Godkendt!";
+    cabResultText.textContent = "CAB accepterer ændringerne. Opgaven er en succes.";
+    completeTaskCAB();
+  } else {
+    cabResultTitle.textContent = "CAB: Afvist!";
+    cabResultText.textContent = "CAB finder for stor risiko eller manglende dokumentation. Opgaven mislykkes.";
+    failTaskCAB();
+  }
+}
+
+function failTaskCAB() {
+  gameState.tasksCompleted++;
+  applyStatChange("hospitalSatisfaction", -10);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function completeTaskCAB() {
+  gameState.tasksCompleted++;
+  if (!gameState.activeTask) return;
+  const t = gameState.activeTask;
+  let plus = 5 + t.riskLevel * 2;
+  if (t.taskType === "security") {
+    applyStatChange("security", plus);
+  } else if (t.taskType === "development") {
+    applyStatChange("development", plus);
+  } else {
+    applyStatChange("stability", plus);
+  }
+  gameState.totalRewards += t.baseReward;
+  showPopup(`Opgave fuldført: +${plus} til relevant stat, +${t.baseReward} belønning`, "success", 4000);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function showPopup(msg, type = "success", duration = 3000) {
+  const el = document.createElement('div');
+  el.classList.add('popup');
+  if (type === "error") el.classList.add('error');
+  else if (type === "info") el.classList.add('info');
+  el.style.animation = "none";
+  el.textContent = msg;
+  document.getElementById("popup-container").appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+function applyTimeCost(t) {
+  gameState.time = Math.max(gameState.time - t, 0);
+  updateScoreboard();
+}
+
+function applyMoneyCost(m) {
+  gameState.money = Math.max(gameState.money - m, 0);
+  updateScoreboard();
+}
+
+function applyStatChange(stat, delta) {
+  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
+  updateScoreboard();
+  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
+}
+
+function showFloatingText(txt, stat) {
+  const c = document.getElementById('floating-text-container');
+  const div = document.createElement('div');
+  div.classList.add('floating-text');
+  div.style.left = "50%";
+  div.style.top = "50%";
+  if (stat === "security") div.style.color = "#ff4444";
+  else if (stat === "stability") div.style.color = "#44ff44";
+  else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
+  else div.style.color = "#ffffff";
+  div.textContent = txt;
+  c.appendChild(div);
+  setTimeout(() => div.remove(), 2000);
+}
+
+/* ------------------------------------------------- */
+/* Opgavegenerering: En opgave har en bestemt type og kræver 3-7 unikke lokationsbesøg,
+   hvorefter "dokumentation" altid tilføjes som sidste trin.
+   Dette sikrer, at opgaven ALDRIG starter med "dokumentation" – som skal udløse CAB. */
+/* ------------------------------------------------- */
+function generateTask() {
+  if (gameState.time <= 0) return;
+  if (gameState.availableTasks.length >= 10) return;
+  
+  const categories = ["stability", "development", "security"];
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  
+  // Hent de tilladte lokationer for denne opgavetype (alle id'er er små)
+  const allowed = allowedLocationsForTask[category];
+  
+  // Fjern "dokumentation" fra udvælgelsen, da vi altid skal have det sidst
+  const nonDocAllowed = allowed.filter(loc => loc.toLowerCase() !== "dokumentation");
+  
+  // Vælg antal besøg – med en fordeling der favoriserer 5-6, men udelukker dokumentation midtvejs
+  const choices = [3, 4, 5, 6, 7];
+  const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
+  let r = Math.random(), total = 0, numSteps = 3;
+  for (let i = 0; i < choices.length; i++) {
+    total += weights[i];
+    if (r < total) {
+      numSteps = choices[i];
+      break;
+    }
+  }
+  // Sørg for, at vi ikke vælger flere besøg end antallet af unikke lokationer (uden dokumentation)
+  numSteps = Math.min(numSteps, nonDocAllowed.length);
+  
+  // Vælg unikke lokationer fra nonDocAllowed
+  let steps = [];
+  let copy = nonDocAllowed.slice();
+  for (let i = 0; i < numSteps; i++) {
+    let idx = Math.floor(Math.random() * copy.length);
+    steps.push(copy.splice(idx, 1)[0]);
+  }
+  // Tilføj "dokumentation" som det sidste trin
+  steps.push("dokumentation");
+  
+  // Vælg opgavenavn ud fra typen
+  let taskName = "";
+  if (category === "stability") {
+    taskName = pickUniqueName(stabilityTasks);
+  } else if (category === "development") {
+    taskName = pickUniqueName(devTasks);
+  } else {
+    taskName = pickUniqueName(secTasks);
+  }
+  if (!taskName) return;
+  
+  const riskLevel = Math.floor(Math.random() * 3) + 1;
+  const baseReward = riskLevel * 80;
+  
+  const newTask = {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    taskType: category,
+    headline: taskName,
+    description: getTaskDescription(category),
+    steps: steps, // Unikke lokationer uden "dokumentation" midtvejs og med "dokumentation" som sidste
+    currentStep: 0,
+    riskLevel: riskLevel,
+    baseReward: baseReward,
+    isHighPriority: (riskLevel === 3),
+    decisionMadeForStep: {}
+  };
+  
+  gameState.availableTasks.push(newTask);
+  renderTasks();
+}
+
+function pickUniqueName(taskArray) {
+  const available = taskArray.filter(n => !gameState.usedTasks.has(n));
+  if (!available.length) return null;
+  const name = available[Math.floor(Math.random() * available.length)];
+  gameState.usedTasks.add(name);
+  return name;
+}
+
+/* Renders tilgængelige opgaver */
+function renderTasks() {
+  tasksList.innerHTML = "";
+  if (!gameState.availableTasks.length) {
+    tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
+    return;
+  }
+  gameState.availableTasks.forEach(t => {
+    const li = document.createElement("li");
+    if (t.riskLevel === 3) {
+      li.style.borderColor = "red"; 
+      li.style.borderWidth = "2px";
+    } else if (t.riskLevel === 2) {
+      li.style.borderColor = "orange";
+    } else {
+      li.style.borderColor = "green";
+    }
+    let priorityLabel = t.isHighPriority ? " (HØJPRIORITET)" : "";
+    let potentialGain = `+${5 + t.riskLevel * 2} til ${t.taskType}`;
+    li.innerHTML = `
+      <strong>${t.headline}${priorityLabel}</strong><br/>
+      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
+      Potentielt: ${potentialGain}<br/>
+      <p class="task-description" style="display:none;">${t.description}</p>
+    `;
+    const commitBtn = document.createElement('button');
+    commitBtn.classList.add('commit-button');
+    commitBtn.textContent = "Forpligt";
+    commitBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      assignTask(t.id);
+    });
+    li.addEventListener("click", () => {
+      li.querySelectorAll(".task-description").forEach(d => {
+        d.style.display = (d.style.display === "none" ? "block" : "none");
+      });
+    });
+    li.appendChild(commitBtn);
+    tasksList.appendChild(li);
+  });
+}
+
+/* Når en opgave forpligtes */
+function assignTask(taskId) {
+  if (gameState.activeTask) {
+    showPopup("Allerede en aktiv opgave!", "error");
+    return;
+  }
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
+  if (idx === -1) return;
+  const task = gameState.availableTasks[idx];
+  if (task.riskLevel === 3) {
+    const pop = document.createElement('div');
+    pop.classList.add('popup', 'info');
+    pop.style.animation = "none";
+    pop.innerHTML = `
+      <strong>Høj Risiko</strong><br/>
+      Udviklerne advarer om stor risiko for fejl. Vil du fortsætte?
+      <br/><button id="hrYes">Fortsæt</button>
+      <button id="hrNo">Fortryd</button>
+    `;
+    document.getElementById('popup-container').appendChild(pop);
+    document.getElementById('hrYes').addEventListener('click', () => {
+      pop.remove();
+      finalizeAssign(taskId, idx);
+    });
+    document.getElementById('hrNo').addEventListener('click', () => {
+      pop.remove();
+      gameState.availableTasks.splice(idx, 1);
+      renderTasks();
+    });
+  } else {
+    finalizeAssign(taskId, idx);
+  }
+}
+
+function finalizeAssign(taskId, idx) {
+  gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
+  activeTaskHeadline.textContent = gameState.activeTask.headline;
+  activeTaskDesc.textContent = gameState.activeTask.description;
+  updateStepsList();
+  renderTasks();
+}
+
+/* Når en lokation klikkes */
+function handleLocationClick(locName) {
+  if (!gameState.activeTask) {
+    showPopup("Vælg en opgave først!", "error");
+    return;
+  }
+  if (gameState.time <= 0) return;
+  
+  const idx = gameState.activeTask.currentStep;
+  if (idx >= gameState.activeTask.steps.length) return;
+  
+  const needed = gameState.activeTask.steps[idx];
+  // Hvis det næste trin er "dokumentation", skal det håndteres automatisk
+  if (needed.toLowerCase() === "dokumentation") {
+    skipDocumentation();
+    return;
+  }
+  
+  if (locName.toLowerCase() !== needed.toLowerCase()) return;
+  
+  if (!gameState.activeTask.decisionMadeForStep) {
+    gameState.activeTask.decisionMadeForStep = {};
+  }
+  if (gameState.activeTask.decisionMadeForStep[idx]) return;
+  gameState.activeTask.decisionMadeForStep[idx] = true;
+  
+  showScenarioModal(locName);
+}
+
+function skipDocumentation() {
+  gameState.docSkipCount++;
+  finalizeStep();
+}
+
+function showScenarioModal(locName) {
+  scenarioModal.style.display = "flex";
+  const scenarios = detailedScenarios[locName.toLowerCase()];
+  if (!scenarios || scenarios.length === 0) {
+    scenarioTitle.textContent = locName;
+    scenarioDescription.textContent = "(Standard scenarie)";
+    scenarioALabel.textContent = "Mulighed A (standard)";
+    scenarioAText.textContent = "Giver +2 stabilitet, -50 kr";
+    scenarioAButton.onclick = () => {
+      applyTimeCost(2);
+      applyMoneyCost(50);
+      applyStatChange("stability", 2);
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    scenarioBLabel.textContent = "Mulighed B (hurtig)";
+    scenarioBText.textContent = "Billigere, men 10% fejlrisiko";
+    scenarioBButton.onclick = () => {
+      gameState.riskyTotal += 0.10;
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    return;
+  }
+  const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
+  scenarioTitle.textContent = `${locName} – ${sc.description}`;
+  scenarioDescription.textContent = "";
+  scenarioALabel.textContent = sc.A.label;
+  scenarioAText.textContent = sc.A.text;
+  scenarioAButton.onclick = () => {
+    applyTimeCost(sc.A.time);
+    applyMoneyCost(sc.A.money);
+    for (const stat in sc.A.effects) {
+      applyStatChange(stat, sc.A.effects[stat]);
+    }
+    gameState.riskyTotal += sc.A.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+  scenarioBLabel.textContent = sc.B.label;
+  scenarioBText.textContent = sc.B.text;
+  scenarioBButton.onclick = () => {
+    applyTimeCost(sc.B.time);
+    applyMoneyCost(sc.B.money);
+    for (const stat in sc.B.effects) {
+      applyStatChange(stat, sc.B.effects[stat]);
+    }
+    gameState.riskyTotal += sc.B.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+}
+
+function finalizeStep() {
+  if (!gameState.activeTask) return;
+  applyTimeCost(5);
+  gameState.activeTask.currentStep++;
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
+    showCABModal();
+  } else {
+    updateStepsList();
+  }
+}
+
+function showCABModal() {
+  let fail = gameState.riskyTotal + (gameState.docSkipCount * 0.15);
+  fail = Math.max(0, Math.min(fail, 1));
+  gameState.finalFailChance = fail;
+  cabModal.style.display = "flex";
+  cabSummary.innerHTML = `
+    <strong>CAB Gennemgang</strong><br/>
+    Hurtige valg: ${(gameState.riskyTotal * 100).toFixed(0)}%<br/>
+    Skip af dokumentation: ${gameState.docSkipCount} gang(e) => +${(gameState.docSkipCount * 15)}%<br/>
+    Samlet fejlchance: ${(fail * 100).toFixed(0)}%
+  `;
+}
+
+function finalizeCABResult() {
+  cabModal.style.display = "none";
+  if (Math.random() < gameState.finalFailChance) {
+    showCABResult(false);
+  } else {
+    showCABResult(true);
+  }
+}
+
+function showCABResult(isSuccess) {
+  cabResultModal.style.display = "flex";
+  if (isSuccess) {
+    cabResultTitle.textContent = "CAB: Godkendt!";
+    cabResultText.textContent = "CAB accepterer ændringerne. Opgaven er en succes.";
+    completeTaskCAB();
+  } else {
+    cabResultTitle.textContent = "CAB: Afvist!";
+    cabResultText.textContent = "CAB finder for stor risiko eller manglende dokumentation. Opgaven mislykkes.";
+    failTaskCAB();
+  }
+}
+
+function failTaskCAB() {
+  gameState.tasksCompleted++;
+  applyStatChange("hospitalSatisfaction", -10);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function completeTaskCAB() {
+  gameState.tasksCompleted++;
+  if (!gameState.activeTask) return;
+  const t = gameState.activeTask;
+  let plus = 5 + t.riskLevel * 2;
+  if (t.taskType === "security") {
+    applyStatChange("security", plus);
+  } else if (t.taskType === "development") {
+    applyStatChange("development", plus);
+  } else {
+    applyStatChange("stability", plus);
+  }
+  gameState.totalRewards += t.baseReward;
+  showPopup(`Opgave fuldført: +${plus} til relevant stat, +${t.baseReward} belønning`, "success", 4000);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function showPopup(msg, type = "success", duration = 3000) {
+  const el = document.createElement('div');
+  el.classList.add('popup');
+  if (type === "error") el.classList.add('error');
+  else if (type === "info") el.classList.add('info');
+  el.style.animation = "none";
+  el.textContent = msg;
+  document.getElementById("popup-container").appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+function applyTimeCost(t) {
+  gameState.time = Math.max(gameState.time - t, 0);
+  updateScoreboard();
+}
+
+function applyMoneyCost(m) {
+  gameState.money = Math.max(gameState.money - m, 0);
+  updateScoreboard();
+}
+
+function applyStatChange(stat, delta) {
+  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
+  updateScoreboard();
+  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
+}
+
+function showFloatingText(txt, stat) {
+  const c = document.getElementById('floating-text-container');
+  const div = document.createElement('div');
+  div.classList.add('floating-text');
+  div.style.left = "50%";
+  div.style.top = "50%";
+  if (stat === "security") div.style.color = "#ff4444";
+  else if (stat === "stability") div.style.color = "#44ff44";
+  else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
+  else div.style.color = "#ffffff";
+  div.textContent = txt;
+  c.appendChild(div);
+  setTimeout(() => div.remove(), 2000);
+}
+
+/* ------------------------------------------------- */
+/* Opgavegenerering: En opgave skal have en bestemt type og
+   kræver 3-7 unikke lokationsbesøg, hvorefter "dokumentation" 
+   altid tilføjes som sidste trin – og opgaven starter aldrig med det. */
+/* ------------------------------------------------- */
+function generateTask() {
+  if (gameState.time <= 0) return;
+  if (gameState.availableTasks.length >= 10) return;
+  
+  const categories = ["stability", "development", "security"];
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  
+  // Hent de tilladte lokationer for opgavetypen (alle id'er er små)
+  const allowed = allowedLocationsForTask[category];
+  
+  // Fjern "dokumentation" fra udvælgelsen, så vi ikke får det midtvejs
+  const nonDocAllowed = allowed.filter(loc => loc.toLowerCase() !== "dokumentation");
+  
+  // Vælg antal besøg (3-7) ud fra en vægtet fordeling – bemærk: der vælges kun fra nonDocAllowed
+  const choices = [3, 4, 5, 6, 7];
+  const weights = [0.1, 0.1, 0.4, 0.3, 0.1];
+  let r = Math.random(), total = 0, numSteps = 3;
+  for (let i = 0; i < choices.length; i++) {
+    total += weights[i];
+    if (r < total) {
+      numSteps = choices[i];
+      break;
+    }
+  }
+  numSteps = Math.min(numSteps, nonDocAllowed.length);
+  
+  // Vælg unikke lokationer fra nonDocAllowed
+  let steps = [];
+  let copy = nonDocAllowed.slice();
+  for (let i = 0; i < numSteps; i++) {
+    let idx = Math.floor(Math.random() * copy.length);
+    steps.push(copy.splice(idx, 1)[0]);
+  }
+  
+  // Tilføj "dokumentation" som det sidste trin
+  steps.push("dokumentation");
+  
+  // Vælg et opgavenavn ud fra typen
+  let taskName = "";
+  if (category === "stability") {
+    taskName = pickUniqueName(stabilityTasks);
+  } else if (category === "development") {
+    taskName = pickUniqueName(devTasks);
+  } else {
+    taskName = pickUniqueName(secTasks);
+  }
+  if (!taskName) return;
+  
+  const riskLevel = Math.floor(Math.random() * 3) + 1;
+  const baseReward = riskLevel * 80;
+  
+  const newTask = {
+    id: Date.now() + Math.floor(Math.random() * 1000),
+    taskType: category,
+    headline: taskName,
+    description: getTaskDescription(category),
+    steps: steps, // Unikke lokationer uden "dokumentation" midtvejs + "dokumentation" til sidst
+    currentStep: 0,
+    riskLevel: riskLevel,
+    baseReward: baseReward,
+    isHighPriority: (riskLevel === 3),
+    decisionMadeForStep: {}
+  };
+  
+  gameState.availableTasks.push(newTask);
+  renderTasks();
+}
+
+function pickUniqueName(taskArray) {
+  const available = taskArray.filter(n => !gameState.usedTasks.has(n));
+  if (!available.length) return null;
+  const name = available[Math.floor(Math.random() * available.length)];
+  gameState.usedTasks.add(name);
+  return name;
+}
+
+/* Renders tilgængelige opgaver */
+function renderTasks() {
+  tasksList.innerHTML = "";
+  if (!gameState.availableTasks.length) {
+    tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
+    return;
+  }
+  gameState.availableTasks.forEach(t => {
+    const li = document.createElement("li");
+    if (t.riskLevel === 3) {
+      li.style.borderColor = "red"; 
+      li.style.borderWidth = "2px";
+    } else if (t.riskLevel === 2) {
+      li.style.borderColor = "orange";
+    } else {
+      li.style.borderColor = "green";
+    }
+    let priorityLabel = t.isHighPriority ? " (HØJPRIORITET)" : "";
+    let potentialGain = `+${5 + t.riskLevel * 2} til ${t.taskType}`;
+    li.innerHTML = `
+      <strong>${t.headline}${priorityLabel}</strong><br/>
+      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
+      Potentielt: ${potentialGain}<br/>
+      <p class="task-description" style="display:none;">${t.description}</p>
+    `;
+    const commitBtn = document.createElement('button');
+    commitBtn.classList.add('commit-button');
+    commitBtn.textContent = "Forpligt";
+    commitBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      assignTask(t.id);
+    });
+    li.addEventListener("click", () => {
+      li.querySelectorAll(".task-description").forEach(d => {
+        d.style.display = (d.style.display === "none" ? "block" : "none");
+      });
+    });
+    li.appendChild(commitBtn);
+    tasksList.appendChild(li);
+  });
+}
+
+/* Når en opgave forpligtes */
+function assignTask(taskId) {
+  if (gameState.activeTask) {
+    showPopup("Allerede en aktiv opgave!", "error");
+    return;
+  }
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  const idx = gameState.availableTasks.findIndex(t => t.id === taskId);
+  if (idx === -1) return;
+  const task = gameState.availableTasks[idx];
+  if (task.riskLevel === 3) {
+    const pop = document.createElement('div');
+    pop.classList.add('popup', 'info');
+    pop.style.animation = "none";
+    pop.innerHTML = `
+      <strong>Høj Risiko</strong><br/>
+      Udviklerne advarer om stor risiko for fejl. Vil du fortsætte?
+      <br/><button id="hrYes">Fortsæt</button>
+      <button id="hrNo">Fortryd</button>
+    `;
+    document.getElementById('popup-container').appendChild(pop);
+    document.getElementById('hrYes').addEventListener('click', () => {
+      pop.remove();
+      finalizeAssign(taskId, idx);
+    });
+    document.getElementById('hrNo').addEventListener('click', () => {
+      pop.remove();
+      gameState.availableTasks.splice(idx, 1);
+      renderTasks();
+    });
+  } else {
+    finalizeAssign(taskId, idx);
+  }
+}
+
+function finalizeAssign(taskId, idx) {
+  gameState.activeTask = gameState.availableTasks.splice(idx, 1)[0];
+  activeTaskHeadline.textContent = gameState.activeTask.headline;
+  activeTaskDesc.textContent = gameState.activeTask.description;
+  updateStepsList();
+  renderTasks();
+}
+
+/* Når en lokation klikkes */
+function handleLocationClick(locName) {
+  if (!gameState.activeTask) {
+    showPopup("Vælg en opgave først!", "error");
+    return;
+  }
+  if (gameState.time <= 0) return;
+  
+  const idx = gameState.activeTask.currentStep;
+  if (idx >= gameState.activeTask.steps.length) return;
+  
+  const needed = gameState.activeTask.steps[idx];
+  // Hvis næste trin er "dokumentation", håndteres det automatisk
+  if (needed.toLowerCase() === "dokumentation") {
+    skipDocumentation();
+    return;
+  }
+  
+  if (locName.toLowerCase() !== needed.toLowerCase()) return;
+  
+  if (!gameState.activeTask.decisionMadeForStep) {
+    gameState.activeTask.decisionMadeForStep = {};
+  }
+  if (gameState.activeTask.decisionMadeForStep[idx]) return;
+  gameState.activeTask.decisionMadeForStep[idx] = true;
+  
+  showScenarioModal(locName);
+}
+
+function skipDocumentation() {
+  gameState.docSkipCount++;
+  finalizeStep();
+}
+
+function showScenarioModal(locName) {
+  scenarioModal.style.display = "flex";
+  const scenarios = detailedScenarios[locName.toLowerCase()];
+  if (!scenarios || scenarios.length === 0) {
+    scenarioTitle.textContent = locName;
+    scenarioDescription.textContent = "(Standard scenarie)";
+    scenarioALabel.textContent = "Mulighed A (standard)";
+    scenarioAText.textContent = "Giver +2 stabilitet, -50 kr";
+    scenarioAButton.onclick = () => {
+      applyTimeCost(2);
+      applyMoneyCost(50);
+      applyStatChange("stability", 2);
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    scenarioBLabel.textContent = "Mulighed B (hurtig)";
+    scenarioBText.textContent = "Billigere, men 10% fejlrisiko";
+    scenarioBButton.onclick = () => {
+      gameState.riskyTotal += 0.10;
+      scenarioModal.style.display = "none";
+      finalizeStep();
+    };
+    return;
+  }
+  const sc = scenarios[Math.floor(Math.random() * scenarios.length)];
+  scenarioTitle.textContent = `${locName} – ${sc.description}`;
+  scenarioDescription.textContent = "";
+  scenarioALabel.textContent = sc.A.label;
+  scenarioAText.textContent = sc.A.text;
+  scenarioAButton.onclick = () => {
+    applyTimeCost(sc.A.time);
+    applyMoneyCost(sc.A.money);
+    for (const stat in sc.A.effects) {
+      applyStatChange(stat, sc.A.effects[stat]);
+    }
+    gameState.riskyTotal += sc.A.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+  scenarioBLabel.textContent = sc.B.label;
+  scenarioBText.textContent = sc.B.text;
+  scenarioBButton.onclick = () => {
+    applyTimeCost(sc.B.time);
+    applyMoneyCost(sc.B.money);
+    for (const stat in sc.B.effects) {
+      applyStatChange(stat, sc.B.effects[stat]);
+    }
+    gameState.riskyTotal += sc.B.failBonus || 0;
+    scenarioModal.style.display = "none";
+    finalizeStep();
+  };
+}
+
+function finalizeStep() {
+  if (!gameState.activeTask) return;
+  applyTimeCost(5);
+  gameState.activeTask.currentStep++;
+  if (gameState.time <= 0) {
+    endGame();
+    return;
+  }
+  if (gameState.activeTask.currentStep >= gameState.activeTask.steps.length) {
+    showCABModal();
+  } else {
+    updateStepsList();
+  }
+}
+
+function showCABModal() {
+  let fail = gameState.riskyTotal + (gameState.docSkipCount * 0.15);
+  fail = Math.max(0, Math.min(fail, 1));
+  gameState.finalFailChance = fail;
+  cabModal.style.display = "flex";
+  cabSummary.innerHTML = `
+    <strong>CAB Gennemgang</strong><br/>
+    Hurtige valg: ${(gameState.riskyTotal * 100).toFixed(0)}%<br/>
+    Skip af dokumentation: ${gameState.docSkipCount} gang(e) => +${(gameState.docSkipCount * 15)}%<br/>
+    Samlet fejlchance: ${(fail * 100).toFixed(0)}%
+  `;
+}
+
+function finalizeCABResult() {
+  cabModal.style.display = "none";
+  if (Math.random() < gameState.finalFailChance) {
+    showCABResult(false);
+  } else {
+    showCABResult(true);
+  }
+}
+
+function showCABResult(isSuccess) {
+  cabResultModal.style.display = "flex";
+  if (isSuccess) {
+    cabResultTitle.textContent = "CAB: Godkendt!";
+    cabResultText.textContent = "CAB accepterer ændringerne. Opgaven er en succes.";
+    completeTaskCAB();
+  } else {
+    cabResultTitle.textContent = "CAB: Afvist!";
+    cabResultText.textContent = "CAB finder for stor risiko eller manglende dokumentation. Opgaven mislykkes.";
+    failTaskCAB();
+  }
+}
+
+function failTaskCAB() {
+  gameState.tasksCompleted++;
+  applyStatChange("hospitalSatisfaction", -10);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function completeTaskCAB() {
+  gameState.tasksCompleted++;
+  if (!gameState.activeTask) return;
+  const t = gameState.activeTask;
+  let plus = 5 + t.riskLevel * 2;
+  if (t.taskType === "security") {
+    applyStatChange("security", plus);
+  } else if (t.taskType === "development") {
+    applyStatChange("development", plus);
+  } else {
+    applyStatChange("stability", plus);
+  }
+  gameState.totalRewards += t.baseReward;
+  showPopup(`Opgave fuldført: +${plus} til relevant stat, +${t.baseReward} belønning`, "success", 4000);
+  gameState.activeTask = null;
+  activeTaskHeadline.textContent = "Ingen aktiv opgave";
+  activeTaskDesc.textContent = "";
+  stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
+  updateScoreboard();
+}
+
+function showPopup(msg, type = "success", duration = 3000) {
+  const el = document.createElement('div');
+  el.classList.add('popup');
+  if (type === "error") el.classList.add('error');
+  else if (type === "info") el.classList.add('info');
+  el.style.animation = "none";
+  el.textContent = msg;
+  document.getElementById("popup-container").appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+function applyTimeCost(t) {
+  gameState.time = Math.max(gameState.time - t, 0);
+  updateScoreboard();
+}
+
+function applyMoneyCost(m) {
+  gameState.money = Math.max(gameState.money - m, 0);
+  updateScoreboard();
+}
+
+function applyStatChange(stat, delta) {
+  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
+  updateScoreboard();
+  showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
+}
+
+function showFloatingText(txt, stat) {
+  const c = document.getElementById('floating-text-container');
+  const div = document.createElement('div');
+  div.classList.add('floating-text');
+  div.style.left = "50%";
+  div.style.top = "50%";
+  if (stat === "security") div.style.color = "#ff4444";
+  else if (stat === "stability") div.style.color = "#44ff44";
+  else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
+  else div.style.color = "#ffffff";
+  div.textContent = txt;
+  c.appendChild(div);
+  setTimeout(() => div.remove(), 2000);
+}
+
+/* ------------------------------------------------- */
+/* Initiering af spillet                             */
+/* ------------------------------------------------- */
 function initGame() {
   updateScoreboard();
   // Generer initialt 2 opgaver
   for (let i = 0; i < 2; i++) {
     generateTask();
   }
-  // Nye opgaver genereres løbende
+  // Nye opgaver genereres med jævne mellemrum
   setInterval(() => {
     if (gameState.time > 0 && gameState.availableTasks.length < 10) {
       generateTask();
@@ -1216,7 +2559,7 @@ function initGame() {
   }, 10000);
 }
 
-/* Tildel event listeners til lokationer (brug de navne, der vises i index.html) */
+/* Tildel event listeners til lokationer (brug de navne, som vises i index.html) */
 const locationElements = {
   "Infrastruktur": document.getElementById('infrastruktur'),
   "Informationssikkerhed": document.getElementById('informationssikkerhed'),
