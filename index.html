@@ -11,23 +11,22 @@
     <h1>IT Tycoon</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Numeric stats for Security/Stability/Development -->
         <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
-        <span>Point: <span id="total-rewards">0</span></span>
+        <span>Samlet belønning: <span id="total-rewards">0</span></span>
 
         <span style="color:#ff4444;">Sikkerhed:</span> <span id="security-value">100</span>
         <span style="color:#44ff44;">Stabilitet:</span> <span id="stability-value">100</span>
         <span style="color:#4444ff;">Udvikling:</span> <span id="development-value">100</span>
 
-        <span style="color:#ffc107;">Hospitalstilfredshed:</span> <span id="hospital-satisfaction">100</span>%
+        <span style="color:#ffc107;">Hospitalstilfredshed:</span> 
+        <span id="hospital-satisfaction">100</span>%
       </div>
     </div>
   </header>
 
-  <!-- 50-50 Layout -->
   <div id="main-container">
     <div id="game-area">
-      <!-- Spread out so they don’t overlap -->
+      <!-- Spread out locations so they don’t overlap -->
       <div class="location" id="infrastruktur" style="top: 15%; left: 10%;">Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 15%; left: 70%;">Informationssikkerhed</div>
 
@@ -40,7 +39,8 @@
     </div>
 
     <div id="task-side">
-      <div id="active-task">
+      <!-- (2) Reduced spacing under "Aktiv Opgave" by 50% -->
+      <div id="active-task" style="padding-bottom: 4px;">
         <h2>Aktiv Opgave</h2>
         <h3 id="active-task-headline">Ingen aktiv opgave</h3>
         <p id="active-task-description"></p>
@@ -68,26 +68,21 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <!-- (2) More interesting, colorful, longer text -->
-      <h2 style="color:#1abc9c;">Velkommen til <em>IT Tycoon</em></h2>
+      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon</h2>
       <p style="color:#f1c40f;">
-        Du er <strong>Forvalter</strong> for Hospitalet! Din mission er at finde den perfekte
-        balance mellem <span style="color:#ff4444;">Sikkerhed</span>, <span style="color:#44ff44;">Stabilitet</span> og 
-        <span style="color:#4444ff;">Udvikling</span>. 
+        Du er <strong>Forvalter</strong> for Hospitalet! 
+        Din mission er at afveje Sikkerhed, Stabilitet og Udvikling, 
+        og samtidig holde Hospitalet tilfreds.
       </p>
       <p>
-        Som Forvalter skal du overveje <strong>risiko</strong> og <strong>belønning</strong> for hver opgave. 
-        Højrisiko-opgaver kan give store gevinster, men også fatale tab hvis de fejler. 
-      </p>
-      <p>
-        Hospitalet forventer hurtige løsninger, men <em>IT Jura</em>, <em>Leverandør</em>, 
-        <em>Infrastruktur</em> og flere steder <span style="color:#c0392b;">kræver</span> 
-        din opmærksomhed. Klik på lokationerne for at udføre trin og vælg opgaver med 
-        <strong>omhu</strong> i “Mulige Opgaver.” 
+        Vær dog forsigtig: Sikkerhedsløsninger kan koste medarbejdernes 
+        tid og moral, mens udviklingsopgaver æder ressourcer. 
+        Højrisiko-opgaver giver stor belønning, men ved fiasko 
+        skal du udføre <strong>ekstra opgaver</strong> for at rette fejlene!
       </p>
       <p style="color:#8e44ad;">
-        Vil du fokusere på sikkerhed? Eller udvikle nye features, 
-        men risikere stabilitetsproblemer? Dine valg afgør hospitalets fremtid!
+        Klik på lokationerne for at gennemføre trin. 
+        Vælg dine opgaver med omhu! 
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
