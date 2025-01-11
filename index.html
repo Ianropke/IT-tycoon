@@ -13,6 +13,7 @@
       <div id="scores">
         <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
         <span>Point: <span id="total-rewards">0</span></span>
+
         <div id="bars-container">
           <div class="bar-wrapper">
             <label>Sikkerhed</label>
@@ -32,21 +33,23 @@
     </div>
   </header>
 
+  <!-- main-container with a slightly wider game-area now -->
   <div id="main-container">
-    <!-- (1) 10% narrower => #game-area flex changed from 1 -> 0.9 -->
     <div id="game-area">
+      <!-- The usual locations -->
       <div class="location" id="infrastruktur" style="top: 15%; left: 18%;">Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 15%; left: 57%;">Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 40%; left: 38%;">Hospital</div>
       <div class="location" id="medicinsk-udstyr" style="top: 65%; left: 18%;">Medicinsk Udstyr</div>
       <div class="location" id="cybersikkerhed" style="top: 65%; left: 57%;">Cybersikkerhed</div>
+      <!-- Extra new locations -->
       <div class="location" id="leverandor" style="top: 40%; left: 57%;">Leverandør</div>
       <div class="location" id="it-jura" style="top: 65%; left: 38%;">IT Jura</div>
+
       <div id="player"></div>
     </div>
 
     <div id="task-side">
-      <!-- (2) Less spacing in Aktiv Opgave, plus (3) half spacing under titles -->
       <div id="active-task">
         <h2 style="margin-bottom:2px;">Aktiv Opgave</h2>
         <h3 id="active-task-headline" style="margin-bottom:1.5px;">Ingen aktiv opgave</h3>
