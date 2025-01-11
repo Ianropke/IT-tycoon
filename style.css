@@ -33,6 +33,7 @@ header h1 {
   font-size: 0.9rem;
 }
 
+/* 50-50 layout */
 #main-container {
   display: flex;
   height: 80vh;
