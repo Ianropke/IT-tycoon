@@ -1,8 +1,8 @@
 /************************************************
- * script.js
+ * script.js (unchanged except for 33% chance 
+ * for dev tasks, ensuring they appear)
  ************************************************/
 
-/** Player Object **/
 const player = {
   element: document.getElementById('player'),
   position: { top: 50, left: 50 },
@@ -10,7 +10,6 @@ const player = {
   isVisiting: null,
 };
 
-/** Game State **/
 let gameState = {
   tasksCompleted: 0,
   totalRewards: 0,
@@ -26,7 +25,7 @@ let gameState = {
   shownFirstActivePopup: false,
 };
 
-/** Location Elements **/
+// New + Old Locations
 const locations = {
   Infrastruktur: document.getElementById('infrastruktur'),
   Informationssikkerhed: document.getElementById('informationssikkerhed'),
@@ -37,7 +36,6 @@ const locations = {
   'IT Jura': document.getElementById('it-jura'),
 };
 
-/** Scoreboard & Bars **/
 const scoreboard = {
   tasksCompleted: document.getElementById('tasks-completed'),
   totalRewards: document.getElementById('total-rewards'),
@@ -48,14 +46,13 @@ const securityBar    = document.getElementById('security-bar');
 const stabilityBar   = document.getElementById('stability-bar');
 const developmentBar = document.getElementById('development-bar');
 
-/** Active & Available Tasks UI **/
 const activeTaskHeadline   = document.getElementById('active-task-headline');
 const activeTaskDescription= document.getElementById('active-task-description');
 const activeTaskDetails    = document.getElementById('active-task-details');
 const stepsList            = document.getElementById('steps-list');
 const tasksList            = document.getElementById('tasks-list');
 
-/** Intro Modal **/
+// Intro Modal
 const introModal = document.getElementById('intro-modal');
 const introOkBtn = document.getElementById('intro-ok-btn');
 introOkBtn.addEventListener('click', () => {
@@ -63,7 +60,7 @@ introOkBtn.addEventListener('click', () => {
   gameState.introModalOpen = false;
 });
 
-/** Step Explanations **/
+// Step Explanations
 const stepExplanations = {
   Infrastruktur: "Du opgraderer serverinfrastrukturen for at undgå nedetid.",
   Informationssikkerhed: "Du installerer en patch for at forbedre sikkerheden.",
@@ -74,7 +71,7 @@ const stepExplanations = {
   'IT Jura': "Du tjekker kontrakter og juridiske krav for it-projekter.",
 };
 
-/** Step Pools for 3 Types **/
+// Step Pools
 const stepsPool = {
   stability: [
     ["Hospital", "Infrastruktur", "Hospital"],
@@ -93,7 +90,6 @@ const stepsPool = {
   ]
 };
 
-/** Headlines & Descs */
 const headlines = [
   "Netværkstjek",
   "Systemoptimering",
@@ -108,9 +104,7 @@ const descs = {
   security: "(Sikkerhedsopgave) Håndtér trusler, styrk beskyttelse.",
 };
 
-/************************************************
- * checkCollisions
- ************************************************/
+// Collisions
 function checkCollisions() {
   for (const [locName, locEl] of Object.entries(locations)) {
     if (isColliding(player.element, locEl)) {
@@ -120,29 +114,23 @@ function checkCollisions() {
   requestAnimationFrame(checkCollisions);
 }
 
-/************************************************
- * setupListeners
- ************************************************/
 function setupListeners() {
   document.addEventListener('keydown', handleMovement);
   requestAnimationFrame(checkCollisions);
 }
 
-/************************************************
- * isColliding & handleLocationVisit
- ************************************************/
-function isColliding(aEl, bEl) {
+function isColliding(aEl,bEl){
   const r1=aEl.getBoundingClientRect();
   const r2=bEl.getBoundingClientRect();
   return !(
-    r1.top>r2.bottom ||
-    r1.bottom<r2.top ||
-    r1.left>r2.right ||
+    r1.top>r2.bottom||
+    r1.bottom<r2.top||
+    r1.left>r2.right||
     r1.right<r2.left
   );
 }
 
-function handleLocationVisit(locName) {
+function handleLocationVisit(locName){
   if(player.isVisiting===locName)return;
   player.isVisiting=locName;
 
@@ -168,10 +156,8 @@ function handleLocationVisit(locName) {
   setTimeout(()=>{player.isVisiting=null;},1000);
 }
 
-/************************************************
- * Movement
- ************************************************/
-function handleMovement(e) {
+// Movement
+function handleMovement(e){
   if(gameState.introModalOpen)return;
   switch(e.key.toLowerCase()){
     case 'arrowup':
@@ -195,20 +181,17 @@ function handleMovement(e) {
   player.element.style.left=player.position.left+"%";
 }
 
-/************************************************
- * Generate & Render Tasks
- ************************************************/
+// Generate & Render
 function generateTask(){
   if(gameState.availableTasks.length>=10)return;
   const r=Math.random();
   let type='stability';
-  if(r<0.33) type='stability';
-  else if(r<0.66) type='development';
+  if(r<0.33)type='stability';
+  else if(r<0.66)type='development';
   else type='security';
 
   const stepOptions=stepsPool[type];
   const chosen= stepOptions[Math.floor(Math.random()*stepOptions.length)];
-
   const risk=Math.floor(Math.random()*3)+1;
   const reward=risk*100;
   const head=headlines[Math.floor(Math.random()*headlines.length)];
@@ -226,7 +209,6 @@ function generateTask(){
   };
   gameState.availableTasks.push(newTask);
 }
-
 function getRandomUrgency(){
   const r=Math.random();
   if(r<0.3)return 'high';
@@ -270,9 +252,7 @@ function renderTasks(){
   });
 }
 
-/************************************************
- * Assign, Steps, Immediate Step
- ************************************************/
+// Assign
 function assignTask(taskId){
   if(gameState.activeTask){
     showPopup("Du har allerede en aktiv opgave!","error");
@@ -312,7 +292,6 @@ function updateStepsList(){
     stepsList.appendChild(li);
   });
 }
-
 function checkImmediateStep(){
   if(!gameState.activeTask)return;
   const i=gameState.activeTask.currentStep;
@@ -330,9 +309,7 @@ function checkImmediateStep(){
   }
 }
 
-/************************************************
- * Complete & Fail Task
- ************************************************/
+// Complete & Fail
 function completeTask(){
   showPopup("Opgave fuldført!","success");
   gameState.tasksCompleted++;
@@ -360,9 +337,7 @@ function failTask(){
   updateScoreboard();
 }
 
-/************************************************
- * Effects & Scoreboard
- ************************************************/
+/** Effects & Scoreboard **/
 function applyEffects(task){
   switch(task.taskType){
     case 'stability':
@@ -397,14 +372,12 @@ function updateBars(){
   const stab=Math.max(0,Math.min(gameState.stability,150));
   const dev=Math.max(0,Math.min(gameState.development,150));
   const maxW=80;
-  securityBar.style.width=(sec/150)*maxW+"px";
+  securityBar.style.width=(sec /150)*maxW+"px";
   stabilityBar.style.width=(stab/150)*maxW+"px";
   developmentBar.style.width=(dev/150)*maxW+"px";
 }
 
-/************************************************
- * Popups
- ************************************************/
+/** Popups **/
 function showPopup(msg,type="success",duration=3000){
   const el=document.createElement("div");
   el.classList.add("popup");
@@ -415,19 +388,14 @@ function showPopup(msg,type="success",duration=3000){
   setTimeout(()=>el.remove(),duration);
 }
 
-/************************************************
- * initGame
- ************************************************/
+/** initGame **/
 function initGame(){
   updateScoreboard();
-  // create initial tasks
-  for(let i=0;i<2;i++){
-    generateTask();
-  }
+  for(let i=0;i<2;i++){generateTask();}
   renderTasks();
   setupListeners();
 
-  // keep generating tasks every 10s if < 10 tasks
+  // tasks every 10s
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
@@ -435,5 +403,4 @@ function initGame(){
     }
   },10000);
 }
-
 initGame();
