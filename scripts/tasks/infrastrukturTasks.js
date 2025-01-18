@@ -280,4 +280,366 @@ window.infrastrukturTasks = [
       },
       {
         location:"hospital",
-        stepDescriptio
+        stepDescription:"Test failover",
+        choiceA:{
+          label:"Planlagt weekend",
+          text:"+2 tid, sikkert",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Dagtimer",
+          text:"+5% klager hvis fejl",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"leverandør",
+        stepDescription:"Softwareunderstøttelse",
+        choiceA:{
+          label:"Fuld HA-support",
+          text:"+2 tid, minimal softwarefejl",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Delvis support",
+          text:"+5% failoverfejl",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"HA-rapport",
+        choiceA:{
+          label:"Fyldig dok",
+          text:"+2 tid, CAB roser dig",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Kort notits",
+          text:"+5% CAB-skepsis",
+          applyEffect:{riskyPlus:0.05}
+        }
+      }
+    ]
+  },
+  {
+    category:"infrastruktur",
+    title:"Virtualiseringsprojekt",
+    shortDesc:"Indføre virt. infrastruktur (VMware e.l.)",
+    logicLong:"Først infrastruktur (hypervisor), hospital (ydelse), leverandør, dok. Driftfejl mulig.",
+    steps:[
+      {
+        location:"infrastruktur",
+        stepDescription:"Opsæt hypervisor",
+        choiceA:{
+          label:"Robust platform",
+          text:"+2 tid, stabil",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Minimal opsætning",
+          text:"+5% ressourcekollision",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"hospital",
+        stepDescription:"Check performance",
+        choiceA:{
+          label:"Pilotkørsel",
+          text:"+2 tid, kvalitetstjek",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Flyt alt straks",
+          text:"+8% nedetid-risiko",
+          applyEffect:{riskyPlus:0.08}
+        }
+      },
+      {
+        location:"leverandør",
+        stepDescription:"Licensaftaler VM",
+        choiceA:{
+          label:"Forhandle ordentligt",
+          text:"+2 tid, lovligt i orden",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Genbrug fysisk licens",
+          text:"+5% licenskonflikt",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"Virt-projektbeskrivelse",
+        choiceA:{
+          label:"Komplet dok",
+          text:"+2 tid, CAB roser dig",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Kort notits",
+          text:"+5% CAB-skepsis",
+          applyEffect:{riskyPlus:0.05}
+        }
+      }
+    ]
+  },
+  {
+    category:"infrastruktur",
+    title:"Afvikling af ældre software (OS-versioner)",
+    shortDesc:"Lukke gamle OS’er.",
+    logicLong:"Først infrastruktur (liste), hospital (erstatning?), it-jura, dok. Driftfejl mulig.",
+    steps:[
+      {
+        location:"infrastruktur",
+        stepDescription:"Liste over forældede OS",
+        choiceA:{
+          label:"Detaljeret inventar",
+          text:"+2 tid, alt med",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Gæt fra dok",
+          text:"+8% overset server",
+          applyEffect:{riskyPlus:0.08}
+        }
+      },
+      {
+        location:"hospital",
+        stepDescription:"Afklar erstatning",
+        choiceA:{
+          label:"Spørg afdelinger",
+          text:"+2 tid, bedre plan",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Luk alt uden høring",
+          text:"+10% klager",
+          applyEffect:{riskyPlus:0.1}
+        }
+      },
+      {
+        location:"it-jura",
+        stepDescription:"Opsig supportaftaler",
+        choiceA:{
+          label:"Ordentlig opsigelse",
+          text:"+2 tid, ingen bod",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Hurtig opsigelse",
+          text:"+5% bod",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"Migrationsrapport",
+        choiceA:{
+          label:"Fyldig dok",
+          text:"+2 tid, CAB roser dig",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Minimal notits",
+          text:"+5% CAB-skepsis",
+          applyEffect:{riskyPlus:0.05}
+        }
+      }
+    ]
+  },
+  {
+    category:"infrastruktur",
+    title:"Energioptimering i datacenter",
+    shortDesc:"Forbedre køling, PSU, tempstyring",
+    logicLong:"Først infrastruktur (energitiltag), hospital (varsling), leverandør (hardwarekrav), dok. Driftfejl mulig.",
+    steps:[
+      {
+        location:"infrastruktur",
+        stepDescription:"Vælg energitiltag",
+        choiceA:{
+          label:"Detaljeret plan",
+          text:"+3 tid, stor besparelse",
+          applyEffect:{timeCost:3}
+        },
+        choiceB:{
+          label:"Skift kun PSU i store servere",
+          text:"+5% restforbrug",
+          applyEffect:{riskyPlus:0.05, timeCost:1}
+        }
+      },
+      {
+        location:"hospital",
+        stepDescription:"Varsle serviceafbrydelse",
+        choiceA:{
+          label:"Weekend-ombygning",
+          text:"+2 tid, forberedt personale",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Dagtimer",
+          text:"+8% klager",
+          applyEffect:{riskyPlus:0.08}
+        }
+      },
+      {
+        location:"leverandør",
+        stepDescription:"Tjek hardwarekrav",
+        choiceA:{
+          label:"Firmwaretest",
+          text:"+2 tid, fewer konflikter",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Antag ok",
+          text:"+5% firmwarekonflikt",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"Energiprojekt-rapport",
+        choiceA:{
+          label:"Fuld dok",
+          text:"+2 tid, CAB glade",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Minimal dok",
+          text:"+5% CAB-skepsis",
+          applyEffect:{riskyPlus:0.05}
+        }
+      }
+    ]
+  },
+  {
+    category:"infrastruktur",
+    title:"Lukning af parallel-lab systemer",
+    shortDesc:"Integrere gamle labs i hoved-LIMS",
+    logicLong:"Først infrastruktur (migrering), hospital (oplæring), cybersikkerhed (sikre data), dok. Driftfejl mulig.",
+    steps:[
+      {
+        location:"infrastruktur",
+        stepDescription:"Forbered sammensmeltning",
+        choiceA:{
+          label:"Migreringsplan",
+          text:"+2 tid, sikrer data",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Luk gamle systemer hurtigt",
+          text:"+5% tabt data",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"hospital",
+        stepDescription:"Migrer data, oplær personale",
+        choiceA:{
+          label:"Overgangsperiode",
+          text:"+2 tid, glat flow",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Tvangsluk",
+          text:"+10% klager fra lab",
+          applyEffect:{riskyPlus:0.1}
+        }
+      },
+      {
+        location:"cybersikkerhed",
+        stepDescription:"Sikre datasletning i gammelt system",
+        choiceA:{
+          label:"Forsvarlig sletning",
+          text:"+2 tid, ingen rest-data",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Minimal sletning",
+          text:"+5% rest-data kan stjæles",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"Migrationsrapport",
+        choiceA:{
+          label:"Detaljeret dok",
+          text:"+2 tid, CAB roser dig",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Kort notits",
+          text:"+5% CAB-skepsis",
+          applyEffect:{riskyPlus:0.05}
+        }
+      }
+    ]
+  },
+  {
+    category:"infrastruktur",
+    title:"Migrering til container-teknologi",
+    shortDesc:"Kør LIMS i Docker/K8s",
+    logicLong:"Først infrastruktur (container), hospital (test), cybersikkerhed (scanning), dokumentation. Driftfejl mulig.",
+    steps:[
+      {
+        location:"infrastruktur",
+        stepDescription:"Opsæt container-miljø",
+        choiceA:{
+          label:"K8s cluster",
+          text:"+3 tid, robust",
+          applyEffect:{timeCost:3}
+        },
+        choiceB:{
+          label:"Let Docker-opsætning",
+          text:"+5% resourcekollision",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"hospital",
+        stepDescription:"Test stabilitet",
+        choiceA:{
+          label:"Pilot i én afd",
+          text:"+2 tid, sikrer kvalitet",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Rul alt i container",
+          text:"+10% driftusikkerhed",
+          applyEffect:{riskyPlus:0.1}
+        }
+      },
+      {
+        location:"cybersikkerhed",
+        stepDescription:"Scan container-images",
+        choiceA:{
+          label:"Rootless, streng scanning",
+          text:"+2 tid, meget sikker",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Basal scanning",
+          text:"+5% sårbarheder",
+          applyEffect:{riskyPlus:0.05}
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"Container-projekt",
+        choiceA:{
+          label:"Fyldig dok",
+          text:"+2 tid, CAB roser dig",
+          applyEffect:{timeCost:2}
+        },
+        choiceB:{
+          label:"Minimal notits",
+          text:"+5% CAB-skepsis",
+          applyEffect:{riskyPlus:0.05}
+        }
+      }
+    ]
+  }
+];
