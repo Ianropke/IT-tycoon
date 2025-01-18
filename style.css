@@ -20,19 +20,16 @@ header {
 }
 header h1 {
   margin: 0 20px 0 0; 
-  font-size: 1.6rem;
+  font-size: 2rem; /* Større */
 }
-#scoreboard { 
+#scoreboard {
   margin: 0; 
+  padding: 8px; /* Lidt padding */
 }
 #scores {
   display: flex; 
   gap: 16px; 
   align-items: center;
-}
-#scores span {
-  white-space: nowrap; 
-  font-size: 0.9rem;
 }
 
 #main-container {
@@ -58,8 +55,7 @@ header h1 {
   min-height: 0;
 }
 
-#active-task, 
-#available-tasks {
+#active-task, #available-tasks {
   background-color: #34495e; 
   border: 2px solid #ecf0f1;
   border-radius: 5px; 
@@ -69,15 +65,15 @@ header h1 {
   min-height: 0;
 }
 
-/* IKONERNE: fordoblet størrelse */
+/* Forstørrede ikoner i location */
 .location {
-  position: absolute; 
+  position: absolute;
   width: 170px; 
   height: 65px;
   border: 2px solid #bdc3c7;
-  border-radius: 5px; 
+  border-radius: 5px;
   text-align: center;
-  font-size: 1.8rem; /* fordoblet fra 0.9 -> 1.8 */
+  font-size: 1.8rem; /* (Dobbelt, fx fra 0.9 -> 1.8) */
   display: flex;
   align-items: center; 
   justify-content: center;
@@ -85,9 +81,19 @@ header h1 {
   transition: background-color 0.3s;
   color: #ecf0f1;
 }
-.location:hover { filter: brightness(1.15); }
+.location:hover { 
+  filter: brightness(1.15); 
+}
 
-#steps-list li {
+footer {
+  background-color: #34495e;
+  text-align: center; 
+  padding: 6px 20px;
+  margin-top: 6px;
+}
+
+/* Lists */
+#steps-list li, #tasks-list li {
   margin-bottom: 4px; 
   font-size: 0.9rem;
 }
@@ -121,16 +127,11 @@ header h1 {
   font-size: 0.75rem; 
   transition: background-color 0.3s;
 }
-.commit-button:hover { background-color: #1c5980; }
-
-footer {
-  background-color: #34495e;
-  text-align: center; 
-  padding: 6px 20px;
-  margin-top: 6px;
+.commit-button:hover {
+  background-color: #1c5980;
 }
 
-/* Popups & modals */
+/* Popups */
 #popup-container {
   position: fixed; 
   top: 20px; 
@@ -147,11 +148,12 @@ footer {
   max-width: 320px; 
   animation: fadeOut 4s forwards;
 }
-.popup.error { 
-  background-color: #e74c3c; 
-}
+.popup.error { background-color: #e74c3c; }
+
+/* Fjerner den "info" stil (du ønskede ingen lilla advarsel ) */
 .popup.info { 
-  background-color: #8e44ad; 
+  /* erstatter den med helt neutral baggrund, el. bare slet klassen */
+  background-color: #27ae60 !important; 
 }
 
 @keyframes fadeOut {
@@ -182,34 +184,21 @@ footer {
 }
 
 .modal {
-  position: fixed; 
-  top: 0; 
-  left: 0;
-  width: 100%; 
-  height: 100%;
-  display: flex; 
-  justify-content: center; 
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  background-color: rgba(0,0,0,0.6); 
+  background-color: rgba(0,0,0,0.6);
   z-index: 999;
 }
-.modal-content {
-  width: 60%; 
-  max-width: 800px;
-  background-color: #2c3e50; 
-  border: 3px solid #bdc3c7;
-  border-radius: 8px; 
-  padding: 16px; 
-  text-align: left;
-}
 
-@media (max-width: 768px) {
-  #main-container {
-    flex-direction: column; 
-    height: auto;
-  }
-  #game-area { min-height: 300px; }
-}
-@media (max-width: 480px) {
-  header h1 { font-size: 1.3rem; }
+/* Bredere boks: fjerner max-width, eller sætter stor max-width */
+.modal-content {
+  background-color: #2c3e50;
+  border: 3px solid #bdc3c7;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: left;
 }
