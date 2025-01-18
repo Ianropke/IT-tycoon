@@ -9,7 +9,6 @@ html, body {
   color: #ecf0f1;
 }
 
-/* Scoreboard / Header */
 header {
   background-color: #34495e;
   padding: 8px 20px;
@@ -20,7 +19,7 @@ header {
   margin-bottom: 2px;
 }
 header h1 {
-  margin: 0 20px 0 0;
+  margin: 0 20px 0 0; 
   font-size: 2rem;
 }
 #scoreboard {
@@ -33,7 +32,6 @@ header h1 {
   align-items: center;
 }
 
-/* Layout */
 #main-container {
   display: flex;
   height: 80vh;
@@ -66,7 +64,7 @@ header h1 {
   min-height: 0;
 }
 
-/* Lokation-bokse, store nok til tekst */
+/* Lokationer med stor boks + padding */
 .location {
   position: absolute;
   min-width: 220px;
@@ -94,7 +92,7 @@ footer {
   margin-top: 6px;
 }
 
-/* Lists for tasks */
+/* Lists */
 #steps-list li, #tasks-list li {
   margin-bottom: 4px;
   font-size: 0.9rem;
@@ -132,7 +130,7 @@ footer {
   background-color: #1c5980;
 }
 
-/* Popups */
+/* Popup container */
 #popup-container {
   position: fixed;
   top: 20px;
@@ -164,8 +162,10 @@ footer {
 
 #floating-text-container {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%;
   pointer-events: none;
   z-index: 999;
 }
@@ -181,11 +181,11 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
-/* Modal style */
+/* Modals */
 .modal {
   position: fixed;
   top: 0; left: 0;
-  width: 100%;
+  width: 100%; 
   height: 100%;
   display: flex;
   justify-content: center;
