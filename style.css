@@ -9,7 +9,6 @@ html, body {
   color: #ecf0f1;
 }
 
-/* Header / Scoreboard */
 header {
   background-color: #34495e;
   padding: 8px 20px;
@@ -33,7 +32,6 @@ header h1 {
   align-items: center;
 }
 
-/* Main Layout */
 #main-container {
   display: flex;
   height: 80vh;
@@ -66,18 +64,16 @@ header h1 {
   min-height: 0;
 }
 
-/* Location styles – store bokse til tekst */
+/* Lokationer – store bokse */
 .location {
   position: absolute;
-  /* Vi bruger min-width og min-height i stedet for fast width/height */
-  min-width: 220px;   /* Gør boksen bredere, så teksten ikke klippes */
-  min-height: 80px;   /* Ekstra højde, så ikon + tekst ikke overlapper */
-  padding: 12px 16px; /* Mere luft rundt om tekst */
-  
+  min-width: 220px; /* giver plads til tekst */
+  min-height: 80px; 
+  padding: 12px 16px;
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
-  font-size: 1.8rem;  /* Stort ikon + tekst */
+  font-size: 1.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +85,6 @@ header h1 {
   filter: brightness(1.15);
 }
 
-/* Footer */
 footer {
   background-color: #34495e;
   text-align: center;
@@ -97,7 +92,6 @@ footer {
   margin-top: 6px;
 }
 
-/* Lists for tasks and steps */
 #steps-list li, #tasks-list li {
   margin-bottom: 4px;
   font-size: 0.9rem;
@@ -121,7 +115,6 @@ footer {
   background-color: #1abc9c;
   cursor: pointer;
 }
-
 .commit-button {
   margin-top: 4px;
   padding: 4px 8px;
@@ -185,7 +178,7 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
-/* Modals */
+/* Modal */
 .modal {
   position: fixed;
   top: 0; left: 0;
@@ -204,10 +197,10 @@ footer {
   padding: 16px;
   text-align: left;
   width: 60%;
-  max-width: 900px; /* rummelig */
+  max-width: 900px;
 }
 
-/* Responsive */
+/* Responsiv */
 @media (max-width: 768px) {
   #main-container {
     flex-direction: column;
