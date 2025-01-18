@@ -1,54 +1,62 @@
 /************************************************************
- * main.js – 
- * Samme "levende tutorial" + opgavelogik 
- * Alle tasks-filer har nu statChange + mere narrativ
+ * main.js med PI-længde + Inspect & Adapt
  ************************************************************/
 
 let gameState = {
-  time: 100,
-  money: 1000,
+  // Stats
   security: 100,
   stability: 100,
   development: 100,
   hospitalSatisfaction: 100,
 
+  // Ressourcer
+  money: 1000,
+  piTime: 30,     // Hver PI -> 30 tidsenheder
+  currentPI: 1,
+  maxPI: 3,
+
+  // Opgaver
   tasksCompleted: 0,
   activeTask: null,
   availableTasks: [],
-  introModalOpen: true,
+  usedTasks: new Set(),
 
+  // Risikoparametre
   docSkipCount: 0,
   riskyTotal: 0,
   finalFailChance: 0,
 
-  usedTasks: new Set(),
-
+  // Modals / tutorial
+  introModalOpen: true,
+  tutorialActive: false,
   tutorialStep: 0,
-  tutorialActive: false
+
+  // Løbende summation af "PI-scores"
+  totalScore: 0
 };
 
+/************************************************************
+ * Scoreboard
+ ************************************************************/
 function updateScoreboard(){
-  document.getElementById('time-left').textContent   = gameState.time;
+  document.getElementById('time-left').textContent   = gameState.piTime;
   document.getElementById('money-left').textContent  = gameState.money;
   document.getElementById('tasks-completed').textContent= gameState.tasksCompleted;
-  document.getElementById('hospital-satisfaction').textContent= gameState.hospitalSatisfaction;
   document.getElementById('security-value').textContent   = gameState.security;
   document.getElementById('stability-value').textContent  = gameState.stability;
   document.getElementById('development-value').textContent= gameState.development;
+  document.getElementById('hospital-satisfaction').textContent= gameState.hospitalSatisfaction;
 }
 
 /************************************************************
- * INTRO
+ * Intro + tutorial
  ************************************************************/
 document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
-  document.getElementById('intro-modal').style.display='none';
+  document.getElementById('intro-modal').style.display="none";
   gameState.introModalOpen=false;
   openTutorialModal();
 });
 
-/************************************************************
- * TUTORIAL: lidt levende
- ************************************************************/
 const tutorialModal   = document.getElementById('tutorial-modal');
 const tutorialTitleEl = document.getElementById('tutorial-title');
 const tutorialTextEl  = document.getElementById('tutorial-text');
@@ -56,43 +64,30 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 
 let tutorialSteps = [
   {
-    title:"Velkommen, IT-ansvarlig!",
-    text:"Du har netop overtaget forvaltningen af LIMS. Serverrummene brummer, hospitalet råber på nye features, og cybersikkerhed advarer om hackere!"
+    title:"Velkommen til IT Tycoon",
+    text:"Du har 3 Program Increments (PI) til at forbedre LIMS. Hver PI har 30 tidsenheder..."
   },
   {
-    title:"Lokationer",
-    text:"Infrastruktur, Informationssikkerhed, Hospital, Leverandør, IT Jura, Cybersikkerhed, Medicinsk Udstyr og Dokumentation. Klik på dem i opgavens rækkefølge!"
+    title:"Under PI",
+    text:"Vælg opgaver, klik lokationer i trin, hold øje med tid, penge og risk."
   },
   {
-    title:"Parametre",
-    text:"Security, Stability, Development, Hospital. Dine valg kan øge eller sænke dem. Hvis du løber tør for tid eller penge, bliver det svært!"
+    title:"Inspect & Adapt",
+    text:"Når tiden rammer 0, slutter en PI. Du får en opsummering, og så starter næste PI, hvis der er flere tilbage."
   },
   {
-    title:"CAB Gennemgang",
-    text:"Efter 4 trin i en opgave tjekker CAB risiko. Er den for høj, afvises opgaven. Hvis godkendt, er der stadig en driftfejl-chance!"
-  },
-  {
-    title:"Dokumentation",
-    text:"Sidste trin er ofte Dokumentation. Du kan skippe for at spare tid, men får +15% CAB-skepsis!"
-  },
-  {
-    title:"Klar?",
-    text:"Vælg en opgave i 'Mulige Opgaver', følg trinnene og pas på risici! Held og lykke!"
+    title:"God fornøjelse",
+    text:"Se om du kan forbedre systemet mest muligt over 3 iterationer!"
   }
 ];
-
 function openTutorialModal(){
-  gameState.tutorialActive = true;
-  gameState.tutorialStep = 0;
   tutorialModal.style.display="flex";
   showTutorialContent();
 }
-
 function showTutorialContent(){
-  if(gameState.tutorialStep >= tutorialSteps.length){
+  if(gameState.tutorialStep>= tutorialSteps.length){
     tutorialModal.style.display="none";
-    gameState.tutorialActive = false;
-    initGame();
+    startPI(); // Start 1. PI
     return;
   }
   const st= tutorialSteps[gameState.tutorialStep];
@@ -105,18 +100,14 @@ tutorialNextBtn.addEventListener('click', ()=>{
 });
 
 /************************************************************
- * START GAME
+ * Start en PI
  ************************************************************/
-function initGame(){
+function startPI(){
+  // nulstil tid
+  gameState.piTime = 30;
   updateScoreboard();
-  // Saml tasks
-  window.bigTasksData = [
-    ...window.cybersikkerhedTasks,
-    ...window.infrastrukturTasks,
-    ...window.hospitalTasks
-  ];
-  // Generer 3 opgaver
-  for(let i=0; i<3; i++){
+  // generer 3 tasks ved start
+  for(let i=0;i<3;i++){
     generateTask();
   }
   // Løbende generering
@@ -127,12 +118,16 @@ function initGame(){
   },10000);
 }
 
+/************************************************************
+ * generateTask() – trækker en opgave fra bigTasksData
+ ************************************************************/
 function generateTask(){
   if(gameState.availableTasks.length>=10)return;
-  let notUsed= window.bigTasksData.filter(o=> !gameState.usedTasks.has(o.title));
+  if(!window.bigTasksData) return; // vent til tasks er loadet
+  let notUsed= bigTasksData.filter(o=> !gameState.usedTasks.has(o.title));
   if(!notUsed.length)return;
 
-  let chosen= notUsed[Math.floor(Math.random()* notUsed.length)];
+  let chosen= notUsed[Math.floor(Math.random()*notUsed.length)];
   gameState.usedTasks.add(chosen.title);
 
   let riskLevel= Math.floor(Math.random()*3)+1;
@@ -158,23 +153,17 @@ function renderTasks(){
     return;
   }
   gameState.availableTasks.forEach(t=>{
-    const li= document.createElement('li');
-    if(t.riskLevel===3){
-      li.style.borderColor="red"; li.style.borderWidth="2px";
-    }
-    else if(t.riskLevel===2){
-      li.style.borderColor="orange";
-    }
-    else {
-      li.style.borderColor="green";
-    }
-    let label= (t.riskLevel===3)?" (HØJPRIORITET)":"";
+    const li=document.createElement('li');
+    if(t.riskLevel===3){ li.style.borderColor="red"; li.style.borderWidth="2px"; }
+    else if(t.riskLevel===2){ li.style.borderColor="orange"; }
+    else { li.style.borderColor="green"; }
+    let label=(t.riskLevel===3)?" (HØJPRIORITET)":"";
     li.innerHTML=`
       <strong>${t.title}${label}</strong><br/>
       Risiko: ${t.riskLevel}
       <p class="task-description" style="display:none;">${t.shortDesc}</p>
     `;
-    const btn= document.createElement('button');
+    const btn=document.createElement('button');
     btn.classList.add('commit-button');
     btn.textContent="Forpligt";
     btn.addEventListener('click',(e)=>{
@@ -192,78 +181,89 @@ function renderTasks(){
 }
 
 /************************************************************
- * ASSIGN + STEPS
+ * Assign + steps
  ************************************************************/
+let activeTaskHeadline= document.getElementById('active-task-headline');
+let activeTaskDesc= document.getElementById('active-task-description');
 function assignTask(taskId){
   if(gameState.activeTask){
     showPopup("Allerede en aktiv opgave!", "error");
     return;
   }
-  const idx= gameState.availableTasks.findIndex(t=> t.id===taskId);
+  // check for tid
+  if(gameState.piTime<=0){
+    endOfPI(); // Pi er slut
+    return;
+  }
+  let idx= gameState.availableTasks.findIndex(t=> t.id===taskId);
   if(idx===-1)return;
-  const chosen= gameState.availableTasks.splice(idx,1)[0];
+  let chosen= gameState.availableTasks.splice(idx,1)[0];
 
   gameState.activeTask= chosen;
-  document.getElementById('active-task-headline').textContent= chosen.title+" – "+chosen.shortDesc;
-  // mere "levende" logicLong:
-  document.getElementById('active-task-description').textContent= chosen.logicLong || "";
+  activeTaskHeadline.textContent= chosen.title;
+  activeTaskDesc.textContent= chosen.logicLong||"";
   updateStepsList();
   renderTasks();
 }
 
-const stepsListEl= document.getElementById('steps-list');
+let stepsListEl= document.getElementById('steps-list');
 function updateStepsList(){
   stepsListEl.innerHTML="";
   if(!gameState.activeTask){
     stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
     return;
   }
-  const c= gameState.activeTask.currentStep;
+  let c= gameState.activeTask.currentStep;
   gameState.activeTask.steps.forEach((st,i)=>{
-    const li= document.createElement('li');
-    li.textContent= `Trin ${i+1}: ${capitalizeLocation(st.location)}`;
+    const li=document.createElement('li');
+    li.textContent=`Trin ${i+1}: ${capitalizeLocation(st.location)}`;
     if(i< c){
       li.style.textDecoration="line-through";
       li.style.color="#95a5a6";
     }
     stepsListEl.appendChild(li);
   });
-  const last= document.createElement('li');
-  last.style.color="#aaa";
-  last.textContent=`Trin ${c+1} / ${gameState.activeTask.steps.length}`;
-  stepsListEl.appendChild(last);
+  let info=document.createElement('li');
+  info.style.color="#aaa";
+  info.textContent=`Trin ${c+1} / ${gameState.activeTask.steps.length}`;
+  stepsListEl.appendChild(info);
 }
 
 function capitalizeLocation(loc){
   if(!loc)return loc;
-  return loc.split("-").map(x=> x.charAt(0).toUpperCase()+x.slice(1)).join("-");
+  return loc.split("-").map(s=> s.charAt(0).toUpperCase()+ s.slice(1)).join("-");
 }
 
 /************************************************************
- * SCENARIO
+ * location-click => scenario
  ************************************************************/
-const scenarioModal= document.getElementById('scenario-modal');
 function handleLocationClick(locName){
   if(!gameState.activeTask){
     showPopup("Vælg en opgave først!", "error");
     return;
   }
-  const idx= gameState.activeTask.currentStep;
-  if(idx>= gameState.activeTask.steps.length)return;
-
-  const st= gameState.activeTask.steps[idx];
-  if(!st)return;
-  if(gameState.activeTask.decisionMadeForStep[idx])return;
+  if(gameState.piTime<=0){
+    endOfPI();
+    return;
+  }
+  let i= gameState.activeTask.currentStep;
+  if(i>= gameState.activeTask.steps.length)return;
+  let st= gameState.activeTask.steps[i];
+  if(!st) return;
+  if(gameState.activeTask.decisionMadeForStep[i])return;
 
   if(locName!== st.location){
+    // doc skip?
     if(st.location==="dokumentation"){
       skipDocumentationPopup();
     }
     return;
   }
-  showStepScenario(idx);
+  showScenarioModal(i);
 }
 
+// scenario
+const scenarioModal= document.getElementById('scenario-modal');
 const scenarioTitle= document.getElementById('scenario-title');
 const scenarioDescription= document.getElementById('scenario-description');
 const scenarioALabel= document.getElementById('scenario-a-label');
@@ -274,13 +274,13 @@ const scenarioBText= document.getElementById('scenario-b-text');
 const scenarioBButton= document.getElementById('scenario-b-btn');
 const docSkipOption= document.getElementById('doc-skip-option');
 
-function showStepScenario(i){
+function showScenarioModal(i){
   scenarioModal.style.display="flex";
   docSkipOption.style.display="none";
 
-  const st= gameState.activeTask.steps[i];
-  scenarioTitle.textContent= `Trin ${i+1}: ${capitalizeLocation(st.location)}`;
-  scenarioDescription.textContent= st.stepDescription || "";
+  let st= gameState.activeTask.steps[i];
+  scenarioTitle.textContent=`Trin ${i+1}: ${capitalizeLocation(st.location)}`;
+  scenarioDescription.textContent= st.stepDescription||"";
 
   scenarioALabel.textContent= st.choiceA.label;
   scenarioAText.textContent= st.choiceA.text;
@@ -289,7 +289,6 @@ function showStepScenario(i){
     finalizeStep(i);
     scenarioModal.style.display="none";
   };
-
   scenarioBLabel.textContent= st.choiceB.label;
   scenarioBText.textContent= st.choiceB.text;
   scenarioBButton.onclick=()=>{
@@ -299,20 +298,20 @@ function showStepScenario(i){
   };
 }
 
-function applyChoiceEffect(e){
-  if(!e)return;
-  if(e.timeCost) applyTimeCost(e.timeCost);
-  if(e.moneyCost) applyMoneyCost(e.moneyCost);
-  if(e.riskyPlus) gameState.riskyTotal+= e.riskyPlus;
-  if(e.statChange){
-    Object.entries(e.statChange).forEach(([stat,delta])=>{
+function applyChoiceEffect(eff){
+  if(!eff)return;
+  if(eff.timeCost) applyTimeCost(eff.timeCost);
+  if(eff.moneyCost) applyMoneyCost(eff.moneyCost);
+  if(eff.riskyPlus) gameState.riskyTotal+= eff.riskyPlus;
+  if(eff.statChange){
+    Object.entries(eff.statChange).forEach(([stat,delta])=>{
       applyStatChange(stat,delta);
     });
   }
 }
 
 /************************************************************
- * finalizeStep => CAB => drift => feedback
+ * finalizeStep => CAB hvis sidste
  ************************************************************/
 function finalizeStep(i){
   if(!gameState.activeTask)return;
@@ -322,24 +321,22 @@ function finalizeStep(i){
   applyTimeCost(2);
 
   gameState.activeTask.currentStep++;
-  if(gameState.activeTask.currentStep>= gameState.activeTask.steps.length){
+  if(gameState.activeTask.currentStep >= gameState.activeTask.steps.length){
+    // => showCABModal
     showCABModal();
   } else {
     updateStepsList();
   }
 }
 
-/************************************************************
- * DOC skip
- ************************************************************/
+// doc skip
 function skipDocumentationPopup(){
   scenarioModal.style.display="flex";
   docSkipOption.style.display="block";
-
   scenarioTitle.textContent="Dokumentation";
-  scenarioDescription.textContent="CAB vil se dok, men du kan skippe den...";
+  scenarioDescription.textContent="CAB vil se dok, men du kan skippe...";
 
-  scenarioALabel.textContent="Fuldt dok";
+  scenarioALabel.textContent="Fuld dok";
   scenarioAText.textContent="3 tid, 10 kr, ingen ekstra fejl";
   scenarioAButton.onclick=()=>{
     applyTimeCost(3);
@@ -356,8 +353,7 @@ function skipDocumentationPopup(){
     scenarioModal.style.display="none";
     finalizeStep(gameState.activeTask.currentStep);
   };
-
-  document.getElementById('doc-skip-btn').onclick=()=>{
+  docSkipBtn.onclick=()=>{
     gameState.docSkipCount++;
     scenarioModal.style.display="none";
     finalizeStep(gameState.activeTask.currentStep);
@@ -372,21 +368,21 @@ const cabSummary= document.getElementById('cab-summary');
 document.getElementById('cab-ok-btn').addEventListener('click', finalizeCABResult);
 
 function showCABModal(){
-  let fail= gameState.riskyTotal + (gameState.docSkipCount*0.15);
-  fail= Math.max(0, Math.min(fail,1));
+  let fail= gameState.riskyTotal + gameState.docSkipCount*0.15;
+  fail= Math.max(0,Math.min(fail,1));
   gameState.finalFailChance= fail;
   cabModalEl.style.display="flex";
   cabSummary.innerHTML=`
     <strong>CAB Gennemgang</strong><br/>
     Risikoprocent: ${(fail*100).toFixed(0)}%<br/>
-    SkippetDok: ${gameState.docSkipCount} => +${(gameState.docSkipCount*15)}%<br/>
+    SkippetDok: ${gameState.docSkipCount} gange => +${(gameState.docSkipCount*15)}%<br/>
     Samlet fejlchance: ${(fail*100).toFixed(0)}%
   `;
 }
 
 function finalizeCABResult(){
   cabModalEl.style.display="none";
-  const r= Math.random();
+  let r= Math.random();
   if(r< gameState.finalFailChance){
     showCABResult(false);
   } else {
@@ -405,11 +401,11 @@ function showCABResult(ok){
   cabResultModal.style.display="flex";
   if(ok){
     cabResultTitle.textContent="CAB: Godkendt!";
-    cabResultText.textContent="Men hold øje med den tekniske drift!";
+    cabResultText.textContent="Implementer i drift...";
     postCABTechnicalCheck();
   } else {
     cabResultTitle.textContent="CAB: Afvist!";
-    cabResultText.textContent="For stor risiko eller manglende dok. Opgaven fejler.";
+    cabResultText.textContent="For stor risiko/manglende dokumentation. Opgaven fejler.";
     failTaskCAB();
   }
 }
@@ -418,20 +414,20 @@ function failTaskCAB(){
   gameState.tasksCompleted++;
   applyStatChange("hospitalSatisfaction",-10);
   gameState.activeTask=null;
-  document.getElementById('active-task-headline').textContent="Ingen aktiv opgave";
-  document.getElementById('active-task-description').textContent="";
+  activeTaskHeadline.textContent="Ingen aktiv opgave";
+  activeTaskDesc.textContent="";
   stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
   updateScoreboard();
 }
 
 /************************************************************
- * DRIFT CHECK 
+ * postCAB => drift
  ************************************************************/
 function postCABTechnicalCheck(){
   cabResultModal.style.display="none";
   let driftFail= gameState.riskyTotal*0.5;
-  const r= Math.random();
-  if(r<driftFail){
+  let r= Math.random();
+  if(r< driftFail){
     showPopup("Teknisk implementering fejlede i drift!", "error",4000);
     driftFailTask();
   } else {
@@ -445,8 +441,8 @@ function driftFailTask(){
   gameState.tasksCompleted++;
   applyStatChange("stability",-5);
   gameState.activeTask=null;
-  document.getElementById('active-task-headline').textContent="Ingen aktiv opgave";
-  document.getElementById('active-task-description').textContent="";
+  activeTaskHeadline.textContent="Ingen aktiv opgave";
+  activeTaskDesc.textContent="";
   stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
   updateScoreboard();
 }
@@ -455,83 +451,139 @@ function completeTaskCAB(){
   gameState.tasksCompleted++;
   if(!gameState.activeTask)return;
   gameState.activeTask=null;
-  document.getElementById('active-task-headline').textContent="Ingen aktiv opgave";
-  document.getElementById('active-task-description').textContent="";
+  activeTaskHeadline.textContent="Ingen aktiv opgave";
+  activeTaskDesc.textContent="";
   stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
   updateScoreboard();
 }
 
-/************************************************************
- * FEEDBACK
- ************************************************************/
 function showPostCABFeedback(){
-  const h= gameState.hospitalSatisfaction;
-  const s= gameState.stability;
-  const sec= gameState.security;
-
-  let msgH = (h>120)?"Hospitalet jubler: Perfekt!"
-           :(h>90) ?"Hospitalet er godt tilfredse."
-           :(h>60) ?"Hospitalet er nogenlunde tilfredse."
-                   :"Hospitalet er ret utilfredse...";
-
-  let msgS = (s>120)?"Infrastruktur stråler af stabilitet!"
-           :(s>90) ?"Infrastruktur kører ret stabilt."
-           :(s>60) ?"Infrastruktur har nogle små bump."
-                   :"Infrastruktur er svækket – pas på!";
-
-  let msgC = (sec>120)?"Cybersikkerhed: Tæt på uigennemtrængeligt!"
-           :(sec>90) ?"Cybersikkerhed: Acceptabelt niveau."
-           :(sec>60) ?"Cybersikkerhed: Flere huller anes."
-                   :"Cybersikkerhed: Kritisk lav beskyttelse!";
-
-  const fbModal= document.createElement('div');
-  fbModal.classList.add('modal');
-  fbModal.style.display="flex";
-  fbModal.innerHTML=`
-    <div class="modal-content">
-      <h2>Slutfeedback</h2>
-      <p>${msgH}</p>
-      <p>${msgS}</p>
-      <p>${msgC}</p>
-      <button id="fb-ok" style="background-color:#2ecc71;">OK</button>
-    </div>
-  `;
-  document.body.appendChild(fbModal);
-  fbModal.querySelector('#fb-ok').addEventListener('click', ()=>{
-    fbModal.remove();
-  });
+  // evt popup
 }
 
 /************************************************************
- * UTILS
+ * Tiden => Slut på PI
  ************************************************************/
-function showPopup(msg, type="success", duration=3000){
-  const c= document.getElementById('popup-container');
-  const div= document.createElement('div');
+function applyTimeCost(t){
+  gameState.piTime = Math.max(gameState.piTime - t,0);
+  updateScoreboard();
+  if(gameState.piTime<=0){
+    endOfPI();
+  }
+}
+function applyMoneyCost(m){
+  gameState.money= Math.max(gameState.money - m,0);
+  updateScoreboard();
+}
+function applyStatChange(stat,delta){
+  gameState[stat]= Math.min(Math.max(gameState[stat]+delta,0),150);
+  updateScoreboard();
+  showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat, stat);
+}
+
+function endOfPI(){
+  // Stop aktuel opgave, open Inspect & Adapt
+  if(gameState.activeTask) {
+    gameState.activeTask=null;
+    activeTaskHeadline.textContent="Ingen aktiv opgave";
+    activeTaskDesc.textContent="";
+    stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
+  }
+  showInspectAndAdaptModal();
+}
+
+/************************************************************
+ * Inspect & Adapt
+ ************************************************************/
+const iaModal= document.getElementById('ia-modal');
+const iaSummary= document.getElementById('ia-summary');
+const iaOkBtn= document.getElementById('ia-ok-btn');
+iaOkBtn.addEventListener('click', ()=>{
+  iaModal.style.display="none";
+  nextPI();
+});
+
+function showInspectAndAdaptModal(){
+  // lav en "score" for denne PI
+  let piScore= calcPIScore();
+  gameState.totalScore += piScore;
+
+  iaModal.style.display="flex";
+  iaSummary.innerHTML=`
+    <strong>PI #${gameState.currentPI} er slut!</strong><br/>
+    Sikkerhed: ${gameState.security}<br/>
+    Stabilitet: ${gameState.stability}<br/>
+    Udvikling: ${gameState.development}<br/>
+    Hospital: ${gameState.hospitalSatisfaction}<br/>
+    Fuldførte opgaver (total nu): ${gameState.tasksCompleted}<br/>
+    PI Score: ${piScore.toFixed(1)}<br/>
+    Samlet Score: ${gameState.totalScore.toFixed(1)}
+  `;
+}
+
+function calcPIScore(){
+  // simpel formel. Justér som du vil
+  let s= gameState.security;
+  let st= gameState.stability;
+  let d= gameState.development;
+  let h= gameState.hospitalSatisfaction;
+  // fx average + tasksCompleted / 2
+  let base= (s + st + d + h)/4;
+  let scaled= base + (gameState.tasksCompleted/2);
+  return scaled;
+}
+
+function nextPI(){
+  gameState.currentPI++;
+  if(gameState.currentPI> gameState.maxPI){
+    // spilslut
+    endGame();
+  } else {
+    // start næste pi
+    startPI();
+  }
+}
+
+/************************************************************
+ * End Game
+ ************************************************************/
+const endModal= document.getElementById('end-modal');
+const endGameSummary= document.getElementById('end-game-summary');
+document.getElementById('end-ok-btn').addEventListener('click', ()=>{
+  endModal.style.display="none";
+});
+
+function endGame(){
+  let sum=`
+    <strong>Alle ${gameState.maxPI} PI'er er gennemført!</strong><br/>
+    Endelig Score: ${gameState.totalScore.toFixed(1)}<br/>
+    Sikkerhed: ${gameState.security}<br/>
+    Stabilitet: ${gameState.stability}<br/>
+    Udvikling: ${gameState.development}<br/>
+    Hospital: ${gameState.hospitalSatisfaction}<br/>
+    Fuldførte opgaver: ${gameState.tasksCompleted}
+  `;
+  endGameSummary.innerHTML= sum;
+  endModal.style.display="flex";
+}
+
+/************************************************************
+ * Utility
+ ************************************************************/
+function showPopup(msg,type="success",duration=3000){
+  let c= document.getElementById('popup-container');
+  let div=document.createElement('div');
   div.classList.add('popup');
   if(type==="error") div.classList.add('error');
   else if(type==="info") div.classList.add('info');
   div.style.animation="none";
   div.textContent= msg;
   c.appendChild(div);
-  setTimeout(()=> div.remove(), duration);
-}
-function applyTimeCost(t){
-  gameState.time-= t;
-  updateScoreboard();
-}
-function applyMoneyCost(m){
-  gameState.money-= m;
-  updateScoreboard();
-}
-function applyStatChange(stat, delta){
-  gameState[stat]= Math.min(Math.max(gameState[stat]+delta,0),150);
-  updateScoreboard();
-  showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat, stat);
+  setTimeout(()=> div.remove(),duration);
 }
 function showFloatingText(txt, stat){
-  const c= document.getElementById('floating-text-container');
-  const div= document.createElement('div');
+  let cont= document.getElementById('floating-text-container');
+  let div= document.createElement('div');
   div.classList.add('floating-text');
   div.style.left="50%";
   div.style.top="50%";
@@ -541,51 +593,14 @@ function showFloatingText(txt, stat){
   else if(stat==="hospitalSatisfaction") div.style.color="#ffc107";
   else div.style.color="#ffffff";
   div.textContent= txt;
-  c.appendChild(div);
+  cont.appendChild(div);
   setTimeout(()=> div.remove(),2000);
 }
 
-const endModal= document.getElementById('end-modal');
-const endGameSummary= document.getElementById('end-game-summary');
-document.getElementById('end-ok-btn').addEventListener('click', ()=>{
-  endModal.style.display="none";
-});
-function endGame(){
-  let sum=`
-    <strong>Spillet stopper!</strong><br/>
-    Tid: ${gameState.time}<br/>
-    Penge: ${gameState.money}<br/>
-    Sikkerhed: ${gameState.security}<br/>
-    Stabilitet: ${gameState.stability}<br/>
-    Udvikling: ${gameState.development}<br/>
-    Hospital: ${gameState.hospitalSatisfaction}<br/>
-    Fuldførte opgaver: ${gameState.tasksCompleted}
-  `;
-  endGameSummary.innerHTML= sum;
-  endModal.style.display="flex";
-
-  gameState.activeTask=null;
-  document.getElementById('active-task-headline').textContent="Ingen aktiv opgave";
-  document.getElementById('active-task-description').textContent="";
-  stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
-}
-
-// Location-binding
-const locationElements={
-  "infrastruktur":document.getElementById('infrastruktur'),
-  "informationssikkerhed":document.getElementById('informationssikkerhed'),
-  "hospital":document.getElementById('hospital'),
-  "leverandør":document.getElementById('leverandor'),
-  "medicinsk-udstyr":document.getElementById('medicinsk-udstyr'),
-  "it-jura":document.getElementById('it-jura'),
-  "cybersikkerhed":document.getElementById('cybersikkerhed'),
-  "dokumentation":document.getElementById('dokumentation')
-};
-Object.keys(locationElements).forEach(locKey=>{
-  const el= locationElements[locKey];
-  if(el){
-    el.addEventListener('click',()=>{
-      handleLocationClick(locKey);
-    });
-  }
-});
+/************************************************************
+ * Load tasks + Start?
+ * Men i tutorial slutter vi med startPI()
+ ************************************************************/
+// OBS: Vi loader tasks via <script> i index.html
+// bigTasksData -> holdes i global var
+// Gør intet her, da tutorial flow starter startPI()
