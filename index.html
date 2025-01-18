@@ -11,7 +11,6 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Tid, Penge, Fuldførte, Sikkerhed, Stabilitet, Udvikling, Hospital -->
         <span style="font-size:1.1rem;">Tid: <span id="time-left">100</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
@@ -25,15 +24,14 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 8 lokationer, placeret pænt uden overlap -->
-      <div class="location" id="infrastruktur" style="top: 5%; left: 5%;">🔧 Infrastruktur</div>
-      <div class="location" id="informationssikkerhed" style="top: 5%; left: 55%;">🛡 Informationssikkerhed</div>
-      <div class="location" id="hospital" style="top: 25%; left: 5%;">🏥 Hospital</div>
-      <div class="location" id="leverandor" style="top: 25%; left: 55%;">📦 Leverandør</div>
-      <div class="location" id="it-jura" style="top: 45%; left: 33%;">⚖️ IT Jura</div>
-      <div class="location" id="cybersikkerhed" style="top: 45%; left: 62%;">💻 Cybersikkerhed</div>
-      <div class="location" id="medicinsk-udstyr" style="top: 65%; left: 5%;">🩺 Medicinsk Udstyr</div>
-      <div class="location" id="dokumentation" style="top: 65%; left: 40%;">📄 Dokumentation</div>
+      <div class="location" id="infrastruktur" style="top:5%; left:5%;">🔧 Infrastruktur</div>
+      <div class="location" id="informationssikkerhed" style="top:5%; left:55%;">🛡 Informationssikkerhed</div>
+      <div class="location" id="hospital" style="top:25%; left:5%;">🏥 Hospital</div>
+      <div class="location" id="leverandor" style="top:25%; left:55%;">📦 Leverandør</div>
+      <div class="location" id="it-jura" style="top:45%; left:33%;">⚖️ IT Jura</div>
+      <div class="location" id="cybersikkerhed" style="top:45%; left:62%;">💻 Cybersikkerhed</div>
+      <div class="location" id="medicinsk-udstyr" style="top:65%; left:5%;">🩺 Medicinsk Udstyr</div>
+      <div class="location" id="dokumentation" style="top:65%; left:40%;">📄 Dokumentation</div>
     </div>
 
     <div id="task-side">
@@ -48,6 +46,7 @@
           </ul>
         </div>
       </div>
+
       <div id="available-tasks">
         <h2>Mulige Opgaver</h2>
         <ul id="tasks-list">
@@ -69,9 +68,8 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
-        Du er IT-ansvarlig for LIMS på et stort hospital. Du skal 
-        vedligeholde og udvide systemet inden for tids- og pengebudget.
-        Vær opmærksom på risici, dokumentation og CAB!
+        Du er IT-ansvarlig for LIMS på et stort hospital. 
+        Udvikl og vedligehold systemet, men pas på risici og husk dokumentation!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -104,7 +102,6 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Tiden er gået!</h2>
@@ -113,7 +110,6 @@
     </div>
   </div>
 
-  <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>CAB Gennemgang</h2>
@@ -122,7 +118,6 @@
     </div>
   </div>
 
-  <!-- CAB Result -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
@@ -131,7 +126,7 @@
     </div>
   </div>
 
-  <!-- Indlæs tasks-filerne og derefter main.js -->
+  <!-- Scripts -->
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
