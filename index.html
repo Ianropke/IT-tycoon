@@ -11,10 +11,10 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
+        <!-- Fjernet "Belønning", men beholdt Tid, Penge, Fuldførte opgaver, Sikkerhed, Stabilitet, Udvikling, Hospital -->
         <span style="font-size:1.1rem;">Tid: <span id="time-left">100</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
-        <span style="font-size:1.1rem;">Belønning: <span id="total-rewards">0</span></span>
         <span style="font-size:1.1rem;">Sikkerhed: <span id="security-value">100</span></span>
         <span style="font-size:1.1rem;">Stabilitet: <span id="stability-value">100</span></span>
         <span style="font-size:1.1rem;">Udvikling: <span id="development-value">100</span></span>
@@ -25,6 +25,7 @@
 
   <div id="main-container">
     <div id="game-area">
+      <!-- 8 lokationer - Ikoner er forstørret i CSS -->
       <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡 Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
@@ -71,18 +72,17 @@
       <p style="color:#f1c40f;">
         Du er netop blevet ansat som IT-ansvarlig for LIMS i et stort hospitalssystem.
         Dine opgaver bliver at opdatere, vedligeholde og udvikle nye funktioner, 
-        samtidig med at du holder hospitalet og leverandørerne glade – 
-        og CAB tilfredse med dine dokumentationer!
+        samtidig med at du holder hospitalet, infrastruktur-folkene og Cybersikkerhed 
+        tilfredse – og sikrer, at CAB ikke afviser dine ændringer.
       </p>
       <p>
-        Vær opmærksom på, at din tid og penge kan gå i minus, men det øger risikoen 
-        for fejl og kan gøre CAB mere kritiske. 
-        Tænk dig om, før du tager de hurtige løsninger, og husk at 
-        dokumentere dine ændringer, så CAB ikke afviser dit projekt.
+        Vær opmærksom på, at din tid og dine penge kan gå i minus, men 
+        det øger risikoen for fejl. Tænk dig om, før du tager de hurtige løsninger, 
+        og husk at dokumentere dine ændringer, så CAB ikke afviser dit projekt.
       </p>
       <p style="color:#f39c12;">
-        Held og lykke med at håndtere Hospitalets krav, IT Jura, leverandører og 
-        sikkerhed, så LIMS kører stabilt og sikkert. 
+        Held og lykke med at håndtere de 30 opgaver fra Cybersikkerhed, Infrastruktur 
+        og Hospitalet, så LIMS kører både sikkert, stabilt og med de rette funktioner!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
