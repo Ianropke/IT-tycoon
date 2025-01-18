@@ -1,23 +1,20 @@
 /************************************************************
  * script.js – Samlet version
- * - showPopup defineret først -> ingen reference error
- * - Én deklaration af devTasks, stabilityTasks, secTasks
- * - Intro modal-knap -> man kommer videre
- * - Ingen hårdt stop ved tid/penge < 0
+ * Ingen dubletter, "getTaskDescription" er defineret 
+ * før "generateTask", og intro-pop-up er længere.
  ************************************************************/
 
-// 1) showPopup defineres først, så vi kan kalde den i resten
 function showPopup(msg, type="success", duration=3000){
   const el = document.createElement('div');
   el.classList.add('popup');
   if(type==="error") el.classList.add('error');
   el.style.animation="none";
-  el.textContent = msg;
+  el.textContent= msg;
   document.getElementById('popup-container').appendChild(el);
   setTimeout(()=> el.remove(), duration);
 }
 
-// 2) Scoreboard-elementer
+// scoreboard references
 const securityValueEl    = document.getElementById('security-value');
 const stabilityValueEl   = document.getElementById('stability-value');
 const developmentValueEl = document.getElementById('development-value');
@@ -30,7 +27,7 @@ const scoreboard = {
   hospitalSatisfaction: document.getElementById('hospital-satisfaction')
 };
 
-// 3) Modals & elementer
+// modals
 const scenarioModal       = document.getElementById('scenario-modal');
 const scenarioTitle       = document.getElementById('scenario-title');
 const scenarioDescription = document.getElementById('scenario-description');
@@ -76,29 +73,29 @@ document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
   gameState.introModalOpen=false;
 });
 
-// 4) Global spiltilstand
-let gameState = {
+// global game state
+let gameState={
   time: 100,
-  money: 1000,
-  security: 100,
-  stability: 100,
-  development: 100,
-  hospitalSatisfaction: 100,
+  money:1000,
+  security:100,
+  stability:100,
+  development:100,
+  hospitalSatisfaction:100,
 
-  tasksCompleted: 0,
-  totalRewards: 0,
-  activeTask: null,
-  availableTasks: [],
-  introModalOpen: true,
+  tasksCompleted:0,
+  totalRewards:0,
+  activeTask:null,
+  availableTasks:[],
+  introModalOpen:true,
 
-  docSkipCount: 0,
-  riskyTotal: 0,
-  finalFailChance: 0,
+  docSkipCount:0,
+  riskyTotal:0,
+  finalFailChance:0,
 
   usedTasks: new Set()
 };
 
-// 5) Én deklaration for dev/stability/sec tasks (ingen dubletter)
+// opgaver pr kategori
 const devTasks = [
   "Biokemi Nyt Fungeassay-Modul",
   "Patologi Billedanalyse-Plugin",
@@ -115,8 +112,8 @@ const secTasks = [
   "Sårbarhedsscanning i GenomServer"
 ];
 
-// Tydelig definition: Hvilket fast flow skal hver opgave have
-const taskFlowMapping = {
+// fast flow pr. opgave
+const taskFlowMapping={
   "Biokemi Nyt Fungeassay-Modul": ["hospital","leverandor","it-jura","dokumentation"],
   "Patologi Billedanalyse-Plugin": ["hospital","it-jura","leverandor","dokumentation"],
   "Klinisk Genetik Variant-Database": ["hospital","leverandor","it-jura","dokumentation"],
@@ -130,13 +127,23 @@ const taskFlowMapping = {
   "Sårbarhedsscanning i GenomServer": ["cybersikkerhed","informationssikkerhed","hospital","dokumentation"]
 };
 
-// 6) scenarier (eksempler) 
-// Du kan frit udvide med mere tekst i "description", "A/B" mm.
-const locationScenarios = {
+// **Funktion** til at give en tekst for opgaven
+function getTaskDescription(cat){
+  if(cat==="development"){
+    return "Udviklingsopgave – Nye LIMS-funktioner til specialerne.";
+  } else if(cat==="stability"){
+    return "Stabilitetsopgave – Sørg for robust drift af LIMS.";
+  } else {
+    return "Sikkerhedsopgave – Luk huller og beskyt data i LIMS.";
+  }
+}
+
+// scenarioer (eksempel)
+const locationScenarios={
   "hospital":[
     {
-      description: "Hospital vil have en LIMS-opdatering. (De prioriterer drift/personalets tilfredshed)",
-      A:{ label:"Mindre Opgradering", text:"2 tid, 50 kr; +1 stabilitet, +1 hospital", 
+      description:"Hospital vil have LIMS-opgradering (drift / personaletilfredshed).",
+      A:{ label:"Mindre Udvidelse", text:"2 tid, 50 kr; +1 stabilitet, +1 hospital", 
           time:2,money:50,effects:{stability:1,hospitalSatisfaction:1},failBonus:0 },
       B:{ label:"Stor Modernisering", text:"5 tid, 150 kr; +3 hospital, +2 udvikling, +5% fejl", 
           time:5,money:150,effects:{hospitalSatisfaction:3,development:2},failBonus:0.05 }
@@ -144,34 +151,34 @@ const locationScenarios = {
   ],
   "leverandor":[
     {
-      description: "Leverandøren: Kvalitet vs. hurtig",
+      description: "Leverandør: Kvalitet vs. hurtig. (prioriterer let levering)",
       A:{ label:"Kvalitetstjek", text:"6 tid, 200 kr; +2 stabilitet, +1 sikkerhed", 
-          time:6, money:200,effects:{stability:2,security:1},failBonus:0 },
-      B:{ label:"Hurtig Leverance", text:"2 tid, 50 kr; +1 stabilitet, +10% fejl", 
-          time:2, money:50,effects:{stability:1},failBonus:0.1 }
+          time:6,money:200,effects:{stability:2, security:1},failBonus:0 },
+      B:{ label:"Hurtig Leverance", text:"2 tid, 50 kr; +1 stabilitet, 10% fejl", 
+          time:2,money:50,effects:{stability:1},failBonus:0.1 }
     }
   ],
   "it-jura":[
     {
-      description: "Jura: revidér kontrakter, (prioriterer lav risiko).",
+      description:"IT Jura: revidér kontrakter. (lav risiko foretrækkes)",
       A:{ label:"Grundig Revision", text:"4 tid, 150 kr; +2 sikkerhed, +1 stabilitet",
-          time:4,money:150,effects:{security:2,stability:1},failBonus:0 },
+          time:4,money:150,effects:{security:2, stability:1},failBonus:0 },
       B:{ label:"Hurtig Revision", text:"1 tid, 0 kr; +1 udvikling, +10% fejl",
           time:1,money:0,effects:{development:1},failBonus:0.1 }
     }
   ],
   "infrastruktur":[
     {
-      description:"Forældet serverpark.",
+      description:"Serverparken forældet",
       A:{ label:"Stor Modernisering", text:"5 tid, 200 kr; +2 stabilitet, +2 udvikling",
-          time:5,money:200,effects:{stability:2, development:2}, failBonus:0 },
-      B:{ label:"Minimal Patch", text:"1 tid, 50 kr; +1 stabilitet, +5% fejlrisiko",
-          time:1,money:50,effects:{stability:1}, failBonus:0.05 }
+          time:5,money:200,effects:{stability:2, development:2},failBonus:0 },
+      B:{ label:"Minimal Patch", text:"1 tid, 50 kr; +1 stabilitet, 5% fejl",
+          time:1,money:50,effects:{stability:1},failBonus:0.05 }
     }
   ],
   "informationssikkerhed":[
     {
-      description:"Sikkerhedshuller i LIMS-data.",
+      description:"Sikkerhedshuller i dataoverførsel.",
       A:{ label:"Avanceret Kryptering", text:"4 tid, 60 kr; +2 sikkerhed, +1 stabilitet",
           time:4,money:60,effects:{security:2,stability:1},failBonus:0 },
       B:{ label:"Basal Sikkerhed", text:"2 tid, 0 kr; +1 sikkerhed, +10% fejl",
@@ -180,17 +187,17 @@ const locationScenarios = {
   ],
   "cybersikkerhed":[
     {
-      description:"Cyber: Penetrationstest vs. hurtige patches",
-      A:{ label:"Fuldt PenTest", text:"5 tid, 120 kr; +2 sikkerhed, +1 stabilitet",
-          time:5,money:120,effects:{security:2,stability:1},failBonus:0 },
-      B:{ label:"Minimal scanning", text:"2 tid, 30 kr; +1 sikkerhed, +8% fejl",
+      description:"Cyberangreb mod LIMS. (Skal vi penteste eller hastefix?)",
+      A:{ label:"Grundig Pentest", text:"5 tid, 120 kr; +2 sikkerhed, +1 stabilitet",
+          time:5,money:120,effects:{security:2, stability:1},failBonus:0 },
+      B:{ label:"Hurtig scanning", text:"2 tid, 30 kr; +1 sikkerhed, 8% fejl",
           time:2,money:30,effects:{security:1},failBonus:0.08 }
     }
   ],
   "dokumentation":[
     {
-      description:"CAB vil se papirerne",
-      A:{ label:"Fuldt Dok", text:"3 tid, 10 kr; ingen extra fejl",
+      description:"Dokumentation for CAB (er de glade?).",
+      A:{ label:"Fuldt Dok", text:"3 tid, 10 kr; ingen extra fejl", 
           time:3,money:10,effects:{},failBonus:0 },
       B:{ label:"Minimal Dok", text:"1 tid, 0 kr; +5% fejl",
           time:1,money:0,effects:{},failBonus:0.05 }
@@ -198,10 +205,10 @@ const locationScenarios = {
   ],
   "medicinsk-udstyr":[
     {
-      description:"Medicinsk Udstyr: En fallback (eksempel)",
+      description:"Fallback – Medicinsk Udstyr. (Ikke i flows pt.)",
       A:{ label:"Grundig Vedligehold", text:"4 tid, 120 kr; +2 stabilitet, +1 sikkerhed",
-          time:4,money:120,effects:{stability:2,security:1},failBonus:0 },
-      B:{ label:"Hurtig Fix", text:"1 tid, 20 kr; +1 stabilitet, +10% fejl",
+          time:4,money:120,effects:{stability:2, security:1},failBonus:0 },
+      B:{ label:"Hurtig Fix", text:"1 tid, 20 kr; +1 stabilitet, 10% fejl",
           time:1,money:20,effects:{stability:1},failBonus:0.1 }
     }
   ]
@@ -209,17 +216,17 @@ const locationScenarios = {
 
 // scoreboard
 function updateScoreboard(){
-  timeLeftEl.textContent   = gameState.time;
-  moneyLeftEl.textContent  = gameState.money;
-  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
-  scoreboard.totalRewards.textContent   = gameState.totalRewards;
+  timeLeftEl.textContent= gameState.time;
+  moneyLeftEl.textContent= gameState.money;
+  scoreboard.tasksCompleted.textContent= gameState.tasksCompleted;
+  scoreboard.totalRewards.textContent= gameState.totalRewards;
   scoreboard.hospitalSatisfaction.textContent= gameState.hospitalSatisfaction;
-  securityValueEl.textContent   = gameState.security;
-  stabilityValueEl.textContent  = gameState.stability;
+  securityValueEl.textContent= gameState.security;
+  stabilityValueEl.textContent= gameState.stability;
   developmentValueEl.textContent= gameState.development;
 }
 
-// final – steps-lister etc.
+// steps-lister
 function updateStepsList(){
   stepsList.innerHTML="";
   if(!gameState.activeTask){
@@ -242,49 +249,49 @@ function updateStepsList(){
   stepsList.appendChild(prog);
 }
 
-// Håndtér klik på lokation
 function handleLocationClick(locName){
   if(!gameState.activeTask){
     showPopup("Vælg en opgave først!", "error");
     return;
   }
   const idx= gameState.activeTask.currentStep;
-  if(idx>= gameState.activeTask.steps.length) return;
+  if(idx>= gameState.activeTask.steps.length)return;
 
   const needed= gameState.activeTask.steps[idx];
   if(needed.toLowerCase()==="dokumentation"){
     skipDocumentationPopup();
     return;
   }
-  if(locName.toLowerCase()!== needed.toLowerCase()) return;
+  if(locName.toLowerCase()!== needed.toLowerCase())return;
 
   if(!gameState.activeTask.decisionMadeForStep){
     gameState.activeTask.decisionMadeForStep={};
   }
-  if(gameState.activeTask.decisionMadeForStep[idx]) return;
+  if(gameState.activeTask.decisionMadeForStep[idx])return;
   gameState.activeTask.decisionMadeForStep[idx]=true;
 
   showScenarioModal(locName);
 }
 
-// Dokumentation med 3 valg
+// doc skip scenario
 function skipDocumentationPopup(){
   scenarioModal.style.display="flex";
   docSkipOption.style.display="block";
 
   scenarioTitle.textContent= "Dokumentationstrin";
-  scenarioDescription.textContent= "CAB vil se papir, men du kan skippe...";
+  scenarioDescription.textContent= "CAB vil have papir, du kan dog skippe...";
 
   scenarioALabel.textContent= "Fuldt Dok";
-  scenarioAText.textContent= "3 tid, 10 kr; ingen ekstra fejl";
+  scenarioAText.textContent= "3 tid, 10 kr, ingen ekstra fejl";
   scenarioAButton.onclick=()=>{
     applyTimeCost(3);
     applyMoneyCost(10);
     scenarioModal.style.display="none";
     finalizeStep();
   };
+
   scenarioBLabel.textContent= "Minimal Dok";
-  scenarioBText.textContent= "1 tid, 0 kr; +5% fejl i CAB";
+  scenarioBText.textContent= "1 tid, 0 kr, +5% fejl";
   scenarioBButton.onclick=()=>{
     applyTimeCost(1);
     gameState.riskyTotal+=0.05;
@@ -298,16 +305,15 @@ function skipDocumentationPopup(){
   };
 }
 
-// Standard scenario
 function showScenarioModal(locName){
   scenarioModal.style.display="flex";
   docSkipOption.style.display="none";
 
   const scArr= locationScenarios[locName.toLowerCase()];
-  if(!scArr||scArr.length===0){
+  if(!scArr|| scArr.length===0){
     // fallback
     scenarioTitle.textContent= locName;
-    scenarioDescription.textContent="(Standard)";
+    scenarioDescription.textContent="(Standard scenario)";
     scenarioALabel.textContent="Mulighed A";
     scenarioAText.textContent="2 tid, 50 kr, +2 stabilitet";
     scenarioAButton.onclick=()=>{
@@ -377,7 +383,7 @@ function showCABModal(){
   cabSummary.innerHTML=`
     <strong>CAB Gennemgang</strong><br/>
     Risikoprocent: ${(gameState.riskyTotal*100).toFixed(0)}%<br/>
-    SkipDoc: ${gameState.docSkipCount} => +${(gameState.docSkipCount*15)}%<br/>
+    Skippet dok: ${gameState.docSkipCount} => +${(gameState.docSkipCount*15)}%<br/>
     Samlet fejlchance: ${(fail*100).toFixed(0)}%
   `;
 }
@@ -393,11 +399,11 @@ function showCABResult(isSuccess){
   cabResultModal.style.display="flex";
   if(isSuccess){
     cabResultTitle.textContent="CAB: Godkendt!";
-    cabResultText.textContent="CAB godkender opgaven.";
+    cabResultText.textContent="Opgaven godkendes trods eventuelle risici.";
     completeTaskCAB();
   } else {
     cabResultTitle.textContent="CAB: Afvist!";
-    cabResultText.textContent="For stor risiko / manglende dokumentation. Opgaven fejler!";
+    cabResultText.textContent="CAB fandt risici/manglende dok for høje. Opgave fejler!";
     failTaskCAB();
   }
 }
@@ -420,7 +426,7 @@ function completeTaskCAB(){
   else applyStatChange("stability", plus);
 
   gameState.totalRewards+= t.baseReward;
-  showPopup(`Opgave fuldført: +${plus} til ${t.taskType}, +${t.baseReward} kr belønning`, "success", 4000);
+  showPopup(`Opgave fuldført: +${plus} til ${t.taskType}, +${t.baseReward} kr`, "success", 4000);
 
   gameState.activeTask=null;
   activeTaskHeadline.textContent="Ingen aktiv opgave";
@@ -429,7 +435,6 @@ function completeTaskCAB(){
   updateScoreboard();
 }
 
-// Gå i minus
 function applyTimeCost(t){
   gameState.time-=t;
   updateScoreboard();
@@ -439,7 +444,7 @@ function applyMoneyCost(m){
   updateScoreboard();
 }
 function applyStatChange(stat,delta){
-  gameState[stat]= Math.min(Math.max(gameState[stat]+ delta,0),150);
+  gameState[stat]= Math.min(Math.max(gameState[stat]+delta,0),150);
   updateScoreboard();
   showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat, stat);
 }
@@ -447,8 +452,8 @@ function showFloatingText(txt, stat){
   const c= document.getElementById('floating-text-container');
   const div= document.createElement('div');
   div.classList.add('floating-text');
-  div.style.left= "50%";
-  div.style.top = "50%";
+  div.style.left="50%";
+  div.style.top="50%";
   if(stat==="security") div.style.color="#ff4444";
   else if(stat==="stability") div.style.color="#44ff44";
   else if(stat==="development") div.style.color="#4444ff";
@@ -462,9 +467,9 @@ function showFloatingText(txt, stat){
 // Generer opgaver
 function generateTask(){
   if(gameState.availableTasks.length>=10)return;
-  const categories=["stability","development","security"];
-  const cat= categories[Math.floor(Math.random()* categories.length)];
-  
+  const cats=["stability","development","security"];
+  const cat= cats[Math.floor(Math.random()* cats.length)];
+
   let name="";
   if(cat==="stability"){
     const possible= stabilityTasks.filter(n=> !gameState.usedTasks.has(n));
@@ -483,21 +488,20 @@ function generateTask(){
     gameState.usedTasks.add(name);
   }
 
-  // fast flow
-  const stepsFlow= taskFlowMapping[name];
-  if(!stepsFlow){
+  const flow= taskFlowMapping[name];
+  if(!flow){
     console.warn("Ingen flowMapping for", name);
     return;
   }
   const riskLevel= Math.floor(Math.random()*3)+1;
   const baseReward= riskLevel*80;
-
+  
   const newTask={
     id: Date.now()+ Math.floor(Math.random()*1000),
     taskType: cat,
     headline: name,
     description: getTaskDescription(cat),
-    steps: stepsFlow.slice(),
+    steps: flow.slice(),
     currentStep:0,
     riskLevel,
     baseReward,
@@ -508,7 +512,7 @@ function generateTask(){
   renderTasks();
 }
 
-// Render tasks
+// Vis liste
 function renderTasks(){
   tasksList.innerHTML="";
   if(!gameState.availableTasks.length){
@@ -517,9 +521,9 @@ function renderTasks(){
   }
   gameState.availableTasks.forEach(t=>{
     const li=document.createElement("li");
-    if(t.riskLevel===3){li.style.borderColor="red";li.style.borderWidth="2px";}
+    if(t.riskLevel===3){li.style.borderColor="red"; li.style.borderWidth="2px";}
     else if(t.riskLevel===2){li.style.borderColor="orange";}
-    else{li.style.borderColor="green";}
+    else {li.style.borderColor="green";}
     let pLabel= t.isHighPriority?" (HØJPRIORITET)":"";
     let potential=`+${5 + t.riskLevel*2} til ${t.taskType}`;
     li.innerHTML=`
@@ -545,24 +549,23 @@ function renderTasks(){
   });
 }
 
-// Forpligt
 function assignTask(taskId){
   if(gameState.activeTask){
     showPopup("Allerede en aktiv opgave!", "error");
     return;
   }
   const idx= gameState.availableTasks.findIndex(t=> t.id===taskId);
-  if(idx===-1) return;
+  if(idx===-1)return;
   const chosen= gameState.availableTasks.splice(idx,1)[0];
   
   gameState.activeTask= chosen;
   activeTaskHeadline.textContent= chosen.headline;
-  activeTaskDesc.textContent= chosen.description+" (Følg lokationerne i rækkefølge.)";
+  activeTaskDesc.textContent= chosen.description +" (Følg lokationerne i den rækkefølge!)";
   updateStepsList();
   renderTasks();
 }
 
-// Slutspil
+// endGame
 function endGame(){
   const sumText=`
     <strong>Spillet stopper!</strong><br/>
@@ -572,7 +575,7 @@ function endGame(){
     Stabilitet: ${gameState.stability}<br/>
     Udvikling: ${gameState.development}<br/>
     Hospital: ${gameState.hospitalSatisfaction}<br/>
-    Fuldførte Opgaver: ${gameState.tasksCompleted}<br/>
+    Opgaver løst: ${gameState.tasksCompleted}<br/>
     Belønning: ${gameState.totalRewards}
   `;
   endGameSummary.innerHTML=sumText;
@@ -584,14 +587,13 @@ function endGame(){
   stepsList.innerHTML="<li>Ingen aktiv opgave</li>";
 }
 
-// Initiér
 function initGame(){
   updateScoreboard();
-  // Generer 2 opgaver
-  for(let i=0;i<2;i++){
+  // generer 2 opgaver fra start
+  for(let i=0; i<2; i++){
     generateTask();
   }
-  // Generer løbende
+  // generer løbende
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
@@ -600,7 +602,7 @@ function initGame(){
 }
 
 // Lokation-lister
-const locationElements = {
+const locationElements={
   "Infrastruktur": document.getElementById('infrastruktur'),
   "Informationssikkerhed": document.getElementById('informationssikkerhed'),
   "Hospital": document.getElementById('hospital'),
