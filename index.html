@@ -11,6 +11,7 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
+        <!-- Større font for scoreboardet -->
         <span style="font-size:1.1rem;">Tid tilbage: <span id="time-left">100</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
@@ -25,7 +26,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationer – ikoner dobbelt størrelse i CSS -->
+      <!-- 8 lokationer med forstørrede ikoner, jf. style.css -->
       <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡 Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
@@ -48,7 +49,6 @@
           </ul>
         </div>
       </div>
-
       <div id="available-tasks">
         <h2>Mulige Opgaver</h2>
         <ul id="tasks-list">
@@ -62,24 +62,27 @@
     <p>&copy; 2025 IT Tycoon ApS</p>
   </footer>
 
-  <!-- popups -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
-
-  <!-- Intro modal -->
+  
+  <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
-    <div class="modal-content" style="width:70%;max-width:900px;">
+    <!-- Bredere boks: style="width:70%; max-width:900px;" -->
+    <div class="modal-content" style="width:70%; max-width:900px;">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
-      <p style="color:#f1c40f;">Du er forvalter af LIMS på et stort hospital. Forbedr systemerne og undgå fejl – men husk at du kan gå i minus, hvis du presser ressourcerne!</p>
+      <p style="color:#f1c40f;">
+        Du er forvalter af LIMS på et stort hospital. Forbedr systemerne og undgå fejl – men husk at du kan gå i minus, hvis du presser ressourcerne hårdt!
+      </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Scenario modal -->
+  <!-- Scenario Modal -->
   <div id="scenario-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%;max-width:900px;">
+    <div class="modal-content" style="width:70%; max-width:900px;">
       <h2 id="scenario-title"></h2>
       <p id="scenario-description"></p>
+
       <div id="scenario-optionA" style="margin-bottom:10px;">
         <strong><span id="scenario-a-label"></span></strong><br/>
         <em id="scenario-a-text"></em>
@@ -88,10 +91,11 @@
         <strong><span id="scenario-b-label"></span></strong><br/>
         <em id="scenario-b-text"></em>
       </div>
-      <!-- Ny mulighed for at skippe dokumentation -->
+
+      <!-- Egen div til skip doc -->
       <div id="doc-skip-option" style="display:none; margin-bottom:10px;">
         <strong>Skip Dokumentation</strong><br/>
-        <em>Helt undlade at dokumentere – +15% fejlrisiko ved CAB</em>
+        <em>Du springer helt over – +15% fejl ved CAB</em><br/>
         <button id="doc-skip-btn" style="background-color:#e74c3c;">Skip Doc</button>
       </div>
 
@@ -102,27 +106,27 @@
     </div>
   </div>
 
-  <!-- End-of-Time modal -->
+  <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%;max-width:900px;">
+    <div class="modal-content" style="width:70%; max-width:900px;">
       <h2>Tiden er gået!</h2>
       <p id="end-game-summary"></p>
       <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
     </div>
   </div>
 
-  <!-- CAB modal -->
+  <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%;max-width:900px;">
+    <div class="modal-content" style="width:70%; max-width:900px;">
       <h2>CAB Gennemgang</h2>
       <p id="cab-summary"></p>
       <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
     </div>
   </div>
 
-  <!-- CAB result modal -->
+  <!-- CAB Result Popup -->
   <div id="cab-result-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%;max-width:900px;">
+    <div class="modal-content" style="width:70%; max-width:900px;">
       <h2 id="cab-result-title"></h2>
       <p id="cab-result-text"></p>
       <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
