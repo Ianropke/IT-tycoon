@@ -11,7 +11,7 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Ingen "Belønning", men Tid, Penge, Opgaver, Sikkerhed, Stabilitet, Udvikling, Hospital -->
+        <!-- Tid, Penge, Fuldførte, Sikkerhed, Stabilitet, Udvikling, Hospital -->
         <span style="font-size:1.1rem;">Tid: <span id="time-left">100</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
@@ -25,7 +25,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 8 lokationer, placeret, ingen overlap (juster top/left efter behov) -->
+      <!-- 8 lokationer, placeret pænt uden overlap -->
       <div class="location" id="infrastruktur" style="top: 5%; left: 5%;">🔧 Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 5%; left: 55%;">🛡 Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 25%; left: 5%;">🏥 Hospital</div>
@@ -69,8 +69,9 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
-        Du er IT-ansvarlig for LIMS. Forbedr og vedligehold systemet. 
-        Vær opmærksom på tid, penge og risici!
+        Du er IT-ansvarlig for LIMS på et stort hospital. Du skal 
+        vedligeholde og udvide systemet inden for tids- og pengebudget.
+        Vær opmærksom på risici, dokumentation og CAB!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -121,7 +122,7 @@
     </div>
   </div>
 
-  <!-- CAB Result Modal -->
+  <!-- CAB Result -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
@@ -130,8 +131,7 @@
     </div>
   </div>
 
-  <!-- Scripts -->
-  <!-- Load each tasks-file, then main.js last -->
+  <!-- Indlæs tasks-filerne og derefter main.js -->
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
