@@ -64,7 +64,6 @@ header h1 {
   min-height: 0;
 }
 
-/* Forstørrede ikoner */
 .location {
   position: absolute;
   width: 170px;
@@ -72,7 +71,7 @@ header h1 {
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
-  font-size: 1.8rem; /* Dobbelt i forhold til 0.9 */
+  font-size: 1.8rem; /* dobbelt i forhold til 0.9 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,7 +128,6 @@ footer {
   background-color: #1c5980;
 }
 
-/* Popups */
 #popup-container {
   position: fixed;
   top: 20px;
@@ -162,8 +160,7 @@ footer {
 #floating-text-container {
   position: fixed;
   top: 0; left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   pointer-events: none;
   z-index: 999;
 }
