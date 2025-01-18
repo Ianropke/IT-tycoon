@@ -64,7 +64,6 @@ header h1 {
   min-height: 0;
 }
 
-/* Lokationer med stor boks + padding */
 .location {
   position: absolute;
   min-width: 220px;
@@ -92,7 +91,6 @@ footer {
   margin-top: 6px;
 }
 
-/* Lists */
 #steps-list li, #tasks-list li {
   margin-bottom: 4px;
   font-size: 0.9rem;
@@ -130,7 +128,6 @@ footer {
   background-color: #1c5980;
 }
 
-/* Popup container */
 #popup-container {
   position: fixed;
   top: 20px;
@@ -162,8 +159,7 @@ footer {
 
 #floating-text-container {
   position: fixed;
-  top: 0; 
-  left: 0;
+  top: 0; left: 0;
   width: 100%; 
   height: 100%;
   pointer-events: none;
@@ -181,10 +177,10 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
-/* Modals */
 .modal {
   position: fixed;
-  top: 0; left: 0;
+  top: 0; 
+  left: 0;
   width: 100%; 
   height: 100%;
   display: flex;
@@ -203,7 +199,6 @@ footer {
   max-width: 900px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   #main-container {
     flex-direction: column;
