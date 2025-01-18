@@ -11,7 +11,7 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Tid, Penge, Fuldførte opgaver, Sikkerhed, Stabilitet, Udvikling, Hospitalstilfredshed -->
+        <!-- Scoreboard: Tid, Penge, Fuldførte opgaver, Sikkerhed, Stabilitet, Udvikling, Hospital -->
         <span style="font-size:1.1rem;">Tid: <span id="time-left">100</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
@@ -25,29 +25,36 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 8 lokationer, placeret pænt -->
+      <!-- 8 lokationer, placeret så de ikke overlapper -->
       <div class="location" id="infrastruktur" style="top: 5%; left: 5%;">
         🔧 Infrastruktur
       </div>
+
       <div class="location" id="informationssikkerhed" style="top: 5%; left: 55%;">
         🛡 Informationssikkerhed
       </div>
+
       <div class="location" id="hospital" style="top: 25%; left: 5%;">
         🏥 Hospital
       </div>
+
       <div class="location" id="leverandor" style="top: 25%; left: 55%;">
         📦 Leverandør
       </div>
-      <div class="location" id="medicinsk-udstyr" style="top: 45%; left: 5%;">
-        🩺 Medicinsk Udstyr
-      </div>
+
       <div class="location" id="it-jura" style="top: 45%; left: 33%;">
         ⚖️ IT Jura
       </div>
+
       <div class="location" id="cybersikkerhed" style="top: 45%; left: 62%;">
         💻 Cybersikkerhed
       </div>
-      <div class="location" id="dokumentation" style="top: 65%; left: 33%;">
+
+      <div class="location" id="medicinsk-udstyr" style="top: 65%; left: 5%;">
+        🩺 Medicinsk Udstyr
+      </div>
+
+      <div class="location" id="dokumentation" style="top: 65%; left: 40%;">
         📄 Dokumentation
       </div>
     </div>
@@ -78,6 +85,7 @@
     <p>&copy; 2025 IT Tycoon ApS</p>
   </footer>
 
+  <!-- Popups -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
@@ -108,6 +116,7 @@
         <em id="scenario-b-text"></em>
       </div>
 
+      <!-- Dokumentation skip-option (hidden by default) -->
       <div id="doc-skip-option" style="display:none; margin-bottom:10px;">
         <strong>Skip Dokumentation</strong><br/>
         <em>+15% fejl ved CAB</em><br/>
@@ -121,6 +130,7 @@
     </div>
   </div>
 
+  <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Tiden er gået!</h2>
@@ -129,6 +139,7 @@
     </div>
   </div>
 
+  <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>CAB Gennemgang</h2>
@@ -137,6 +148,7 @@
     </div>
   </div>
 
+  <!-- CAB Result -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
@@ -145,7 +157,6 @@
     </div>
   </div>
 
-  <!-- script -->
   <script src="script.js"></script>
 </body>
 </html>
