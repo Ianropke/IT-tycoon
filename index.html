@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Tycoon: LIMS Forvaltning</title>
   <link rel="stylesheet" href="style.css">
@@ -11,7 +11,7 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Fjernet "Belønning", men beholdt Tid, Penge, Fuldførte opgaver, Sikkerhed, Stabilitet, Udvikling, Hospital -->
+        <!-- Tid, Penge, Fuldførte opgaver, Sikkerhed, Stabilitet, Udvikling, Hospitalstilfredshed -->
         <span style="font-size:1.1rem;">Tid: <span id="time-left">100</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
@@ -25,15 +25,31 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 8 lokationer - Ikoner er forstørret i CSS -->
-      <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
-      <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡 Informationssikkerhed</div>
-      <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
-      <div class="location" id="leverandor" style="top: 30%; left: 55%;">📦 Leverandør</div>
-      <div class="location" id="medicinsk-udstyr" style="top: 50%; left: 10%;">🩺 Medicinsk Udstyr</div>
-      <div class="location" id="it-jura" style="top: 50%; left: 40%;">⚖️ IT Jura</div>
-      <div class="location" id="cybersikkerhed" style="top: 50%; left: 70%;">💻 Cybersikkerhed</div>
-      <div class="location" id="dokumentation" style="top: 70%; left: 30%;">📄 Dokumentation</div>
+      <!-- 8 lokationer, placeret pænt -->
+      <div class="location" id="infrastruktur" style="top: 5%; left: 5%;">
+        🔧 Infrastruktur
+      </div>
+      <div class="location" id="informationssikkerhed" style="top: 5%; left: 55%;">
+        🛡 Informationssikkerhed
+      </div>
+      <div class="location" id="hospital" style="top: 25%; left: 5%;">
+        🏥 Hospital
+      </div>
+      <div class="location" id="leverandor" style="top: 25%; left: 55%;">
+        📦 Leverandør
+      </div>
+      <div class="location" id="medicinsk-udstyr" style="top: 45%; left: 5%;">
+        🩺 Medicinsk Udstyr
+      </div>
+      <div class="location" id="it-jura" style="top: 45%; left: 33%;">
+        ⚖️ IT Jura
+      </div>
+      <div class="location" id="cybersikkerhed" style="top: 45%; left: 62%;">
+        💻 Cybersikkerhed
+      </div>
+      <div class="location" id="dokumentation" style="top: 65%; left: 33%;">
+        📄 Dokumentation
+      </div>
     </div>
 
     <div id="task-side">
@@ -64,25 +80,15 @@
 
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
-  
+
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
-    <div class="modal-content" style="width:70%; max-width:900px;">
+    <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
-        Du er netop blevet ansat som IT-ansvarlig for LIMS i et stort hospitalssystem.
-        Dine opgaver bliver at opdatere, vedligeholde og udvikle nye funktioner, 
-        samtidig med at du holder hospitalet, infrastruktur-folkene og Cybersikkerhed 
-        tilfredse – og sikrer, at CAB ikke afviser dine ændringer.
-      </p>
-      <p>
-        Vær opmærksom på, at din tid og dine penge kan gå i minus, men 
-        det øger risikoen for fejl. Tænk dig om, før du tager de hurtige løsninger, 
-        og husk at dokumentere dine ændringer, så CAB ikke afviser dit projekt.
-      </p>
-      <p style="color:#f39c12;">
-        Held og lykke med at håndtere de 30 opgaver fra Cybersikkerhed, Infrastruktur 
-        og Hospitalet, så LIMS kører både sikkert, stabilt og med de rette funktioner!
+        Du er netop blevet IT-ansvarlig for LIMS på et stort hospital.
+        Du skal vedligeholde og forbedre systemet inden for begrænset tid og penge.
+        Brug lokationerne klogt, og pas på risici!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -90,7 +96,7 @@
 
   <!-- Scenario Modal -->
   <div id="scenario-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%; max-width:900px;">
+    <div class="modal-content">
       <h2 id="scenario-title"></h2>
       <p id="scenario-description"></p>
       <div id="scenario-optionA" style="margin-bottom:10px;">
@@ -105,7 +111,7 @@
       <div id="doc-skip-option" style="display:none; margin-bottom:10px;">
         <strong>Skip Dokumentation</strong><br/>
         <em>+15% fejl ved CAB</em><br/>
-        <button id="doc-skip-btn" style="background-color:#e74c3c;">Skip Doc</button>
+        <button id="doc-skip-btn" style="background-color:#e74c3c;">Skip Dok</button>
       </div>
 
       <div style="margin-top:12px;">
@@ -116,7 +122,7 @@
   </div>
 
   <div id="end-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%; max-width:900px;">
+    <div class="modal-content">
       <h2>Tiden er gået!</h2>
       <p id="end-game-summary"></p>
       <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
@@ -124,7 +130,7 @@
   </div>
 
   <div id="cab-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%; max-width:900px;">
+    <div class="modal-content">
       <h2>CAB Gennemgang</h2>
       <p id="cab-summary"></p>
       <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
@@ -132,13 +138,14 @@
   </div>
 
   <div id="cab-result-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="width:70%; max-width:900px;">
+    <div class="modal-content">
       <h2 id="cab-result-title"></h2>
       <p id="cab-result-text"></p>
       <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
     </div>
   </div>
 
+  <!-- script -->
   <script src="script.js"></script>
 </body>
 </html>
