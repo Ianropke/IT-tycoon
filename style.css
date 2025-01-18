@@ -1,7 +1,7 @@
 html, body {
-  margin: 0; 
+  margin: 0;
   padding: 0;
-  width: 100%; 
+  width: 100%;
   height: 100%;
   overflow: auto;
   font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -9,6 +9,7 @@ html, body {
   color: #ecf0f1;
 }
 
+/* Header + scoreboard - Lidt større font */
 header {
   background-color: #34495e;
   padding: 8px 20px;
@@ -19,112 +20,113 @@ header {
   margin-bottom: 2px;
 }
 header h1 {
-  margin: 0 20px 0 0; 
-  font-size: 2rem; /* Større */
+  margin: 0 20px 0 0;
+  font-size: 2rem;
 }
 #scoreboard {
-  margin: 0; 
-  padding: 8px; /* Lidt padding */
+  margin: 0;
+  padding: 8px;
 }
 #scores {
-  display: flex; 
-  gap: 16px; 
+  display: flex;
+  gap: 16px;
   align-items: center;
 }
 
+/* Layout */
 #main-container {
-  display: flex; 
+  display: flex;
   height: 80vh;
-  margin: 8px 20px; 
-  gap: 16px; 
+  margin: 8px 20px;
+  gap: 16px;
   box-sizing: border-box;
 }
 #game-area {
-  flex: 1; 
+  flex: 1;
   background-color: #34495e;
-  border: 2px solid #ecf0f1; 
+  border: 2px solid #ecf0f1;
   border-radius: 10px;
-  position: relative; 
+  position: relative;
   min-height: 0;
 }
 #task-side {
-  flex: 1; 
-  display: flex; 
+  flex: 1;
+  display: flex;
   flex-direction: column;
-  gap: 10px; 
+  gap: 10px;
   min-height: 0;
 }
 
 #active-task, #available-tasks {
-  background-color: #34495e; 
+  background-color: #34495e;
   border: 2px solid #ecf0f1;
-  border-radius: 5px; 
-  padding: 8px; 
+  border-radius: 5px;
+  padding: 8px;
   flex: 1;
-  overflow: auto; 
+  overflow: auto;
   min-height: 0;
 }
 
-/* Forstørrede ikoner i location */
+/* Lokationer – fordoblet ikonstørrelse */
 .location {
   position: absolute;
-  width: 170px; 
+  width: 170px;
   height: 65px;
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
-  font-size: 1.8rem; /* (Dobbelt, fx fra 0.9 -> 1.8) */
+  font-size: 1.8rem; /* Dobbelt i forhold til normal */
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
-  cursor: pointer; 
+  cursor: pointer;
   transition: background-color 0.3s;
   color: #ecf0f1;
 }
-.location:hover { 
-  filter: brightness(1.15); 
+.location:hover {
+  filter: brightness(1.15);
 }
 
 footer {
   background-color: #34495e;
-  text-align: center; 
+  text-align: center;
   padding: 6px 20px;
   margin-top: 6px;
 }
 
 /* Lists */
 #steps-list li, #tasks-list li {
-  margin-bottom: 4px; 
+  margin-bottom: 4px;
   font-size: 0.9rem;
 }
 #tasks-list {
-  list-style-type: none; 
-  padding: 0; 
+  list-style-type: none;
+  padding: 0;
   margin: 0;
 }
 #tasks-list li {
   background-color: #2c3e50;
-  margin: 4px 0; 
+  margin: 4px 0;
   padding: 8px;
-  border-radius: 3px; 
+  border-radius: 3px;
   transition: background-color 0.3s, border 0.3s;
-  display: flex; 
-  flex-direction: column; 
+  display: flex;
+  flex-direction: column;
   font-size: 0.85rem;
 }
-#tasks-list li:hover { 
-  background-color: #1abc9c; 
-  cursor: pointer; 
+#tasks-list li:hover {
+  background-color: #1abc9c;
+  cursor: pointer;
 }
 
 .commit-button {
-  margin-top: 4px; 
+  margin-top: 4px;
   padding: 4px 8px;
-  background-color: #2980b9; 
+  background-color: #2980b9;
   color: #fff;
-  border: none; 
+  border: none;
   border-radius: 3px;
-  font-size: 0.75rem; 
+  font-size: 0.75rem;
   transition: background-color 0.3s;
 }
 .commit-button:hover {
@@ -133,26 +135,26 @@ footer {
 
 /* Popups */
 #popup-container {
-  position: fixed; 
-  top: 20px; 
+  position: fixed;
+  top: 20px;
   right: 20px;
   z-index: 100;
 }
 .popup {
-  background-color: #27ae60; 
+  background-color: #27ae60;
   color: #fff;
-  padding: 6px 10px; 
+  padding: 6px 10px;
   margin-bottom: 10px;
-  border-radius: 5px; 
+  border-radius: 5px;
   font-size: 0.85rem;
-  max-width: 320px; 
+  max-width: 320px;
   animation: fadeOut 4s forwards;
 }
-.popup.error { background-color: #e74c3c; }
-
-/* Fjerner den "info" stil (du ønskede ingen lilla advarsel ) */
-.popup.info { 
-  /* erstatter den med helt neutral baggrund, el. bare slet klassen */
+.popup.error {
+  background-color: #e74c3c;
+}
+/* Fjerner “info” => ingen lilla popup */
+.popup.info {
   background-color: #27ae60 !important; 
 }
 
@@ -163,18 +165,16 @@ footer {
 }
 
 #floating-text-container {
-  position: fixed; 
-  top: 0; 
-  left: 0;
-  width: 100%; 
-  height: 100%; 
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   pointer-events: none;
   z-index: 999;
 }
 .floating-text {
-  position: absolute; 
+  position: absolute;
   font-size: 1rem;
-  animation: floatUp 2s forwards; 
+  animation: floatUp 2s forwards;
   text-shadow: 0 0 2px #000;
 }
 @keyframes floatUp {
@@ -183,22 +183,34 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
+/* Modals med bredere bokse */
 .modal {
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%; 
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgba(0,0,0,0.6);
   z-index: 999;
 }
-
-/* Bredere boks: fjerner max-width, eller sætter stor max-width */
 .modal-content {
   background-color: #2c3e50;
   border: 3px solid #bdc3c7;
   border-radius: 8px;
   padding: 16px;
   text-align: left;
+}
+
+/* Responsiv */
+@media (max-width: 768px) {
+  #main-container {
+    flex-direction: column;
+    height: auto;
+  }
+  #game-area { min-height: 300px; }
+}
+@media (max-width: 480px) {
+  header h1 { font-size: 1.3rem; }
 }
