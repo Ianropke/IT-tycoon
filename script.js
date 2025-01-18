@@ -1,7 +1,8 @@
 /************************************************************
- * script.js – Samlet version
- * Ingen dubletter, "getTaskDescription" er defineret 
- * før "generateTask", og intro-pop-up er længere.
+ * script.js – Implementeret 30 opgaver fra tabellerne
+ * 3 kategorier: cybersikkerhed, infrastruktur, hospital
+ * Hver opgave har: title, description, logic. 
+ * "Belønning" er fjernet fra scoreboard.
  ************************************************************/
 
 function showPopup(msg, type="success", duration=3000){
@@ -14,7 +15,7 @@ function showPopup(msg, type="success", duration=3000){
   setTimeout(()=> el.remove(), duration);
 }
 
-// scoreboard references
+// Scoreboard references
 const securityValueEl    = document.getElementById('security-value');
 const stabilityValueEl   = document.getElementById('stability-value');
 const developmentValueEl = document.getElementById('development-value');
@@ -23,11 +24,11 @@ const moneyLeftEl        = document.getElementById('money-left');
 
 const scoreboard = {
   tasksCompleted: document.getElementById('tasks-completed'),
-  totalRewards: document.getElementById('total-rewards'),
   hospitalSatisfaction: document.getElementById('hospital-satisfaction')
+  // Ingen totalRewards – “Belønning” er fjernet
 };
 
-// modals
+// Modals
 const scenarioModal       = document.getElementById('scenario-modal');
 const scenarioTitle       = document.getElementById('scenario-title');
 const scenarioDescription = document.getElementById('scenario-description');
@@ -37,6 +38,7 @@ const scenarioAButton     = document.getElementById('scenario-a-btn');
 const scenarioBLabel      = document.getElementById('scenario-b-label');
 const scenarioBText       = document.getElementById('scenario-b-text');
 const scenarioBButton     = document.getElementById('scenario-b-btn');
+
 const docSkipOption       = document.getElementById('doc-skip-option');
 const docSkipBtn          = document.getElementById('doc-skip-btn');
 
@@ -73,160 +75,244 @@ document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
   gameState.introModalOpen=false;
 });
 
-// global game state
+// Global state
 let gameState={
   time: 100,
-  money:1000,
-  security:100,
-  stability:100,
-  development:100,
-  hospitalSatisfaction:100,
+  money: 1000,
+  security: 100,
+  stability: 100,
+  development: 100,
+  hospitalSatisfaction: 100,
 
-  tasksCompleted:0,
-  totalRewards:0,
-  activeTask:null,
-  availableTasks:[],
-  introModalOpen:true,
+  tasksCompleted: 0,
+  activeTask: null,
+  availableTasks: [],
+  introModalOpen: true,
 
-  docSkipCount:0,
-  riskyTotal:0,
-  finalFailChance:0,
+  docSkipCount: 0,
+  riskyTotal: 0,
+  finalFailChance: 0,
 
   usedTasks: new Set()
 };
 
-// opgaver pr kategori
-const devTasks = [
-  "Biokemi Nyt Fungeassay-Modul",
-  "Patologi Billedanalyse-Plugin",
-  "Klinisk Genetik Variant-Database"
-];
-const stabilityTasks = [
-  "Server-Cluster Tilpasning",
-  "High-Availability Udbygning",
-  "Konfig-Backup Gennemgang"
-];
-const secTasks = [
-  "Fuld Kryptering af Datapunkter",
-  "Penetrationstest (ZetaSec)",
-  "Sårbarhedsscanning i GenomServer"
+/** 
+ * De 3 kategorier: cybersikkerhed, infrastruktur, hospital 
+ * Hver med 10 opgaver (30 total). 
+ * Opgaven har: 
+ *    title:    Tabel-kolonnens Opgave 
+ *    description: Tabelens "Kort beskrivelse" + Agenda 
+ *    logic:   Tabelens “Spillets logik for spilleren”
+ *    flow:    Tabelens "Trin (lokationer)"
+ */
+const cybersikkerhedTasks = [
+  {
+    title: "NetværksPenTest (ekstern firma)",
+    description: "Hyre eksterne specialister til at udføre en dyb penetrationstest af alle LIMS-relaterede netværkssegmenter. (Minimering af sårbarheder, overholdelse af GDPR/ISO, intern opkvalificering af sikkerhedsprocedurer)",
+    logic: "Først besøger du Cybersikkerhed for at beslutte omfanget og bestille eksternt firma. Derefter IT Jura for at sikre lovlige aftaler. Derefter Hospitalet for at koordinere nedetid. Til sidst dokumenterer du resultatet til CAB.",
+    flow: ["cybersikkerhed","it-jura","hospital","dokumentation"]
+  },
+  {
+    title: "Opdatering af Firewall-regler",
+    description: "Gennemgang og opdatering af forældede firewall-regler, netværksopdeling af fx patologi og mikrobiologi for at reducere risiko for spredning.",
+    logic: "Først tjekker du Informationssikkerhed for at se hullerne. Derefter Cybersikkerhed for at skrive nye firewall-politikker. Så Hospital for at planlægge servicevindue. Til sidst dokumenterer du alt.",
+    flow: ["informationssikkerhed","cybersikkerhed","hospital","dokumentation"]
+  },
+  {
+    title: "Kryptering af interne databaser",
+    description: "Fuld diskkryptering og streng adgangsstyring på databaser, der ligger bag LIMS. (Sikr patientfortrolighed, GDPR-krav)",
+    logic: "Først går du til Cybersikkerhed for at vælge krypteringsmetode. Dernæst Infrastruktur for selve implementeringen. Så Hospital for at teste i praksis. Til sidst dokumenteres det til CAB.",
+    flow: ["cybersikkerhed","infrastruktur","hospital","dokumentation"]
+  },
+  {
+    title: "Two-Factor Authentication (2FA)",
+    description: "Rulle obligatorisk 2FA ud til alle LIMS-brugere, så uautoriseret login forhindres.",
+    logic: "Først planlægger du 2FA hos Cybersikkerhed. Dernæst introducerer du det hos Hospital (personalet). Så IT Jura for at dække retningslinjer. Til sidst dokumentation.",
+    flow: ["cybersikkerhed","hospital","it-jura","dokumentation"]
+  },
+  {
+    title: "Phishing-awareness Kampagne",
+    description: "Udrulle en intern kampagne med testmails og e-læring for at uddanne personalet om phishing-trusler.",
+    logic: "Først udformer du kampagnen hos Cybersikkerhed. Dernæst får du Hospital (HR) med for at støtte. Så IT Jura for at sikre lovlig monitorering. Endelig dokumentation af forløbet.",
+    flow: ["cybersikkerhed","hospital","it-jura","dokumentation"]
+  },
+  {
+    title: "SOC-overvågning (Security Operation Center)",
+    description: "Etablere en SOC, der overvåger logs 24/7 for mistænkelige aktiviteter i LIMS.",
+    logic: "Først definerer du SOC hos Cybersikkerhed. Dernæst beder du Infrastruktur opsætte log-forwarders. Så Hospital for at aftale alarmer/eskaleringsprocedurer. Til sidst dokumentation.",
+    flow: ["cybersikkerhed","infrastruktur","hospital","dokumentation"]
+  },
+  {
+    title: "Automatisk Patch Management",
+    description: "Indføre automatiske sikkerhedspatches for OS/applikationer/firmware, så sårbarheder lukkes hurtigt.",
+    logic: "Først laver du strategi hos Cybersikkerhed. Dernæst implementeres det hos Infrastruktur. Så Hospital for at koordinere servicevinduer. Til sidst dokumentation.",
+    flow: ["cybersikkerhed","infrastruktur","hospital","dokumentation"]
+  },
+  {
+    title: "Adgangsbegrænsning til leverandørportaler",
+    description: "Sikre, at leverandørers fjernadgang kun foregår via segmenteret netværk og krypteret linje.",
+    logic: "Først sætter Cybersikkerhed krav til VPN/segmentering. Dernæst IT Jura for at opdatere kontrakter. Så involveres Leverandør. Endelig dokumentation.",
+    flow: ["cybersikkerhed","it-jura","leverandor","dokumentation"]
+  },
+  {
+    title: "Log Management & SIEM-system",
+    description: "Installere et SIEM-værktøj, der samler og analyserer logs fra LIMS i realtid.",
+    logic: "Først beslutter du i Cybersikkerhed valg af SIEM. Dernæst får du Infrastruktur til at opsætte log-forwarders. Så Hospital for driftstidsvindue. Endelig dokumentation.",
+    flow: ["cybersikkerhed","infrastruktur","hospital","dokumentation"]
+  },
+  {
+    title: "Segmentering af LIMS-moduler",
+    description: "Opdele LIMS i separate segmenter, så fx mikrobiologi og patologi ikke påvirker hinanden ved brud.",
+    logic: "Først laver du segmenteringspolitik hos Cybersikkerhed. Dernæst opsætter Infrastruktur VLAN og net. Så tester Hospital workflow. Til slut dokumentation.",
+    flow: ["cybersikkerhed","infrastruktur","hospital","dokumentation"]
+  },
 ];
 
-// fast flow pr. opgave
-const taskFlowMapping={
-  "Biokemi Nyt Fungeassay-Modul": ["hospital","leverandor","it-jura","dokumentation"],
-  "Patologi Billedanalyse-Plugin": ["hospital","it-jura","leverandor","dokumentation"],
-  "Klinisk Genetik Variant-Database": ["hospital","leverandor","it-jura","dokumentation"],
+const infrastrukturTasks = [
+  {
+    title: "Serverpark Modernisering",
+    description: "Udskifte forældede fysiske servere med nye, mere strømbesparende og effektive modeller for LIMS-drift.",
+    logic: "Først planlægger du hos Infrastruktur. Derefter taler du med Hospital om midlertidige forstyrrelser. Så beder du Leverandør sikre softwarekompatibilitet. Til sidst dokumentation.",
+    flow: ["infrastruktur","hospital","leverandor","dokumentation"]
+  },
+  {
+    title: "NetværksOpgradering (10 GbE)",
+    description: "Implementere hurtigere netværksforbindelser mellem LIMS-servere og afdelinger (fra 1 Gbit til 10 Gbit).",
+    logic: "Først sætter du netudstyr op hos Infrastruktur. Dernæst tester du hos Hospital, at alt kører. Så involverer du Cybersikkerhed for net-sikkerhed. Til slut dokumentation.",
+    flow: ["infrastruktur","hospital","cybersikkerhed","dokumentation"]
+  },
+  {
+    title: "Konsolidering af sjældent brugte moduler",
+    description: "Lukke eller udfase LIMS-moduler, der ikke længere bruges, for at spare ressourcer og reducere kompleksitet.",
+    logic: "Først kortlægger Infrastruktur, hvad der kan lukkes. Dernæst spørger du Hospital, om moduler virkelig er overflødige. Så inddrager du IT Jura for at opsige licenser. Til sidst dokumentation.",
+    flow: ["infrastruktur","hospital","it-jura","dokumentation"]
+  },
+  {
+    title: "Overgang til Cloud-hybrid",
+    description: "Flytte dele af LIMS (fx backup/test) i en cloud-løsning for at reducere on-prem overhead.",
+    logic: "Først planlægger du hos Infrastruktur. Derefter Cybersikkerhed for at sikre data i skyen. Så Hospital for at godkende testadgang. Endelig dokumentation.",
+    flow: ["infrastruktur","cybersikkerhed","hospital","dokumentation"]
+  },
+  {
+    title: "HA for kritiske systemer",
+    description: "Opsætte redundante servere/failover-løsninger, så LIMS altid er online (High Availability).",
+    logic: "Først opsætter du HA i Infrastruktur. Dernæst tester Hospital failover. Så beder du Leverandør om softwareunderstøttelse. Til sidst dokumentation.",
+    flow: ["infrastruktur","hospital","leverandor","dokumentation"]
+  },
+  {
+    title: "Virtualiseringsprojekt",
+    description: "Indføre/udvide virtuel infrastruktur (VMware e.l.) for at køre LIMS-komponenter fleksibelt.",
+    logic: "Først opsætter du hypervisor i Infrastruktur. Dernæst tester Hospital performance. Så retter Leverandør licensaftaler, hvis nødvendigt. Til sidst dokumentation.",
+    flow: ["infrastruktur","hospital","leverandor","dokumentation"]
+  },
+  {
+    title: "Afvikling af ældre software (OS-versioner)",
+    description: "Lukke ned for gamle OS-versioner (Windows/Linux) for at spare licens/support og øge sikkerhed.",
+    logic: "Først laver du i Infrastruktur en liste over gamle OS’er. Dernæst afklarer du med Hospital, om de kan erstatte dem. Så kontakter du IT Jura for at ophæve supportaftaler. Til sidst dokumentation.",
+    flow: ["infrastruktur","hospital","it-jura","dokumentation"]
+  },
+  {
+    title: "Energioptimering i datacenter",
+    description: "Forbedre køling, bruge strømbesparende PSU’er og intelligent temperaturstyring for at sænke driftsomkostninger.",
+    logic: "Først vælger du energitiltag hos Infrastruktur. Dernæst aftaler du med Hospital, om der kan være nedetid. Så taler du med Leverandøren, hvis hardwarekrav skal justeres. Til sidst dokumentation.",
+    flow: ["infrastruktur","hospital","leverandor","dokumentation"]
+  },
+  {
+    title: "Lukning af parallel-lab systemer",
+    description: "Integrere ældre standalone-lab systemer i hoved-LIMS for mindre dobbelt vedligehold.",
+    logic: "Først forbereder du sammensmeltning i Infrastruktur. Dernæst migrerer du data hos Hospital. Så sikrer du hos Cybersikkerhed, at gamle systemer lukkes sikkert. Endelig dokumentation.",
+    flow: ["infrastruktur","hospital","cybersikkerhed","dokumentation"]
+  },
+  {
+    title: "Migrering til container-teknologi",
+    description: "Køre visse LIMS-moduler i Docker/Kubernetes for hurtigere opdateringer og skalering.",
+    logic: "Først opsætter du container-miljø i Infrastruktur. Dernæst tester Hospital stabiliteten. Så inddrager du Cybersikkerhed for images og net-sikkerhed. Til sidst dokumentation.",
+    flow: ["infrastruktur","hospital","cybersikkerhed","dokumentation"]
+  },
+];
 
-  "Server-Cluster Tilpasning": ["infrastruktur","hospital","leverandor","dokumentation"],
-  "High-Availability Udbygning": ["infrastruktur","leverandor","hospital","dokumentation"],
-  "Konfig-Backup Gennemgang": ["infrastruktur","hospital","leverandor","dokumentation"],
+const hospitalTasks = [
+  {
+    title: "Patologi Billedanalyse-Plugin",
+    description: "Indføre AI-baseret billedanalyse i patologiafdelingen for hurtigere diagnostik.",
+    logic: "Først udformes krav hos Hospital. Dernæst får du Leverandøren til at udvikle plugin. Så IT Jura for databehandleraftaler. Til slut dokumentation.",
+    flow: ["hospital","leverandor","it-jura","dokumentation"]
+  },
+  {
+    title: "Biokemi Lab-automatisering",
+    description: "Automatisere prøvehåndtering, så personalet slipper for manuelle indtastninger i LIMS.",
+    logic: "Først beskriver du nye arbejdsgange hos Hospital. Dernæst Infrastruktur for at koble lab-robotter. Så Cybersikkerhed for at tjekke dataflows. Til sidst dokumentation.",
+    flow: ["hospital","infrastruktur","cybersikkerhed","dokumentation"]
+  },
+  {
+    title: "Mikrobiologi Real-time Monitoring",
+    description: "Overvåge mikrobiologiske tests i realtid, så læger løbende kan se resultater.",
+    logic: "Først afklarer du behovet hos Hospital. Dernæst opgraderer du Infrastruktur (server/net). Så Leverandør for at tilpasse LIMS. Til slut dokumentation.",
+    flow: ["hospital","infrastruktur","leverandor","dokumentation"]
+  },
+  {
+    title: "Klinisk Genetik BigData Integration",
+    description: "Forbinde LIMS med ekstern gen-database, så specialister kan få variantfortolkninger.",
+    logic: "Først definere du krav hos Hospital. Dernæst beder du Leverandøren om at bygge interface. Så Cybersikkerhed for at sikre gen-data. Til sidst dokumentation.",
+    flow: ["hospital","leverandor","cybersikkerhed","dokumentation"]
+  },
+  {
+    title: "Automatiseret rapportskabelon",
+    description: "Udvide LIMS med funktion til at generere standardrapporter (fx onkologi, endokrinologi).",
+    logic: "Først taler du med Hospital om kravspec. Dernæst Leverandør for at udvikle det. Så IT Jura om dataopbevaring i rapporter. Endelig dokumentation.",
+    flow: ["hospital","leverandor","it-jura","dokumentation"]
+  },
+  {
+    title: "Immunologi DataDashboard",
+    description: "Et brugervenligt dashboard, der viser igangværende tests og forventet svartid i immunologi.",
+    logic: "Først designer du UI hos Hospital. Dernæst inddrager du Infrastruktur for realtidsvisning. Så Cybersikkerhed for at styre adgang. Til sidst dokumentation.",
+    flow: ["hospital","infrastruktur","cybersikkerhed","dokumentation"]
+  },
+  {
+    title: "LIMS-UI Forbedring i KBA",
+    description: "Forenkle menustruktur og lave hurtig-søg i Klinisk Biokemi, så personalet finder prøveresultater nemt.",
+    logic: "Først afklarer du brugernes ønsker hos Hospital. Dernæst Leverandør for selve UI-ændringerne. Så IT Jura for evt. licensaftaler. Til sidst dokumentation.",
+    flow: ["hospital","leverandor","it-jura","dokumentation"]
+  },
+  {
+    title: "Multi-sprog i LIMS",
+    description: "Gøre det muligt at skifte sprog, fx engelsk, til internationale ansatte.",
+    logic: "Først undersøger du hospitalets behov for sprogpakker. Dernæst aftaler du med Leverandøren at implementere dem. Så sikrer du med Infrastruktur, at ydelsen er den samme. Endelig evt. tjek med Jura, og dokumenterer alt.",
+    flow: ["hospital","leverandor","infrastruktur","dokumentation"]
+  },
+  {
+    title: "MobilApp til Lab-gange",
+    description: "En app, hvor personalet kan se teststatus og bestille analyser fra tablet/mobil.",
+    logic: "Først definerer du app-funktioner hos Hospital. Dernæst får du Leverandøren til at lave appen. Så kontakter du Cybersikkerhed for at sikre databeskyttelse. Til sidst dokumentation.",
+    flow: ["hospital","leverandor","cybersikkerhed","dokumentation"]
+  },
+  {
+    title: "Quick-View for akutte patienter",
+    description: "Prioritér akutte patientresultater i en “hurtig-liste”, så personalet hurtigt ser vigtige data.",
+    logic: "Først spørger du Hospital, hvad der skal i quick-listen. Derefter Leverandør for at udvikle funktionen. Så Infrastruktur for at teste serverbelastning. Endelig dokumentation.",
+    flow: ["hospital","leverandor","infrastruktur","dokumentation"]
+  },
+];
 
-  "Fuld Kryptering af Datapunkter": ["informationssikkerhed","it-jura","hospital","dokumentation"],
-  "Penetrationstest (ZetaSec)": ["informationssikkerhed","cybersikkerhed","hospital","dokumentation"],
-  "Sårbarhedsscanning i GenomServer": ["cybersikkerhed","informationssikkerhed","hospital","dokumentation"]
+// Kategorier i en opslagsstruktur:
+const categoryTaskData = {
+  "cybersikkerhed": cybersikkerhedTasks,
+  "infrastruktur": infrastrukturTasks,
+  "hospital": hospitalTasks
 };
 
-// **Funktion** til at give en tekst for opgaven
-function getTaskDescription(cat){
-  if(cat==="development"){
-    return "Udviklingsopgave – Nye LIMS-funktioner til specialerne.";
-  } else if(cat==="stability"){
-    return "Stabilitetsopgave – Sørg for robust drift af LIMS.";
-  } else {
-    return "Sikkerhedsopgave – Luk huller og beskyt data i LIMS.";
-  }
-}
-
-// scenarioer (eksempel)
-const locationScenarios={
-  "hospital":[
-    {
-      description:"Hospital vil have LIMS-opgradering (drift / personaletilfredshed).",
-      A:{ label:"Mindre Udvidelse", text:"2 tid, 50 kr; +1 stabilitet, +1 hospital", 
-          time:2,money:50,effects:{stability:1,hospitalSatisfaction:1},failBonus:0 },
-      B:{ label:"Stor Modernisering", text:"5 tid, 150 kr; +3 hospital, +2 udvikling, +5% fejl", 
-          time:5,money:150,effects:{hospitalSatisfaction:3,development:2},failBonus:0.05 }
-    }
-  ],
-  "leverandor":[
-    {
-      description: "Leverandør: Kvalitet vs. hurtig. (prioriterer let levering)",
-      A:{ label:"Kvalitetstjek", text:"6 tid, 200 kr; +2 stabilitet, +1 sikkerhed", 
-          time:6,money:200,effects:{stability:2, security:1},failBonus:0 },
-      B:{ label:"Hurtig Leverance", text:"2 tid, 50 kr; +1 stabilitet, 10% fejl", 
-          time:2,money:50,effects:{stability:1},failBonus:0.1 }
-    }
-  ],
-  "it-jura":[
-    {
-      description:"IT Jura: revidér kontrakter. (lav risiko foretrækkes)",
-      A:{ label:"Grundig Revision", text:"4 tid, 150 kr; +2 sikkerhed, +1 stabilitet",
-          time:4,money:150,effects:{security:2, stability:1},failBonus:0 },
-      B:{ label:"Hurtig Revision", text:"1 tid, 0 kr; +1 udvikling, +10% fejl",
-          time:1,money:0,effects:{development:1},failBonus:0.1 }
-    }
-  ],
-  "infrastruktur":[
-    {
-      description:"Serverparken forældet",
-      A:{ label:"Stor Modernisering", text:"5 tid, 200 kr; +2 stabilitet, +2 udvikling",
-          time:5,money:200,effects:{stability:2, development:2},failBonus:0 },
-      B:{ label:"Minimal Patch", text:"1 tid, 50 kr; +1 stabilitet, 5% fejl",
-          time:1,money:50,effects:{stability:1},failBonus:0.05 }
-    }
-  ],
-  "informationssikkerhed":[
-    {
-      description:"Sikkerhedshuller i dataoverførsel.",
-      A:{ label:"Avanceret Kryptering", text:"4 tid, 60 kr; +2 sikkerhed, +1 stabilitet",
-          time:4,money:60,effects:{security:2,stability:1},failBonus:0 },
-      B:{ label:"Basal Sikkerhed", text:"2 tid, 0 kr; +1 sikkerhed, +10% fejl",
-          time:2,money:0,effects:{security:1},failBonus:0.1 }
-    }
-  ],
-  "cybersikkerhed":[
-    {
-      description:"Cyberangreb mod LIMS. (Skal vi penteste eller hastefix?)",
-      A:{ label:"Grundig Pentest", text:"5 tid, 120 kr; +2 sikkerhed, +1 stabilitet",
-          time:5,money:120,effects:{security:2, stability:1},failBonus:0 },
-      B:{ label:"Hurtig scanning", text:"2 tid, 30 kr; +1 sikkerhed, 8% fejl",
-          time:2,money:30,effects:{security:1},failBonus:0.08 }
-    }
-  ],
-  "dokumentation":[
-    {
-      description:"Dokumentation for CAB (er de glade?).",
-      A:{ label:"Fuldt Dok", text:"3 tid, 10 kr; ingen extra fejl", 
-          time:3,money:10,effects:{},failBonus:0 },
-      B:{ label:"Minimal Dok", text:"1 tid, 0 kr; +5% fejl",
-          time:1,money:0,effects:{},failBonus:0.05 }
-    }
-  ],
-  "medicinsk-udstyr":[
-    {
-      description:"Fallback – Medicinsk Udstyr. (Ikke i flows pt.)",
-      A:{ label:"Grundig Vedligehold", text:"4 tid, 120 kr; +2 stabilitet, +1 sikkerhed",
-          time:4,money:120,effects:{stability:2, security:1},failBonus:0 },
-      B:{ label:"Hurtig Fix", text:"1 tid, 20 kr; +1 stabilitet, 10% fejl",
-          time:1,money:20,effects:{stability:1},failBonus:0.1 }
-    }
-  ]
-};
-
-// scoreboard
 function updateScoreboard(){
-  timeLeftEl.textContent= gameState.time;
-  moneyLeftEl.textContent= gameState.money;
-  scoreboard.tasksCompleted.textContent= gameState.tasksCompleted;
-  scoreboard.totalRewards.textContent= gameState.totalRewards;
-  scoreboard.hospitalSatisfaction.textContent= gameState.hospitalSatisfaction;
-  securityValueEl.textContent= gameState.security;
-  stabilityValueEl.textContent= gameState.stability;
+  timeLeftEl.textContent   = gameState.time;
+  moneyLeftEl.textContent  = gameState.money;
+  scoreboard.tasksCompleted.textContent = gameState.tasksCompleted;
+  // Ingen belønning i scoreboard
+  scoreboard.hospitalSatisfaction.textContent = gameState.hospitalSatisfaction;
+  securityValueEl.textContent   = gameState.security;
+  stabilityValueEl.textContent  = gameState.stability;
   developmentValueEl.textContent= gameState.development;
 }
 
-// steps-lister
+// Steps-liste
 function updateStepsList(){
   stepsList.innerHTML="";
   if(!gameState.activeTask){
@@ -255,14 +341,14 @@ function handleLocationClick(locName){
     return;
   }
   const idx= gameState.activeTask.currentStep;
-  if(idx>= gameState.activeTask.steps.length)return;
+  if(idx>= gameState.activeTask.steps.length) return;
 
   const needed= gameState.activeTask.steps[idx];
   if(needed.toLowerCase()==="dokumentation"){
     skipDocumentationPopup();
     return;
   }
-  if(locName.toLowerCase()!== needed.toLowerCase())return;
+  if(locName.toLowerCase()!== needed.toLowerCase()) return;
 
   if(!gameState.activeTask.decisionMadeForStep){
     gameState.activeTask.decisionMadeForStep={};
@@ -273,13 +359,13 @@ function handleLocationClick(locName){
   showScenarioModal(locName);
 }
 
-// doc skip scenario
+// Dokumentations-skip
 function skipDocumentationPopup(){
   scenarioModal.style.display="flex";
   docSkipOption.style.display="block";
 
   scenarioTitle.textContent= "Dokumentationstrin";
-  scenarioDescription.textContent= "CAB vil have papir, du kan dog skippe...";
+  scenarioDescription.textContent= "CAB vil have papir, men du kan skippe...";
 
   scenarioALabel.textContent= "Fuldt Dok";
   scenarioAText.textContent= "3 tid, 10 kr, ingen ekstra fejl";
@@ -305,61 +391,33 @@ function skipDocumentationPopup(){
   };
 }
 
+// Viser scenario
 function showScenarioModal(locName){
   scenarioModal.style.display="flex";
   docSkipOption.style.display="none";
 
-  const scArr= locationScenarios[locName.toLowerCase()];
-  if(!scArr|| scArr.length===0){
-    // fallback
-    scenarioTitle.textContent= locName;
-    scenarioDescription.textContent="(Standard scenario)";
-    scenarioALabel.textContent="Mulighed A";
-    scenarioAText.textContent="2 tid, 50 kr, +2 stabilitet";
-    scenarioAButton.onclick=()=>{
-      applyTimeCost(2);
-      applyMoneyCost(50);
-      applyStatChange("stability",2);
-      scenarioModal.style.display="none";
-      finalizeStep();
-    };
-    scenarioBLabel.textContent="Mulighed B";
-    scenarioBText.textContent="1 tid, 0 kr, +10% fejl";
-    scenarioBButton.onclick=()=>{
-      gameState.riskyTotal+=0.1;
-      scenarioModal.style.display="none";
-      finalizeStep();
-    };
-    return;
-  }
+  // Fallback scenario
+  scenarioTitle.textContent= locName;
+  scenarioDescription.textContent= "(Standard scenario: fx +2 stabilitet, -50 kr, +10% fejl)";
 
-  const sc= scArr[Math.floor(Math.random()* scArr.length)];
-  scenarioTitle.textContent= `${locName} – ${sc.description}`;
-  scenarioDescription.textContent= "";
-  scenarioALabel.textContent= sc.A.label;
-  scenarioAText.textContent= sc.A.text;
+  scenarioALabel.textContent= "Mulighed A (standard)";
+  scenarioAText.textContent= "2 tid, 50 kr; +2 stabilitet";
   scenarioAButton.onclick=()=>{
-    applyTimeCost(sc.A.time);
-    applyMoneyCost(sc.A.money);
-    for(const stat in sc.A.effects){
-      applyStatChange(stat, sc.A.effects[stat]);
-    }
-    gameState.riskyTotal+= (sc.A.failBonus||0);
+    applyTimeCost(2);
+    applyMoneyCost(50);
+    applyStatChange("stability",2);
     scenarioModal.style.display="none";
     finalizeStep();
   };
-  scenarioBLabel.textContent= sc.B.label;
-  scenarioBText.textContent= sc.B.text;
+  scenarioBLabel.textContent= "Mulighed B (hurtig)";
+  scenarioBText.textContent= "1 tid, 0 kr; +10% fejlrisiko";
   scenarioBButton.onclick=()=>{
-    applyTimeCost(sc.B.time);
-    applyMoneyCost(sc.B.money);
-    for(const stat in sc.B.effects){
-      applyStatChange(stat, sc.B.effects[stat]);
-    }
-    gameState.riskyTotal+= (sc.B.failBonus||0);
+    gameState.riskyTotal+=0.1;
     scenarioModal.style.display="none";
     finalizeStep();
   };
+  // Hvis du ønsker unikke scenarier for hver lokation, kan du 
+  // opdatere med "detailedScenarios[locName]" ligesom før. 
 }
 
 // finalize step
@@ -383,13 +441,14 @@ function showCABModal(){
   cabSummary.innerHTML=`
     <strong>CAB Gennemgang</strong><br/>
     Risikoprocent: ${(gameState.riskyTotal*100).toFixed(0)}%<br/>
-    Skippet dok: ${gameState.docSkipCount} => +${(gameState.docSkipCount*15)}%<br/>
+    SkipDok: ${gameState.docSkipCount} => +${(gameState.docSkipCount*15)}%<br/>
     Samlet fejlchance: ${(fail*100).toFixed(0)}%
   `;
 }
 function finalizeCABResult(){
   cabModal.style.display="none";
-  if(Math.random()< gameState.finalFailChance){
+  const r= Math.random();
+  if(r< gameState.finalFailChance){
     showCABResult(false);
   } else {
     showCABResult(true);
@@ -403,7 +462,7 @@ function showCABResult(isSuccess){
     completeTaskCAB();
   } else {
     cabResultTitle.textContent="CAB: Afvist!";
-    cabResultText.textContent="CAB fandt risici/manglende dok for høje. Opgave fejler!";
+    cabResultText.textContent="CAB fandt risici/manglende dok for høje. Opgave fejler.";
     failTaskCAB();
   }
 }
@@ -419,22 +478,17 @@ function failTaskCAB(){
 function completeTaskCAB(){
   gameState.tasksCompleted++;
   if(!gameState.activeTask)return;
-  const t= gameState.activeTask;
-  let plus= 5 + t.riskLevel*2;
-  if(t.taskType==="security") applyStatChange("security", plus);
-  else if(t.taskType==="development") applyStatChange("development", plus);
-  else applyStatChange("stability", plus);
-
-  gameState.totalRewards+= t.baseReward;
-  showPopup(`Opgave fuldført: +${plus} til ${t.taskType}, +${t.baseReward} kr`, "success", 4000);
-
+  // Ingen belønning
+  // Just final success 
   gameState.activeTask=null;
   activeTaskHeadline.textContent="Ingen aktiv opgave";
   activeTaskDesc.textContent="";
   stepsList.innerHTML="<li>Ingen aktiv opgave</li>";
   updateScoreboard();
+  showPopup("Opgave fuldført!", "success", 4000);
 }
 
+// Tid/penge
 function applyTimeCost(t){
   gameState.time-=t;
   updateScoreboard();
@@ -452,8 +506,8 @@ function showFloatingText(txt, stat){
   const c= document.getElementById('floating-text-container');
   const div= document.createElement('div');
   div.classList.add('floating-text');
-  div.style.left="50%";
-  div.style.top="50%";
+  div.style.left= "50%";
+  div.style.top= "50%";
   if(stat==="security") div.style.color="#ff4444";
   else if(stat==="stability") div.style.color="#44ff44";
   else if(stat==="development") div.style.color="#4444ff";
@@ -464,55 +518,13 @@ function showFloatingText(txt, stat){
   setTimeout(()=> div.remove(), 2000);
 }
 
-// Generer opgaver
-function generateTask(){
-  if(gameState.availableTasks.length>=10)return;
-  const cats=["stability","development","security"];
-  const cat= cats[Math.floor(Math.random()* cats.length)];
+// Arrays med 30 tasks total
+const categoryTasks = {
+  "cybersikkerhed": cybersikkerhedTasks,
+  "infrastruktur": infrastrukturTasks,
+  "hospital": hospitalTasks
+};
 
-  let name="";
-  if(cat==="stability"){
-    const possible= stabilityTasks.filter(n=> !gameState.usedTasks.has(n));
-    if(!possible.length) return;
-    name= possible[Math.floor(Math.random()* possible.length)];
-    gameState.usedTasks.add(name);
-  } else if(cat==="development"){
-    const possible= devTasks.filter(n=> !gameState.usedTasks.has(n));
-    if(!possible.length) return;
-    name= possible[Math.floor(Math.random()* possible.length)];
-    gameState.usedTasks.add(name);
-  } else {
-    const possible= secTasks.filter(n=> !gameState.usedTasks.has(n));
-    if(!possible.length) return;
-    name= possible[Math.floor(Math.random()* possible.length)];
-    gameState.usedTasks.add(name);
-  }
-
-  const flow= taskFlowMapping[name];
-  if(!flow){
-    console.warn("Ingen flowMapping for", name);
-    return;
-  }
-  const riskLevel= Math.floor(Math.random()*3)+1;
-  const baseReward= riskLevel*80;
-  
-  const newTask={
-    id: Date.now()+ Math.floor(Math.random()*1000),
-    taskType: cat,
-    headline: name,
-    description: getTaskDescription(cat),
-    steps: flow.slice(),
-    currentStep:0,
-    riskLevel,
-    baseReward,
-    isHighPriority:(riskLevel===3),
-    decisionMadeForStep:{}
-  };
-  gameState.availableTasks.push(newTask);
-  renderTasks();
-}
-
-// Vis liste
 function renderTasks(){
   tasksList.innerHTML="";
   if(!gameState.availableTasks.length){
@@ -521,15 +533,14 @@ function renderTasks(){
   }
   gameState.availableTasks.forEach(t=>{
     const li=document.createElement("li");
-    if(t.riskLevel===3){li.style.borderColor="red"; li.style.borderWidth="2px";}
-    else if(t.riskLevel===2){li.style.borderColor="orange";}
-    else {li.style.borderColor="green";}
-    let pLabel= t.isHighPriority?" (HØJPRIORITET)":"";
-    let potential=`+${5 + t.riskLevel*2} til ${t.taskType}`;
+    if(t.riskLevel===3){ li.style.borderColor="red"; li.style.borderWidth="2px"; }
+    else if(t.riskLevel===2){ li.style.borderColor="orange"; }
+    else { li.style.borderColor="green"; }
+    let pLabel= (t.riskLevel===3)?" (HØJPRIORITET)":"";
+    let risk= t.riskLevel;
     li.innerHTML=`
-      <strong>${t.headline}${pLabel}</strong><br/>
-      Risiko: ${t.riskLevel} – Belønning: ~${t.baseReward}<br/>
-      Potentielt: ${potential}<br/>
+      <strong>${t.title}${pLabel}</strong><br/>
+      Risiko: ${risk}<br/>
       <p class="task-description" style="display:none;">${t.description}</p>
     `;
     const btn=document.createElement("button");
@@ -549,6 +560,43 @@ function renderTasks(){
   });
 }
 
+// Opgave generation
+function generateTask(){
+  // Ingen random “development/stability/security” – 
+  // i stedet: cybersikkerhed, infrastruktur, hospital
+  const cats=["cybersikkerhed","infrastruktur","hospital"];
+  const cat= cats[Math.floor(Math.random()* cats.length)];
+
+  const tasksArr= categoryTasks[cat];
+  if(!tasksArr) return;
+  // Filtrer tasks, der ikke er brugt
+  const possible = tasksArr.filter(opg=> !gameState.usedTasks.has(opg.title));
+  if(!possible.length) return;
+
+  // Tag en tilfældig
+  const chosen= possible[Math.floor(Math.random()* possible.length)];
+  // Markér den som brugt
+  gameState.usedTasks.add(chosen.title);
+
+  // riskLevel for sjov
+  const riskLevel= Math.floor(Math.random()*3)+1;
+
+  // Sæt opgave i “availableTasks” (ingen belønning, men tid/penge i minus)
+  const newTask={
+    id: Date.now()+ Math.floor(Math.random()*1000),
+    category: cat,
+    title: chosen.title,
+    description: chosen.description, 
+    logic: chosen.logic,  // spillets logik
+    steps: chosen.flow,   // lokationer i den rækkefølge
+    currentStep: 0,
+    riskLevel: riskLevel,
+    decisionMadeForStep:{}
+  };
+  gameState.availableTasks.push(newTask);
+  renderTasks();
+}
+
 function assignTask(taskId){
   if(gameState.activeTask){
     showPopup("Allerede en aktiv opgave!", "error");
@@ -558,16 +606,20 @@ function assignTask(taskId){
   if(idx===-1)return;
   const chosen= gameState.availableTasks.splice(idx,1)[0];
   
+  // Sæt Opgaveoverskrift + den korte beskrivelse i “headline”
+  // Sæt "Spillets logik" i activeTaskDesc
   gameState.activeTask= chosen;
-  activeTaskHeadline.textContent= chosen.headline;
-  activeTaskDesc.textContent= chosen.description +" (Følg lokationerne i den rækkefølge!)";
+  activeTaskHeadline.textContent= chosen.title + " – " + chosen.description;
+  // Her tilføjer vi “logic” i activeTaskDesc
+  activeTaskDesc.textContent= chosen.logic;
+
   updateStepsList();
   renderTasks();
 }
 
-// endGame
+// Slutspil
 function endGame(){
-  const sumText=`
+  let sumText= `
     <strong>Spillet stopper!</strong><br/>
     Tid: ${gameState.time}<br/>
     Penge: ${gameState.money}<br/>
@@ -575,12 +627,12 @@ function endGame(){
     Stabilitet: ${gameState.stability}<br/>
     Udvikling: ${gameState.development}<br/>
     Hospital: ${gameState.hospitalSatisfaction}<br/>
-    Opgaver løst: ${gameState.tasksCompleted}<br/>
-    Belønning: ${gameState.totalRewards}
+    Fuldførte opgaver: ${gameState.tasksCompleted}
   `;
-  endGameSummary.innerHTML=sumText;
+  endGameSummary.innerHTML= sumText;
   endModal.style.display="flex";
   
+  // Ryd aktiv opgave
   gameState.activeTask=null;
   activeTaskHeadline.textContent="Ingen aktiv opgave";
   activeTaskDesc.textContent="";
@@ -589,11 +641,11 @@ function endGame(){
 
 function initGame(){
   updateScoreboard();
-  // generer 2 opgaver fra start
+  // Generer fx 2 opgaver fra start
   for(let i=0; i<2; i++){
     generateTask();
   }
-  // generer løbende
+  // Løbende generering
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
