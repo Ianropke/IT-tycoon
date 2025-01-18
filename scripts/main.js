@@ -1,7 +1,7 @@
 /************************************************************
- * main.js 
- * 1) Dokumentation afsluttes korrekt => finalizeStep() 
- * 2) Tutorial-tekst mere levende og spændende
+ * main.js – 
+ * Samme "levende tutorial" + opgavelogik 
+ * Alle tasks-filer har nu statChange + mere narrativ
  ************************************************************/
 
 let gameState = {
@@ -47,7 +47,7 @@ document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
 });
 
 /************************************************************
- * TUTORIAL: mere levende tekst
+ * TUTORIAL: lidt levende
  ************************************************************/
 const tutorialModal   = document.getElementById('tutorial-modal');
 const tutorialTitleEl = document.getElementById('tutorial-title');
@@ -56,28 +56,28 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 
 let tutorialSteps = [
   {
-    title:"Velkommen, Direktør!",
-    text:"Du er netop trådt ind som overhoved for LIMS-forvaltningen på et gigantisk hospital. Dit navn klinger i gangene allerede! Nu venter nye eventyr i serverrum og laboratorier."
+    title:"Velkommen, IT-ansvarlig!",
+    text:"Du har netop overtaget forvaltningen af LIMS. Serverrummene brummer, hospitalet råber på nye features, og cybersikkerhed advarer om hackere!"
   },
   {
-    title:"Dine Allierede",
-    text:"Hospitalet kræver nye funktioner, Infrastruktur vil optimere drift, og Cybersikkerhed vogter mod hackere. IT Jura vil have ordnede kontrakter, og Dokumentation er det sidste gisp for CAB."
+    title:"Lokationer",
+    text:"Infrastruktur, Informationssikkerhed, Hospital, Leverandør, IT Jura, Cybersikkerhed, Medicinsk Udstyr og Dokumentation. Klik på dem i opgavens rækkefølge!"
   },
   {
-    title:"Vælg Klogt",
-    text:"Hver opgave har flere trin. Klik på lokationer i den rækkefølge, spillet kræver. Tag valg: vil du investere mere tid og penge for sikkerhed, eller tage chance med hurtige løsninger?"
+    title:"Parametre",
+    text:"Security, Stability, Development, Hospital. Dine valg kan øge eller sænke dem. Hvis du løber tør for tid eller penge, bliver det svært!"
   },
   {
-    title:"CAB Vogter Slutningen",
-    text:"Når du har gennemført alle trin, vil CAB (Change Advisory Board) vurdere risiko. Hvis den er for høj, afviser de planerne. Selv efter godkendelse kan tekniske fejl ramme i drift."
+    title:"CAB Gennemgang",
+    text:"Efter 4 trin i en opgave tjekker CAB risiko. Er den for høj, afvises opgaven. Hvis godkendt, er der stadig en driftfejl-chance!"
   },
   {
-    title:"Tiden Tikker",
-    text:"Du starter med 100 tidsenheder og 1000 kr. Hver handling koster tid (og måske penge), men hastværk øger risici. Hospitalet brokker sig, hvis du ignorerer deres behov!"
+    title:"Dokumentation",
+    text:"Sidste trin er ofte Dokumentation. Du kan skippe for at spare tid, men får +15% CAB-skepsis!"
   },
   {
-    title:"Klar til Kampen?",
-    text:"Hiv fat i en opgave fra 'Mulige Opgaver', følg trinnene, og sæt din egen signatur på LIMS-systemets skæbne. Held og lykke, Direktør!"
+    title:"Klar?",
+    text:"Vælg en opgave i 'Mulige Opgaver', følg trinnene og pas på risici! Held og lykke!"
   }
 ];
 
@@ -92,21 +92,20 @@ function showTutorialContent(){
   if(gameState.tutorialStep >= tutorialSteps.length){
     tutorialModal.style.display="none";
     gameState.tutorialActive = false;
-    initGame(); // nu startes selve spillet
+    initGame();
     return;
   }
   const st= tutorialSteps[gameState.tutorialStep];
   tutorialTitleEl.textContent= st.title;
   tutorialTextEl.textContent= st.text;
 }
-
 tutorialNextBtn.addEventListener('click', ()=>{
   gameState.tutorialStep++;
   showTutorialContent();
 });
 
 /************************************************************
- * START SPIL
+ * START GAME
  ************************************************************/
 function initGame(){
   updateScoreboard();
@@ -116,11 +115,11 @@ function initGame(){
     ...window.infrastrukturTasks,
     ...window.hospitalTasks
   ];
-  // generer fx 3 opgaver ved start
+  // Generer 3 opgaver
   for(let i=0; i<3; i++){
     generateTask();
   }
-  // løbende generering
+  // Løbende generering
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
@@ -136,14 +135,14 @@ function generateTask(){
   let chosen= notUsed[Math.floor(Math.random()* notUsed.length)];
   gameState.usedTasks.add(chosen.title);
 
-  let risk= Math.floor(Math.random()*3)+1;
+  let riskLevel= Math.floor(Math.random()*3)+1;
   const newTask={
     id: Date.now()+Math.floor(Math.random()*1000),
     title: chosen.title,
     shortDesc: chosen.shortDesc,
     logicLong: chosen.logicLong,
     steps: chosen.steps,
-    riskLevel: risk,
+    riskLevel,
     currentStep: 0,
     decisionMadeForStep:{}
   };
@@ -192,6 +191,9 @@ function renderTasks(){
   });
 }
 
+/************************************************************
+ * ASSIGN + STEPS
+ ************************************************************/
 function assignTask(taskId){
   if(gameState.activeTask){
     showPopup("Allerede en aktiv opgave!", "error");
@@ -203,6 +205,7 @@ function assignTask(taskId){
 
   gameState.activeTask= chosen;
   document.getElementById('active-task-headline').textContent= chosen.title+" – "+chosen.shortDesc;
+  // mere "levende" logicLong:
   document.getElementById('active-task-description').textContent= chosen.logicLong || "";
   updateStepsList();
   renderTasks();
@@ -237,7 +240,7 @@ function capitalizeLocation(loc){
 }
 
 /************************************************************
- * SCENARIO + LOCATION CLICK
+ * SCENARIO
  ************************************************************/
 const scenarioModal= document.getElementById('scenario-modal');
 function handleLocationClick(locName){
@@ -252,7 +255,6 @@ function handleLocationClick(locName){
   if(!st)return;
   if(gameState.activeTask.decisionMadeForStep[idx])return;
 
-  // Hvis vi er på doc men man klikkede forkert => skip doc?
   if(locName!== st.location){
     if(st.location==="dokumentation"){
       skipDocumentationPopup();
@@ -316,7 +318,8 @@ function finalizeStep(i){
   if(!gameState.activeTask)return;
   gameState.activeTask.decisionMadeForStep[i]=true;
 
-  applyTimeCost(2); // baseline pr trin
+  // baseline +2 tid
+  applyTimeCost(2);
 
   gameState.activeTask.currentStep++;
   if(gameState.activeTask.currentStep>= gameState.activeTask.steps.length){
@@ -327,7 +330,7 @@ function finalizeStep(i){
 }
 
 /************************************************************
- * DOKUMENTATION - SKIP
+ * DOC skip
  ************************************************************/
 function skipDocumentationPopup(){
   scenarioModal.style.display="flex";
@@ -370,7 +373,7 @@ document.getElementById('cab-ok-btn').addEventListener('click', finalizeCABResul
 
 function showCABModal(){
   let fail= gameState.riskyTotal + (gameState.docSkipCount*0.15);
-  fail= Math.max(0,Math.min(fail,1));
+  fail= Math.max(0, Math.min(fail,1));
   gameState.finalFailChance= fail;
   cabModalEl.style.display="flex";
   cabSummary.innerHTML=`
@@ -422,7 +425,7 @@ function failTaskCAB(){
 }
 
 /************************************************************
- * DRIFT - postCAB
+ * DRIFT CHECK 
  ************************************************************/
 function postCABTechnicalCheck(){
   cabResultModal.style.display="none";
@@ -437,6 +440,7 @@ function postCABTechnicalCheck(){
     showPostCABFeedback();
   }
 }
+
 function driftFailTask(){
   gameState.tasksCompleted++;
   applyStatChange("stability",-5);
@@ -472,12 +476,12 @@ function showPostCABFeedback(){
 
   let msgS = (s>120)?"Infrastruktur stråler af stabilitet!"
            :(s>90) ?"Infrastruktur kører ret stabilt."
-           :(s>60) ?"Infrastruktur har småbump, men leverer."
+           :(s>60) ?"Infrastruktur har nogle små bump."
                    :"Infrastruktur er svækket – pas på!";
 
-  let msgC = (sec>120)?"Cybersikkerhed: Næsten ingen huller!"
+  let msgC = (sec>120)?"Cybersikkerhed: Tæt på uigennemtrængeligt!"
            :(sec>90) ?"Cybersikkerhed: Acceptabelt niveau."
-           :(sec>60) ?"Cybersikkerhed: Der er nogle sårbarheder."
+           :(sec>60) ?"Cybersikkerhed: Flere huller anes."
                    :"Cybersikkerhed: Kritisk lav beskyttelse!";
 
   const fbModal= document.createElement('div');
@@ -499,7 +503,7 @@ function showPostCABFeedback(){
 }
 
 /************************************************************
- * UTILITY
+ * UTILS
  ************************************************************/
 function showPopup(msg, type="success", duration=3000){
   const c= document.getElementById('popup-container');
@@ -521,7 +525,7 @@ function applyMoneyCost(m){
   updateScoreboard();
 }
 function applyStatChange(stat, delta){
-  gameState[stat] = Math.min(Math.max(gameState[stat]+ delta,0),150);
+  gameState[stat]= Math.min(Math.max(gameState[stat]+delta,0),150);
   updateScoreboard();
   showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat, stat);
 }
@@ -541,15 +545,11 @@ function showFloatingText(txt, stat){
   setTimeout(()=> div.remove(),2000);
 }
 
-/************************************************************
- * END-GAME
- ************************************************************/
 const endModal= document.getElementById('end-modal');
 const endGameSummary= document.getElementById('end-game-summary');
 document.getElementById('end-ok-btn').addEventListener('click', ()=>{
   endModal.style.display="none";
 });
-
 function endGame(){
   let sum=`
     <strong>Spillet stopper!</strong><br/>
@@ -570,7 +570,7 @@ function endGame(){
   stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
 }
 
-// Binding location
+// Location-binding
 const locationElements={
   "infrastruktur":document.getElementById('infrastruktur'),
   "informationssikkerhed":document.getElementById('informationssikkerhed'),
@@ -584,7 +584,7 @@ const locationElements={
 Object.keys(locationElements).forEach(locKey=>{
   const el= locationElements[locKey];
   if(el){
-    el.addEventListener('click', ()=>{
+    el.addEventListener('click',()=>{
       handleLocationClick(locKey);
     });
   }
