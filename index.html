@@ -11,7 +11,6 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <!-- Scoreboard: Tid, Penge, Fuldførte, Sikkerhed, Stabilitet, Udvikling, Hospital -->
         <span style="font-size:1.1rem;">Tid: <span id="time-left">100</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
@@ -25,7 +24,6 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 8 lokationer, pænt fordelt -->
       <div class="location" id="infrastruktur" style="top:5%; left:5%;">🔧 Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top:5%; left:55%;">🛡 Informationssikkerhed</div>
       <div class="location" id="hospital" style="top:25%; left:5%;">🏥 Hospital</div>
@@ -48,7 +46,6 @@
           </ul>
         </div>
       </div>
-
       <div id="available-tasks">
         <h2>Mulige Opgaver</h2>
         <ul id="tasks-list">
@@ -62,7 +59,6 @@
     <p>&copy; 2025 IT Tycoon ApS</p>
   </footer>
 
-  <!-- Popup containers -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
@@ -72,8 +68,8 @@
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
       <p style="color:#f1c40f;">
         Du er IT-ansvarlig for LIMS på et stort hospital.
-        Udvikl og vedligehold systemet under tid og penge, 
-        og husk at CAB ikke vil have for stor risiko!
+        Udvikl og vedligehold systemet under tid og penge,
+        og pas på risiko ved CAB!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -115,7 +111,6 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Tiden er gået!</h2>
@@ -124,7 +119,6 @@
     </div>
   </div>
 
-  <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>CAB Gennemgang</h2>
@@ -133,7 +127,6 @@
     </div>
   </div>
 
-  <!-- CAB Result Modal -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
@@ -142,7 +135,7 @@
     </div>
   </div>
 
-  <!-- Load tasks then main -->
+  <!-- tasks + main -->
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
