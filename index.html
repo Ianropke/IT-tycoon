@@ -11,21 +11,21 @@
     <h1>IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <span>Tid tilbage: <span id="time-left">100</span></span>
-        <span>Penge: <span id="money-left">1000</span></span>
-        <span>Fuldførte opgaver: <span id="tasks-completed">0</span></span>
-        <span>Samlet belønning: <span id="total-rewards">0</span></span>
-        <span>Sikkerhed: <span id="security-value">100</span></span>
-        <span>Stabilitet: <span id="stability-value">100</span></span>
-        <span>Udvikling: <span id="development-value">100</span></span>
-        <span>Hospitalstilfredshed: <span id="hospital-satisfaction">100</span>%</span>
+        <span style="font-size:1.1rem;">Tid tilbage: <span id="time-left">100</span></span>
+        <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
+        <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
+        <span style="font-size:1.1rem;">Samlet belønning: <span id="total-rewards">0</span></span>
+        <span style="font-size:1.1rem;">Sikkerhed: <span id="security-value">100</span></span>
+        <span style="font-size:1.1rem;">Stabilitet: <span id="stability-value">100</span></span>
+        <span style="font-size:1.1rem;">Udvikling: <span id="development-value">100</span></span>
+        <span style="font-size:1.1rem;">Hospitalstilfredshed: <span id="hospital-satisfaction">100</span>%</span>
       </div>
     </div>
   </header>
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationer: Nu med dobbelt (faktisk fordoblet) ikonstørrelse i CSS -->
+      <!-- Lokationer – ikoner dobbelt størrelse i CSS -->
       <div class="location" id="infrastruktur" style="top: 10%; left: 10%;">🔧 Infrastruktur</div>
       <div class="location" id="informationssikkerhed" style="top: 10%; left: 70%;">🛡 Informationssikkerhed</div>
       <div class="location" id="hospital" style="top: 30%; left: 25%;">🏥 Hospital</div>
@@ -62,32 +62,39 @@
     <p>&copy; 2025 IT Tycoon ApS</p>
   </footer>
 
-  <!-- Popups, modals -->
+  <!-- popups -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
-  
-  <!-- Intro Modal -->
+
+  <!-- Intro modal -->
   <div id="intro-modal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;max-width:900px;">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
-      <p style="color:#f1c40f;">Du er forvalter af LIMS på et stort hospital. Forbedr systemerne og undgå fejl – tiden og pengene er knappe.</p>
+      <p style="color:#f1c40f;">Du er forvalter af LIMS på et stort hospital. Forbedr systemerne og undgå fejl – men husk at du kan gå i minus, hvis du presser ressourcerne!</p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Scenario Modal -->
+  <!-- Scenario modal -->
   <div id="scenario-modal" class="modal" style="display:none;">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;max-width:900px;">
       <h2 id="scenario-title"></h2>
       <p id="scenario-description"></p>
-      <div id="scenario-optionA">
+      <div id="scenario-optionA" style="margin-bottom:10px;">
         <strong><span id="scenario-a-label"></span></strong><br/>
         <em id="scenario-a-text"></em>
       </div>
-      <div id="scenario-optionB" style="margin-top:8px;">
+      <div id="scenario-optionB" style="margin-bottom:10px;">
         <strong><span id="scenario-b-label"></span></strong><br/>
         <em id="scenario-b-text"></em>
       </div>
+      <!-- Ny mulighed for at skippe dokumentation -->
+      <div id="doc-skip-option" style="display:none; margin-bottom:10px;">
+        <strong>Skip Dokumentation</strong><br/>
+        <em>Helt undlade at dokumentere – +15% fejlrisiko ved CAB</em>
+        <button id="doc-skip-btn" style="background-color:#e74c3c;">Skip Doc</button>
+      </div>
+
       <div style="margin-top:12px;">
         <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn">Vælg B</button>
@@ -95,40 +102,30 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal -->
+  <!-- End-of-Time modal -->
   <div id="end-modal" class="modal" style="display:none;">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;max-width:900px;">
       <h2>Tiden er gået!</h2>
       <p id="end-game-summary"></p>
       <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
     </div>
   </div>
 
-  <!-- CAB Modal -->
+  <!-- CAB modal -->
   <div id="cab-modal" class="modal" style="display:none;">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;max-width:900px;">
       <h2>CAB Gennemgang</h2>
       <p id="cab-summary"></p>
       <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
     </div>
   </div>
 
-  <!-- CAB Result Modal -->
+  <!-- CAB result modal -->
   <div id="cab-result-modal" class="modal" style="display:none;">
-    <div class="modal-content">
+    <div class="modal-content" style="width:70%;max-width:900px;">
       <h2 id="cab-result-title"></h2>
       <p id="cab-result-text"></p>
       <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
-    </div>
-  </div>
-
-  <!-- Overtid Modal (når tiden er brugt op) -->
-  <div id="overtime-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Ingen tid tilbage!</h2>
-      <p>Vil du betale 100 kr for 10 ekstra tidsenheder?</p>
-      <button id="overtime-yes-btn" style="background-color:#27ae60;">Ja, betal 100 kr</button>
-      <button id="overtime-no-btn" style="background-color:#c0392b;">Nej, slut spillet</button>
     </div>
   </div>
 
