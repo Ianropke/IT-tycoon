@@ -1,5 +1,4 @@
 // scripts/infrastrukturTasks.js
-// 3 opgaver, 4 steps. location= "infrastruktur", "hospital", "it-jura", "dokumentation" etc.
 
 window.infrastrukturTasks = [
   {
@@ -89,7 +88,7 @@ window.infrastrukturTasks = [
   },
   {
     title:"NetværksOpgradering (10 GbE)",
-    shortDesc:"Sløvt net => Opgiv 1 Gbit, giv 10 Gbit",
+    shortDesc:"Sløvt net => Upgrader til 10Gbit",
     steps:[
       {
         location:"infrastruktur",
@@ -174,8 +173,8 @@ window.infrastrukturTasks = [
     ]
   },
   {
-    title:"Energioptimering i datacenter",
-    shortDesc:"Forbedre køling og PSU",
+    title:"Energioptimering i Datacenter",
+    shortDesc:"Bedre køling og PSU",
     steps:[
       {
         location:"infrastruktur",
