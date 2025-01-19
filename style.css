@@ -45,14 +45,12 @@ header h1 {
   border-radius:5px; padding:8px;
   flex:1; overflow:auto; min-height:0;
 }
-
 .location {
   position:absolute;
-  min-width:220px; min-height:80px;
+  min-width:200px; min-height:80px;
   padding:12px 16px;
   border:2px solid #bdc3c7; border-radius:5px;
-  text-align:center;
-  font-size:1.8rem;
+  text-align:center; font-size:1.8rem;
   display:flex; align-items:center; justify-content:center;
   cursor:pointer; transition:background-color 0.3s;
   color:#ecf0f1;
@@ -67,26 +65,26 @@ footer {
   margin-top:6px;
 }
 
-#steps-list li, #tasks-list li {
-  margin-bottom:4px; font-size:0.9rem;
+#tasks-list, #backlog-list {
+  list-style:none; padding:0; margin:0;
 }
-#tasks-list {
-  list-style-type:none; padding:0; margin:0;
-}
-#tasks-list li {
+#tasks-list li, #backlog-list li {
   background-color:#2c3e50;
   margin:4px 0; padding:8px;
-  border-radius:3px; transition:background-color 0.3s, border 0.3s;
-  display:flex; flex-direction:column; font-size:0.85rem;
+  border-radius:3px; 
+  display:flex; flex-direction:column; 
+  font-size:0.85rem;
+  border:1px solid #444;
+  transition: background-color 0.3s, border 0.3s;
 }
-#tasks-list li:hover {
+#tasks-list li:hover, #backlog-list li:hover {
   background-color:#1abc9c; cursor:pointer;
 }
 .commit-button {
   margin-top:4px; padding:4px 8px;
   background-color:#2980b9; color:#fff;
   border:none; border-radius:3px;
-  font-size:0.75rem; transition:background-color 0.3s;
+  font-size:0.75rem; transition: background-color 0.3s;
 }
 .commit-button:hover {
   background-color:#1c5980;
@@ -130,19 +128,4 @@ footer {
   position:fixed; top:0; left:0;
   width:100%; height:100%;
   display:flex; justify-content:center; align-items:center;
-  background-color:rgba(0,0,0,0.6); z-index:999;
-}
-.modal-content {
-  background-color:#2c3e50;
-  border:3px solid #bdc3c7;
-  border-radius:8px; padding:16px; text-align:left;
-  width:60%; max-width:900px;
-}
-
-@media(max-width:768px){
-  #main-container{ flex-direction:column; height:auto; }
-  #game-area{ min-height:300px;}
-}
-@media(max-width:480px){
-  header h1{ font-size:1.3rem; }
-}
+  background-color:rgba(0,
