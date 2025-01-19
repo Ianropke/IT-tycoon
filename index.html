@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAFe LIMS – Separate tasks-filer</title>
+  <title>SAFe IT Tycoon: LIMS – Ingen Backlog-Modal</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -25,7 +25,6 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 8 lokationer -->
       <div class="location" id="hospital" style="top:5%; left:5%;">
         🏥 Hospital
       </div>
@@ -83,8 +82,21 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2>Velkommen til SAFe LIMS</h2>
-      <p>Vi kører 2 PI'er a 30 tid. Vælg commits, planlæg opgaver, kør!</p>
+      <h2>Velkommen til SAFe LIMS Forvaltning</h2>
+      <p>
+        Du er IT-forvalter af et stort hospitals kritiske LIMS-systemer. 
+        Hospitalerne er travle, laboratorierne analyserer prøver døgnet rundt, og 
+        du skal sikre, at IT-driften kører stabilt, 
+        at sikkerheden er i top, og at hospitalet får de nye funktioner, de skriger på.
+      </p>
+      <p>
+        Samtidig har du begrænset tid og budget, og du skal forholde dig til juridiske krav, 
+        leverandøraftaler, og kabalen i hele regionens centraliserede IT-organisation.
+      </p>
+      <p>
+        Er du klar til at prioritere, løse opgaver og sikre, at hospitalets behov 
+        bliver opfyldt – uden at løbe tør for tid og penge? 
+      </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
@@ -118,30 +130,6 @@
     </div>
   </div>
 
-  <!-- PI Start Modal -->
-  <div id="pi-start-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>PI Start: Business Mål</h2>
-      <p id="pi-business-goals-text"></p>
-      <h3>Dine Commits:</h3>
-      <label>Sikkerhed: <input type="number" id="commit-security" value="105" /></label><br/>
-      <label>Stabilitet: <input type="number" id="commit-stability" value="105" /></label><br/>
-      <label>Udvikling: <input type="number" id="commit-development" value="105" /></label><br/>
-      <label>Hospital: <input type="number" id="commit-hospital" value="105" /></label><br/>
-      <button id="pi-start-ok-btn" style="margin-top:8px; background-color:#27ae60;">Fortsæt</button>
-    </div>
-  </div>
-
-  <!-- PI Plan Modal -->
-  <div id="pi-plan-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>PI Planning</h2>
-      <p>Vælg op til 5 opgaver</p>
-      <ul id="backlog-list"></ul>
-      <button id="pi-plan-ok-btn" style="margin-top:8px; background-color:#2980b9;">Start PI!</button>
-    </div>
-  </div>
-
   <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
@@ -159,25 +147,25 @@
     </div>
   </div>
 
+  <!-- Opgaveopsummering Modal -->
+  <div id="task-summary-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Opgave Fuldført</h2>
+      <p id="task-summary-text"></p>
+      <button id="task-summary-ok-btn" style="background-color:#2980b9;">OK</button>
+    </div>
+  </div>
+
   <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>Slut!</h2>
+      <h2>PI Slut!</h2>
       <p id="end-game-summary"></p>
       <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
     </div>
   </div>
 
-  <!-- Inspect & Adapt Modal -->
-  <div id="ia-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Inspect & Adapt</h2>
-      <p id="ia-summary"></p>
-      <button id="ia-ok-btn" style="background-color:#2980b9;">Næste</button>
-    </div>
-  </div>
-
-  <!-- Tasks and main: point to scripts/tasks/... -->
+  <!-- scripts: tasks + main -->
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
