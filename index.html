@@ -3,64 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon: LIMS Forvaltning</title>
+  <title>SAFe IT Tycoon: LIMS Forvaltning</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
-    <h1>IT Tycoon: LIMS Forvaltning</h1>
+    <h1>SAFe IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <span style="font-size:1.1rem;">
-          Tid: <span id="time-left">30</span>
-        </span>
-        <span style="font-size:1.1rem;">
-          Penge: <span id="money-left">1000</span>
-        </span>
-        <span style="font-size:1.1rem;">
-          Fuldførte opgaver: <span id="tasks-completed">0</span>
-        </span>
-        <span style="font-size:1.1rem;">
-          Sikkerhed: <span id="security-value">100</span>
-        </span>
-        <span style="font-size:1.1rem;">
-          Stabilitet: <span id="stability-value">100</span>
-        </span>
-        <span style="font-size:1.1rem;">
-          Udvikling: <span id="development-value">100</span>
-        </span>
-        <span style="font-size:1.1rem;">
-          Hospital: <span id="hospital-satisfaction">100</span>%
-        </span>
+        <span style="font-size:1.1rem;">Tid: <span id="time-left">30</span></span>
+        <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
+        <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
+        <span style="font-size:1.1rem;">Sikkerhed: <span id="security-value">100</span></span>
+        <span style="font-size:1.1rem;">Stabilitet: <span id="stability-value">100</span></span>
+        <span style="font-size:1.1rem;">Udvikling: <span id="development-value">100</span></span>
+        <span style="font-size:1.1rem;">Hospital: <span id="hospital-satisfaction">100</span>%</span>
       </div>
     </div>
   </header>
 
   <div id="main-container">
     <div id="game-area">
-      <div class="location" id="infrastruktur" style="top:5%; left:5%;">
-        🔧 Infrastruktur
-      </div>
-      <div class="location" id="informationssikkerhed" style="top:5%; left:55%;">
-        🛡 Informationssikkerhed
-      </div>
-      <div class="location" id="hospital" style="top:25%; left:5%;">
+      <!-- 4 lokationer som eksempel: hospital, infrastruktur, it-jura, dokumentation. 
+           Færre, for overskuelighed. 
+           Du kan udvide med cybersikkerhed, leverandør etc. -->
+      <div class="location" id="hospital" style="top:5%; left:5%;">
         🏥 Hospital
       </div>
-      <div class="location" id="leverandor" style="top:25%; left:55%;">
-        📦 Leverandør
+      <div class="location" id="infrastruktur" style="top:5%; left:55%;">
+        🔧 Infrastruktur
       </div>
-      <div class="location" id="it-jura" style="top:45%; left:33%;">
+      <div class="location" id="it-jura" style="top:45%; left:25%;">
         ⚖️ IT Jura
       </div>
-      <div class="location" id="cybersikkerhed" style="top:45%; left:62%;">
-        💻 Cybersikkerhed
-      </div>
-      <div class="location" id="medicinsk-udstyr" style="top:65%; left:5%;">
-        🩺 Medicinsk Udstyr
-      </div>
-      <div class="location" id="dokumentation" style="top:65%; left:40%;">
+      <div class="location" id="dokumentation" style="top:65%; left:60%;">
         📄 Dokumentation
       </div>
     </div>
@@ -78,7 +55,7 @@
         </div>
       </div>
       <div id="available-tasks">
-        <h2>Mulige Opgaver</h2>
+        <h2>Mulige Opgaver (PI Plan)</h2>
         <ul id="tasks-list">
           <li>Ingen opgaver tilgængelige</li>
         </ul>
@@ -87,7 +64,7 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 IT Tycoon ApS</p>
+    <p>&copy; 2025 SAFe IT Tycoon ApS</p>
   </footer>
 
   <div id="popup-container"></div>
@@ -96,11 +73,8 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning</h2>
-      <p style="color:#f1c40f;">
-        Du har 3 iterationer (PI) af 30 tid 
-        til at forbedre LIMS. Held og lykke!
-      </p>
+      <h2>Velkommen til SAFe LIMS!</h2>
+      <p>Du har 2 PI'er a 30 tid, Business-mål, commits, og backlog-opgaver!</p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
@@ -127,13 +101,6 @@
         <strong><span id="scenario-b-label"></span></strong><br/>
         <em id="scenario-b-text"></em>
       </div>
-
-      <div id="doc-skip-option" style="display:none; margin-bottom:10px;">
-        <strong>Skip Dokumentation</strong><br/>
-        <em>+15% fejl ved CAB</em><br/>
-        <button id="doc-skip-btn" style="background-color:#e74c3c;">Skip Dok</button>
-      </div>
-
       <div style="margin-top:12px;">
         <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn">Vælg B</button>
@@ -141,16 +108,32 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal -->
-  <div id="end-modal" class="modal" style="display:none;">
+  <!-- Modal: PI Start =>  viser Business-mål + spillerens commit -->
+  <div id="pi-start-modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>Tiden er gået!</h2>
-      <p id="end-game-summary"></p>
-      <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
+      <h2>PI Start: Business Mål</h2>
+      <p id="pi-business-goals-text"></p>
+      <h3>Dine Commits:</h3>
+      <label>Sikkerhed: <input type="number" id="commit-security" value="105" /></label><br/>
+      <label>Stabilitet: <input type="number" id="commit-stability" value="105" /></label><br/>
+      <label>Udvikling: <input type="number" id="commit-development" value="105" /></label><br/>
+      <label>Hospital: <input type="number" id="commit-hospital" value="105" /></label><br/>
+
+      <button id="pi-start-ok-btn" style="margin-top:8px; background-color:#27ae60;">Fortsæt</button>
     </div>
   </div>
 
-  <!-- CAB Modal -->
+  <!-- Modal: PI Plan => Vælg opgaver fra backlog -->
+  <div id="pi-plan-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>PI Planning: Vælg op til 5 opgaver</h2>
+      <p id="pi-plan-desc">Backlog-liste:</p>
+      <ul id="backlog-list"></ul>
+      <button id="pi-plan-ok-btn" style="margin-top:8px; background-color:#2980b9;">Start PI!</button>
+    </div>
+  </div>
+
+  <!-- CAB -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>CAB Gennemgang</h2>
@@ -159,7 +142,6 @@
     </div>
   </div>
 
-  <!-- CAB Result Modal -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
@@ -168,19 +150,25 @@
     </div>
   </div>
 
+  <!-- End-of-Time Modal -->
+  <div id="end-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Slut!</h2>
+      <p id="end-game-summary"></p>
+      <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
+    </div>
+  </div>
+
   <!-- Inspect & Adapt Modal -->
   <div id="ia-modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>Inspect & Adapt (PI Gennemgang)</h2>
+      <h2>Inspect & Adapt</h2>
       <p id="ia-summary"></p>
       <button id="ia-ok-btn" style="background-color:#2980b9;">Næste</button>
     </div>
   </div>
 
-  <!-- Load tasks + main -->
-  <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
-  <script src="scripts/tasks/infrastrukturTasks.js"></script>
-  <script src="scripts/tasks/hospitalTasks.js"></script>
+  <script src="scripts/backlogTasks.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 </html>
