@@ -4,29 +4,23 @@ window.infrastrukturTasks = [
   {
     category:"infrastruktur",
     title:"Serverpark Modernisering",
-    shortDesc:"Gamle servere larmer, hospitalet klager.",
-    logicLong:`Du besøger serverrummet, 
-    hvor gamle kasser brummer og 
-    spytter varme. En tekniker siger: 
-    "Skal vi købe topudstyr eller 
-    nøjes med lidt patch?" 
-    Beslutningen er din!`,
+    shortDesc:"Gamle servere larmer og varmer",
+    logicLong:"Teknikerne anbefaler en udskiftning. Vil du købe top eller spare?",
     steps:[
       {
         location:"infrastruktur",
-        stepDescription:"Vil du satse på topmoderne eller billigere servere?",
-        choiceA:{ 
+        stepDescription:"Køb topmoderne eller billig?",
+        choiceA:{
           label:"Topmoderne",
-          text:"+2 tid, +100 kr => +2 Stabilitet, +1 Development",
-          applyEffect:{
-            timeCost:2,
-            moneyCost:100,
+          text:"+2 tid, +100 kr => +2 stability, +1 dev",
+          applyEffect:{ 
+            timeCost:2, moneyCost:100,
             statChange:{stability:2, development:1}
           }
         },
-        choiceB:{ 
-          label:"Billigere servere",
-          text:"+5% kapacitetsknap => +1 Stability, -1 Security (billig HW).",
+        choiceB:{
+          label:"Billig server",
+          text:"+5% kapacitetsknap => +1 stability, -1 security",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{stability:1, security:-1}
@@ -35,39 +29,38 @@ window.infrastrukturTasks = [
       },
       {
         location:"hospital",
-        stepDescription:"Hvordan vil du koordinere driftforstyrrelse?",
+        stepDescription:"Migrer gradvis eller stor cutover?",
         choiceA:{
           label:"Gradvis migrering",
-          text:"+2 tid => +1 Stability, +2 Hospital (færre nedbrud).",
+          text:"+2 tid => +2 hospital, +1 stability",
           applyEffect:{
             timeCost:2,
-            statChange:{stability:1, hospitalSatisfaction:2}
+            statChange:{hospitalSatisfaction:2, stability:1}
           }
         },
         choiceB:{
-          label:"Stor weekend-cutover",
-          text:"-10 tid => +8% fejl => +2 Development (du sparer tid).",
+          label:"Weekend-cutover",
+          text:"-10 tid => +8% fejl => +2 dev",
           applyEffect:{
-            timeCost:-10,
-            riskyPlus:0.08,
+            timeCost:-10, riskyPlus:0.08,
             statChange:{development:2}
           }
         }
       },
       {
         location:"leverandør",
-        stepDescription:"Leverandøren vil gerne teste softwaren grundigt eller køre en generisk driver.",
+        stepDescription:"Softwaretilpasning?",
         choiceA:{
           label:"Grundige tests",
-          text:"+2 tid => +2 Stability, +1 Security",
+          text:"+2 tid => +2 stability, +1 security",
           applyEffect:{
             timeCost:2,
             statChange:{stability:2, security:1}
           }
         },
         choiceB:{
-          label:"Antag alt er ok",
-          text:"+10% softwarefejl => +2 Development (fritager team).",
+          label:"Antag alt ok",
+          text:"+10% softwarefejl => +2 dev",
           applyEffect:{
             riskyPlus:0.1,
             statChange:{development:2}
@@ -76,10 +69,10 @@ window.infrastrukturTasks = [
       },
       {
         location:"dokumentation",
-        stepDescription:"Serverpark-rapport til sidst?",
+        stepDescription:"Serverpark-rapport?",
         choiceA:{
           label:"Detaljeret dok",
-          text:"+2 tid => +1 Stability, +1 Security",
+          text:"+2 tid => +1 stability, +1 security",
           applyEffect:{
             timeCost:2,
             statChange:{stability:1, security:1}
@@ -87,7 +80,7 @@ window.infrastrukturTasks = [
         },
         choiceB:{
           label:"Minimal dok",
-          text:"+5% CAB-skepsis => +2 Development (du skriver kort).",
+          text:"+5% skepsis => +2 dev",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{development:2}
@@ -98,31 +91,24 @@ window.infrastrukturTasks = [
   },
   {
     category:"infrastruktur",
-    title:"NetværksOpgradering (10 GbE)",
-    shortDesc:"Forøg båndbredden kraftigt",
-    logicLong:`Laboratorierne klager over 
-    sløve svartider. Du kan opgradere 
-    netværket til 10 Gbit. Men kabler, 
-    switche og sikkerhed skal 
-    håndteres. Vil du køre 
-    en stor opgradering eller 
-    spare lidt?`,
+    title:"NetværksOpgradering (10GbE)",
+    shortDesc:"Sløvt net i laboratorier",
+    logicLong:"Opgradér netværket for hurtigere svartider. Vil du investere i full-løsning?",
     steps:[
       {
         location:"infrastruktur",
-        stepDescription:"Installér netudstyr – fuld eller delvis?",
+        stepDescription:"Installér fuldt switche/kabler eller kun kerneswit?",
         choiceA:{
-          label:"Fuldt switche/kabler",
-          text:"+2 tid, +80 kr => +3 Stability, +1 Development",
+          label:"Fuldt",
+          text:"+2 tid, +80 kr => +3 stability, +1 dev",
           applyEffect:{
-            timeCost:2,
-            moneyCost:80,
+            timeCost:2, moneyCost:80,
             statChange:{stability:3, development:1}
           }
         },
         choiceB:{
           label:"Kun kerneswit",
-          text:"+5% latens => +1 Stability, +1 Security (mindre netflade).",
+          text:"+5% latens => +1 stability, +1 security",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{stability:1, security:1}
@@ -131,10 +117,10 @@ window.infrastrukturTasks = [
       },
       {
         location:"hospital",
-        stepDescription:"Skal du lave en pilotafdeling eller rulle alt på én gang?",
+        stepDescription:"Pilot i én afd eller alt på én gang?",
         choiceA:{
-          label:"Pilot i én afd",
-          text:"+2 tid => +2 Hospital, +1 Stability",
+          label:"Pilot",
+          text:"+2 tid => +2 hospital, +1 stability",
           applyEffect:{
             timeCost:2,
             statChange:{hospitalSatisfaction:2, stability:1}
@@ -142,7 +128,7 @@ window.infrastrukturTasks = [
         },
         choiceB:{
           label:"Alt på én gang",
-          text:"+8% driftforstyrrelse => +2 Development (tid spares).",
+          text:"+8% driftforstyrrelse => +2 dev",
           applyEffect:{
             riskyPlus:0.08,
             statChange:{development:2}
@@ -151,10 +137,10 @@ window.infrastrukturTasks = [
       },
       {
         location:"cybersikkerhed",
-        stepDescription:"Opsæt VLAN/firewalls til 10GbE. Grundig config eller minimal?",
+        stepDescription:"Opsæt VLAN/firewalls grundigt eller minimal config?",
         choiceA:{
-          label:"Grundig net-sikkerhed",
-          text:"+2 tid => +2 Security, +1 Stability",
+          label:"Grundig",
+          text:"+2 tid => +2 security, +1 stability",
           applyEffect:{
             timeCost:2,
             statChange:{security:2, stability:1}
@@ -162,7 +148,7 @@ window.infrastrukturTasks = [
         },
         choiceB:{
           label:"Minimal config",
-          text:"+10% sårbarhed => +2 Development",
+          text:"+10% sårbarhed => +2 dev",
           applyEffect:{
             riskyPlus:0.1,
             statChange:{development:2}
@@ -174,7 +160,7 @@ window.infrastrukturTasks = [
         stepDescription:"Net-upgrade-rapport",
         choiceA:{
           label:"Fuld dok",
-          text:"+2 tid => +1 Security, +1 Stability",
+          text:"+2 tid => +1 security, +1 stability",
           applyEffect:{
             timeCost:2,
             statChange:{security:1, stability:1}
@@ -182,7 +168,7 @@ window.infrastrukturTasks = [
         },
         choiceB:{
           label:"Minimal dok",
-          text:"+5% CAB-skepsis => +2 Development",
+          text:"+5% skepsis => +2 dev",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{development:2}
@@ -191,6 +177,92 @@ window.infrastrukturTasks = [
       }
     ]
   },
-
-  // ... 8 more infrastruktur tasks with similar statChange + narratives ...
+  {
+    category:"infrastruktur",
+    title:"Afvikling af ældre software (OS-versioner)",
+    shortDesc:"Gamle OS'er giver driftfejl",
+    logicLong:"Fjern legacy-OS, men hospitalets afdelinger kan brokke sig.",
+    steps:[
+      {
+        location:"infrastruktur",
+        stepDescription:"Lister du forældede OS grundigt eller gæt?",
+        choiceA:{
+          label:"Detaljeret inventar",
+          text:"+2 tid => +2 stability, +1 security",
+          applyEffect:{
+            timeCost:2,
+            statChange:{stability:2, security:1}
+          }
+        },
+        choiceB:{
+          label:"Gæt fra doc",
+          text:"+8% overset server => +1 dev",
+          applyEffect:{
+            riskyPlus:0.08,
+            statChange:{development:1}
+          }
+        }
+      },
+      {
+        location:"hospital",
+        stepDescription:"Afklar erstatning via brugermøder eller luk alt?",
+        choiceA:{
+          label:"Brugermøder",
+          text:"+2 tid => +2 hospital, +1 stability",
+          applyEffect:{
+            timeCost:2,
+            statChange:{hospitalSatisfaction:2, stability:1}
+          }
+        },
+        choiceB:{
+          label:"Luk alt",
+          text:"+10% klager => +2 dev",
+          applyEffect:{
+            riskyPlus:0.1,
+            statChange:{development:2}
+          }
+        }
+      },
+      {
+        location:"it-jura",
+        stepDescription:"Opsig supportaftaler pænt eller brutalt?",
+        choiceA:{
+          label:"Ordentlig opsigelse",
+          text:"+2 tid => +1 security, +1 stability",
+          applyEffect:{
+            timeCost:2,
+            statChange:{security:1, stability:1}
+          }
+        },
+        choiceB:{
+          label:"Hurtigt opsig",
+          text:"+5% bod => +1 dev",
+          applyEffect:{
+            riskyPlus:0.05,
+            statChange:{development:1}
+          }
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"Migrationsrapport",
+        choiceA:{
+          label:"Fyldig dok",
+          text:"+2 tid => +1 security, +1 stability",
+          applyEffect:{
+            timeCost:2,
+            statChange:{security:1, stability:1}
+          }
+        },
+        choiceB:{
+          label:"Minimal notits",
+          text:"+5% skepsis => +2 dev",
+          applyEffect:{
+            riskyPlus:0.05,
+            statChange:{development:2}
+          }
+        }
+      }
+    ]
+  }
 ];
