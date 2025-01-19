@@ -32,7 +32,6 @@ header h1 {
   align-items: center;
 }
 
-/* The main area is a split: left (#game-area) for location boxes, right (#task-side) */
 #main-container {
   display: flex; 
   height: 80vh;
@@ -55,6 +54,7 @@ header h1 {
   gap: 10px; 
   min-height: 0;
 }
+
 #active-task, #available-tasks {
   background-color: #34495e; 
   border: 2px solid #ecf0f1;
@@ -65,7 +65,7 @@ header h1 {
   min-height: 0;
 }
 
-/* The location boxes in #game-area */
+/* location boxes */
 .location {
   position: absolute;
   min-width: 200px; 
@@ -86,7 +86,6 @@ header h1 {
   filter: brightness(1.15);
 }
 
-/* Footer at bottom */
 footer {
   background-color: #34495e;
   text-align: center; 
@@ -94,13 +93,13 @@ footer {
   margin-top: 6px;
 }
 
-/* tasks list styling */
-#tasks-list, #backlog-list {
+/* tasks list */
+#tasks-list {
   list-style: none; 
   padding: 0; 
   margin: 0;
 }
-#tasks-list li, #backlog-list li {
+#tasks-list li {
   background-color: #2c3e50;
   margin: 4px 0; 
   padding: 8px;
@@ -111,12 +110,10 @@ footer {
   border: 1px solid #444; 
   transition: background-color 0.3s, border 0.3s;
 }
-#tasks-list li:hover, #backlog-list li:hover {
+#tasks-list li:hover {
   background-color: #1abc9c; 
   cursor: pointer;
 }
-
-/* The “Forpligt” button in each tasks-list item */
 .commit-button {
   margin-top: 4px; 
   padding: 4px 8px;
@@ -131,7 +128,7 @@ footer {
   background-color: #1c5980;
 }
 
-/* Popups in top-right corner */
+/* popups top-right */
 #popup-container {
   position: fixed; 
   top: 20px; 
@@ -148,16 +145,19 @@ footer {
   max-width: 320px; 
   animation: fadeOut 4s forwards;
 }
-.popup.error { background-color: #e74c3c; }
-.popup.info  { background-color: #27ae60 !important; }
-
+.popup.error {
+  background-color: #e74c3c; 
+}
+.popup.info {
+  background-color: #27ae60 !important;
+}
 @keyframes fadeOut {
   0%   { opacity: 0.9; transform: translateY(0); }
   80%  { opacity: 0.9; transform: translateY(-20px); }
   100% { opacity: 0;   transform: translateY(-20px); }
 }
 
-/* “Floating text” that shows stat changes in the center */
+/* floating text in center */
 #floating-text-container {
   position: fixed; 
   top: 0; 
@@ -179,7 +179,7 @@ footer {
   100% { opacity: 0;   transform: translateY(-60px); }
 }
 
-/* Modals */
+/* modals */
 .modal {
   position: fixed; 
   top: 0; 
@@ -202,7 +202,7 @@ footer {
   max-width: 900px;
 }
 
-/* Responsive */
+/* responsiveness */
 @media (max-width: 768px) {
   #main-container {
     flex-direction: column; 
