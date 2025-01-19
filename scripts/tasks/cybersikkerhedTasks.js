@@ -1,87 +1,85 @@
-// scripts/tasks/cybersikkerhedTasks.js
+// scripts/cybersikkerhedTasks.js
+// 3 opgaver, med 4 steps – fx location= cybersikkerhed, it-jura, hospital, dokumentation.
+// Men her viser vi eksempler, husk at location i steps skal matche "cybersikkerhed", "hospital", "infrastruktur", etc.
 
 window.cybersikkerhedTasks = [
   {
-    category:"cybersikkerhed",
-    title:"NetværksPenTest (ekstern firma)",
-    shortDesc:"Hyre eksterne specialister til at teste netværket",
-    logicLong:"Du vil bestille en ekstern penetrationstest. Hospitalet er nervøse for nedetid...",
+    title:"NetværksPenTest",
+    shortDesc:"Ekstern firma vil teste netværket",
     steps:[
       {
         location:"cybersikkerhed",
-        stepDescription:"Planlæg penTest dybde eller hurtig?",
+        stepDescription:"Planlæg penTest",
         choiceA:{
           label:"Avanceret test",
-          text:"+2 tid, +50 kr => +2 security, +5% risk",
-          applyEffect:{ timeCost:2, moneyCost:50, riskyPlus:0.05, statChange:{security:2} }
+          text:"+2 tid => +2 security, +5% risk",
+          applyEffect:{ timeCost:2, riskyPlus:0.05, statChange:{security:2} }
         },
         choiceB:{
           label:"Hurtig test",
-          text:"+5% overset hul => +1 security",
-          applyEffect:{ riskyPlus:0.05, statChange:{security:1} }
+          text:"+1 tid => +1 security, +2% overset hul",
+          applyEffect:{ timeCost:1, riskyPlus:0.02, statChange:{security:1} }
         }
       },
       {
         location:"it-jura",
-        stepDescription:"Kontrakt med eksternt firma?",
+        stepDescription:"Kontrakt med firma",
         choiceA:{
-          label:"Grundig kontrakt",
-          text:"+2 tid => +1 security, +1 stability",
-          applyEffect:{ timeCost:2, statChange:{security:1, stability:1} }
+          label:"Grundig aftale",
+          text:"+2 tid => +1 stability",
+          applyEffect:{ timeCost:2, statChange:{stability:1} }
         },
         choiceB:{
           label:"Standard paragraf",
-          text:"+5% jura-hul => +1 development",
+          text:"+5% jura-hul => +1 dev",
           applyEffect:{ riskyPlus:0.05, statChange:{development:1} }
         }
       },
       {
         location:"hospital",
-        stepDescription:"Nedetid. Informér afdelinger eller ej?",
+        stepDescription:"Informer om nedetid",
         choiceA:{
-          label:"Informer bredden",
-          text:"+2 tid => +2 hospital, +1 stability",
-          applyEffect:{ timeCost:2, statChange:{hospitalSatisfaction:2, stability:1} }
+          label:"Stort varsel",
+          text:"+2 tid => +2 hospital",
+          applyEffect:{ timeCost:2, statChange:{hospitalSatisfaction:2} }
         },
         choiceB:{
           label:"Ingen varsel",
-          text:"Spar tid, men -5 hospital",
-          applyEffect:{ statChange:{hospitalSatisfaction:-5} }
+          text:"-5 hospital => +1 dev",
+          applyEffect:{ statChange:{hospitalSatisfaction:-5, development:1} }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"PenTest-rapport til CAB?",
+        stepDescription:"Rapport til CAB",
         choiceA:{
           label:"Fuld dok",
-          text:"+2 tid => +1 security, ingen skepsis",
-          applyEffect:{ timeCost:2, statChange:{security:1} }
+          text:"+2 tid => ingen skepsis",
+          applyEffect:{ timeCost:2 }
         },
         choiceB:{
           label:"Minimal dok",
-          text:"+5% CAB-skepsis => +1 development",
+          text:"+5% CAB-skepsis => +1 dev",
           applyEffect:{ riskyPlus:0.05, statChange:{development:1} }
         }
       }
     ]
   },
   {
-    category:"cybersikkerhed",
     title:"Firewall-regler Opdatering",
-    shortDesc:"Forældede ACL-lister. Reparer dem.",
-    logicLong:"Informationssikkerhed har fundet huller i firewall. Vil du lave stor eller lille opgradering?",
+    shortDesc:"Forældet ACL, fix nu",
     steps:[
       {
         location:"informationssikkerhed",
-        stepDescription:"Sårbarhedsscanning i logfiler?",
+        stepDescription:"Scan log for sårbarheder?",
         choiceA:{
           label:"Dybt log-check",
-          text:"+2 tid => +2 security, +1 stability",
-          applyEffect:{ timeCost:2, statChange:{security:2, stability:1} }
+          text:"+2 tid => +2 security",
+          applyEffect:{ timeCost:2, statChange:{security:2} }
         },
         choiceB:{
-          label:"Hurtig scan",
-          text:"+5% overset hul => +1 development",
+          label:"Hurtig scanning",
+          text:"+5% overset hul => +1 dev",
           applyEffect:{ riskyPlus:0.05, statChange:{development:1} }
         }
       },
@@ -89,7 +87,7 @@ window.cybersikkerhedTasks = [
         location:"cybersikkerhed",
         stepDescription:"Nye firewall-regler – stor ombygning eller nødløsning?",
         choiceA:{
-          label:"Ombygning",
+          label:"Stor ombygning",
           text:"+3 tid => +2 security, -1 dev",
           applyEffect:{ timeCost:3, statChange:{security:2, development:-1} }
         },
@@ -101,16 +99,16 @@ window.cybersikkerhedTasks = [
       },
       {
         location:"hospital",
-        stepDescription:"Servicevindue eller straks implementering?",
+        stepDescription:"Servicevindue eller straks?",
         choiceA:{
           label:"Planlagt vindue",
-          text:"+2 tid => +2 hospital, +1 stability",
-          applyEffect:{ timeCost:2, statChange:{hospitalSatisfaction:2, stability:1} }
+          text:"+2 tid => +2 hospital",
+          applyEffect:{ timeCost:2, statChange:{hospitalSatisfaction:2} }
         },
         choiceB:{
           label:"Straks",
-          text:"0 tid => -5 hospital",
-          applyEffect:{ statChange:{hospitalSatisfaction:-5} }
+          text:"-5 hospital => +1 dev",
+          applyEffect:{ statChange:{hospitalSatisfaction:-5, development:1} }
         }
       },
       {
@@ -118,8 +116,8 @@ window.cybersikkerhedTasks = [
         stepDescription:"Firewall-rapport?",
         choiceA:{
           label:"Fuld dok",
-          text:"+2 tid => +1 security, +1 stability",
-          applyEffect:{ timeCost:2, statChange:{security:1, stability:1} }
+          text:"+2 tid => +1 stability",
+          applyEffect:{ timeCost:2, statChange:{stability:1} }
         },
         choiceB:{
           label:"Minimal dok",
@@ -130,30 +128,28 @@ window.cybersikkerhedTasks = [
     ]
   },
   {
-    category:"cybersikkerhed",
     title:"2FA Implementering",
-    shortDesc:"Sikre logins via 2FA",
-    logicLong:"Hospitalet har haft lækager pga. nemme logins. Du vil indføre 2FA. Hvor grundigt?",
+    shortDesc:"Sikre login med 2-faktor",
     steps:[
       {
         location:"cybersikkerhed",
-        stepDescription:"Vælg 2FA-løsning?",
+        stepDescription:"Vælg 2FA-løsning",
         choiceA:{
-          label:"Robust tokensystem",
-          text:"+3 tid, +50 kr => +3 security, -1 dev",
-          applyEffect:{ timeCost:3, moneyCost:50, statChange:{security:3, development:-1} }
+          label:"Robust token",
+          text:"+3 tid => +3 security, -1 dev",
+          applyEffect:{ timeCost:3, statChange:{security:3, development:-1} }
         },
         choiceB:{
           label:"Basal SMS",
-          text:"+5% rest-risiko => +1 dev",
+          text:"+5% risk => +1 dev",
           applyEffect:{ riskyPlus:0.05, statChange:{development:1} }
         }
       },
       {
         location:"hospital",
-        stepDescription:"Informér brugerne eller rul pludseligt?",
+        stepDescription:"Informér brugerne",
         choiceA:{
-          label:"Træning & mail",
+          label:"Træningskampagne",
           text:"+2 tid => +2 hospital, +1 stability",
           applyEffect:{ timeCost:2, statChange:{hospitalSatisfaction:2, stability:1} }
         },
@@ -165,25 +161,25 @@ window.cybersikkerhedTasks = [
       },
       {
         location:"it-jura",
-        stepDescription:"Opdatér login-betingelser i kontrakter?",
+        stepDescription:"Opdatér login-aftale",
         choiceA:{
-          label:"Grundig jura-check",
-          text:"+2 tid => +1 security, +1 stability",
-          applyEffect:{ timeCost:2, statChange:{security:1, stability:1} }
+          label:"Dyb jura-check",
+          text:"+2 tid => +1 security",
+          applyEffect:{ timeCost:2, statChange:{security:1} }
         },
         choiceB:{
-          label:"Standardparagraf",
+          label:"Standard paragraf",
           text:"+5% jura-hul => +1 dev",
           applyEffect:{ riskyPlus:0.05, statChange:{development:1} }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"2FA-dokumentation?",
+        stepDescription:"2FA-dok",
         choiceA:{
           label:"Fuld dok",
-          text:"+2 tid => +1 security, +1 stability",
-          applyEffect:{ timeCost:2, statChange:{security:1, stability:1} }
+          text:"+2 tid => +1 stability",
+          applyEffect:{ timeCost:2, statChange:{stability:1} }
         },
         choiceB:{
           label:"Minimal dok",
