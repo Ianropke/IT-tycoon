@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAFe IT Tycoon: LIMS – Ingen Backlog-Modal</title>
+  <title>SAFe IT Tycoon: LIMS – Med Commit & 90 tid</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,7 +12,7 @@
     <h1>SAFe IT Tycoon: LIMS Forvaltning</h1>
     <div id="scoreboard">
       <div id="scores">
-        <span style="font-size:1.1rem;">Tid: <span id="time-left">30</span></span>
+        <span style="font-size:1.1rem;">Tid: <span id="time-left">90</span></span>
         <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
         <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
         <span style="font-size:1.1rem;">Sikkerhed: <span id="security-value">100</span></span>
@@ -82,20 +82,24 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2>Velkommen til SAFe LIMS Forvaltning</h2>
+      <h2>Velkommen til SAFe LIMS</h2>
       <p>
-        Du er IT-forvalter af et stort hospitals kritiske LIMS-systemer. 
-        Hospitalerne er travle, laboratorierne analyserer prøver døgnet rundt, og 
-        du skal sikre, at IT-driften kører stabilt, 
-        at sikkerheden er i top, og at hospitalet får de nye funktioner, de skriger på.
+        Du er IT-forvalter for kritiske hospitalsystemer. 
+        Din hverdag er travl, og du skal prioritere opgaver 
+        inden for en PI (Program Increment) på 90 tid. 
       </p>
       <p>
-        Samtidig har du begrænset tid og budget, og du skal forholde dig til juridiske krav, 
-        leverandøraftaler, og kabalen i hele regionens centraliserede IT-organisation.
+        Hospitalet vil have nye funktioner, 
+        Jura kræver kontrakter i orden, 
+        Cybersikkerhed advarer om hackere, 
+        og Infrastruktur vil have stabil drift. 
+        Samtidig kan pengene løbe tør, og hospitalet 
+        bliver meget utilfredse, hvis du går for meget i minus!
       </p>
       <p>
-        Er du klar til at prioritere, løse opgaver og sikre, at hospitalets behov 
-        bliver opfyldt – uden at løbe tør for tid og penge? 
+        Er du klar til at fordele ressourcerne, 
+        opfylde dine egne commits og lykkes med drift, 
+        sikkerhed og udvikling?
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -156,16 +160,28 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal -->
+  <!-- PI Start Modal => her commit'er man -->
+  <div id="pi-start-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>PI Start – Angiv dine Commits</h2>
+      <p id="pi-intro-text"></p>
+      <label>Sikkerhed: <input type="number" id="commit-security" value="110" /></label><br/>
+      <label>Stabilitet: <input type="number" id="commit-stability" value="110" /></label><br/>
+      <label>Udvikling: <input type="number" id="commit-development" value="110" /></label><br/>
+      <button id="pi-start-ok-btn" style="margin-top:8px; background-color:#27ae60;">Fortsæt</button>
+    </div>
+  </div>
+
+  <!-- End-of-Time Modal => Inspect & Adapt -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>PI Slut!</h2>
+      <h2>PI Slut – Inspect & Adapt</h2>
       <p id="end-game-summary"></p>
       <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
     </div>
   </div>
 
-  <!-- scripts: tasks + main -->
+  <!-- tasks + main -->
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
