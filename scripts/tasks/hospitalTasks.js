@@ -1,9 +1,7 @@
-// scripts/hospitalTasks.js
-
 window.hospitalTasks = [
   {
     title:"Biokemi Lab-automatisering",
-    shortDesc:"Robotter i blodprøve-håndtering",
+    shortDesc:"Robotter i blodprøve-håndtering – ret dyr.",
     steps:[
       {
         location:"hospital",
@@ -30,9 +28,10 @@ window.hospitalTasks = [
         stepDescription:"Opsæt robot i net",
         choiceA:{
           label:"Fuld integration",
-          text:"+2 tid => +2 stability, +1 security",
+          text:"+2 tid, -120 kr => +2 stability, +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:120,
             statChange:{stability:2, security:1}
           }
         },
@@ -50,9 +49,10 @@ window.hospitalTasks = [
         stepDescription:"Robot licensaftale?",
         choiceA:{
           label:"Grundig check",
-          text:"+2 tid => +1 security",
+          text:"+2 tid, -50 kr => +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:50,
             statChange:{security:1}
           }
         },
@@ -89,7 +89,7 @@ window.hospitalTasks = [
   },
   {
     title:"Patologi Billedanalyse-Plugin",
-    shortDesc:"AI til scanning af vævsprøver i patologi",
+    shortDesc:"AI til scanning af vævsprøver. Kostbar GPU.",
     steps:[
       {
         location:"hospital",
@@ -116,9 +116,10 @@ window.hospitalTasks = [
         stepDescription:"Installér billedserver?",
         choiceA:{
           label:"Ny GPU-server",
-          text:"+2 tid => +2 stability, +1 security",
+          text:"+2 tid, -200 kr => +2 stability, +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:200,
             statChange:{stability:2, security:1}
           }
         },
@@ -136,9 +137,10 @@ window.hospitalTasks = [
         stepDescription:"AI data-licens?",
         choiceA:{
           label:"Ordentlig aftale",
-          text:"+2 tid => +1 security",
+          text:"+2 tid, -80 kr => +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:80,
             statChange:{security:1}
           }
         },
@@ -175,7 +177,7 @@ window.hospitalTasks = [
   },
   {
     title:"MobilApp til Lab-gange",
-    shortDesc:"Tablets i hospitalet til bestilling af prøver",
+    shortDesc:"Tablets i hospitalet, men data-setup kan koste",
     steps:[
       {
         location:"hospital",
@@ -202,9 +204,10 @@ window.hospitalTasks = [
         stepDescription:"Sæt op wifi-løsning",
         choiceA:{
           label:"Stærk wifi",
-          text:"+2 tid => +2 stability, +1 security",
+          text:"+2 tid, -100 kr => +2 stability, +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:100,
             statChange:{stability:2, security:1}
           }
         },
@@ -222,9 +225,10 @@ window.hospitalTasks = [
         stepDescription:"Kontrakt for mobil-løsning?",
         choiceA:{
           label:"Dyb jura-check",
-          text:"+2 tid => +1 security",
+          text:"+2 tid, -40 kr => +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:40,
             statChange:{security:1}
           }
         },
