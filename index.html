@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAFe IT Tycoon: LIMS Forvaltning</title>
+  <title>SAFe LIMS – Separate tasks-filer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -25,19 +25,29 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 4 lokationer som eksempel: hospital, infrastruktur, it-jura, dokumentation. 
-           Færre, for overskuelighed. 
-           Du kan udvide med cybersikkerhed, leverandør etc. -->
+      <!-- 8 lokationer -->
       <div class="location" id="hospital" style="top:5%; left:5%;">
         🏥 Hospital
       </div>
       <div class="location" id="infrastruktur" style="top:5%; left:55%;">
         🔧 Infrastruktur
       </div>
+      <div class="location" id="cybersikkerhed" style="top:25%; left:5%;">
+        💻 Cybersikkerhed
+      </div>
+      <div class="location" id="informationssikkerhed" style="top:25%; left:55%;">
+        🛡 Informationssikkerhed
+      </div>
       <div class="location" id="it-jura" style="top:45%; left:25%;">
         ⚖️ IT Jura
       </div>
-      <div class="location" id="dokumentation" style="top:65%; left:60%;">
+      <div class="location" id="leverandor" style="top:45%; left:62%;">
+        📦 Leverandør
+      </div>
+      <div class="location" id="medicinsk-udstyr" style="top:65%; left:5%;">
+        🩺 Medicinsk
+      </div>
+      <div class="location" id="dokumentation" style="top:65%; left:40%;">
         📄 Dokumentation
       </div>
     </div>
@@ -55,7 +65,7 @@
         </div>
       </div>
       <div id="available-tasks">
-        <h2>Mulige Opgaver (PI Plan)</h2>
+        <h2>Mulige Opgaver</h2>
         <ul id="tasks-list">
           <li>Ingen opgaver tilgængelige</li>
         </ul>
@@ -73,8 +83,8 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2>Velkommen til SAFe LIMS!</h2>
-      <p>Du har 2 PI'er a 30 tid, Business-mål, commits, og backlog-opgaver!</p>
+      <h2>Velkommen til SAFe LIMS</h2>
+      <p>Vi kører 2 PI'er a 30 tid. Vælg commits, planlæg opgaver, kør!</p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
@@ -108,7 +118,7 @@
     </div>
   </div>
 
-  <!-- Modal: PI Start =>  viser Business-mål + spillerens commit -->
+  <!-- PI Start Modal -->
   <div id="pi-start-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>PI Start: Business Mål</h2>
@@ -118,22 +128,21 @@
       <label>Stabilitet: <input type="number" id="commit-stability" value="105" /></label><br/>
       <label>Udvikling: <input type="number" id="commit-development" value="105" /></label><br/>
       <label>Hospital: <input type="number" id="commit-hospital" value="105" /></label><br/>
-
       <button id="pi-start-ok-btn" style="margin-top:8px; background-color:#27ae60;">Fortsæt</button>
     </div>
   </div>
 
-  <!-- Modal: PI Plan => Vælg opgaver fra backlog -->
+  <!-- PI Plan Modal -->
   <div id="pi-plan-modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>PI Planning: Vælg op til 5 opgaver</h2>
-      <p id="pi-plan-desc">Backlog-liste:</p>
+      <h2>PI Planning</h2>
+      <p>Vælg op til 5 opgaver</p>
       <ul id="backlog-list"></ul>
       <button id="pi-plan-ok-btn" style="margin-top:8px; background-color:#2980b9;">Start PI!</button>
     </div>
   </div>
 
-  <!-- CAB -->
+  <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>CAB Gennemgang</h2>
@@ -141,7 +150,6 @@
       <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
     </div>
   </div>
-
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
@@ -168,7 +176,10 @@
     </div>
   </div>
 
-  <script src="scripts/backlogTasks.js"></script>
+  <!-- Load tasks + main -->
+  <script src="scripts/cybersikkerhedTasks.js"></script>
+  <script src="scripts/hospitalTasks.js"></script>
+  <script src="scripts/infrastrukturTasks.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 </html>
