@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAFe IT Tycoon: LIMS – Med Commit & 90 tid</title>
+  <title>SAFe IT Tycoon: LIMS – Hospitalets Forventning + Større PengeCost</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -82,24 +82,13 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2>Velkommen til SAFe LIMS</h2>
+      <h2>Velkommen til SAFe LIMS!</h2>
       <p>
-        Du er IT-forvalter for kritiske hospitalsystemer. 
-        Din hverdag er travl, og du skal prioritere opgaver 
-        inden for en PI (Program Increment) på 90 tid. 
-      </p>
-      <p>
-        Hospitalet vil have nye funktioner, 
-        Jura kræver kontrakter i orden, 
-        Cybersikkerhed advarer om hackere, 
-        og Infrastruktur vil have stabil drift. 
-        Samtidig kan pengene løbe tør, og hospitalet 
-        bliver meget utilfredse, hvis du går for meget i minus!
-      </p>
-      <p>
-        Er du klar til at fordele ressourcerne, 
-        opfylde dine egne commits og lykkes med drift, 
-        sikkerhed og udvikling?
+        Du forvalter kritiske LIMS-løsninger på et stort hospital. 
+        Hospitalets ledelse har deres forventninger til, hvor meget Sikkerhed, Stabilitet 
+        og Udvikling der skal stige i hver PI. 
+        Samtidig kan du selv give et commit. 
+        Og husk: Penge kan blive en knap ressource!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -160,11 +149,12 @@
     </div>
   </div>
 
-  <!-- PI Start Modal => her commit'er man -->
+  <!-- PI Start Modal => Hospitalets forventning + spillerens commit -->
   <div id="pi-start-modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>PI Start – Angiv dine Commits</h2>
-      <p id="pi-intro-text"></p>
+      <h2>PI Start</h2>
+      <p id="hospital-expectations-text"></p>
+      <h4>Dine egne Commits:</h4>
       <label>Sikkerhed: <input type="number" id="commit-security" value="110" /></label><br/>
       <label>Stabilitet: <input type="number" id="commit-stability" value="110" /></label><br/>
       <label>Udvikling: <input type="number" id="commit-development" value="110" /></label><br/>
