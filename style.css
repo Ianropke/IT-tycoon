@@ -145,11 +145,11 @@ footer {
   max-width: 320px; 
   animation: fadeOut 4s forwards;
 }
-.popup.error {
+.popup.error { 
   background-color: #e74c3c; 
 }
-.popup.info {
-  background-color: #27ae60 !important;
+.popup.info { 
+  background-color: #27ae60 !important; 
 }
 @keyframes fadeOut {
   0%   { opacity: 0.9; transform: translateY(0); }
