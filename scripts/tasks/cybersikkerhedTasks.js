@@ -1,49 +1,48 @@
-// scripts/tasks/cybersikkerhedTasks.js
-
 window.cybersikkerhedTasks = [
   {
     title:"NetværksPenTest",
-    shortDesc:"Eksternt firma tester netværket for sårbarheder",
+    shortDesc:"Eksternt firma, stor scanning, koster penge",
     steps:[
       {
         location:"cybersikkerhed",
-        stepDescription:"Planlæg test (dyb/hurtig)",
+        stepDescription:"Planlæg penTest",
         choiceA:{
-          label:"Dyb scanning",
-          text:"+2 tid => +2 security, +5% risk",
-          applyEffect:{ 
-            timeCost:2, 
-            riskyPlus:0.05, 
-            statChange:{security:2} 
+          label:"Avanceret scanning",
+          text:"+2 tid, -150 kr => +2 security, +5% risk",
+          applyEffect:{
+            timeCost:2,
+            moneyCost:150,
+            riskyPlus:0.05,
+            statChange:{security:2}
           }
         },
         choiceB:{
           label:"Hurtig scanning",
-          text:"+1 tid => +1 security, +3% overset hul",
-          applyEffect:{ 
+          text:"+1 tid => +1 security, +2% overset hul",
+          applyEffect:{
             timeCost:1,
-            riskyPlus:0.03,
+            riskyPlus:0.02,
             statChange:{security:1}
           }
         }
       },
       {
         location:"it-jura",
-        stepDescription:"Kontrakt med PenTest-firma",
+        stepDescription:"Kontrakt med eksternt firma",
         choiceA:{
           label:"Grundig aftale",
           text:"+2 tid => +1 stability, +1 security",
-          applyEffect:{ 
-            timeCost:2, 
-            statChange:{stability:1, security:1} 
+          applyEffect:{
+            timeCost:2,
+            statChange:{stability:1, security:1}
           }
         },
         choiceB:{
           label:"Standard paragraf",
           text:"+5% jura-hul => +1 dev",
-          applyEffect:{ 
-            riskyPlus:0.05, 
-            statChange:{development:1} 
+          applyEffect:{
+            riskyPlus:0.05,
+            statChange:{development:1}
           }
         }
       },
@@ -53,7 +52,7 @@ window.cybersikkerhedTasks = [
         choiceA:{
           label:"Planlagt vindue",
           text:"+2 tid => +2 hospital",
-          applyEffect:{ 
+          applyEffect:{
             timeCost:2,
             statChange:{hospitalSatisfaction:2}
           }
@@ -68,7 +67,7 @@ window.cybersikkerhedTasks = [
       },
       {
         location:"dokumentation",
-        stepDescription:"PenTest-rapport til CAB",
+        stepDescription:"PenTest-rapport",
         choiceA:{
           label:"Fuld dok",
           text:"+2 tid => ingen skepsis",
@@ -77,31 +76,32 @@ window.cybersikkerhedTasks = [
         choiceB:{
           label:"Minimal dok",
           text:"+5% skepsis => +1 dev",
-          applyEffect:{ 
+          applyEffect:{
             riskyPlus:0.05,
-            statChange:{development:1} 
+            statChange:{development:1}
           }
         }
       }
     ]
   },
   {
-    title:"Firewall-Opdatering",
-    shortDesc:"Forældet ACL-lister i firewall",
+    title:"Firewall-Ombygning",
+    shortDesc:"Forældede ACL-lister, dyr at renovere",
     steps:[
       {
         location:"informationssikkerhed",
-        stepDescription:"Scan logs for brud",
+        stepDescription:"Dyb log-check?",
         choiceA:{
-          label:"Dyb log-check",
-          text:"+2 tid => +2 security",
+          label:"Grundig scanning",
+          text:"+2 tid, -100 kr => +2 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:100,
             statChange:{security:2}
           }
         },
         choiceB:{
-          label:"Hurtig scanning",
+          label:"Overfladisk",
           text:"+5% overset hul => +1 dev",
           applyEffect:{
             riskyPlus:0.05,
@@ -114,9 +114,10 @@ window.cybersikkerhedTasks = [
         stepDescription:"Implementér nye firewall-regler",
         choiceA:{
           label:"Omfattende ombygning",
-          text:"+3 tid => +2 security, -1 dev",
+          text:"+3 tid, -150 kr => +2 security, -1 dev",
           applyEffect:{
             timeCost:3,
+            moneyCost:150,
             statChange:{security:2, development:-1}
           }
         },
@@ -150,7 +151,7 @@ window.cybersikkerhedTasks = [
       },
       {
         location:"dokumentation",
-        stepDescription:"Opdater firewall-dok",
+        stepDescription:"Firewall-dok",
         choiceA:{
           label:"Fuld dok",
           text:"+2 tid => +1 stability",
@@ -172,16 +173,17 @@ window.cybersikkerhedTasks = [
   },
   {
     title:"2FA Implementering",
-    shortDesc:"Styrk login-sikkerhed med tofaktor",
+    shortDesc:"Giver ekstra login-sikkerhed",
     steps:[
       {
         location:"cybersikkerhed",
         stepDescription:"Vælg 2FA-løsning (robust/basal)",
         choiceA:{
           label:"Robust token",
-          text:"+3 tid => +3 security, -1 dev",
+          text:"+3 tid, -200 kr => +3 security, -1 dev",
           applyEffect:{
             timeCost:3,
+            moneyCost:200,
             statChange:{security:3, development:-1}
           }
         },
@@ -218,9 +220,10 @@ window.cybersikkerhedTasks = [
         stepDescription:"Opdatér login-aftale",
         choiceA:{
           label:"Dyb jura-check",
-          text:"+2 tid => +1 security",
+          text:"+2 tid, -50 kr => +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:50,
             statChange:{security:1}
           }
         },
