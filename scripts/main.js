@@ -1,43 +1,42 @@
-/************************************************************
- * main.js: 
- * - 3 iterationer (PI)
- * - Ingen console-fejl
- * - Genererer 3 tasks ved startPI
- ************************************************************/
+// scripts/main.js
 
 let gameState = {
-  security: 100,
-  stability: 100,
-  development: 100,
-  hospitalSatisfaction: 100,
+  security:100,
+  stability:100,
+  development:100,
+  hospitalSatisfaction:100,
 
-  money: 1000,
-  piTime: 30,
-  currentPI: 1,
-  maxPI: 3,
+  money:1000,
+  piTime:30,
+  currentPI:1,
+  maxPI:2, // 2 iterationer
 
-  tasksCompleted: 0,
-  activeTask: null,
-  availableTasks: [],
-  usedTasks: new Set(),
+  tasksCompleted:0,
+  activeTask:null,
+  availableTasks:[],
+  usedTasks:new Set(),
 
-  docSkipCount: 0,
-  riskyTotal: 0,
-  finalFailChance: 0,
+  docSkipCount:0,
+  riskyTotal:0,
+  finalFailChance:0,
 
-  introModalOpen: true,
-  tutorialActive: false,
-  tutorialStep: 0,
+  // Store player's commits & business goals pr. PI
+  businessGoals:{}, 
+  commitGoals:{},
 
-  totalScore: 0
+  introModalOpen:true,
+  tutorialActive:false,
+  tutorialStep:0,
+
+  totalScore:0
 };
 
 function updateScoreboard(){
-  document.getElementById('time-left').textContent   = gameState.piTime;
-  document.getElementById('money-left').textContent  = gameState.money;
+  document.getElementById('time-left').textContent= gameState.piTime;
+  document.getElementById('money-left').textContent= gameState.money;
   document.getElementById('tasks-completed').textContent= gameState.tasksCompleted;
-  document.getElementById('security-value').textContent   = gameState.security;
-  document.getElementById('stability-value').textContent  = gameState.stability;
+  document.getElementById('security-value').textContent= gameState.security;
+  document.getElementById('stability-value').textContent= gameState.stability;
   document.getElementById('development-value').textContent= gameState.development;
   document.getElementById('hospital-satisfaction').textContent= gameState.hospitalSatisfaction;
 }
@@ -45,94 +44,145 @@ function updateScoreboard(){
 // Intro
 document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
   document.getElementById('intro-modal').style.display="none";
-  gameState.introModalOpen=false;
   openTutorialModal();
 });
 
 // Tutorial
-const tutorialModal=document.getElementById('tutorial-modal');
-const tutorialTitleEl=document.getElementById('tutorial-title');
-const tutorialTextEl=document.getElementById('tutorial-text');
-const tutorialNextBtn=document.getElementById('tutorial-next-btn');
+const tutorialModal= document.getElementById('tutorial-modal');
+const tutorialTitleEl= document.getElementById('tutorial-title');
+const tutorialTextEl= document.getElementById('tutorial-text');
+const tutorialNextBtn= document.getElementById('tutorial-next-btn');
 
 let tutorialSteps=[
-  { title:"Velkommen", text:"Du har 3 PI'er a 30 tid. Held og lykke!" },
-  { title:"Lokationer", text:"Klik dem i opgavens rækkefølge." },
-  { title:"CAB & drift", text:"Efter 4 trin tjekker CAB risiko, mulig driftfejl." },
-  { title:"Klar?", text:"Se om du kan nå mange opgaver og stats!" }
+  {title:"Velkommen", text:"Vi kører 2 PI'er, hver 30 tid. Du får business-mål, laver commit, vælger opgaver."},
+  {title:"CAB", text:"Hver opgave har 4 trin. Slut => CAB tjek + driftfejl."},
+  {title:"I&A", text:"Ved tid=0 => Inspect & Adapt, se difference: Mål vs. Commit vs. Faktisk."},
+  {title:"God fornøjelse", text:"Se om du kan opfylde ambitionerne!"}
 ];
+let tutorialIndex=0;
+
 function openTutorialModal(){
   tutorialModal.style.display="flex";
   showTutorialContent();
 }
 function showTutorialContent(){
-  if(gameState.tutorialStep>=tutorialSteps.length){
+  if(tutorialIndex>= tutorialSteps.length){
     tutorialModal.style.display="none";
     initGame();
     return;
   }
-  let st=tutorialSteps[gameState.tutorialStep];
-  tutorialTitleEl.textContent= st.title;
-  tutorialTextEl.textContent= st.text;
+  tutorialTitleEl.textContent= tutorialSteps[tutorialIndex].title;
+  tutorialTextEl.textContent= tutorialSteps[tutorialIndex].text;
 }
-tutorialNextBtn.addEventListener('click',()=>{
-  gameState.tutorialStep++;
+tutorialNextBtn.addEventListener('click', ()=>{
+  tutorialIndex++;
   showTutorialContent();
 });
 
-// initGame
+// initGame => load tasks => startPI
 function initGame(){
   updateScoreboard();
-  // Saml tasks
-  window.bigTasksData=[
+  // Saml tasks i backlog-liste:
+  window.fullBacklog = [
     ...window.cybersikkerhedTasks,
-    ...window.infrastrukturTasks,
-    ...window.hospitalTasks
+    ...window.hospitalTasks,
+    ...window.infrastrukturTasks
   ];
   startPI();
 }
 
-// startPI
+// Start PI => generer business goals => vis piStartModal
 function startPI(){
+  // nulstil tid + arrangement
   gameState.piTime=30;
   updateScoreboard();
 
-  // generer 3 tasks
-  for(let i=0;i<3;i++){
-    generateTask();
-  }
-  // løbende generering
-  setInterval(()=>{
-    if(gameState.availableTasks.length<10){
-      generateTask();
-    }
-  },10000);
+  // generer business goals
+  // eksempeltal:
+  gameState.businessGoals={
+    security: 100 + Math.floor(Math.random()*10+5), // ex 105-115
+    stability:100 + Math.floor(Math.random()*10+5),
+    development:100+ Math.floor(Math.random()*10+5),
+    hospital:100+ Math.floor(Math.random()*10+5)
+  };
+
+  // vis modal
+  document.getElementById('pi-business-goals-text').innerText=`
+  PI #${gameState.currentPI} Mål: 
+  Security=${gameState.businessGoals.security}, 
+  Stability=${gameState.businessGoals.stability}, 
+  Development=${gameState.businessGoals.development}, 
+  Hospital=${gameState.businessGoals.hospital}
+  `;
+  document.getElementById('pi-start-modal').style.display="flex";
 }
 
-function generateTask(){
-  if(gameState.availableTasks.length>=10)return;
-  let notUsed=bigTasksData.filter(o=> !gameState.usedTasks.has(o.title));
-  if(!notUsed.length)return;
+document.getElementById('pi-start-ok-btn').addEventListener('click', ()=>{
+  // Læs commit-values
+  let cSec= parseInt(document.getElementById('commit-security').value,10);
+  let cStab=parseInt(document.getElementById('commit-stability').value,10);
+  let cDev= parseInt(document.getElementById('commit-development').value,10);
+  let cHosp=parseInt(document.getElementById('commit-hospital').value,10);
 
-  let chosen= notUsed[Math.floor(Math.random()*notUsed.length)];
-  gameState.usedTasks.add(chosen.title);
-
-  let riskLevel= Math.floor(Math.random()*3)+1;
-  let newTask={
-    id:Date.now()+Math.floor(Math.random()*1000),
-    title: chosen.title,
-    shortDesc: chosen.shortDesc,
-    logicLong: chosen.logicLong,
-    steps: chosen.steps,
-    riskLevel,
-    currentStep:0,
-    decisionMadeForStep:{}
+  gameState.commitGoals={
+    security:cSec,
+    stability:cStab,
+    development:cDev,
+    hospital:cHosp
   };
-  gameState.availableTasks.push(newTask);
+  document.getElementById('pi-start-modal').style.display="none";
+  openPIPlanModal();
+});
+
+// PI Plan => vælg op til 5 opgaver
+const backlogListEl= document.getElementById('backlog-list');
+const piPlanModal= document.getElementById('pi-plan-modal');
+document.getElementById('pi-plan-ok-btn').addEventListener('click', startPIExecution);
+
+function openPIPlanModal(){
+  piPlanModal.style.display="flex";
+  backlogListEl.innerHTML="";
+  window.fullBacklog.forEach((taskObj,idx)=>{
+    // skip if used
+    if(gameState.usedTasks.has(taskObj.title))return; 
+
+    let li= document.createElement('li');
+    li.innerHTML=`<strong>${taskObj.title}</strong><br/>
+    ${taskObj.shortDesc||""}`;
+    li.dataset.taskIndex= idx;
+    li.addEventListener('click', ()=>{
+      li.classList.toggle('selected');
+    });
+    backlogListEl.appendChild(li);
+  });
+}
+
+function startPIExecution(){
+  // find selected tasks
+  let selected= backlogListEl.querySelectorAll('.selected');
+  let chosenTitles=[];
+  selected.forEach(li=>{
+    if(chosenTitles.length<5){
+      let idx=parseInt(li.dataset.taskIndex,10);
+      chosenTitles.push(window.fullBacklog[idx].title);
+    }
+  });
+  // op til 5
+  // mark them for available
+  chosenTitles.forEach(tit=>{
+    // find in backlog
+    let tObj= window.fullBacklog.find(o=> o.title=== tit);
+    if(tObj) gameState.availableTasks.push(structuredClone(tObj));
+    // structuredClone => for at genbruge
+    gameState.usedTasks.add(tObj.title); // men du beholder
+  });
+
+  piPlanModal.style.display="none";
   renderTasks();
 }
 
-const tasksList=document.getElementById('tasks-list');
+// render tasks => i #tasks-list
+const tasksList= document.getElementById('tasks-list');
 function renderTasks(){
   tasksList.innerHTML="";
   if(!gameState.availableTasks.length){
@@ -141,39 +191,23 @@ function renderTasks(){
   }
   gameState.availableTasks.forEach(t=>{
     let li=document.createElement('li');
-    if(t.riskLevel===3){
-      li.style.borderColor="red"; li.style.borderWidth="2px";
-    } else if(t.riskLevel===2){
-      li.style.borderColor="orange";
-    } else {
-      li.style.borderColor="green";
-    }
-    let label=(t.riskLevel===3)?" (HØJPRIORITET)":"";
-    li.innerHTML=`
-      <strong>${t.title}${label}</strong><br/>
-      Risiko: ${t.riskLevel}
-      <p class="task-description" style="display:none;">${t.shortDesc}</p>
-    `;
-    let btn=document.createElement('button');
+    li.style.border="1px solid #444";
+    let txt= `<strong>${t.title}</strong><br/>
+    ${t.shortDesc||""}`;
+    li.innerHTML= txt;
+    let btn= document.createElement('button');
     btn.classList.add('commit-button');
     btn.textContent="Forpligt";
     btn.addEventListener('click',(e)=>{
       e.stopPropagation();
-      assignTask(t.id);
-    });
-    li.addEventListener('click',()=>{
-      li.querySelectorAll('.task-description').forEach(d=>{
-        d.style.display=(d.style.display==="none"?"block":"none");
-      });
+      assignTask(t.title);
     });
     li.appendChild(btn);
     tasksList.appendChild(li);
   });
 }
 
-let activeTaskHeadline=document.getElementById('active-task-headline');
-let activeTaskDesc=document.getElementById('active-task-description');
-function assignTask(taskId){
+function assignTask(taskTitle){
   if(gameState.activeTask){
     showPopup("Allerede en aktiv opgave!", "error");
     return;
@@ -182,58 +216,54 @@ function assignTask(taskId){
     endOfPI();
     return;
   }
-  let idx=gameState.availableTasks.findIndex(x=> x.id===taskId);
-  if(idx===-1)return;
-  let chosen= gameState.availableTasks.splice(idx,1)[0];
+  let idx= gameState.availableTasks.findIndex(x=> x.title===taskTitle);
+  if(idx===-1) return;
 
-  gameState.activeTask=chosen;
-  activeTaskHeadline.textContent= chosen.title;
-  activeTaskDesc.textContent= chosen.logicLong||"";
+  let chosen= gameState.availableTasks.splice(idx,1)[0];
+  gameState.activeTask= chosen;
+  document.getElementById('active-task-headline').textContent= chosen.title;
+  document.getElementById('active-task-description').textContent= chosen.shortDesc||"";
   updateStepsList();
   renderTasks();
 }
 
-let stepsListEl=document.getElementById('steps-list');
+const stepsListEl= document.getElementById('steps-list');
 function updateStepsList(){
   stepsListEl.innerHTML="";
   if(!gameState.activeTask){
     stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
     return;
   }
-  let c= gameState.activeTask.currentStep;
+  let c= gameState.activeTask.currentStep||0;
   gameState.activeTask.steps.forEach((st,i)=>{
     let li=document.createElement('li');
     li.textContent=`Trin ${i+1}: ${capitalizeLocation(st.location)}`;
-    if(i<c){
+    if(i< c){
       li.style.textDecoration="line-through";
       li.style.color="#95a5a6";
     }
     stepsListEl.appendChild(li);
   });
-  let info=document.createElement('li');
-  info.style.color="#aaa";
-  info.textContent=`Trin ${c+1}/${gameState.activeTask.steps.length}`;
-  stepsListEl.appendChild(info);
 }
 
 function capitalizeLocation(loc){
   if(!loc)return loc;
-  return loc.split("-").map(s=> s.charAt(0).toUpperCase()+ s.slice(1)).join("-");
+  return loc.split("-").map(x=> x.charAt(0).toUpperCase()+x.slice(1)).join("-");
 }
 
-// location-click => scenario
-const locationElements={
-  "infrastruktur":document.getElementById('infrastruktur'),
-  "informationssikkerhed":document.getElementById('informationssikkerhed'),
+// location click => scenario
+const locationMap={
   "hospital":document.getElementById('hospital'),
+  "infrastruktur":document.getElementById('infrastruktur'),
+  "cybersikkerhed":document.getElementById('cybersikkerhed'),
+  "informationssikkerhed":document.getElementById('informationssikkerhed'),
+  "it-jura":document.getElementById('it-jura'),
   "leverandør":document.getElementById('leverandor'),
   "medicinsk-udstyr":document.getElementById('medicinsk-udstyr'),
-  "it-jura":document.getElementById('it-jura'),
-  "cybersikkerhed":document.getElementById('cybersikkerhed'),
   "dokumentation":document.getElementById('dokumentation')
 };
-Object.keys(locationElements).forEach(locKey=>{
-  let el= locationElements[locKey];
+Object.keys(locationMap).forEach(locKey=>{
+  let el= locationMap[locKey];
   if(el){
     el.addEventListener('click',()=>{
       handleLocationClick(locKey);
@@ -250,18 +280,12 @@ function handleLocationClick(locName){
     endOfPI();
     return;
   }
-  let i= gameState.activeTask.currentStep;
-  if(i>= gameState.activeTask.steps.length)return;
+  let i= gameState.activeTask.currentStep||0;
+  if(i>= gameState.activeTask.steps.length) return;
   let st= gameState.activeTask.steps[i];
   if(!st)return;
-  if(gameState.activeTask.decisionMadeForStep[i])return;
+  if(locName!== st.location) return;
 
-  if(locName!== st.location){
-    if(st.location==="dokumentation"){
-      skipDocumentationPopup();
-    }
-    return;
-  }
   showScenarioModal(i);
 }
 
@@ -275,28 +299,24 @@ const scenarioAButton= document.getElementById('scenario-a-btn');
 const scenarioBLabel= document.getElementById('scenario-b-label');
 const scenarioBText= document.getElementById('scenario-b-text');
 const scenarioBButton= document.getElementById('scenario-b-btn');
-const docSkipOption= document.getElementById('doc-skip-option');
 
-function showScenarioModal(i){
+function showScenarioModal(stepIndex){
   scenarioModal.style.display="flex";
-  docSkipOption.style.display="none";
-
-  let st= gameState.activeTask.steps[i];
-  scenarioTitle.textContent= `Trin ${i+1}: ${capitalizeLocation(st.location)}`;
+  let st= gameState.activeTask.steps[stepIndex];
+  scenarioTitle.textContent=`Trin ${stepIndex+1}: ${capitalizeLocation(st.location)}`;
   scenarioDescription.textContent= st.stepDescription||"";
-
   scenarioALabel.textContent= st.choiceA.label;
   scenarioAText.textContent= st.choiceA.text;
   scenarioAButton.onclick=()=>{
     applyChoiceEffect(st.choiceA.applyEffect);
-    finalizeStep(i);
+    finalizeStep(stepIndex);
     scenarioModal.style.display="none";
   };
   scenarioBLabel.textContent= st.choiceB.label;
   scenarioBText.textContent= st.choiceB.text;
   scenarioBButton.onclick=()=>{
     applyChoiceEffect(st.choiceB.applyEffect);
-    finalizeStep(i);
+    finalizeStep(stepIndex);
     scenarioModal.style.display="none";
   };
 }
@@ -305,80 +325,60 @@ function applyChoiceEffect(eff){
   if(!eff)return;
   if(eff.timeCost) applyTimeCost(eff.timeCost);
   if(eff.moneyCost) applyMoneyCost(eff.moneyCost);
-  if(eff.riskyPlus) gameState.riskyTotal+= eff.riskyPlus;
+  if(eff.riskyPlus) gameState.riskyTotal += eff.riskyPlus;
   if(eff.statChange){
-    Object.entries(eff.statChange).forEach(([stat,delta])=>{
-      applyStatChange(stat,delta);
-    });
+    for(let [stat, delta] of Object.entries(eff.statChange)){
+      applyStatChange(stat, delta);
+    }
   }
 }
 
-function finalizeStep(i){
-  if(!gameState.activeTask)return;
-  gameState.activeTask.decisionMadeForStep[i]=true;
-
-  applyTimeCost(2);
-  gameState.activeTask.currentStep++;
-  if(gameState.activeTask.currentStep>= gameState.activeTask.steps.length){
+function finalizeStep(stepIndex){
+  let t= gameState.activeTask;
+  if(!t)return;
+  t.currentStep= (t.currentStep||0)+1;
+  applyTimeCost(2); // baseline
+  updateStepsList();
+  if(t.currentStep>= t.steps.length){
+    // => CAB
     showCABModal();
-  } else {
-    updateStepsList();
   }
 }
 
-// doc skip
-function skipDocumentationPopup(){
-  scenarioModal.style.display="flex";
-  docSkipOption.style.display="block";
-
-  scenarioTitle.textContent="Dokumentation";
-  scenarioDescription.textContent="CAB vil se dok, men du kan skippe den...";
-
-  scenarioALabel.textContent="Fuld dok";
-  scenarioAText.textContent="3 tid, 10 kr, ingen ekstra fejl";
-  scenarioAButton.onclick=()=>{
-    applyTimeCost(3);
-    applyMoneyCost(10);
-    scenarioModal.style.display="none";
-    finalizeStep(gameState.activeTask.currentStep);
-  };
-
-  scenarioBLabel.textContent="Minimal dok";
-  scenarioBText.textContent="1 tid, 0 kr, +5% fejl";
-  scenarioBButton.onclick=()=>{
-    applyTimeCost(1);
-    gameState.riskyTotal+=0.05;
-    scenarioModal.style.display="none";
-    finalizeStep(gameState.activeTask.currentStep);
-  };
-
-  document.getElementById('doc-skip-btn').onclick=()=>{
-    gameState.docSkipCount++;
-    scenarioModal.style.display="none";
-    finalizeStep(gameState.activeTask.currentStep);
-  };
+function applyTimeCost(t){
+  gameState.piTime= Math.max(gameState.piTime-t,0);
+  updateScoreboard();
+  if(gameState.piTime<=0){
+    endOfPI();
+  }
+}
+function applyMoneyCost(m){
+  gameState.money= Math.max(gameState.money-m,0);
+  updateScoreboard();
+}
+function applyStatChange(stat, delta){
+  gameState[stat]= Math.min(Math.max(gameState[stat]+delta,0),150);
+  updateScoreboard();
+  showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat, stat);
 }
 
 // CAB
-const cabModalEl= document.getElementById('cab-modal');
+const cabModal= document.getElementById('cab-modal');
 const cabSummary= document.getElementById('cab-summary');
 document.getElementById('cab-ok-btn').addEventListener('click', finalizeCABResult);
 
 function showCABModal(){
-  let fail= gameState.riskyTotal + (gameState.docSkipCount*0.15);
-  fail= Math.max(0, Math.min(fail,1));
+  let fail= gameState.riskyTotal;
+  fail= Math.min(fail, 1);
   gameState.finalFailChance= fail;
-  cabModalEl.style.display="flex";
-  cabSummary.innerHTML=`
-    <strong>CAB Gennemgang</strong><br/>
-    Risikoprocent: ${(fail*100).toFixed(0)}%<br/>
-    SkipDok: ${gameState.docSkipCount} => +${(gameState.docSkipCount*15)}%<br/>
-    Samlet fejlchance: ${(fail*100).toFixed(0)}%
-  `;
+  cabModal.style.display="flex";
+  cabSummary.textContent= `
+  Samlet risiko: ${(fail*100).toFixed(0)}%
+  `.trim();
 }
 
 function finalizeCABResult(){
-  cabModalEl.style.display="none";
+  cabModal.style.display="none";
   let r=Math.random();
   if(r< gameState.finalFailChance){
     showCABResult(false);
@@ -398,11 +398,11 @@ function showCABResult(ok){
   cabResultModal.style.display="flex";
   if(ok){
     cabResultTitle.textContent="CAB: Godkendt!";
-    cabResultText.textContent="Implementering i drift ...";
+    cabResultText.textContent="Implementering i drift...";
     postCABTechnicalCheck();
   } else {
     cabResultTitle.textContent="CAB: Afvist!";
-    cabResultText.textContent="For stor risiko / manglende dok. Opgaven fejler.";
+    cabResultText.textContent="For stor risiko – Opgaven fejler.";
     failTaskCAB();
   }
 }
@@ -411,141 +411,104 @@ function failTaskCAB(){
   gameState.tasksCompleted++;
   applyStatChange("hospitalSatisfaction",-10);
   gameState.activeTask=null;
-  activeTaskHeadline.textContent="Ingen aktiv opgave";
-  activeTaskDesc.textContent="";
+  document.getElementById('active-task-headline').textContent="Ingen aktiv opgave";
+  document.getElementById('active-task-description').textContent="";
   stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
   updateScoreboard();
 }
 
-// drift
 function postCABTechnicalCheck(){
   cabResultModal.style.display="none";
   let driftFail= gameState.riskyTotal*0.5;
-  let r= Math.random();
-  if(r<driftFail){
-    showPopup("Teknisk implementering fejlede i drift!", "error",4000);
-    driftFailTask();
+  if(Math.random()< driftFail){
+    showPopup("Driftfejl! Implementering mislykkes.", "error");
+    gameState.tasksCompleted++;
+    applyStatChange("stability",-5);
+    gameState.activeTask=null;
   } else {
-    showPopup("Teknisk drift-check bestået!", "success",3000);
+    showPopup("Drift-check bestået!", "success");
     completeTaskCAB();
   }
-}
-function driftFailTask(){
-  gameState.tasksCompleted++;
-  applyStatChange("stability",-5);
-  gameState.activeTask=null;
-  activeTaskHeadline.textContent="Ingen aktiv opgave";
-  activeTaskDesc.textContent="";
+  document.getElementById('active-task-headline').textContent="Ingen aktiv opgave";
+  document.getElementById('active-task-description').textContent="";
   stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
-  updateScoreboard();
 }
+
 function completeTaskCAB(){
   gameState.tasksCompleted++;
-  if(!gameState.activeTask)return;
-  gameState.activeTask=null;
-  activeTaskHeadline.textContent="Ingen aktiv opgave";
-  activeTaskDesc.textContent="";
-  stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
+  gameState.activeTask= null;
   updateScoreboard();
 }
 
-// applyTime => if time=0 => endOfPI
-function applyTimeCost(t){
-  gameState.piTime=Math.max(gameState.piTime - t,0);
-  updateScoreboard();
-  if(gameState.piTime<=0){
-    endOfPI();
-  }
-}
-function applyMoneyCost(m){
-  gameState.money=Math.max(gameState.money - m,0);
-  updateScoreboard();
-}
-function applyStatChange(stat,delta){
-  gameState[stat]=Math.min(Math.max(gameState[stat]+delta,0),150);
-  updateScoreboard();
-  showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat, stat);
-}
-
+// End-of-PI => Inspect & Adapt
 function endOfPI(){
   if(gameState.activeTask){
-    gameState.activeTask=null;
-    activeTaskHeadline.textContent="Ingen aktiv opgave";
-    activeTaskDesc.textContent="";
+    gameState.activeTask= null;
+    document.getElementById('active-task-headline').textContent="Ingen aktiv opgave";
+    document.getElementById('active-task-description').textContent="";
     stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
   }
-  showInspectAndAdaptModal();
+  showInspectAndAdapt();
 }
 
-// I&A
-const iaModal=document.getElementById('ia-modal');
-const iaSummary=document.getElementById('ia-summary');
-const iaOkBtn=document.getElementById('ia-ok-btn');
-iaOkBtn.addEventListener('click',()=>{
-  iaModal.style.display="none";
-  nextPI();
-});
-function showInspectAndAdaptModal(){
-  let piScore= calcPIScore();
-  gameState.totalScore+= piScore;
+const iaModal= document.getElementById('ia-modal');
+const iaSummary= document.getElementById('ia-summary');
+document.getElementById('ia-ok-btn').addEventListener('click', nextPI);
 
+function showInspectAndAdapt(){
   iaModal.style.display="flex";
-  iaSummary.innerHTML=`
-    <strong>PI #${gameState.currentPI} er slut!</strong><br/>
-    Sikkerhed: ${gameState.security}<br/>
-    Stabilitet: ${gameState.stability}<br/>
-    Udvikling: ${gameState.development}<br/>
-    Hospital: ${gameState.hospitalSatisfaction}<br/>
-    Fuldførte opgaver (total): ${gameState.tasksCompleted}<br/>
-    PI Score: ${piScore.toFixed(1)}<br/>
-    Samlet Score: ${gameState.totalScore.toFixed(1)}
+  // tjek difference
+  let b= gameState.businessGoals;
+  let c= gameState.commitGoals;
+  let actual={
+    security:gameState.security,
+    stability:gameState.stability,
+    development:gameState.development,
+    hospital:gameState.hospitalSatisfaction
+  };
+  let text=`
+  <strong>PI #${gameState.currentPI} er slut!</strong><br/>
+  <em>Business Mål</em>: S=${b.security}, St=${b.stability}, Dev=${b.development}, Hosp=${b.hospital}<br/>
+  <em>Du commit</em>: S=${c.security}, St=${c.stability}, Dev=${c.development}, Hosp=${c.hospital}<br/>
+  <em>Faktisk</em>: S=${actual.security}, St=${actual.stability}, Dev=${actual.development}, Hosp=${actual.hospital}<br/>
+  Fuldførte Opgaver: ${gameState.tasksCompleted}<br/>
   `;
+  iaSummary.innerHTML= text;
 }
-function calcPIScore(){
-  let s= gameState.security;
-  let st= gameState.stability;
-  let d= gameState.development;
-  let h= gameState.hospitalSatisfaction;
-  let base=(s+st+d+h)/4; 
-  let scaled= base+(gameState.tasksCompleted/2);
-  return scaled;
-}
+
 function nextPI(){
+  iaModal.style.display="none";
   gameState.currentPI++;
   if(gameState.currentPI> gameState.maxPI){
     endGame();
   } else {
-    // optional reset risky?
+    // tøm available tasks
+    gameState.availableTasks=[];
     gameState.riskyTotal=0;
     gameState.docSkipCount=0;
     startPI();
   }
 }
 
-// endGame
 const endModal=document.getElementById('end-modal');
 const endGameSummary=document.getElementById('end-game-summary');
 document.getElementById('end-ok-btn').addEventListener('click',()=>{
   endModal.style.display="none";
 });
+
 function endGame(){
+  endModal.style.display="flex";
   let sum=`
-    <strong>Alle ${gameState.maxPI} PI'er gennemført!</strong><br/>
-    Tid: ${gameState.piTime}<br/>
-    Sikkerhed: ${gameState.security}<br/>
-    Stabilitet: ${gameState.stability}<br/>
-    Udvikling: ${gameState.development}<br/>
-    Hospital: ${gameState.hospitalSatisfaction}<br/>
-    Fuldførte opgaver: ${gameState.tasksCompleted}<br/>
-    Slutscore: ${gameState.totalScore.toFixed(1)}
+  <strong>Alle ${gameState.maxPI} PI'er gennemført</strong><br/>
+  Sikkerhed=${gameState.security}, Stabilitet=${gameState.stability}, 
+  Udvikling=${gameState.development}, Hospital=${gameState.hospitalSatisfaction}<br/>
+  Fuldførte opgaver=${gameState.tasksCompleted}
   `;
   endGameSummary.innerHTML= sum;
-  endModal.style.display="flex";
 }
 
-// popup + float text
-function showPopup(msg,type="success",duration=3000){
-  let c=document.getElementById('popup-container');
+function showPopup(msg, type="success", duration=3000){
+  let c= document.getElementById('popup-container');
   let div=document.createElement('div');
   div.classList.add('popup');
   if(type==="error") div.classList.add('error');
@@ -553,13 +516,13 @@ function showPopup(msg,type="success",duration=3000){
   div.style.animation="none";
   div.textContent= msg;
   c.appendChild(div);
-  setTimeout(()=> div.remove(),duration);
+  setTimeout(()=> div.remove(), duration);
 }
-function showFloatingText(txt,stat){
-  let fc=document.getElementById('floating-text-container');
+function showFloatingText(txt, stat){
+  let fc= document.getElementById('floating-text-container');
   let div=document.createElement('div');
   div.classList.add('floating-text');
-  div.style.left="50%"; 
+  div.style.left="50%";
   div.style.top="50%";
   if(stat==="security") div.style.color="#ff4444";
   else if(stat==="stability") div.style.color="#44ff44";
@@ -568,5 +531,5 @@ function showFloatingText(txt,stat){
   else div.style.color="#ffffff";
   div.textContent= txt;
   fc.appendChild(div);
-  setTimeout(()=> div.remove(),2000);
+  setTimeout(()=> div.remove(), 2000);
 }
