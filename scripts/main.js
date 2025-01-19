@@ -1,10 +1,13 @@
 /************************************************************
- * main.js 
- * 1) PI Start => commit Sikkerhed, Stabilitet, Udvikling
- * 2) Hospitalstilfredshed => (avg of security,stability,dev) - penalty if money <0
- * 3) PI = 90 tid
- * 4) Inspect & Adapt viser difference vs. commits
+ * main.js
+ * 
+ * 1) Hospitalets Forventning: hospitalExpectations 
+ * 2) Spillerens Commit: commitGoals
+ * 3) 90 tid
+ * 4) Større moneyCost i tasks
+ * 5) I slut => Se difference vs. hospitalExpectations og commit
  ************************************************************/
+
 let gameState = {
   security:100,
   stability:100,
@@ -12,7 +15,7 @@ let gameState = {
   hospitalSatisfaction:100,
 
   money:1000,
-  piTime:90,       // 1) 90 tid i stedet for 30
+  piTime:90,  
   currentPI:1,
   maxPI:2,
 
@@ -25,19 +28,15 @@ let gameState = {
   riskyTotal:0,
   finalFailChance:0,
 
-  // commit-values & diffs
-  commitGoals:{ security:0, stability:0, development:0 },
+  hospitalExpectations:{}, // e.g. {security:110, stability:108, development:115}
+  commitGoals:{},
 
   introModalOpen:true,
-  tutorialStep:0,
-  tutorialActive:false
+  tutorialStep:0
 };
 
-// scoreboard
 function updateScoreboard(){
-  // 2) Beregn hospitalSatisfaction:
-  calcHospitalSatisfaction();
-
+  calcHospitalSatisfaction(); // dynamic
   document.getElementById('time-left').textContent= gameState.piTime;
   document.getElementById('money-left').textContent= gameState.money;
   document.getElementById('tasks-completed').textContent= gameState.tasksCompleted;
@@ -47,28 +46,26 @@ function updateScoreboard(){
   document.getElementById('hospital-satisfaction').textContent= Math.round(gameState.hospitalSatisfaction);
 }
 
-// Hospital-tilfredshed = average(security,stability,development) - penalty if money<0
 function calcHospitalSatisfaction(){
-  let avg= (gameState.security+gameState.stability+gameState.development)/3;
+  let avg= (gameState.security+ gameState.stability+ gameState.development)/3;
   let penalty=0;
   if(gameState.money<0){
-    // for hver 100 kr i minus => -2
     penalty= Math.floor(Math.abs(gameState.money)/100)*2;
   }
   let newVal= avg - penalty;
-  gameState.hospitalSatisfaction= Math.max(0, Math.min(150, newVal));
+  gameState.hospitalSatisfaction= Math.max(0, Math.min(newVal,150));
 }
 
 /************************************************************
- * INTRO 
+ * Intro
  ************************************************************/
-document.getElementById('intro-ok-btn').addEventListener('click',()=>{
+document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
   document.getElementById('intro-modal').style.display="none";
   openTutorialModal();
 });
 
 /************************************************************
- * TUTORIAL 
+ * Tutorial
  ************************************************************/
 const tutorialModal= document.getElementById('tutorial-modal');
 const tutorialTitleEl= document.getElementById('tutorial-title');
@@ -78,19 +75,19 @@ const tutorialNextBtn= document.getElementById('tutorial-next-btn');
 let tutorialSteps=[
   {
     title:"Din rolle",
-    text:"Du forvalter LIMS-IT i en travl region. Sikkerhed, stabilitet og udvikling - alt skal balanceres, og hospitalet forlanger resultater!"
+    text:"Du forvalter kritiske LIMS-løsninger. Hospitalet har sine forventninger, du har dit eget commit!"
   },
   {
-    title:"Commit",
-    text:"Ved start af hver PI, angiv hvor meget du vil løfte Sikkerhed, Stabilitet og Udvikling. Til sidst bedømmes du på, om du når dine commits."
+    title:"Hospitalets Forventning",
+    text:"Ved hver PI-start ser du, hvad hospitalet ønsker at øge (Security, Stability, Dev)."
   },
   {
-    title:"CAB & driftfejl",
-    text:"Hver opgave slutter med CAB-tjek for risiko, og du kan stadig faile i drift. Vær forsigtig med hurtige valg!"
+    title:"Dit Commit",
+    text:"Du angiver, hvor meget du TROR, du kan løfte disse stats. Senere sammenligner vi."
   },
   {
-    title:"PI = 90 tid",
-    text:"Din iteration varer 90 tid. Løs opgaverne, se 'Mulige Opgaver.' Held og lykke!"
+    title:"Opgaver & Penge",
+    text:"Opgaver kan koste store beløb. Går du i minus, falder Hospitalets tilfredshed!"
   }
 ];
 let tutorialIdx=0;
@@ -99,7 +96,7 @@ function openTutorialModal(){
   showTutorialContent();
 }
 function showTutorialContent(){
-  if(tutorialIdx>= tutorialSteps.length){
+  if(tutorialIdx>=tutorialSteps.length){
     tutorialModal.style.display="none";
     initGame();
     return;
@@ -113,12 +110,12 @@ tutorialNextBtn.addEventListener('click',()=>{
 });
 
 /************************************************************
- * INIT GAME 
+ * initGame
  ************************************************************/
 function initGame(){
   updateScoreboard();
-  // Saml tasks
-  window.backlog=[
+  // backlog
+  window.backlog= [
     ...window.cybersikkerhedTasks,
     ...window.hospitalTasks,
     ...window.infrastrukturTasks
@@ -127,34 +124,44 @@ function initGame(){
 }
 
 /************************************************************
- * startPI => 1) Pi Start modal (commit)
+ * startPI => hospitalExpectations => player commits
  ************************************************************/
 function startPI(){
-  gameState.piTime=90; // 3) 90 tid
+  gameState.piTime=90;
   updateScoreboard();
 
-  // vis piStart-modal
-  document.getElementById('pi-intro-text').textContent=
-    `PI #${gameState.currentPI}: Hvor meget vil du løfte Sikkerhed, Stabilitet og Udvikling 
-     i løbet af denne iteration? Du har 90 tidsenheder.`;
+  // generer hospitalExpectations
+  // fx 105..115
+  gameState.hospitalExpectations={
+    security: 100 + Math.floor(Math.random()*10+5),
+    stability:100 + Math.floor(Math.random()*10+5),
+    development:100+ Math.floor(Math.random()*10+5)
+  };
+
+  // vis i pi-start-modal
+  const he= gameState.hospitalExpectations;
+  document.getElementById('hospital-expectations-text').textContent=
+    `Hospitalet forventer, at du mindst når:
+     Sikkerhed = ${he.security}, 
+     Stabilitet = ${he.stability}, 
+     Udvikling = ${he.development}`;
+
   document.getElementById('pi-start-modal').style.display="flex";
 }
 
 document.getElementById('pi-start-ok-btn').addEventListener('click', ()=>{
-  let cSec = parseInt(document.getElementById('commit-security').value,10)||0;
-  let cStab= parseInt(document.getElementById('commit-stability').value,10)||0;
-  let cDev = parseInt(document.getElementById('commit-development').value,10)||0;
-  gameState.commitGoals={
-    security:cSec, 
-    stability:cStab, 
-    development:cDev
-  };
+  let cSec= parseInt(document.getElementById('commit-security').value,10)||0;
+  let cStab=parseInt(document.getElementById('commit-stability').value,10)||0;
+  let cDev= parseInt(document.getElementById('commit-development').value,10)||0;
+  gameState.commitGoals={ security:cSec, stability:cStab, development:cDev };
+
   document.getElementById('pi-start-modal').style.display="none";
+
   // generer 3 opgaver
   for(let i=0; i<3; i++){
     generateTask();
   }
-  // løbende generation
+  // løbende generering
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
@@ -167,11 +174,12 @@ document.getElementById('pi-start-ok-btn').addEventListener('click', ()=>{
  ************************************************************/
 function generateTask(){
   if(gameState.availableTasks.length>=10)return;
-  let notUsed= window.backlog.filter(o=> !gameState.usedTasks.has(o.title));
+  let notUsed= backlog.filter(o=> !gameState.usedTasks.has(o.title));
   if(!notUsed.length)return;
 
   let chosen= notUsed[Math.floor(Math.random()* notUsed.length)];
   gameState.usedTasks.add(chosen.title);
+
   let newTask= JSON.parse(JSON.stringify(chosen));
   newTask.currentStep=0;
   newTask.decisionMadeForStep={};
@@ -189,7 +197,7 @@ function renderTasks(){
   gameState.availableTasks.forEach(t=>{
     let li=document.createElement('li');
     li.style.border="1px solid #444";
-    li.innerHTML=`
+    li.innerHTML= `
       <strong>${t.title}</strong><br/>
       ${t.shortDesc||""}
     `;
@@ -206,7 +214,7 @@ function renderTasks(){
 }
 
 /************************************************************
- * assignTask => aktiv 
+ * assignTask => activeTask
  ************************************************************/
 function assignTask(taskTitle){
   if(gameState.activeTask){
@@ -253,7 +261,7 @@ function capitalizeLocation(loc){
 }
 
 /************************************************************
- * location-click => scenario
+ * location click => scenario
  ************************************************************/
 const locationMap={
   "hospital":document.getElementById('hospital'),
@@ -292,7 +300,7 @@ function handleLocationClick(locName){
 }
 
 /************************************************************
- * scenarioModal
+ * scenario
  ************************************************************/
 const scenarioModal= document.getElementById('scenario-modal');
 const scenarioTitle= document.getElementById('scenario-title');
@@ -307,7 +315,7 @@ const scenarioBButton= document.getElementById('scenario-b-btn');
 function showScenarioModal(stepIndex){
   scenarioModal.style.display="flex";
   let st= gameState.activeTask.steps[stepIndex];
-  scenarioTitle.textContent=`Trin ${stepIndex+1}: ${capitalizeLocation(st.location)}`;
+  scenarioTitle.textContent= `Trin ${stepIndex+1}: ${capitalizeLocation(st.location)}`;
   scenarioDescription.textContent= st.stepDescription||"";
 
   scenarioALabel.textContent= st.choiceA.label;
@@ -333,49 +341,44 @@ function applyChoiceEffect(eff){
   if(eff.moneyCost) applyMoneyCost(eff.moneyCost);
   if(eff.riskyPlus) gameState.riskyTotal+= eff.riskyPlus;
   if(eff.statChange){
-    Object.entries(eff.statChange).forEach(([stat,delta])=>{
-      applyStatChange(stat,delta);
-    });
+    for(let [stat, delta] of Object.entries(eff.statChange)){
+      applyStatChange(stat, delta);
+    }
   }
 }
-
-/************************************************************
- * finalizeStep => CAB 
- ************************************************************/
 function finalizeStep(stepIndex){
   if(!gameState.activeTask)return;
   let t= gameState.activeTask;
   t.currentStep= (t.currentStep||0)+1;
   applyTimeCost(2);
   updateStepsList();
-
   if(t.currentStep>= t.steps.length){
     showCABModal();
   }
 }
 
 /************************************************************
- * TIME => maybe endOfPI
+ * time => endPI
  ************************************************************/
 function applyTimeCost(t){
-  gameState.piTime=Math.max(gameState.piTime-t,0);
+  gameState.piTime= Math.max(gameState.piTime-t,0);
   updateScoreboard();
   if(gameState.piTime<=0){
     endPI();
   }
 }
 function applyMoneyCost(m){
-  gameState.money=Math.max(gameState.money-m, -999999); // man kan gå ret langt i minus
+  gameState.money= Math.max(gameState.money-m, -999999); 
   updateScoreboard();
 }
-function applyStatChange(stat, delta){
+function applyStatChange(stat,delta){
   gameState[stat]= Math.min(Math.max(gameState[stat]+delta,0),150);
   updateScoreboard();
   showFloatingText((delta>=0?`+${delta}`:`${delta}`)+" "+stat, stat);
 }
 
 /************************************************************
- * CAB + drift => opgave summary
+ * CAB => drift => task summary
  ************************************************************/
 const cabModal= document.getElementById('cab-modal');
 const cabSummary= document.getElementById('cab-summary');
@@ -388,7 +391,6 @@ function showCABModal(){
   cabModal.style.display="flex";
   cabSummary.textContent= `CAB ser en risiko på ${(fail*100).toFixed(0)}%`;
 }
-
 const cabResultModal= document.getElementById('cab-result-modal');
 const cabResultTitle= document.getElementById('cab-result-title');
 const cabResultText= document.getElementById('cab-result-text');
@@ -396,6 +398,7 @@ document.getElementById('cab-result-ok-btn').addEventListener('click',()=>{
   cabResultModal.style.display="none";
   postCABTechnicalCheck();
 });
+
 function finalizeCABResult(){
   cabModal.style.display="none";
   let r=Math.random();
@@ -405,45 +408,41 @@ function finalizeCABResult(){
     showCABResult(true);
   }
 }
-
 function showCABResult(ok){
   cabResultModal.style.display="flex";
   if(ok){
     cabResultTitle.textContent="CAB: Godkendt!";
-    cabResultText.textContent="Implementeringen kan rulles ud. Men vær obs på driftfejl!";
+    cabResultText.textContent="Godkendt – men driftfejl kan stadig ske.";
   } else {
     cabResultTitle.textContent="CAB: Afvist!";
-    cabResultText.textContent="For stor risiko. Opgaven fejler.";
+    cabResultText.textContent="For stor risiko – Opgaven fejler.";
     failTaskCAB();
   }
 }
-
 function failTaskCAB(){
   gameState.tasksCompleted++;
   applyStatChange("hospitalSatisfaction",-10);
   endActiveTask();
 }
-
 function postCABTechnicalCheck(){
   let driftFail= gameState.riskyTotal*0.5;
   let r=Math.random();
-  if(r<driftFail){
-    showPopup("Teknisk driftfejl i implementering!", "error");
+  if(r< driftFail){
+    showPopup("Teknisk driftfejl!", "error");
     gameState.tasksCompleted++;
     applyStatChange("stability",-5);
     endActiveTask();
   } else {
-    showPopup("Drift-check bestået, opgaven er en succes!", "success");
+    showPopup("Drift-check bestået!", "success");
     completeTaskCAB();
   }
 }
-
 function completeTaskCAB(){
   gameState.tasksCompleted++;
   endActiveTask();
 }
 
-// after finishing an opgave => opgave summary popup
+// after finishing => summary
 function endActiveTask(){
   if(!gameState.activeTask)return;
   gameState.activeTask=null;
@@ -453,32 +452,31 @@ function endActiveTask(){
   updateScoreboard();
   showTaskSummaryModal();
 }
-
 const taskSummaryModal= document.getElementById('task-summary-modal');
 const taskSummaryText= document.getElementById('task-summary-text');
 const taskSummaryOkBtn= document.getElementById('task-summary-ok-btn');
-
 taskSummaryOkBtn.addEventListener('click',()=>{
   taskSummaryModal.style.display="none";
 });
-
 function showTaskSummaryModal(){
   let s= gameState.security;
   let st= gameState.stability;
   let d= gameState.development;
-  let hosp= Math.round(gameState.hospitalSatisfaction);
+  let h= Math.round(gameState.hospitalSatisfaction);
+  let m= gameState.money;
   taskSummaryText.innerHTML=`
-    <strong>Opgaven er afsluttet!</strong><br/>
+    <strong>Opgave slut!</strong><br/>
     Sikkerhed: ${s}<br/>
     Stabilitet: ${st}<br/>
     Udvikling: ${d}<br/>
-    Hospital: ${hosp}
+    Hospital: ${h}%<br/>
+    Penge: ${m}
   `;
   taskSummaryModal.style.display="flex";
 }
 
 /************************************************************
- * End-of-PI => Inspect & Adapt => se commit vs. actual
+ * endPI => Inspect & Adapt => Se difference ift. hospitalExpectations og commit
  ************************************************************/
 const endModal= document.getElementById('end-modal');
 const endGameSummary= document.getElementById('end-game-summary');
@@ -495,47 +493,56 @@ function endPI(){
     stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
   }
   endModal.style.display="flex";
+  let he= gameState.hospitalExpectations;
+  let c= gameState.commitGoals;
+  let sec= gameState.security;
+  let stab= gameState.stability;
+  let dev= gameState.development;
+
+  // difference vs. hospital
+  let hSecDiff= sec - he.security;
+  let hStabDiff= stab- he.stability;
+  let hDevDiff= dev - he.development;
 
   // difference vs. commit
-  let c= gameState.commitGoals;
-  let secDiff= gameState.security - (100);
-  let stabDiff= gameState.stability - (100);
-  let devDiff= gameState.development - (100);
-
-  // hvad var committet? 
-  // cSec => 110 => dvs du vil +10 fra 100
-  let cSecDiff= secDiff - (c.security-100);
-  let cStabDiff= stabDiff - (c.stability-100);
-  let cDevDiff= devDiff - (c.development-100);
+  let cSecDiff= sec - c.security;
+  let cStabDiff= stab- c.stability;
+  let cDevDiff= dev - c.development;
 
   let sum=`
-    <strong>PI #${gameState.currentPI} Inspect & Adapt</strong><br/>
-    Du har brugt ${90 - gameState.piTime} tid.<br/>
-    Opgaver fuldført: ${gameState.tasksCompleted}<br/><br/>
+    <strong>PI #${gameState.currentPI} er slut!</strong><br/>
+    Hospitalet forventede: 
+      S=${he.security}, St=${he.stability}, Dev=${he.development}<br/>
+    Du commit: 
+      S=${c.security}, St=${c.stability}, Dev=${c.development}<br/>
+    Faktisk:
+      S=${sec}, St=${stab}, Dev=${dev}, Hosp=${Math.round(gameState.hospitalSatisfaction)}<br/><br/>
 
-    <em>Dine commits var:</em><br/>
-    - Sikkerhed: +${c.security-100} (fra 100 til ${c.security})<br/>
-    - Stabilitet: +${c.stability-100}<br/>
-    - Udvikling: +${c.development-100}<br/><br/>
+    <em>Forskel ift. Hospitalets forventning:</em><br/>
+    - Sikkerhed: ${hSecDiff>=0?"+":""}${hSecDiff}<br/>
+    - Stabilitet: ${hStabDiff>=0?"+":""}${hStabDiff}<br/>
+    - Udvikling: ${hDevDiff>=0?"+":""}${hDevDiff}<br/><br/>
 
-    <em>Faktisk nået:</em><br/>
-    - Sikkerhed: ${gameState.security} (difference: ${cSecDiff>=0?"+":""}${cSecDiff.toFixed(0)} fra commit)<br/>
-    - Stabilitet: ${gameState.stability} (diff: ${cStabDiff>=0?"+":""}${cStabDiff.toFixed(0)})<br/>
-    - Udvikling: ${gameState.development} (diff: ${cDevDiff>=0?"+":""}${cDevDiff.toFixed(0)})<br/>
-    - Hospital: ${Math.round(gameState.hospitalSatisfaction)}<br/>
+    <em>Forskel ift. dit Commit:</em><br/>
+    - Sikkerhed: ${cSecDiff>=0?"+":""}${cSecDiff}<br/>
+    - Stabilitet: ${cStabDiff>=0?"+":""}${cStabDiff}<br/>
+    - Udvikling: ${cDevDiff>=0?"+":""}${cDevDiff}<br/>
+    Fuldførte opgaver: ${gameState.tasksCompleted}
   `;
-  endGameSummary.innerHTML=sum;
+  endGameSummary.innerHTML= sum;
 }
 
+/************************************************************
+ * nextPI => 2. iteration or end
+ ************************************************************/
 function nextPI(){
   gameState.currentPI++;
   if(gameState.currentPI> gameState.maxPI){
-    showPopup("Alle PI'er gennemført!", "info");
+    showPopup("Alle PI'er er gennemført!", "info");
   } else {
-    // Nulstil
+    gameState.availableTasks=[];
     gameState.riskyTotal=0;
     gameState.docSkipCount=0;
-    gameState.availableTasks=[];
     startPI();
   }
 }
@@ -565,7 +572,7 @@ function showFloatingText(txt, stat){
   else if(stat==="development") div.style.color="#4444ff";
   else if(stat==="hospitalSatisfaction") div.style.color="#ffc107";
   else div.style.color="#ffffff";
-  div.textContent=txt;
+  div.textContent= txt;
   fc.appendChild(div);
   setTimeout(()=> div.remove(),2000);
 }
