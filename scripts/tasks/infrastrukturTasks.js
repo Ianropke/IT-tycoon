@@ -1,18 +1,17 @@
-// scripts/infrastrukturTasks.js
-
 window.infrastrukturTasks = [
   {
     title:"Serverpark Modernisering",
-    shortDesc:"Gamle servere => Ustabil drift",
+    shortDesc:"Gamle servere => Ustabil drift, dyr udskiftning",
     steps:[
       {
         location:"infrastruktur",
         stepDescription:"Udskift servere med nye?",
         choiceA:{
           label:"Topmoderne",
-          text:"+2 tid, +80 kr => +2 stability, +1 dev",
+          text:"+2 tid, -200 kr => +2 stability, +1 dev",
           applyEffect:{
-            timeCost:2, moneyCost:80,
+            timeCost:2,
+            moneyCost:200,
             statChange:{stability:2, development:1}
           }
         },
@@ -46,12 +45,13 @@ window.infrastrukturTasks = [
       },
       {
         location:"it-jura",
-        stepDescription:"Licensaftaler til nye server OS?",
+        stepDescription:"Licensaftaler til nyt OS?",
         choiceA:{
           label:"Grundig check",
-          text:"+2 tid => +1 security, +1 stability",
+          text:"+2 tid, -50 kr => +1 security, +1 stability",
           applyEffect:{
             timeCost:2,
+            moneyCost:50,
             statChange:{security:1, stability:1}
           }
         },
@@ -71,7 +71,7 @@ window.infrastrukturTasks = [
           label:"Fuld dok",
           text:"+2 tid => +1 stability",
           applyEffect:{
-            timeCost:2, 
+            timeCost:2,
             statChange:{stability:1}
           }
         },
@@ -88,16 +88,17 @@ window.infrastrukturTasks = [
   },
   {
     title:"NetværksOpgradering (10 GbE)",
-    shortDesc:"Sløvt net => Upgrader til 10Gbit",
+    shortDesc:"Sløvt net => Giv 10 Gbit, koster dyrt",
     steps:[
       {
         location:"infrastruktur",
         stepDescription:"Installér netudstyr",
         choiceA:{
           label:"Fuldt switche & kabler",
-          text:"+2 tid => +3 stability, +1 dev",
+          text:"+2 tid, -150 kr => +3 stability, +1 dev",
           applyEffect:{
             timeCost:2,
+            moneyCost:150,
             statChange:{stability:3, development:1}
           }
         },
@@ -135,9 +136,10 @@ window.infrastrukturTasks = [
         stepDescription:"Ny net-løsning, licenser?",
         choiceA:{
           label:"Forhandle alt",
-          text:"+2 tid => +1 security, +1 stability",
+          text:"+2 tid, -40 kr => +1 security, +1 stability",
           applyEffect:{
             timeCost:2,
+            moneyCost:40,
             statChange:{security:1, stability:1}
           }
         },
@@ -174,16 +176,17 @@ window.infrastrukturTasks = [
   },
   {
     title:"Energioptimering i Datacenter",
-    shortDesc:"Bedre køling og PSU",
+    shortDesc:"Bedre køling/PSU => Også store udgifter",
     steps:[
       {
         location:"infrastruktur",
         stepDescription:"Vælg energitiltag",
         choiceA:{
           label:"Detaljeret plan",
-          text:"+3 tid => +2 stability, +1 security",
+          text:"+3 tid, -100 kr => +2 stability, +1 security",
           applyEffect:{
             timeCost:3,
+            moneyCost:100,
             statChange:{stability:2, security:1}
           }
         },
@@ -221,9 +224,10 @@ window.infrastrukturTasks = [
         stepDescription:"Tjek hardwarekontrakt",
         choiceA:{
           label:"Firmware-check",
-          text:"+2 tid => +1 security",
+          text:"+2 tid, -60 kr => +1 security",
           applyEffect:{
             timeCost:2,
+            moneyCost:60,
             statChange:{security:1}
           }
         },
