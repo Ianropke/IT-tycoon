@@ -4,18 +4,15 @@ window.hospitalTasks = [
   {
     category:"hospital",
     title:"Biokemi Lab-automatisering",
-    shortDesc:"Robotter og auto-dispensere i LIMS",
-    logicLong:`Biokemi-lab skriger på automatisering for 
-    blodprøve-analyser. De vil have robotter
-    integreret i LIMS. Er du klar til at 
-    bringe systemet til næste niveau?`,
+    shortDesc:"Robotter og auto-dispensere",
+    logicLong:"Personalet er trætte af manuelt pipetteri. Indfør lab-automation!",
     steps:[
       {
         location:"hospital",
-        stepDescription:"Laboratoriets chef siger: “Skal vi planlægge i dybden eller bare køre basalt flow?”",
+        stepDescription:"Lav en detaljeret plan eller basal auto-flow?",
         choiceA:{
           label:"Detaljeret plan",
-          text:"+2 tid => +2 Development, +1 Hospital",
+          text:"+2 tid => +2 dev, +1 hospital",
           applyEffect:{
             timeCost:2,
             statChange:{development:2, hospitalSatisfaction:1}
@@ -23,7 +20,7 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Basal auto-flow",
-          text:"+5% manuelle loops => +1 Stability (færre radikale ændr.).",
+          text:"+5% loops => +1 stability",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{stability:1}
@@ -32,10 +29,10 @@ window.hospitalTasks = [
       },
       {
         location:"infrastruktur",
-        stepDescription:"Du skal koble robotter fysisk på netværket. Gør du en fuld integration eller en hurtig hack?",
+        stepDescription:"Fuld integration eller hurtig opsætning?",
         choiceA:{
           label:"Fuld integration",
-          text:"+2 tid => +2 Stability, +1 Security",
+          text:"+2 tid => +2 stability, +1 security",
           applyEffect:{
             timeCost:2,
             statChange:{stability:2, security:1}
@@ -43,7 +40,7 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Hurtig opsætning",
-          text:"+8% konflikt => +2 Development (du har tid).",
+          text:"+8% konflikt => +2 dev",
           applyEffect:{
             riskyPlus:0.08,
             statChange:{development:2}
@@ -52,10 +49,10 @@ window.hospitalTasks = [
       },
       {
         location:"cybersikkerhed",
-        stepDescription:"Robotter skal have autoriseret dataflow. Vil du kryptere link eller basal sikring?",
+        stepDescription:"Skal dataflow krypteres?",
         choiceA:{
-          label:"Krypteret link",
-          text:"+2 tid => +2 Security, +1 Stability",
+          label:"Krypter link",
+          text:"+2 tid => +2 security, +1 stability",
           applyEffect:{
             timeCost:2,
             statChange:{security:2, stability:1}
@@ -63,7 +60,7 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Basal sikring",
-          text:"+5% brudfare => +2 Development",
+          text:"+5% databrud => +2 dev",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{development:2}
@@ -72,10 +69,10 @@ window.hospitalTasks = [
       },
       {
         location:"dokumentation",
-        stepDescription:"Du skal fremlægge en robot-rapport for CAB. Fyldig eller minimal?",
+        stepDescription:"Lab-auto-rapport?",
         choiceA:{
-          label:"Dyb dok",
-          text:"+2 tid => +1 Security, +1 Stability",
+          label:"Fyldig dok",
+          text:"+2 tid => +1 security, +1 stability",
           applyEffect:{
             timeCost:2,
             statChange:{security:1, stability:1}
@@ -83,7 +80,7 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Kort notits",
-          text:"+5% CAB-skepsis => +1 Development",
+          text:"+5% skepsis => +1 dev",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{development:1}
@@ -95,19 +92,15 @@ window.hospitalTasks = [
   {
     category:"hospital",
     title:"Patologi Billedanalyse-Plugin",
-    shortDesc:"AI-baseret billedgranskning for patologi.",
-    logicLong:`Patologiafdelingen vil have AI, 
-    der scanner vævsprøver for unormale celler. 
-    Leverandøren er klar, men hospitalet frygter 
-    fejlalarmer. Jura skal tjekke data. 
-    Tør du kaste dig ud i stor-løsning?`,
+    shortDesc:"AI til scanning af vævsprøver",
+    logicLong:"Patologiafdelingen vil have AI til at spotte abnorme celler.",
     steps:[
       {
         location:"hospital",
-        stepDescription:"Overlægen i patologi vil have en topmoderne AI. Skal du lave en detaljeret kravspec?",
+        stepDescription:"Definér AI-krav i detaljer eller minimal liste?",
         choiceA:{
-          label:"Detaljeret AI-krav",
-          text:"+2 tid => +2 Development, +1 Hospital",
+          label:"Detaljeret",
+          text:"+2 tid => +2 dev, +1 hospital",
           applyEffect:{
             timeCost:2,
             statChange:{development:2, hospitalSatisfaction:1}
@@ -115,7 +108,7 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Minimal liste",
-          text:"+5% misforståelser => +2 Stability (færre nye ting).",
+          text:"+5% fejl => +2 stability (færre ændringer).",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{stability:2}
@@ -123,11 +116,11 @@ window.hospitalTasks = [
         }
       },
       {
-        location:"leverandør",
-        stepDescription:"Leverandøren kan teste pluginnet grundigt eller rulle en basisudgave ud.",
+        location:"leverandor",
+        stepDescription:"Udvikle plugin – omfattende test eller basis-plugin?",
         choiceA:{
           label:"Omfattende test",
-          text:"+3 tid => +2 Security, +1 Development",
+          text:"+3 tid => +2 security, +1 dev",
           applyEffect:{
             timeCost:3,
             statChange:{security:2, development:1}
@@ -135,7 +128,7 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Basis-plugin",
-          text:"+8% fejl i analyser => +2 Development",
+          text:"+8% fejl i analyser => +2 dev",
           applyEffect:{
             riskyPlus:0.08,
             statChange:{development:2}
@@ -144,30 +137,30 @@ window.hospitalTasks = [
       },
       {
         location:"it-jura",
-        stepDescription:"Databehandleraftale til AI? Grundig eller genbrug?",
+        stepDescription:"Databehandleraftale?",
         choiceA:{
           label:"Dyb jura-check",
-          text:"+2 tid => +2 Security, +1 Stability",
+          text:"+2 tid => +1 security, +1 stability",
           applyEffect:{
             timeCost:2,
-            statChange:{security:2, stability:1}
+            statChange:{security:1, stability:1}
           }
         },
         choiceB:{
           label:"Genbrug gammel aftale",
-          text:"+5% hul i nye datatyper => +2 Development",
+          text:"+5% hul => +1 dev",
           applyEffect:{
             riskyPlus:0.05,
-            statChange:{development:2}
+            statChange:{development:1}
           }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"Plugin-beskrivelse til CAB.",
+        stepDescription:"Plugin-beskrivelse?",
         choiceA:{
           label:"Grundig dok",
-          text:"+2 tid => +1 Security, +1 Stability",
+          text:"+2 tid => +1 security, +1 stability",
           applyEffect:{
             timeCost:2,
             statChange:{security:1, stability:1}
@@ -175,7 +168,7 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Minimal notits",
-          text:"+5% CAB-skepsis => +2 Development",
+          text:"+5% skepsis => +2 dev",
           applyEffect:{
             riskyPlus:0.05,
             statChange:{development:2}
@@ -184,6 +177,92 @@ window.hospitalTasks = [
       }
     ]
   },
-
-  // ... 8 more hospital tasks similarly updated ...
+  {
+    category:"hospital",
+    title:"MobilApp til Lab-gange",
+    shortDesc:"Tablet-ordre til analyser",
+    logicLong:"Hospitalet vil bestille blodprøver via en app. Er du klar til at udvikle?",
+    steps:[
+      {
+        location:"hospital",
+        stepDescription:"Definér store krav eller basalt flow?",
+        choiceA:{
+          label:"Omfattende liste",
+          text:"+2 tid => +2 dev, +1 hospital",
+          applyEffect:{
+            timeCost:2,
+            statChange:{development:2, hospitalSatisfaction:1}
+          }
+        },
+        choiceB:{
+          label:"Basalt flow",
+          text:"+5% savnede features => +1 stability",
+          applyEffect:{
+            riskyPlus:0.05,
+            statChange:{stability:1}
+          }
+        }
+      },
+      {
+        location:"leverandor",
+        stepDescription:"Kod app grundigt eller quick fix?",
+        choiceA:{
+          label:"Dedikeret mobilapp",
+          text:"+3 tid => +2 dev, +1 security",
+          applyEffect:{
+            timeCost:3,
+            statChange:{development:2, security:1}
+          }
+        },
+        choiceB:{
+          label:"Simpel webapp",
+          text:"+8% wifi-problem => +2 dev",
+          applyEffect:{
+            riskyPlus:0.08,
+            statChange:{development:2}
+          }
+        }
+      },
+      {
+        location:"cybersikkerhed",
+        stepDescription:"Skal devices sikres med MDM eller basal?",
+        choiceA:{
+          label:"MDM-løsning",
+          text:"+2 tid => +2 security, +1 stability",
+          applyEffect:{
+            timeCost:2,
+            statChange:{security:2, stability:1}
+          }
+        },
+        choiceB:{
+          label:"Basal sikring",
+          text:"+10% data-læk => +2 dev",
+          applyEffect:{
+            riskyPlus:0.1,
+            statChange:{development:2}
+          }
+        }
+      },
+      {
+        location:"dokumentation",
+        stepDescription:"Mobil-app-rapport?",
+        choiceA:{
+          label:"Fyldig dok",
+          text:"+2 tid => +1 security, +1 stability",
+          applyEffect:{
+            timeCost:2,
+            statChange:{security:1, stability:1}
+          }
+        },
+        choiceB:{
+          label:"Minimal notits",
+          text:"+5% skepsis => +2 dev",
+          applyEffect:{
+            riskyPlus:0.05,
+            statChange:{development:2}
+          }
+        }
+      }
+    ]
+  }
 ];
