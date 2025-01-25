@@ -12,10 +12,10 @@ let gameState = {
   development:100,
   hospitalSatisfaction:100,
 
-  money:2000,     // Start med 2000 kr
+  money:2000,     
   piTime:90,
   currentPI:1,
-  maxPI:2,        // kør fx 2 PI'er (kan ændres)
+  maxPI:2,        
 
   tasksCompleted:0,
   activeTask:null,
@@ -112,7 +112,6 @@ tutorialNextBtn.addEventListener('click',()=>{
 // Start spil
 function initGame(){
   updateScoreboard();
-  // synergy init
   synergyFlags["lackInfra"]=false;
 
   // backlog => tasks
@@ -131,6 +130,26 @@ function initGame(){
   },10000);
 }
 
+function updateScoreboard(){
+  calcHospitalSatisfaction();
+  document.getElementById('time-left').textContent  = gameState.piTime;
+  document.getElementById('money-left').textContent = gameState.money;
+  document.getElementById('tasks-completed').textContent= gameState.tasksCompleted;
+  document.getElementById('security-value').textContent= gameState.security;
+  document.getElementById('stability-value').textContent= gameState.stability;
+  document.getElementById('development-value').textContent= gameState.development;
+  document.getElementById('hospital-satisfaction').textContent= Math.round(gameState.hospitalSatisfaction);
+}
+
+function calcHospitalSatisfaction(){
+  let avg= (gameState.security + gameState.stability + gameState.development)/3;
+  let penalty=0;
+  if(gameState.money<0){
+    penalty= Math.floor(Math.abs(gameState.money)/100)*2;
+  }
+  gameState.hospitalSatisfaction= Math.max(0, Math.min(avg-penalty,150));
+}
+
 function startPI(){
   gameState.piTime=90;
   gameState.overworkUsed=false;
@@ -142,10 +161,9 @@ function startPI(){
     development:100+ Math.floor(Math.random()*10+5)
   };
   let he= gameState.hospitalExpectations;
+  document.getElementById('pi-start-modal').style.display="flex";
   document.getElementById('hospital-expectations-text').textContent=
    `Hospitalets krav: S≥${he.security}, St≥${he.stability}, Dev≥${he.development}`;
-
-  document.getElementById('pi-start-modal').style.display="flex";
 }
 
 document.getElementById('pi-start-ok-btn').addEventListener('click',()=>{
@@ -171,7 +189,7 @@ function generateTask(){
 
   let newTask= JSON.parse(JSON.stringify(chosen));
   newTask.currentStep=0;
-  newTask.preRiskReduction=0; // forundersøg-lowering
+  newTask.preRiskReduction=0; 
   gameState.availableTasks.push(newTask);
   renderTasks();
 }
@@ -287,7 +305,7 @@ function checkOverworkOrEndPI(){
   }
 }
 
-// handle scenario
+// scenario
 const scenarioModal= document.getElementById('scenario-modal');
 const scenarioTitle= document.getElementById('scenario-title');
 const scenarioFlavorText= document.getElementById('scenario-flavor-text');
@@ -365,6 +383,7 @@ function applyChoiceEffect(eff){
     }
   }
 }
+
 function applyTimeCost(t){
   gameState.piTime= Math.max(gameState.piTime - t, 0);
   updateScoreboard();
@@ -513,15 +532,6 @@ function endPI(){
   if(gameState.activeTask) endActiveTask();
   endModal.style.display="flex";
 
-  let he=
-
-**Fortsat** – (koden for `endPI()`, `nextPI()` og `showFloatingText()`)
-
-```js
-function endPI(){
-  if(gameState.activeTask) endActiveTask();
-  endModal.style.display="flex";
-
   let he= gameState.hospitalExpectations;
   let c= gameState.commitGoals;
   let sec= gameState.security;
@@ -538,7 +548,6 @@ function endPI(){
   let cStabDiff= stab- c.stability;
   let cDevDiff= dev- c.development;
 
-  // Tekst
   let partial= (hSecDiff>=0 && hStabDiff>=0 && hDevDiff>=0)
     ? "Du opfyldte hospitalets krav på alle stats! Flot!"
     : "Du nåede ikke helt hospitalets krav på alle stats...";
@@ -546,7 +555,6 @@ function endPI(){
     ? "Du overgik endda dine egne commits. Imponerende!"
     : "Dine commits var højere end dit resultat på mindst én stat.";
 
-  // Tabel-lignende opsætning
   let tableHTML=`
     <p>${partial}<br/>${commitComment}</p>
     <table style="width:100%; margin-top:8px;">
@@ -581,12 +589,10 @@ function nextPI(){
   if(gameState.currentPI> gameState.maxPI){
     showPopup("Alle PI'er er afsluttet! Godt arbejde!", "info");
   } else {
-    // Reset til næste PI
     gameState.availableTasks=[];
     gameState.riskyTotal=0;
     gameState.docSkipCount=0;
     synergyFlags["lackInfra"]= false; 
-    // synergyFlags m.m.
     startPI();
   }
 }
