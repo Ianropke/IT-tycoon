@@ -1,9 +1,5 @@
 /************************************************************
- * main.js – Final Edition with showPopup in place
- * 
- * NB: Sørg for at tasks-filerne (hospitalTasks.js, infrastrukturTasks.js,
- *     cybersikkerhedTasks.js) er loadet før main.js i index.html.
- *     Og at du har <script src="scripts/main.js"> til sidst i body.
+ * main.js – Final with showPopup
  ************************************************************/
 
 const synergyFlags = {};
@@ -33,13 +29,11 @@ let gameState = {
   commitGoals: {}
 };
 
-// costScale => halver opgave-omkostninger
 const costScale = 0.5;
 
-// Ordforklaringer brugt i scenario
 const definitions = {
   "CAB": "CAB (Change Advisory Board): Personer der godkender risikable it-ændringer.",
-  "PI": "PI (Program Increment): En iteration (90 tid) hvori du løser opgaver."
+  "PI": "PI (Program Increment): Iteration på 90 tid til at løse opgaver."
 };
 
 const scenarioFlavorPool = [
@@ -50,7 +44,6 @@ const scenarioFlavorPool = [
   "Hospitalschefen vil se bedre rapporter..."
 ];
 
-// Info modal
 const infoModal = document.getElementById('info-modal');
 const infoModalTitle = document.getElementById('info-modal-title');
 const infoModalText = document.getElementById('info-modal-text');
@@ -63,12 +56,11 @@ window.showInfo = function(key){
   infoModalText.textContent  = definitions[key] || "Ingen yderligere forklaring.";
 };
 
-// Intro => tutorial
+// Intro & tutorial
 document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
   document.getElementById('intro-modal').style.display="none";
   openTutorialModal();
 });
-
 const tutorialModal   = document.getElementById('tutorial-modal');
 const tutorialTitleEl = document.getElementById('tutorial-title');
 const tutorialTextEl  = document.getElementById('tutorial-text');
@@ -77,22 +69,22 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   {
     title:"Din Rolle i LIMS-IT",
-    text:"Du er IT-forvalter for LIMS. Hver iteration (PI) har 90 tid. Hospitalet har krav, du sætter dine commits."
+    text:"Du er IT-forvalter for LIMS. Hver iteration (PI) har 90 tid, hospitalet har krav, og du sætter dine commits."
   },
   {
     title:"CAB & Dokumentation",
-    text:"Efter en opgave tjekker CAB alt. Skipper du dokumentation, stiger risiko for afvisning!"
+    text:"Efter en opgave tjekker CAB alt. Skipper du dokumentation, stiger risiko!"
   },
   {
-    title:"Forundersøgelse",
-    text:"Du kan forundersøge en opgave for at mindske risiko. Det koster tid/penge."
+    title:"Forundersøg",
+    text:"Du kan forundersøge en opgave, det koster tid/penge, men sænker risiko."
   },
   {
     title:"Held & Lykke",
     text:"Opfyld hospitalets krav og dine commits, uden at løbe tør for ressourcer!"
   }
 ];
-let tutorialIdx = 0;
+let tutorialIdx=0;
 function openTutorialModal(){
   tutorialModal.style.display="flex";
   showTutorialContent();
@@ -111,12 +103,11 @@ tutorialNextBtn.addEventListener('click', ()=>{
   showTutorialContent();
 });
 
-// initGame
 function initGame(){
   updateScoreboard();
-  synergyFlags["lackInfra"] = false;
+  synergyFlags["lackInfra"]= false;
 
-  // tasks
+  // backlog => tasks
   window.backlog= [
     ...window.cybersikkerhedTasks,
     ...window.hospitalTasks,
@@ -124,7 +115,7 @@ function initGame(){
   ];
   startPI();
 
-  // spawn jævnligt
+  // spawn tasks
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
@@ -147,7 +138,7 @@ function calcHospitalSatisfaction(){
   let avg= (gameState.security + gameState.stability + gameState.development)/3;
   let penalty=0;
   if(gameState.money<0){
-    penalty = Math.floor(Math.abs(gameState.money)/100)*2;
+    penalty= Math.floor(Math.abs(gameState.money)/100)*2;
   }
   let newVal= avg - penalty;
   gameState.hospitalSatisfaction= Math.max(0, Math.min(newVal,150));
@@ -177,7 +168,7 @@ document.getElementById('pi-start-ok-btn').addEventListener('click',()=>{
   document.getElementById('pi-start-modal').style.display="none";
 
   // generer 3 opgaver
-  for(let i=0; i<3; i++){
+  for(let i=0;i<3;i++){
     generateTask();
   }
 });
@@ -190,8 +181,8 @@ function generateTask(){
   gameState.usedTasks.add(chosen.title);
 
   let newTask= JSON.parse(JSON.stringify(chosen));
-  newTask.currentStep= 0;
-  newTask.preRiskReduction= 0;
+  newTask.currentStep=0;
+  newTask.preRiskReduction=0;
   gameState.availableTasks.push(newTask);
   renderTasks();
 }
@@ -205,13 +196,11 @@ function renderTasks(){
   }
   gameState.availableTasks.forEach(t=>{
     let li= document.createElement('li');
-    li.innerHTML= `
+    li.innerHTML=`
       <strong>${t.title}</strong><br/>
-      ${t.shortDesc||"Ingen beskrivelse"}
+      ${t.shortDesc || "Ingen beskrivelse"}
     `;
-
-    // Forundersøg
-    let invBtn= document.createElement('button');
+    let invBtn=document.createElement('button');
     invBtn.textContent="Forundersøg";
     invBtn.classList.add('commit-button');
     invBtn.style.marginRight="6px";
@@ -220,7 +209,7 @@ function renderTasks(){
       investigateTask(t);
     });
 
-    let comBtn= document.createElement('button');
+    let comBtn=document.createElement('button');
     comBtn.textContent="Forpligt";
     comBtn.classList.add('commit-button');
     comBtn.addEventListener('click',(e)=>{
@@ -265,7 +254,7 @@ function assignTask(taskTitle){
   let chosen= gameState.availableTasks.splice(idx,1)[0];
   gameState.activeTask= chosen;
   document.getElementById('active-task-headline').textContent= chosen.title;
-  document.getElementById('active-task-description').innerHTML= chosen.logicLong|| chosen.shortDesc;
+  document.getElementById('active-task-description').innerHTML= chosen.logicLong || chosen.shortDesc;
   updateStepsList();
   renderTasks();
 }
@@ -599,7 +588,7 @@ function nextPI(){
   }
 }
 
-// showPopup – FUNKTIONEN DER MANGLER HVIS FEJL
+// showPopup – FUNKTIONEN
 function showPopup(msg, type="success", duration=3000){
   let c= document.getElementById('popup-container');
   let div= document.createElement('div');
@@ -612,7 +601,7 @@ function showPopup(msg, type="success", duration=3000){
   setTimeout(()=> div.remove(), duration);
 }
 
-// Floating text i midten
+// Floating text
 function showFloatingText(txt, stat){
   let fc= document.getElementById('floating-text-container');
   let div= document.createElement('div');
