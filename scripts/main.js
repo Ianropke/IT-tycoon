@@ -1,8 +1,9 @@
 /************************************************************
- * main.js
- * - synergyFlags, forundersøg, ordforklaring, showPopup
- * - Tabel ved Inspect & Adapt
- * - Startpenge=2000, costScale=0.5
+ * main.js – Final Edition with showPopup in place
+ * 
+ * NB: Sørg for at tasks-filerne (hospitalTasks.js, infrastrukturTasks.js,
+ *     cybersikkerhedTasks.js) er loadet før main.js i index.html.
+ *     Og at du har <script src="scripts/main.js"> til sidst i body.
  ************************************************************/
 
 const synergyFlags = {};
@@ -32,12 +33,13 @@ let gameState = {
   commitGoals: {}
 };
 
-// Halver opgaveomkostninger
+// costScale => halver opgave-omkostninger
 const costScale = 0.5;
 
+// Ordforklaringer brugt i scenario
 const definitions = {
-  "CAB": "CAB (Change Advisory Board): Nøglepersoner der godkender risikable it-ændringer.",
-  "PI": "PI (Program Increment): En iteration (90 tid), hvori du løser opgaver."
+  "CAB": "CAB (Change Advisory Board): Personer der godkender risikable it-ændringer.",
+  "PI": "PI (Program Increment): En iteration (90 tid) hvori du løser opgaver."
 };
 
 const scenarioFlavorPool = [
@@ -52,13 +54,13 @@ const scenarioFlavorPool = [
 const infoModal = document.getElementById('info-modal');
 const infoModalTitle = document.getElementById('info-modal-title');
 const infoModalText = document.getElementById('info-modal-text');
-document.getElementById('info-modal-ok-btn').addEventListener('click', ()=>{
+document.getElementById('info-modal-ok-btn').addEventListener('click',()=>{
   infoModal.style.display="none";
 });
 window.showInfo = function(key){
   infoModal.style.display="flex";
   infoModalTitle.textContent = key;
-  infoModalText.textContent = definitions[key] || "Ingen yderligere forklaring.";
+  infoModalText.textContent  = definitions[key] || "Ingen yderligere forklaring.";
 };
 
 // Intro => tutorial
@@ -67,36 +69,36 @@ document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
   openTutorialModal();
 });
 
-const tutorialModal = document.getElementById('tutorial-modal');
+const tutorialModal   = document.getElementById('tutorial-modal');
 const tutorialTitleEl = document.getElementById('tutorial-title');
-const tutorialTextEl = document.getElementById('tutorial-text');
+const tutorialTextEl  = document.getElementById('tutorial-text');
 const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 
 let tutorialSteps = [
   {
-    title: "Din Rolle i LIMS-IT",
-    text: "Du er IT-forvalter for LIMS. Hver iteration (PI) har 90 tid, hospitalet har krav, og du sætter dine commits."
+    title:"Din Rolle i LIMS-IT",
+    text:"Du er IT-forvalter for LIMS. Hver iteration (PI) har 90 tid. Hospitalet har krav, du sætter dine commits."
   },
   {
-    title: "CAB & Dokumentation",
-    text: "Efter en opgave tjekker CAB alt. Skipper du dokumentation, stiger risiko for afvisning!"
+    title:"CAB & Dokumentation",
+    text:"Efter en opgave tjekker CAB alt. Skipper du dokumentation, stiger risiko for afvisning!"
   },
   {
-    title: "Forundersøg",
-    text: "Du kan forundersøge en opgave for at mindske risiko, men det koster tid/penge."
+    title:"Forundersøgelse",
+    text:"Du kan forundersøge en opgave for at mindske risiko. Det koster tid/penge."
   },
   {
-    title: "Held & Lykke",
-    text: "Forsøg at opfylde hospitalets krav og dine commits, uden at løbe tør for ressourcer!"
+    title:"Held & Lykke",
+    text:"Opfyld hospitalets krav og dine commits, uden at løbe tør for ressourcer!"
   }
 ];
-let tutorialIdx=0;
+let tutorialIdx = 0;
 function openTutorialModal(){
   tutorialModal.style.display="flex";
   showTutorialContent();
 }
 function showTutorialContent(){
-  if(tutorialIdx>=tutorialSteps.length){
+  if(tutorialIdx>= tutorialSteps.length){
     tutorialModal.style.display="none";
     initGame();
     return;
@@ -109,20 +111,20 @@ tutorialNextBtn.addEventListener('click', ()=>{
   showTutorialContent();
 });
 
-// Start spil
+// initGame
 function initGame(){
   updateScoreboard();
-  synergyFlags["lackInfra"]=false;
+  synergyFlags["lackInfra"] = false;
 
-  // backlog => tasks
-  window.backlog = [
+  // tasks
+  window.backlog= [
     ...window.cybersikkerhedTasks,
     ...window.hospitalTasks,
     ...window.infrastrukturTasks
   ];
   startPI();
 
-  // spawn tasks løbende
+  // spawn jævnligt
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
@@ -157,9 +159,9 @@ function startPI(){
   updateScoreboard();
 
   gameState.hospitalExpectations = {
-    security: 100+Math.floor(Math.random()*10+5),
-    stability:100+Math.floor(Math.random()*10+5),
-    development:100+Math.floor(Math.random()*10+5)
+    security: 100+ Math.floor(Math.random()*10+5),
+    stability:100+ Math.floor(Math.random()*10+5),
+    development:100+ Math.floor(Math.random()*10+5)
   };
   let he= gameState.hospitalExpectations;
   document.getElementById('pi-start-modal').style.display="flex";
@@ -168,13 +170,14 @@ function startPI(){
 }
 
 document.getElementById('pi-start-ok-btn').addEventListener('click',()=>{
-  let cSec = parseInt(document.getElementById('commit-security').value,10)||0;
-  let cStab= parseInt(document.getElementById('commit-stability').value,10)||0;
-  let cDev= parseInt(document.getElementById('commit-development').value,10)||0;
-  gameState.commitGoals= { security:cSec, stability:cStab, development:cDev };
+  let cSec  = parseInt(document.getElementById('commit-security').value,10)||0;
+  let cStab = parseInt(document.getElementById('commit-stability').value,10)||0;
+  let cDev  = parseInt(document.getElementById('commit-development').value,10)||0;
+  gameState.commitGoals = { security:cSec, stability:cStab, development:cDev };
   document.getElementById('pi-start-modal').style.display="none";
 
-  for(let i=0;i<3;i++){
+  // generer 3 opgaver
+  for(let i=0; i<3; i++){
     generateTask();
   }
 });
@@ -187,8 +190,8 @@ function generateTask(){
   gameState.usedTasks.add(chosen.title);
 
   let newTask= JSON.parse(JSON.stringify(chosen));
-  newTask.currentStep=0;
-  newTask.preRiskReduction=0;
+  newTask.currentStep= 0;
+  newTask.preRiskReduction= 0;
   gameState.availableTasks.push(newTask);
   renderTasks();
 }
@@ -202,11 +205,13 @@ function renderTasks(){
   }
   gameState.availableTasks.forEach(t=>{
     let li= document.createElement('li');
-    li.innerHTML=`
+    li.innerHTML= `
       <strong>${t.title}</strong><br/>
       ${t.shortDesc||"Ingen beskrivelse"}
     `;
-    let invBtn=document.createElement('button');
+
+    // Forundersøg
+    let invBtn= document.createElement('button');
     invBtn.textContent="Forundersøg";
     invBtn.classList.add('commit-button');
     invBtn.style.marginRight="6px";
@@ -215,7 +220,7 @@ function renderTasks(){
       investigateTask(t);
     });
 
-    let comBtn=document.createElement('button');
+    let comBtn= document.createElement('button');
     comBtn.textContent="Forpligt";
     comBtn.classList.add('commit-button');
     comBtn.addEventListener('click',(e)=>{
@@ -274,7 +279,7 @@ function updateStepsList(){
   }
   let c= gameState.activeTask.currentStep||0;
   gameState.activeTask.steps.forEach((st,i)=>{
-    let li=document.createElement('li');
+    let li= document.createElement('li');
     li.textContent= `Trin ${i+1}: ${st.location}`;
     if(i<c){
       li.style.textDecoration="line-through";
@@ -370,7 +375,7 @@ function showScenarioModal(stepIndex){
 
 function applyChoiceEffect(eff){
   if(!eff)return;
-  if(eff.timeCost) applyTimeCost(eff.timeCost);
+  if(eff.timeCost)  applyTimeCost(eff.timeCost);
   if(eff.moneyCost) applyMoneyCost(eff.moneyCost * costScale);
   if(eff.riskyPlus) gameState.riskyTotal += eff.riskyPlus;
   if(eff.statChange){
@@ -499,7 +504,7 @@ const taskSummaryModal= document.getElementById('task-summary-modal');
 const taskSummaryText= document.getElementById('task-summary-text');
 document.getElementById('task-summary-ok-btn').addEventListener('click',()=>{
   taskSummaryModal.style.display="none";
-  // HVOR VI OPDATERER LISTEN, SÅ DU KAN STARTE NY OPGAVE
+  // RENDER TASKS => ny opgave kan startes
   renderTasks();
 });
 function showTaskSummaryModal(){
@@ -594,7 +599,7 @@ function nextPI(){
   }
 }
 
-// showPopup FUNKTIONEN – VIGTIG
+// showPopup – FUNKTIONEN DER MANGLER HVIS FEJL
 function showPopup(msg, type="success", duration=3000){
   let c= document.getElementById('popup-container');
   let div= document.createElement('div');
