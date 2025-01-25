@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Forvalter: LIMS – Tooltips & Forundersøg</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -12,12 +12,12 @@
   <h1>IT Forvalter: LIMS – Tooltips & Forundersøg</h1>
   <div id="scoreboard">
     <div id="scores">
-      <!-- Data-tooltip for scoreboard stats -->
+      <!-- Tooltips i scoreboard via data-tooltip -->
       <span class="score-item hoverTooltip" data-tooltip="Tilgængelig tid i denne PI. Løb ikke tør!">
         Tid: <span id="time-left">90</span>
       </span>
       <span class="score-item hoverTooltip" data-tooltip="Din økonomi. Går du i minus, falder hospitalets tilfredshed.">
-        Penge: <span id="money-left">1000</span>
+        Penge: <span id="money-left">2000</span>
       </span>
       <span class="score-item hoverTooltip" data-tooltip="Antal gennemførte opgaver i denne PI.">
         Opgaver: <span id="tasks-completed">0</span>
@@ -40,38 +40,38 @@
 
 <div id="main-container">
   <div id="game-area">
-    <!-- Locations med data-tooltip -->
-    <div class="location hospital hoverTooltip" 
+    <!-- Lokationer med data-tooltip -->
+    <div class="location hospital hoverTooltip"
          data-tooltip="Hospitalet: Her taler du med drift & personale.">
-      🏥<br/>Hospital
+      🏥<br>Hospital
     </div>
-    <div class="location infrastruktur hoverTooltip" 
+    <div class="location infrastruktur hoverTooltip"
          data-tooltip="Infrastruktur: Servere, netværk, hardware.">
-      🔧<br/>Infrastruktur
+      🔧<br>Infrastruktur
     </div>
     <div class="location cybersikkerhed hoverTooltip"
-         data-tooltip="Cybersikkerhed: Hackermodstand, net-sikkerhed, firewall.">
-      💻<br/>Cybersikkerhed
+         data-tooltip="Cybersikkerhed: Hackermodstand, firewall, etc.">
+      💻<br>Cybersikkerhed
     </div>
     <div class="location informationssikkerhed hoverTooltip"
          data-tooltip="Informationssikkerhed: GDPR, ISO27001, datahåndtering.">
-      🛡<br/>Informationssikkerhed
+      🛡<br>Informationssikkerhed
     </div>
     <div class="location it-jura hoverTooltip"
          data-tooltip="IT Jura: Kontrakter, licenser, datalovgivning.">
-      ⚖️<br/>IT Jura
+      ⚖️<br>IT Jura
     </div>
     <div class="location leverandor hoverTooltip"
          data-tooltip="Leverandør: Ekstern part, support & implementering.">
-      📦<br/>Leverandør
+      📦<br>Leverandør
     </div>
     <div class="location medicinsk-udstyr hoverTooltip"
-         data-tooltip="Medicinsk Udstyr: Integration med apparater, ISO-standarder.">
-      🩺<br/>Medicinsk
+         data-tooltip="Medicinsk Udstyr: Apparater til laboratorier, integration med LIMS.">
+      🩺<br>Medicinsk
     </div>
     <div class="location dokumentation hoverTooltip"
-         data-tooltip="Dokumentation: Beskriv ændringerne. CAB tjekker altid!">
-      📄<br/>Dokumentation
+         data-tooltip="Dokumentation: Beskriver ændringerne, CAB tjekker altid!">
+      📄<br>Dokumentation
     </div>
   </div>
 
@@ -82,9 +82,7 @@
       <p id="active-task-description"></p>
       <div id="task-steps">
         <h4>Trin:</h4>
-        <ul id="steps-list">
-          <li>Ingen aktiv opgave</li>
-        </ul>
+        <ul id="steps-list"><li>Ingen aktiv opgave</li></ul>
       </div>
     </div>
     <div id="available-tasks">
@@ -108,9 +106,9 @@
   <div class="modal-content">
     <h2>Velkommen!</h2>
     <p>
-      Du forvalter LIMS for hospitalet. Du har 90 tid i hver iteration (PI). 
-      Hospitalet har nogle krav, du har dine commits, og du kan løbende tage opgaver. 
-      Nu med forundersøgelser og synergy-effekter!
+      Du forvalter LIMS for hospitalet. Du har 90 tid pr. iteration (PI). 
+      Hospitalet stiller krav, og du kan sætte egne commits. 
+      Du kan lave forundersøgelse af opgaver for at minimere risiko!
     </p>
     <button id="intro-ok-btn" style="background-color:#27ae60;">Start Spillet</button>
   </div>
@@ -146,7 +144,7 @@
   </div>
 </div>
 
-<!-- Info Modal (til ordforklaring) -->
+<!-- Info Modal (til ordforklaring, fx DPDP-lov etc.) -->
 <div id="info-modal" class="modal" style="display:none;">
   <div class="modal-content">
     <h2 id="info-modal-title">Ordforklaring</h2>
@@ -172,7 +170,7 @@
   </div>
 </div>
 
-<!-- Task Summary Modal -->
+<!-- Task-Summary Modal -->
 <div id="task-summary-modal" class="modal" style="display:none;">
   <div class="modal-content">
     <h2>Opgave Fuldført</h2>
@@ -194,7 +192,7 @@
   </div>
 </div>
 
-<!-- End-of-Time Modal -->
+<!-- End-of-Time Modal (Inspect & Adapt) -->
 <div id="end-modal" class="modal" style="display:none;">
   <div class="modal-content">
     <h2>PI Slut – Inspect & Adapt</h2>
@@ -203,6 +201,7 @@
   </div>
 </div>
 
+<!-- Vores scripts + tasks -->
 <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
 <script src="scripts/tasks/hospitalTasks.js"></script>
 <script src="scripts/tasks/infrastrukturTasks.js"></script>
