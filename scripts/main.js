@@ -1,9 +1,8 @@
 /************************************************************
  * main.js
- * - Overhaul med synergyFlags, forundersøg, ordforklaring,
- * - Tabel i Inspect & Adapt
- * - Startpenge 2000, costScale=0.5 => halverede omkostninger
- * - RENDER TASKS EFTER OPGAVE AFSLUTTES
+ * - synergyFlags, forundersøg, ordforklaring, showPopup
+ * - Tabel ved Inspect & Adapt
+ * - Startpenge=2000, costScale=0.5
  ************************************************************/
 
 const synergyFlags = {};
@@ -14,7 +13,7 @@ let gameState = {
   development: 100,
   hospitalSatisfaction: 100,
 
-  money: 2000,     
+  money: 2000,
   piTime: 90,
   currentPI: 1,
   maxPI: 2,
@@ -33,64 +32,62 @@ let gameState = {
   commitGoals: {}
 };
 
-// Halver opgave-omkostninger
+// Halver opgaveomkostninger
 const costScale = 0.5;
 
-// Ordforklaringer
 const definitions = {
-  "CAB": "CAB (Change Advisory Board): Godkender risikable it-ændringer.",
-  "PI": "PI (Program Increment): Iteration på 90 tid, du løser opgaver i."
+  "CAB": "CAB (Change Advisory Board): Nøglepersoner der godkender risikable it-ændringer.",
+  "PI": "PI (Program Increment): En iteration (90 tid), hvori du løser opgaver."
 };
 
-// Eksempel-sætninger
 const scenarioFlavorPool = [
   "Personalet klager over driftstop...",
   "Ledelsen spørger til jura & compliance...",
-  "En ekstern revisor er på trapperne...",
+  "Ekstern revisor er på trapperne...",
   "Leverandørens hotline modtager klager...",
   "Hospitalschefen vil se bedre rapporter..."
 ];
 
-// Info-modal for ordforklaring
+// Info modal
 const infoModal = document.getElementById('info-modal');
-const infoModalTitle= document.getElementById('info-modal-title');
-const infoModalText= document.getElementById('info-modal-text');
-document.getElementById('info-modal-ok-btn').addEventListener('click',()=>{
+const infoModalTitle = document.getElementById('info-modal-title');
+const infoModalText = document.getElementById('info-modal-text');
+document.getElementById('info-modal-ok-btn').addEventListener('click', ()=>{
   infoModal.style.display="none";
 });
 window.showInfo = function(key){
   infoModal.style.display="flex";
-  infoModalTitle.textContent= key;
-  infoModalText.textContent= definitions[key] || "Ingen yderligere forklaring.";
+  infoModalTitle.textContent = key;
+  infoModalText.textContent = definitions[key] || "Ingen yderligere forklaring.";
 };
 
-// Intro & tutorial
+// Intro => tutorial
 document.getElementById('intro-ok-btn').addEventListener('click', ()=>{
   document.getElementById('intro-modal').style.display="none";
   openTutorialModal();
 });
 
-const tutorialModal= document.getElementById('tutorial-modal');
-const tutorialTitleEl= document.getElementById('tutorial-title');
-const tutorialTextEl= document.getElementById('tutorial-text');
-const tutorialNextBtn= document.getElementById('tutorial-next-btn');
+const tutorialModal = document.getElementById('tutorial-modal');
+const tutorialTitleEl = document.getElementById('tutorial-title');
+const tutorialTextEl = document.getElementById('tutorial-text');
+const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 
 let tutorialSteps = [
   {
-    title:"Din Rolle i LIMS-IT",
-    text:"Du er IT-forvalter. Hver iteration (PI) har 90 tid, hospitalet har krav, og du sætter dine commits."
+    title: "Din Rolle i LIMS-IT",
+    text: "Du er IT-forvalter for LIMS. Hver iteration (PI) har 90 tid, hospitalet har krav, og du sætter dine commits."
   },
   {
-    title:"CAB & Dokumentation",
-    text:"Efter en opgave tjekker CAB alt. Mangler du dokumentation, stiger risiko!"
+    title: "CAB & Dokumentation",
+    text: "Efter en opgave tjekker CAB alt. Skipper du dokumentation, stiger risiko for afvisning!"
   },
   {
-    title:"Forundersøg",
-    text:"Du kan forundersøge en opgave, det koster tid/penge, men sænker risiko."
+    title: "Forundersøg",
+    text: "Du kan forundersøge en opgave for at mindske risiko, men det koster tid/penge."
   },
   {
-    title:"Held & Lykke",
-    text:"Opfyld hospitalets krav og dine commits, uden at løbe tør for ressourcer!"
+    title: "Held & Lykke",
+    text: "Forsøg at opfylde hospitalets krav og dine commits, uden at løbe tør for ressourcer!"
   }
 ];
 let tutorialIdx=0;
@@ -99,25 +96,25 @@ function openTutorialModal(){
   showTutorialContent();
 }
 function showTutorialContent(){
-  if(tutorialIdx>= tutorialSteps.length){
+  if(tutorialIdx>=tutorialSteps.length){
     tutorialModal.style.display="none";
     initGame();
     return;
   }
-  tutorialTitleEl.textContent= tutorialSteps[tutorialIdx].title;
-  tutorialTextEl.textContent= tutorialSteps[tutorialIdx].text;
+  tutorialTitleEl.textContent = tutorialSteps[tutorialIdx].title;
+  tutorialTextEl.textContent  = tutorialSteps[tutorialIdx].text;
 }
 tutorialNextBtn.addEventListener('click', ()=>{
   tutorialIdx++;
   showTutorialContent();
 });
 
-// init
+// Start spil
 function initGame(){
   updateScoreboard();
-  synergyFlags["lackInfra"] = false;
+  synergyFlags["lackInfra"]=false;
 
-  // Merge backlog
+  // backlog => tasks
   window.backlog = [
     ...window.cybersikkerhedTasks,
     ...window.hospitalTasks,
@@ -125,7 +122,7 @@ function initGame(){
   ];
   startPI();
 
-  // spawn tasks hver 10 sek
+  // spawn tasks løbende
   setInterval(()=>{
     if(gameState.availableTasks.length<10){
       generateTask();
@@ -160,25 +157,24 @@ function startPI(){
   updateScoreboard();
 
   gameState.hospitalExpectations = {
-    security: 100+ Math.floor(Math.random()*10+5),
-    stability:100+ Math.floor(Math.random()*10+5),
-    development:100+ Math.floor(Math.random()*10+5)
+    security: 100+Math.floor(Math.random()*10+5),
+    stability:100+Math.floor(Math.random()*10+5),
+    development:100+Math.floor(Math.random()*10+5)
   };
   let he= gameState.hospitalExpectations;
   document.getElementById('pi-start-modal').style.display="flex";
   document.getElementById('hospital-expectations-text').textContent=
-   `Hospitalets krav: S≥${he.security}, St≥${he.stability}, Dev≥${he.development}`;
+    `Hospitalets krav: S≥${he.security}, St≥${he.stability}, Dev≥${he.development}`;
 }
 
-document.getElementById('pi-start-ok-btn').addEventListener('click', ()=>{
+document.getElementById('pi-start-ok-btn').addEventListener('click',()=>{
   let cSec = parseInt(document.getElementById('commit-security').value,10)||0;
   let cStab= parseInt(document.getElementById('commit-stability').value,10)||0;
   let cDev= parseInt(document.getElementById('commit-development').value,10)||0;
   gameState.commitGoals= { security:cSec, stability:cStab, development:cDev };
   document.getElementById('pi-start-modal').style.display="none";
 
-  // generer 3 initielle tasks
-  for(let i=0; i<3; i++){
+  for(let i=0;i<3;i++){
     generateTask();
   }
 });
@@ -201,17 +197,16 @@ function renderTasks(){
   let tasksList= document.getElementById('tasks-list');
   tasksList.innerHTML="";
   if(!gameState.availableTasks.length){
-    tasksList.innerHTML= "<li>Ingen opgaver tilgængelige</li>";
+    tasksList.innerHTML="<li>Ingen opgaver tilgængelige</li>";
     return;
   }
   gameState.availableTasks.forEach(t=>{
     let li= document.createElement('li');
-    li.innerHTML= `
+    li.innerHTML=`
       <strong>${t.title}</strong><br/>
       ${t.shortDesc||"Ingen beskrivelse"}
     `;
-    // Forundersøg
-    let invBtn= document.createElement('button');
+    let invBtn=document.createElement('button');
     invBtn.textContent="Forundersøg";
     invBtn.classList.add('commit-button');
     invBtn.style.marginRight="6px";
@@ -220,7 +215,7 @@ function renderTasks(){
       investigateTask(t);
     });
 
-    let comBtn= document.createElement('button');
+    let comBtn=document.createElement('button');
     comBtn.textContent="Forpligt";
     comBtn.classList.add('commit-button');
     comBtn.addEventListener('click',(e)=>{
@@ -236,19 +231,19 @@ function renderTasks(){
 
 function investigateTask(taskObj){
   let costT=1, costM=20, reduce=0.05;
-  if(gameState.piTime< costT){
-    showPopup("Ikke tid nok til at forundersøge!", "error");
+  if(gameState.piTime<costT){
+    showPopup("Ikke tid nok til forundersøg!", "error");
     return;
   }
   if(gameState.money< costM){
-    showPopup("Penge for lave til forundersøgelse!", "error");
+    showPopup("Ikke penge nok til forundersøg!", "error");
     return;
   }
   applyTimeCost(costT);
   applyMoneyCost(costM);
   taskObj.preRiskReduction+= reduce;
 
-  showPopup(`Forundersøgelse: -${costT} tid, -${costM} kr, risiko -${reduce*100}%`, "info",4000);
+  showPopup(`Forundersøg: -${costT} tid, -${costM} kr, risiko -${reduce*100}%`, "info",4000);
 }
 
 function assignTask(taskTitle){
@@ -260,7 +255,7 @@ function assignTask(taskTitle){
     checkOverworkOrEndPI();
     return;
   }
-  let idx= gameState.availableTasks.findIndex(x=> x.title=== taskTitle);
+  let idx= gameState.availableTasks.findIndex(x=> x.title===taskTitle);
   if(idx===-1)return;
   let chosen= gameState.availableTasks.splice(idx,1)[0];
   gameState.activeTask= chosen;
@@ -274,12 +269,12 @@ function updateStepsList(){
   let stepsListEl= document.getElementById('steps-list');
   stepsListEl.innerHTML="";
   if(!gameState.activeTask){
-    stepsListEl.innerHTML= "<li>Ingen aktiv opgave</li>";
+    stepsListEl.innerHTML="<li>Ingen aktiv opgave</li>";
     return;
   }
   let c= gameState.activeTask.currentStep||0;
   gameState.activeTask.steps.forEach((st,i)=>{
-    let li= document.createElement('li');
+    let li=document.createElement('li');
     li.textContent= `Trin ${i+1}: ${st.location}`;
     if(i<c){
       li.style.textDecoration="line-through";
@@ -499,13 +494,12 @@ function endActiveTask(){
   showTaskSummaryModal();
 }
 
+// Opgave-resume
 const taskSummaryModal= document.getElementById('task-summary-modal');
 const taskSummaryText= document.getElementById('task-summary-text');
 document.getElementById('task-summary-ok-btn').addEventListener('click',()=>{
   taskSummaryModal.style.display="none";
-
-  // VIGTIGT: Opdatér “Mulige Opgaver” her, 
-  // så du kan starte en ny opgave straks.
+  // HVOR VI OPDATERER LISTEN, SÅ DU KAN STARTE NY OPGAVE
   renderTasks();
 });
 function showTaskSummaryModal(){
@@ -592,19 +586,31 @@ function nextPI(){
   if(gameState.currentPI> gameState.maxPI){
     showPopup("Alle PI'er er afsluttet! Godt arbejde!", "info");
   } else {
-    // reset
     gameState.availableTasks=[];
     gameState.riskyTotal=0;
     gameState.docSkipCount=0;
-    synergyFlags["lackInfra"]= false; 
+    synergyFlags["lackInfra"]= false;
     startPI();
   }
+}
+
+// showPopup FUNKTIONEN – VIGTIG
+function showPopup(msg, type="success", duration=3000){
+  let c= document.getElementById('popup-container');
+  let div= document.createElement('div');
+  div.classList.add('popup');
+  if(type==="error") div.classList.add('error');
+  else if(type==="info") div.classList.add('info');
+  div.style.animation="none";
+  div.textContent= msg;
+  c.appendChild(div);
+  setTimeout(()=> div.remove(), duration);
 }
 
 // Floating text i midten
 function showFloatingText(txt, stat){
   let fc= document.getElementById('floating-text-container');
-  let div=document.createElement('div');
+  let div= document.createElement('div');
   div.classList.add('floating-text');
   div.style.left="50%";
   div.style.top="50%";
