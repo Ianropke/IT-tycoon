@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAFe IT Tycoon: LIMS – Improved Edition</title>
+  <title>IT Forvalter: LIMS – SAFe Edition</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
-    <h1>SAFe IT Tycoon: LIMS Forvaltning (Improved)</h1>
+    <h1>IT Forvalter: LIMS – SAFe Edition</h1>
     <div id="scoreboard">
       <div id="scores">
         <span class="score-item">Tid: <span id="time-left">90</span></span>
         <span class="score-item">Penge: <span id="money-left">1000</span></span>
-        <span class="score-item">Fuldførte Opgaver: <span id="tasks-completed">0</span></span>
+        <span class="score-item">Opgaver: <span id="tasks-completed">0</span></span>
         <span class="score-item">Sikkerhed: <span id="security-value">100</span></span>
         <span class="score-item">Stabilitet: <span id="stability-value">100</span></span>
         <span class="score-item">Udvikling: <span id="development-value">100</span></span>
@@ -57,7 +57,7 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 SAFe IT Tycoon ApS (Improved Edition)</p>
+    <p>&copy; 2025 IT Forvalter ApS – “SAFe Edition”</p>
   </footer>
 
   <div id="popup-container"></div>
@@ -66,15 +66,14 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2>Velkommen til SAFe LIMS!</h2>
+      <h2>Velkommen!</h2>
       <p>
-        Du forvalter kritiske LIMS-løsninger på et stort hospital. 
-        Hospitalets ledelse har deres forventninger til, hvor meget Sikkerhed, Stabilitet 
-        og Udvikling der skal stige i hver PI. 
-        Du vil samtidig sætte dine egne commits. 
-        Pas på budgettet – og husk at du KAN overarbejde, men det koster ekstra!
+        Du er IT Forvalter for hospitalets LIMS-systemer.  
+        Hver iteration (PI) varer 90 tid.  
+        Hospitalet kommer med krav til Sikkerhed, Stabilitet og Udvikling, men du har også dine egne ambitioner.  
+        Pas på økonomien, og husk at du kan overarbejde én gang for at få ekstra tid – men det koster!
       </p>
-      <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
+      <button id="intro-ok-btn" style="background-color:#27ae60;">Start Spillet</button>
     </div>
   </div>
 
@@ -125,7 +124,7 @@
     </div>
   </div>
 
-  <!-- Opgaveopsummering Modal -->
+  <!-- Task-Summary Modal -->
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Opgave Fuldført</h2>
@@ -134,7 +133,7 @@
     </div>
   </div>
 
-  <!-- PI Start Modal => Hospitalets forventning + spillerens commit -->
+  <!-- PI Start Modal -->
   <div id="pi-start-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>PI Start</h2>
@@ -147,7 +146,7 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal => Inspect & Adapt -->
+  <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>PI Slut – Inspect & Adapt</h2>
@@ -156,7 +155,7 @@
     </div>
   </div>
 
-  <!-- tasks + main -->
+  <!-- Scripts (tasks + main) -->
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
