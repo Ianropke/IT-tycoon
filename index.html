@@ -3,210 +3,210 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Forvalter: LIMS – Synergy Edition</title>
+  <title>IT Forvalter: LIMS – Tooltip & Forundersøg</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <header>
-    <h1>IT Forvalter: LIMS – Synergy Edition</h1>
-    <div id="scoreboard">
-      <div id="scores">
-        <!-- Her tilføjer vi title (tooltips) på scoreboard-elementer -->
-        <span class="score-item" 
-              title="Tilgængelig tid i denne PI">Tid: 
-          <span id="time-left">90</span>
-        </span>
-        <span class="score-item"
-              title="Din økonomi. Går du i minus, bliver Hospital utilfreds!">
-          Penge: <span id="money-left">1000</span>
-        </span>
-        <span class="score-item"
-              title="Antal opgaver gennemført i denne iteration">
-          Opgaver: <span id="tasks-completed">0</span>
-        </span>
-        <span class="score-item"
-              title="Sikkerhed viser, hvor godt LIMS er beskyttet mod dataangreb.">
-          Sikkerhed: <span id="security-value">100</span>
-        </span>
-        <span class="score-item"
-              title="Stabilitet handler om driftssikkerhed og oppetid.">
-          Stabilitet: <span id="stability-value">100</span>
-        </span>
-        <span class="score-item"
-              title="Udvikling måler, hvor moderne og funktionsrigt systemet er.">
-          Udvikling: <span id="development-value">100</span>
-        </span>
-        <span class="score-item"
-              title="Hospitalets tilfredshed. Går den for lavt, har du et problem!">
-          Hospital: <span id="hospital-satisfaction">100</span>%
-        </span>
-      </div>
+<header>
+  <h1>IT Forvalter: LIMS – Tooltips & Forundersøg</h1>
+  <div id="scoreboard">
+    <div id="scores">
+      <!-- Data-tooltip for scoreboard stats -->
+      <span class="score-item hoverTooltip" data-tooltip="Tilgængelig tid i denne PI. Løb ikke tør!">
+        Tid: <span id="time-left">90</span>
+      </span>
+      <span class="score-item hoverTooltip" data-tooltip="Din økonomi. Går du i minus, falder hospitalets tilfredshed.">
+        Penge: <span id="money-left">1000</span>
+      </span>
+      <span class="score-item hoverTooltip" data-tooltip="Antal gennemførte opgaver i denne PI.">
+        Opgaver: <span id="tasks-completed">0</span>
+      </span>
+      <span class="score-item hoverTooltip" data-tooltip="It-sikkerhed for LIMS. Højt tal = få sårbarheder.">
+        Sikkerhed: <span id="security-value">100</span>
+      </span>
+      <span class="score-item hoverTooltip" data-tooltip="Hvor stabilt LIMS kører (driftssikkerhed, oppetid, robusthed).">
+        Stabilitet: <span id="stability-value">100</span>
+      </span>
+      <span class="score-item hoverTooltip" data-tooltip="Hvor moderne og funktionsrigt systemet er.">
+        Udvikling: <span id="development-value">100</span>
+      </span>
+      <span class="score-item hoverTooltip" data-tooltip="Hospitalets tilfredshed med LIMS. Pas på ikke at skuffe dem!">
+        Hospital: <span id="hospital-satisfaction">100</span>%
+      </span>
     </div>
-  </header>
+  </div>
+</header>
 
-  <div id="main-container">
-    <div id="game-area">
-      <!-- 8 location boxes, nu med title for tooltip -->
-      <div class="location hospital" 
-           title="Hospitalet – hjemsted for driftskrav, tests og personalebehov.">
-        🏥<br/>Hospital
-      </div>
-      <div class="location infrastruktur"
-           title="Infrastruktur – servere, netværk, hardware.">
-        🔧<br/>Infrastruktur
-      </div>
-      <div class="location cybersikkerhed"
-           title="Cybersikkerhed – beskyt mod hackere og datalæk.">
-        💻<br/>Cybersikkerhed
-      </div>
-      <div class="location informationssikkerhed"
-           title="Informationssikkerhed – juridiske og tekniske dataprotektion.">
-        🛡<br/>Informationssikkerhed
-      </div>
-      <div class="location it-jura"
-           title="IT Jura – kontrakter, databeskyttelse, compliance.">
-        ⚖️<br/>IT Jura
-      </div>
-      <div class="location leverandor"
-           title="Leverandør – ekstern part, kontrakter, licenser.">
-        📦<br/>Leverandør
-      </div>
-      <div class="location medicinsk-udstyr"
-           title="Medicinsk Udstyr – apparater, integration med LIMS.">
-        🩺<br/>Medicinsk
-      </div>
-      <div class="location dokumentation"
-           title="Dokumentation – beskriver ændringerne, CAB kigger her!">
-        📄<br/>Dokumentation
-      </div>
+<div id="main-container">
+  <div id="game-area">
+    <!-- Locations med data-tooltip -->
+    <div class="location hospital hoverTooltip" 
+         data-tooltip="Hospitalet: Her taler du med drift & personale.">
+      🏥<br/>Hospital
     </div>
+    <div class="location infrastruktur hoverTooltip" 
+         data-tooltip="Infrastruktur: Servere, netværk, hardware.">
+      🔧<br/>Infrastruktur
+    </div>
+    <div class="location cybersikkerhed hoverTooltip"
+         data-tooltip="Cybersikkerhed: Hackermodstand, net-sikkerhed, firewall.">
+      💻<br/>Cybersikkerhed
+    </div>
+    <div class="location informationssikkerhed hoverTooltip"
+         data-tooltip="Informationssikkerhed: GDPR, ISO27001, datahåndtering.">
+      🛡<br/>Informationssikkerhed
+    </div>
+    <div class="location it-jura hoverTooltip"
+         data-tooltip="IT Jura: Kontrakter, licenser, datalovgivning.">
+      ⚖️<br/>IT Jura
+    </div>
+    <div class="location leverandor hoverTooltip"
+         data-tooltip="Leverandør: Ekstern part, support & implementering.">
+      📦<br/>Leverandør
+    </div>
+    <div class="location medicinsk-udstyr hoverTooltip"
+         data-tooltip="Medicinsk Udstyr: Integration med apparater, ISO-standarder.">
+      🩺<br/>Medicinsk
+    </div>
+    <div class="location dokumentation hoverTooltip"
+         data-tooltip="Dokumentation: Beskriv ændringerne. CAB tjekker altid!">
+      📄<br/>Dokumentation
+    </div>
+  </div>
 
-    <div id="task-side">
-      <div id="active-task">
-        <h2>Aktiv Opgave</h2>
-        <h3 id="active-task-headline">Ingen aktiv opgave</h3>
-        <p id="active-task-description"></p>
-        <div id="task-steps">
-          <h4>Trin:</h4>
-          <ul id="steps-list">
-            <li>Ingen aktiv opgave</li>
-          </ul>
-        </div>
-      </div>
-      <div id="available-tasks">
-        <h2>Mulige Opgaver</h2>
-        <ul id="tasks-list">
-          <li>Ingen opgaver tilgængelige</li>
+  <div id="task-side">
+    <div id="active-task">
+      <h2>Aktiv Opgave</h2>
+      <h3 id="active-task-headline">Ingen aktiv opgave</h3>
+      <p id="active-task-description"></p>
+      <div id="task-steps">
+        <h4>Trin:</h4>
+        <ul id="steps-list">
+          <li>Ingen aktiv opgave</li>
         </ul>
       </div>
     </div>
-  </div>
-
-  <footer>
-    <p>&copy; 2025 Synergy LIMS ApS</p>
-  </footer>
-
-  <div id="popup-container"></div>
-  <div id="floating-text-container"></div>
-
-  <!-- Intro Modal -->
-  <div id="intro-modal" class="modal">
-    <div class="modal-content">
-      <h2>Velkommen!</h2>
-      <p>
-        Du er IT Forvalter for hospitalets LIMS-systemer.
-        Hver iteration (PI) varer 90 tid.
-        Hospitalet har krav (Sikkerhed, Stabilitet, Udvikling),
-        du har dine commits.
-        Pas på økonomi og tid – og husk du kan “forundersøge” opgaver 
-        for at forstå dem bedre, før du forpligter dig!
-      </p>
-      <button id="intro-ok-btn" style="background-color:#27ae60;">Start Spillet</button>
+    <div id="available-tasks">
+      <h2>Mulige Opgaver</h2>
+      <ul id="tasks-list">
+        <li>Ingen opgaver tilgængelige</li>
+      </ul>
     </div>
   </div>
+</div>
 
-  <!-- Tutorial Modal -->
-  <div id="tutorial-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2 id="tutorial-title">Tutorial</h2>
-      <p id="tutorial-text"></p>
-      <button id="tutorial-next-btn" style="background-color:#2ecc71;">Næste</button>
+<footer>
+  <p>&copy; 2025 LIMS Forvalter – Tooltips & Forundersøg</p>
+</footer>
+
+<div id="popup-container"></div>
+<div id="floating-text-container"></div>
+
+<!-- Intro Modal -->
+<div id="intro-modal" class="modal">
+  <div class="modal-content">
+    <h2>Velkommen!</h2>
+    <p>
+      Du forvalter LIMS for hospitalet. Du har 90 tid i hver iteration (PI). 
+      Hospitalet har nogle krav, du har dine commits, og du kan løbende tage opgaver. 
+      Nu med forundersøgelser og synergy-effekter!
+    </p>
+    <button id="intro-ok-btn" style="background-color:#27ae60;">Start Spillet</button>
+  </div>
+</div>
+
+<!-- Tutorial Modal -->
+<div id="tutorial-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2 id="tutorial-title">Tutorial</h2>
+    <p id="tutorial-text"></p>
+    <button id="tutorial-next-btn" style="background-color:#2ecc71;">Næste</button>
+  </div>
+</div>
+
+<!-- Scenario Modal -->
+<div id="scenario-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2 id="scenario-title"></h2>
+    <p id="scenario-flavor-text" style="font-style:italic; color:#ccc;"></p>
+    <p id="scenario-description"></p>
+    <div id="scenario-optionA" style="margin-bottom:10px;">
+      <strong><span id="scenario-a-label"></span></strong><br/>
+      <em id="scenario-a-text"></em>
+    </div>
+    <div id="scenario-optionB" style="margin-bottom:10px;">
+      <strong><span id="scenario-b-label"></span></strong><br/>
+      <em id="scenario-b-text"></em>
+    </div>
+    <div style="margin-top:12px;">
+      <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
+      <button id="scenario-b-btn">Vælg B</button>
     </div>
   </div>
+</div>
 
-  <!-- Scenario Modal -->
-  <div id="scenario-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2 id="scenario-title"></h2>
-      <p id="scenario-flavor-text" style="font-style:italic; color:#ccc;"></p>
-      <p id="scenario-description"></p>
-      <div id="scenario-optionA" style="margin-bottom:10px;">
-        <strong><span id="scenario-a-label"></span></strong><br/>
-        <em id="scenario-a-text"></em>
-      </div>
-      <div id="scenario-optionB" style="margin-bottom:10px;">
-        <strong><span id="scenario-b-label"></span></strong><br/>
-        <em id="scenario-b-text"></em>
-      </div>
-      <div style="margin-top:12px;">
-        <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
-        <button id="scenario-b-btn">Vælg B</button>
-      </div>
-    </div>
+<!-- Info Modal (til ordforklaring) -->
+<div id="info-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2 id="info-modal-title">Ordforklaring</h2>
+    <p id="info-modal-text"></p>
+    <button id="info-modal-ok-btn" style="background-color:#2980b9;">OK</button>
   </div>
+</div>
 
-  <!-- CAB Modal -->
-  <div id="cab-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>CAB Gennemgang</h2>
-      <p id="cab-summary"></p>
-      <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
-    </div>
+<!-- CAB Modal -->
+<div id="cab-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>CAB Gennemgang</h2>
+    <p id="cab-summary"></p>
+    <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
   </div>
+</div>
 
-  <div id="cab-result-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2 id="cab-result-title"></h2>
-      <p id="cab-result-text"></p>
-      <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
-    </div>
+<div id="cab-result-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2 id="cab-result-title"></h2>
+    <p id="cab-result-text"></p>
+    <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
   </div>
+</div>
 
-  <!-- Task-Summary Modal -->
-  <div id="task-summary-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Opgave Fuldført</h2>
-      <p id="task-summary-text"></p>
-      <button id="task-summary-ok-btn" style="background-color:#2980b9;">OK</button>
-    </div>
+<!-- Task Summary Modal -->
+<div id="task-summary-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Opgave Fuldført</h2>
+    <p id="task-summary-text"></p>
+    <button id="task-summary-ok-btn" style="background-color:#2980b9;">OK</button>
   </div>
+</div>
 
-  <!-- PI Start Modal -->
-  <div id="pi-start-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>PI Start</h2>
-      <p id="hospital-expectations-text"></p>
-      <h4>Dine egne Commits:</h4>
-      <label>Sikkerhed: <input type="number" id="commit-security" value="110" /></label><br/>
-      <label>Stabilitet: <input type="number" id="commit-stability" value="110" /></label><br/>
-      <label>Udvikling: <input type="number" id="commit-development" value="110" /></label><br/>
-      <button id="pi-start-ok-btn" style="margin-top:8px; background-color:#27ae60;">Fortsæt</button>
-    </div>
+<!-- PI Start Modal -->
+<div id="pi-start-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>PI Start</h2>
+    <p id="hospital-expectations-text"></p>
+    <h4>Dine egne Commits:</h4>
+    <label>Sikkerhed: <input type="number" id="commit-security" value="110" /></label><br/>
+    <label>Stabilitet: <input type="number" id="commit-stability" value="110" /></label><br/>
+    <label>Udvikling: <input type="number" id="commit-development" value="110" /></label><br/>
+    <button id="pi-start-ok-btn" style="margin-top:8px; background-color:#27ae60;">Fortsæt</button>
   </div>
+</div>
 
-  <!-- End-of-Time Modal -->
-  <div id="end-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>PI Slut – Inspect & Adapt</h2>
-      <p id="end-game-summary"></p>
-      <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
-    </div>
+<!-- End-of-Time Modal -->
+<div id="end-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>PI Slut – Inspect & Adapt</h2>
+    <p id="end-game-summary"></p>
+    <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
   </div>
+</div>
 
-  <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
-  <script src="scripts/tasks/hospitalTasks.js"></script>
-  <script src="scripts/tasks/infrastrukturTasks.js"></script>
-  <script src="scripts/main.js"></script>
+<script src="scripts/tasks/cybersikkerhedTasks.js"></script>
+<script src="scripts/tasks/hospitalTasks.js"></script>
+<script src="scripts/tasks/infrastrukturTasks.js"></script>
+<script src="scripts/main.js"></script>
+
 </body>
 </html>
