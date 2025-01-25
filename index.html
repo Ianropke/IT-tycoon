@@ -3,36 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Forvalter: LIMS – SAFe Edition</title>
+  <title>IT Forvalter: LIMS – Synergy Edition</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
-    <h1>IT Forvalter: LIMS – SAFe Edition</h1>
+    <h1>IT Forvalter: LIMS – Synergy Edition</h1>
     <div id="scoreboard">
       <div id="scores">
-        <span class="score-item">Tid: <span id="time-left">90</span></span>
-        <span class="score-item">Penge: <span id="money-left">1000</span></span>
-        <span class="score-item">Opgaver: <span id="tasks-completed">0</span></span>
-        <span class="score-item">Sikkerhed: <span id="security-value">100</span></span>
-        <span class="score-item">Stabilitet: <span id="stability-value">100</span></span>
-        <span class="score-item">Udvikling: <span id="development-value">100</span></span>
-        <span class="score-item">Hospital: <span id="hospital-satisfaction">100</span>%</span>
+        <!-- Her tilføjer vi title (tooltips) på scoreboard-elementer -->
+        <span class="score-item" 
+              title="Tilgængelig tid i denne PI">Tid: 
+          <span id="time-left">90</span>
+        </span>
+        <span class="score-item"
+              title="Din økonomi. Går du i minus, bliver Hospital utilfreds!">
+          Penge: <span id="money-left">1000</span>
+        </span>
+        <span class="score-item"
+              title="Antal opgaver gennemført i denne iteration">
+          Opgaver: <span id="tasks-completed">0</span>
+        </span>
+        <span class="score-item"
+              title="Sikkerhed viser, hvor godt LIMS er beskyttet mod dataangreb.">
+          Sikkerhed: <span id="security-value">100</span>
+        </span>
+        <span class="score-item"
+              title="Stabilitet handler om driftssikkerhed og oppetid.">
+          Stabilitet: <span id="stability-value">100</span>
+        </span>
+        <span class="score-item"
+              title="Udvikling måler, hvor moderne og funktionsrigt systemet er.">
+          Udvikling: <span id="development-value">100</span>
+        </span>
+        <span class="score-item"
+              title="Hospitalets tilfredshed. Går den for lavt, har du et problem!">
+          Hospital: <span id="hospital-satisfaction">100</span>%
+        </span>
       </div>
     </div>
   </header>
 
   <div id="main-container">
     <div id="game-area">
-      <div class="location hospital">🏥<br/>Hospital</div>
-      <div class="location infrastruktur">🔧<br/>Infrastruktur</div>
-      <div class="location cybersikkerhed">💻<br/>Cybersikkerhed</div>
-      <div class="location informationssikkerhed">🛡<br/>Informationssikkerhed</div>
-      <div class="location it-jura">⚖️<br/>IT Jura</div>
-      <div class="location leverandor">📦<br/>Leverandør</div>
-      <div class="location medicinsk-udstyr">🩺<br/>Medicinsk</div>
-      <div class="location dokumentation">📄<br/>Dokumentation</div>
+      <!-- 8 location boxes, nu med title for tooltip -->
+      <div class="location hospital" 
+           title="Hospitalet – hjemsted for driftskrav, tests og personalebehov.">
+        🏥<br/>Hospital
+      </div>
+      <div class="location infrastruktur"
+           title="Infrastruktur – servere, netværk, hardware.">
+        🔧<br/>Infrastruktur
+      </div>
+      <div class="location cybersikkerhed"
+           title="Cybersikkerhed – beskyt mod hackere og datalæk.">
+        💻<br/>Cybersikkerhed
+      </div>
+      <div class="location informationssikkerhed"
+           title="Informationssikkerhed – juridiske og tekniske dataprotektion.">
+        🛡<br/>Informationssikkerhed
+      </div>
+      <div class="location it-jura"
+           title="IT Jura – kontrakter, databeskyttelse, compliance.">
+        ⚖️<br/>IT Jura
+      </div>
+      <div class="location leverandor"
+           title="Leverandør – ekstern part, kontrakter, licenser.">
+        📦<br/>Leverandør
+      </div>
+      <div class="location medicinsk-udstyr"
+           title="Medicinsk Udstyr – apparater, integration med LIMS.">
+        🩺<br/>Medicinsk
+      </div>
+      <div class="location dokumentation"
+           title="Dokumentation – beskriver ændringerne, CAB kigger her!">
+        📄<br/>Dokumentation
+      </div>
     </div>
 
     <div id="task-side">
@@ -57,7 +104,7 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 IT Forvalter ApS – “SAFe Edition”</p>
+    <p>&copy; 2025 Synergy LIMS ApS</p>
   </footer>
 
   <div id="popup-container"></div>
@@ -68,10 +115,12 @@
     <div class="modal-content">
       <h2>Velkommen!</h2>
       <p>
-        Du er IT Forvalter for hospitalets LIMS-systemer.  
-        Hver iteration (PI) varer 90 tid.  
-        Hospitalet kommer med krav til Sikkerhed, Stabilitet og Udvikling, men du har også dine egne ambitioner.  
-        Pas på økonomien, og husk at du kan overarbejde én gang for at få ekstra tid – men det koster!
+        Du er IT Forvalter for hospitalets LIMS-systemer.
+        Hver iteration (PI) varer 90 tid.
+        Hospitalet har krav (Sikkerhed, Stabilitet, Udvikling),
+        du har dine commits.
+        Pas på økonomi og tid – og husk du kan “forundersøge” opgaver 
+        for at forstå dem bedre, før du forpligter dig!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Start Spillet</button>
     </div>
@@ -155,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Scripts (tasks + main) -->
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
