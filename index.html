@@ -3,52 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAFe IT Tycoon: LIMS – Hospitalets Forventning + Større PengeCost</title>
+  <title>SAFe IT Tycoon: LIMS – Improved Edition</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
-    <h1>SAFe IT Tycoon: LIMS Forvaltning</h1>
+    <h1>SAFe IT Tycoon: LIMS Forvaltning (Improved)</h1>
     <div id="scoreboard">
       <div id="scores">
-        <span style="font-size:1.1rem;">Tid: <span id="time-left">90</span></span>
-        <span style="font-size:1.1rem;">Penge: <span id="money-left">1000</span></span>
-        <span style="font-size:1.1rem;">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
-        <span style="font-size:1.1rem;">Sikkerhed: <span id="security-value">100</span></span>
-        <span style="font-size:1.1rem;">Stabilitet: <span id="stability-value">100</span></span>
-        <span style="font-size:1.1rem;">Udvikling: <span id="development-value">100</span></span>
-        <span style="font-size:1.1rem;">Hospital: <span id="hospital-satisfaction">100</span>%</span>
+        <span class="score-item">Tid: <span id="time-left">90</span></span>
+        <span class="score-item">Penge: <span id="money-left">1000</span></span>
+        <span class="score-item">Fuldførte Opgaver: <span id="tasks-completed">0</span></span>
+        <span class="score-item">Sikkerhed: <span id="security-value">100</span></span>
+        <span class="score-item">Stabilitet: <span id="stability-value">100</span></span>
+        <span class="score-item">Udvikling: <span id="development-value">100</span></span>
+        <span class="score-item">Hospital: <span id="hospital-satisfaction">100</span>%</span>
       </div>
     </div>
   </header>
 
   <div id="main-container">
     <div id="game-area">
-      <div class="location" id="hospital" style="top:5%; left:5%;">
-        🏥 Hospital
-      </div>
-      <div class="location" id="infrastruktur" style="top:5%; left:55%;">
-        🔧 Infrastruktur
-      </div>
-      <div class="location" id="cybersikkerhed" style="top:25%; left:5%;">
-        💻 Cybersikkerhed
-      </div>
-      <div class="location" id="informationssikkerhed" style="top:25%; left:55%;">
-        🛡 Informationssikkerhed
-      </div>
-      <div class="location" id="it-jura" style="top:45%; left:25%;">
-        ⚖️ IT Jura
-      </div>
-      <div class="location" id="leverandor" style="top:45%; left:62%;">
-        📦 Leverandør
-      </div>
-      <div class="location" id="medicinsk-udstyr" style="top:65%; left:5%;">
-        🩺 Medicinsk
-      </div>
-      <div class="location" id="dokumentation" style="top:65%; left:40%;">
-        📄 Dokumentation
-      </div>
+      <div class="location hospital">🏥<br/>Hospital</div>
+      <div class="location infrastruktur">🔧<br/>Infrastruktur</div>
+      <div class="location cybersikkerhed">💻<br/>Cybersikkerhed</div>
+      <div class="location informationssikkerhed">🛡<br/>Informationssikkerhed</div>
+      <div class="location it-jura">⚖️<br/>IT Jura</div>
+      <div class="location leverandor">📦<br/>Leverandør</div>
+      <div class="location medicinsk-udstyr">🩺<br/>Medicinsk</div>
+      <div class="location dokumentation">📄<br/>Dokumentation</div>
     </div>
 
     <div id="task-side">
@@ -73,7 +57,7 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 SAFe IT Tycoon ApS</p>
+    <p>&copy; 2025 SAFe IT Tycoon ApS (Improved Edition)</p>
   </footer>
 
   <div id="popup-container"></div>
@@ -87,8 +71,8 @@
         Du forvalter kritiske LIMS-løsninger på et stort hospital. 
         Hospitalets ledelse har deres forventninger til, hvor meget Sikkerhed, Stabilitet 
         og Udvikling der skal stige i hver PI. 
-        Samtidig kan du selv give et commit. 
-        Og husk: Penge kan blive en knap ressource!
+        Du vil samtidig sætte dine egne commits. 
+        Pas på budgettet – og husk at du KAN overarbejde, men det koster ekstra!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -107,6 +91,7 @@
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="scenario-title"></h2>
+      <p id="scenario-flavor-text" style="font-style:italic; color:#ccc;"></p>
       <p id="scenario-description"></p>
       <div id="scenario-optionA" style="margin-bottom:10px;">
         <strong><span id="scenario-a-label"></span></strong><br/>
