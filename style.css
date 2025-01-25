@@ -72,6 +72,16 @@ header h1 {
   min-height: 0;
 }
 
+/* 
+  Sikrer at tooltips i #available-tasks (Mulige Opgaver) ikke klippes.
+  Hvis du vil have scrollbar, kan du bruge overflow-y: auto; men 
+  her viser vi overflow:visible, så tooltips kan ses.
+*/
+#available-tasks {
+  overflow: visible !important;
+  position: relative;
+}
+
 /* Overruler for Active Task, så tooltips i description ikke klippes */
 #active-task {
   overflow: visible !important;
