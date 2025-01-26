@@ -5,181 +5,213 @@ window.hospitalTasks = [
   {
     title: "Immunologi-LIMS Udvidelse",
     shortDesc: `
-      Immunologiafdelingen oplever forsinkelser. De ønsker en 
-      <span class="hoverTooltip" data-tooltip="Laboratory Information Management System.">LIMS</span>
-      -udvidelse med bedre test-moduler.
+      Immunologiafdelingen ønsker bedre integration af 
+      <span class="hoverTooltip" data-tooltip="Autoimmun stainer og flow-løsninger.">autoimmunt lab</span>
+      og <span class="hoverTooltip" data-tooltip="Fx Flowcytometri, ELISA-læser.">instrumenter</span>.
     `,
     logicLong: `
-      Immunologiafdelingen klager over langsom datahåndtering. 
-      Du vil installere nye moduler, men 
-      <span class="hoverTooltip" data-tooltip="CAB: Change Advisory Board, der checker risici.">CAB</span>
-      kræver risikovurdering.
+      Immunologerne laver analyser af autoantistoffer (ANA, ANCA) 
+      og bruger fx 
+      <span class="hoverTooltip" data-tooltip="Maskine til at farve autoantistoffer.">autoimmun stainer</span>
+      og 
+      <span class="hoverTooltip" data-tooltip="Flowcytometri: laserbaseret celletælling og -profilering.">flowcytometre</span>.
+      De vil have LIMS til at fange alle data automatiseret.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Tal med immunologernes overlæge om performancekrav.",
+        stepDescription: `
+          Drøft med immunologiens overlæge, der ønsker 
+          <span class="hoverTooltip" data-tooltip="ELISA, flow, autoimmun stainer.">instrumentintegration</span> 
+          og resultatoverførsel.
+        `,
         choiceA: {
-          label: "Grundig behovsanalyse",
-          text: "+3 tid => +2 stability",
-          applyEffect: { timeCost:3, statChange:{ stability:2 } }
+          label: "Detaljeret kravworkshop",
+          text: "+3 tid => +2 development (du opdager alle ønsker).",
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtig snak",
-          text: "+1 tid => +1 stability, +5% risk",
-          applyEffect: { timeCost:1, statChange:{ stability:1 }, riskyPlus:0.05 }
+          label: "Overfladisk samtale",
+          text: "+1 tid => +1 dev, +5% risk (du overser måske vigtige ønsker).",
+          applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
         stepDescription: `
-          Opsæt server-ressourcer til immunologi. 
-          Skal du købe ny hardware?
+          Sikre dataoverførsel fra 
+          <span class="hoverTooltip" data-tooltip="Flowcytometer, stainer, etc.">immunologiske instrumenter</span>
+          til LIMS.
         `,
         choiceA: {
-          label: "Nye servere",
-          text: "+2 tid, -100 kr => +2 stability (massiv kapacitet).",
-          applyEffect: { timeCost:2, moneyCost:100, statChange:{ stability:2 } }
+          label: "Opsæt dedikeret integrationsserver",
+          text: "+2 tid, -100 kr => +2 stability",
+          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 2 } }
         },
         choiceB: {
-          label: "Behold eksisterende",
-          text: "+1 tid => synergyEffect:{ lackInfra:true } (overbelastning).",
-          applyEffect: { timeCost:1, synergyEffect:{ lackInfra:true } }
+          label: "Brug eksisterende infrastruktur",
+          text: "+1 tid => synergyEffect:{ lackInfra:true}, +5% risk",
+          applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Skriv en rapport om immunologi-udvidelsen til CAB.",
-        choiceA: {
-          label: "Grundig dokumentation",
-          text: "+2 tid => ingen ekstra risk.",
-          applyEffect: { timeCost:2 }
-        },
-        choiceB: {
-          label: "Minimal dokumentation",
-          text: "0 tid => +5% risk => docSkipCount++",
-          applyEffect: { riskyPlus:0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Patologi – Billedanalyse",
-    shortDesc: `
-      Patologiafdelingen vil integrere 
-      <span class="hoverTooltip" data-tooltip="Kunstig intelligens til at tolke vævsbilleder.">AI-billedanalyse</span>
-      i LIMS.
-    `,
-    logicLong: `
-      Patologi håndterer vævsprøver og ønsker 
-      <span class="hoverTooltip" data-tooltip="Avanceret computer-vision, der hjælper med diagnose.">AI</span>
-      til at spotte abnormiteter. 
-      Stor chance for fejl, hvis ikke infrastruktur er klar.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Drøft AI-behov med patologiafdelingens læger.",
-        choiceA: {
-          label: "Interview lægerne",
-          text: "+3 tid => +2 development",
-          applyEffect: { timeCost:3, statChange:{ development:2 } }
-        },
-        choiceB: {
-          label: "Overfladisk snak",
-          text: "+1 tid => +1 dev, +5% risk",
-          applyEffect: { timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opgradér GPU-servere til AI-billedanalyse?",
-        choiceA: {
-          label: "Køb GPU-løsning",
-          text: "+2 tid, -150 kr => +2 stability",
-          applyEffect: { timeCost:2, moneyCost:150, statChange:{ stability:2 } }
-        },
-        choiceB: {
-          label: "Behold CPU only",
-          text: "+5% risk => synergyEffect:{ lackInfra:true }",
-          applyEffect: { riskyPlus:0.05, synergyEffect:{ lackInfra:true } }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "CAB vil se dokumentation for AI-sikkerhed.",
+        stepDescription: `
+          Skriv 
+          <span class="hoverTooltip" data-tooltip="Protokoller for autoimmun stainer, flow-indstillinger.">protokoldokumentation</span> 
+          til CAB.
+        `,
         choiceA: {
           label: "Fuld rapport",
-          text: "+2 tid => +1 security (god compliance).",
-          applyEffect: { timeCost:2, statChange:{ security:1 } }
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Minimal",
           text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus:0.05 }
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title: "Klinikledelsen vil have dashboards",
+    title: "Patologi – Digital Arbejdsgang",
     shortDesc: `
-      Direktionen ønsker 
-      <span class="hoverTooltip" data-tooltip="Interaktive oversigter for KPI'er.">dashboards</span>
-      i LIMS for overblik.
+      Patologi vil skifte til 
+      <span class="hoverTooltip" data-tooltip="Scanning af histosnit, AI for diagnostik.">digital patologi</span> 
+      med <span class="hoverTooltip" data-tooltip="Makroskopisk udskæring, embedding station, mikrotom, autostainer.">automatiserede processer</span>.
     `,
     logicLong: `
-      De mangler overblik og vil have 
-      <span class="hoverTooltip" data-tooltip="Grafiske oversigter over kritiske data.">dashboards</span>. 
-      Personalet frygter, at interface bliver for tungt.
+      Afdelingen har 
+      <span class="hoverTooltip" data-tooltip="Vævskassetter, snit, farvning.">makroskopisk udskæring</span>, 
+      embedding station, 
+      <span class="hoverTooltip" data-tooltip="Maskine der skærer tynde paraffinsnit.">mikrotom</span>
+      og autostainer. 
+      De vil scanne snittene digitalt og bruge AI. LIMS skal fange alle skridt.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Mød med ledelsen for at definere dashboard-indhold.",
+        stepDescription: `
+          Mød med patologiens overlæge og teknikere, 
+          der ønsker <span class="hoverTooltip" data-tooltip="Registrering af alle skridt, fra udskæring til scanning.">komplet sporing</span>.
+        `,
         choiceA: {
-          label: "Workshop",
-          text: "+3 tid => +2 development (grundigt design).",
-          applyEffect: { timeCost:3, statChange:{ development:2 } }
+          label: "Detaljeret flowgennemgang",
+          text: "+3 tid => +2 stability (man finder flaskehalse).",
+          applyEffect: { timeCost: 3, statChange: { stability: 2 } }
+        },
+        choiceB: {
+          label: "Kort interview",
+          text: "+1 tid => +1 stability, +5% risk",
+          applyEffect: { timeCost: 1, statChange: { stability: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: `
+          Planlæg 
+          <span class="hoverTooltip" data-tooltip="Digitale scannere kan generere store billedfiler.">storage</span>
+          og 
+          <span class="hoverTooltip" data-tooltip="AI-analyse kræver HPC eller GPU.">AI-kapacitet</span>
+          for scannede snit.
+        `,
+        choiceA: {
+          label: "Køb GPU-server + stor disk",
+          text: "+2 tid, -150 kr => +2 development (AI-ready).",
+          applyEffect: { timeCost: 2, moneyCost: 150, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Brug eksisterende CPU + disk",
+          text: "+5% risk => synergyEffect:{ lackInfra:true}",
+          applyEffect: { synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: `
+          CAB kræver 
+          <span class="hoverTooltip" data-tooltip="Hvordan håndterer man snit, farver, scanning, AI-output.">arbejdsgangs-dokumentation</span>.
+        `,
+        choiceA: {
+          label: "Fuld workflow-doc",
+          text: "+2 tid => ingen risk",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Spring over",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Klinikledelsen vil have Dashboards",
+    shortDesc: `
+      Direktionen ønsker 
+      <span class="hoverTooltip" data-tooltip="Brugervenlige oversigter for KPI'er, fx TAT, sample flow.">LIMS-dashboards</span>
+      for analyser.
+    `,
+    logicLong: `
+      Ledelsen savner overblik over 
+      <span class="hoverTooltip" data-tooltip="Turn Around Time: Tid fra prøve modtagelse til svar.">TAT</span>, 
+      sample flow og 
+      <span class="hoverTooltip" data-tooltip="Hvor mange prøver, hvilke analyser er forsinkede.">KPI’er</span>. 
+      De vil have et dashboard i LIMS, så de kan styre ressourcer bedre.
+    `,
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: `
+          Mød med direktionsgruppen for at definere 
+          <span class="hoverTooltip" data-tooltip="Hvilke målinger? fx TAT, fejlrate, reagensforbrug.">dashboardets indhold</span>.
+        `,
+        choiceA: {
+          label: "Workshop med ledelsen",
+          text: "+3 tid => +2 development (grundig kravafdækning).",
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
           label: "Prototype hurtigt",
-          text: "+1 tid => +1 dev, +5% risk (risiko for misforståelser).",
-          applyEffect: { timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
+          text: "+1 tid => +1 dev, +5% risk (misforståelser).",
+          applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "it-jura",
         stepDescription: `
-          Nye dashboards viser muligvis persondata. 
-          <span class="hoverTooltip" data-tooltip="EU-lov for databeskyttelse.">GDPR</span> 
-          skal overholdes.
+          Nye dashboards viser måske 
+          <span class="hoverTooltip" data-tooltip="Patientdata eller medarbejderperformance. Skal overholde GDPR.">personfølsomme data</span>.
         `,
         choiceA: {
           label: "Dyb jura-check",
           text: "+2 tid, -50 kr => +1 security",
-          applyEffect: { timeCost:2, moneyCost:50, statChange:{ security:1 } }
+          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 1 } }
         },
         choiceB: {
           label: "Minimal check",
           text: "Spar tid => +1 dev, +5% risk pga. mulig lovbrud.",
-          applyEffect: { statChange:{ development:1 }, riskyPlus:0.05 }
+          applyEffect: { statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Skriv dokumentation om GDPR & dashboards.",
+        stepDescription: `
+          Skriv 
+          <span class="hoverTooltip" data-tooltip="GDPR, datasikkerhed, hvad lagres i dashboard.">GDPR & dashboard-dokumentation</span>.
+        `,
         choiceA: {
           label: "Fuld dok",
           text: "+2 tid => ingen ekstra risk.",
-          applyEffect: { timeCost:2 }
+          applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Spring over",
           text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus:0.05 }
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
@@ -188,54 +220,64 @@ window.hospitalTasks = [
   {
     title: "Multi-sprog i LIMS",
     shortDesc: `
-      Flere internationale læger ønsker 
-      <span class="hoverTooltip" data-tooltip="Sprogpakker i LIMS UI.">multisprog</span>.
+      Flere udenlandske ansatte ønsker LIMS på fx engelsk, 
+      <span class="hoverTooltip" data-tooltip="Tysk, fransk, spansk, alt efter personalets behov.">tysk</span> 
+      eller fransk.
     `,
     logicLong: `
-      Hospitalet har udenlandske ansatte, der vil have menuer på fx engelsk. 
-      Oversættelse kan være dyr og give nye tekniske krav.
+      Hospitalet har mange internationale læger. 
+      De ønsker menuer og rapporter i flere sprog. 
+      Det kan kræve oversættelse af f.eks. 
+      <span class="hoverTooltip" data-tooltip="Instrumentnavne, pipetteringsrobot, flowcytometer.">instrument-felter</span> 
+      i LIMS.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Find ud af, hvilke sprog der er vigtigst.",
+        stepDescription: "Find ud af, hvilke sprog der reelt er mest nødvendige.",
         choiceA: {
           label: "Kravworkshop",
-          text: "+3 tid => +2 development",
-          applyEffect: { timeCost:3, statChange:{ development:2 } }
+          text: "+3 tid => +2 development (prioriterer korrekte sprog).",
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Skøn baseret på personalet",
-          text: "+1 tid => +1 dev, +5% risk",
-          applyEffect: { timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
+          label: "Skøn baseret på personalelister",
+          text: "+1 tid => +1 dev, +5% risk (du overser noget).",
+          applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Opgradér server for at håndtere ekstra sprog.",
+        stepDescription: `
+          Sikre at <span class="hoverTooltip" data-tooltip="Serveren skal have flere sprogpakker til interface.">serveren</span> 
+          håndterer sprogpakkernes ressourcer.
+        `,
         choiceA: {
-          label: "Fuld opgradering",
-          text: "+2 tid, -100 kr => +2 stability",
-          applyEffect: { timeCost:2, moneyCost:100, statChange:{ stability:2 } }
+          label: "Opgrader system",
+          text: "+2 tid, -100 kr => +2 stability (klar til multi-lingual).",
+          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 2 } }
         },
         choiceB: {
           label: "Behold eksisterende",
           text: "+1 tid => synergyEffect:{ lackInfra:true}",
-          applyEffect: { timeCost:1, synergyEffect:{ lackInfra:true } }
+          applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se plan for sproghåndtering.",
+        stepDescription: `
+          CAB vil se en 
+          <span class="hoverTooltip" data-tooltip="Plan for sprogversioner, vedligehold.">oversættelsesplan</span>.
+        `,
         choiceA: {
           label: "Detaljeret plan",
           text: "+2 tid => ingen risk",
-          applyEffect: { timeCost:2 }
+          applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Minimal",
           text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus:0.05 }
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
@@ -244,18 +286,20 @@ window.hospitalTasks = [
   {
     title: "Projekt: WeekendServerNedluk",
     shortDesc: `
-      Hospitalet vil 
-      <span class="hoverTooltip" data-tooltip="Lukke serverne i en weekend for en stor opgradering.">weekend-nedluk</span>
-      for store opgraderinger.
+      Hospitalet vil lukke systemet en weekend for store 
+      <span class="hoverTooltip" data-tooltip="Opdatering af servers, net, LIMS-version.">opgraderinger</span>.
     `,
     logicLong: `
       For at undgå driftforstyrrelser i hverdagen, 
-      planlægges en weekendservernedluk. Personalet er skeptiske.
+      vil ledelsen køre en weekend-nedluk. 
+      Fx 
+      <span class="hoverTooltip" data-tooltip="Patologi har autostainere i gang, microbiologi har MALDI-TOF testruns, etc.">afdelinger</span>
+      er dog nervøse.
     `,
     steps: [
       {
         location:"hospital",
-        stepDescription:"Drøft med personalet, om de kan undvære systemet en weekend.",
+        stepDescription:"Drøft med personalet, om de kan undvære LIMS i en hel weekend.",
         choiceA:{
           label:"Sæt møder op",
           text:"+3 tid => +2 stability (man sikrer enighed).",
@@ -269,7 +313,7 @@ window.hospitalTasks = [
       },
       {
         location:"infrastruktur",
-        stepDescription:"Udfør opgraderinger i weekend-lukketiden.",
+        stepDescription:"Udfør planlagte server- og netopgraderinger i weekend-lukketiden.",
         choiceA:{
           label:"Stor infrastrukturpakke",
           text:"+3 tid, -150 kr => +2 stability, +1 development",
@@ -283,7 +327,7 @@ window.hospitalTasks = [
       },
       {
         location:"dokumentation",
-        stepDescription:"Skriv weekend-rapport til CAB.",
+        stepDescription:"Skriv weekend-rapport til CAB om alt, inkl. patologi-løsninger.",
         choiceA:{
           label:"Grundig rapport",
           text:"+2 tid => ingen ekstra risk",
@@ -301,23 +345,26 @@ window.hospitalTasks = [
   {
     title:"BlodprøveAutomatisering",
     shortDesc:`
-      Automatiske robotter til 
-      <span class="hoverTooltip" data-tooltip="Automatisk håndtering af blodprøver.">blodprøvehåndtering</span>
-      i lab.
+      Automatisér blodprøvehåndtering med 
+      <span class="hoverTooltip" data-tooltip="Robot kan sortere, centrifugere, tjekke stregkoder.">robotudstyr</span>,
+      pipetteringsrobot & autoanalyser.
     `,
     logicLong:`
-      Hospitalets lab vil automatisere blodprøvehåndtering med robotter. 
-      Men 
-      <span class="hoverTooltip" data-tooltip="CAB: Tjekker for mekaniske risici.">CAB</span>
-      ser stor risiko for fejl.
+      Hospitalets lab vil automatisere processer med pipetteringsrobot og
+      <span class="hoverTooltip" data-tooltip="Store maskiner, fx til CRP, leverprøver, nyretal.">autoanalyser</span>.
+      LIMS skal styre stregkoder, batchhåndtering og resultatoverførsel.
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:"Mød med lab-personale, der er spændte på robotter.",
+        stepDescription:`
+          Mød med lab-personalet, der har travlt og vil 
+          <span class="hoverTooltip" data-tooltip="Færre manuelle pipetteringer, mindre risiko for fejl.">automatisere</span>
+          blodprøver mest muligt.
+        `,
         choiceA:{
           label:"Grundig interviewrunde",
-          text:"+3 tid => +2 stability",
+          text:"+3 tid => +2 stability (du forstår workflowet).",
           applyEffect:{ timeCost:3, statChange:{ stability:2 } }
         },
         choiceB:{
@@ -328,7 +375,11 @@ window.hospitalTasks = [
       },
       {
         location:"infrastruktur",
-        stepDescription:"Robotter kræver nye netværks- og strømforhold.",
+        stepDescription:`
+          Robotter kræver ny 
+          <span class="hoverTooltip" data-tooltip="Koordinering med autoanalyser, stregkodescannere.">integration</span>
+          og sikring mod overbelastning.
+        `,
         choiceA:{
           label:"Dedikeret robot-net",
           text:"+2 tid, -100 kr => +2 stability",
@@ -336,13 +387,17 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Brug eksisterende kabling",
-          text:"+1 tid => synergyEffect:{lackInfra:true}, +5% risk",
+          text:"+1 tid => synergyEffect:{ lackInfra:true}, +5% risk",
           applyEffect:{ timeCost:1, synergyEffect:{lackInfra:true}, riskyPlus:0.05 }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"Robotprojektrapport til CAB.",
+        stepDescription:`
+          Lav 
+          <span class="hoverTooltip" data-tooltip="Beskrivelse af robot-flow, autoanalysers interface, QC.">automationsrapport</span> 
+          til CAB.
+        `,
         choiceA:{
           label:"Detaljeret",
           text:"+2 tid => no risk",
@@ -360,21 +415,26 @@ window.hospitalTasks = [
   {
     title:"Biokemi – ReagensHåndtering",
     shortDesc:`
-      Biokemilab ønsker 
-      <span class="hoverTooltip" data-tooltip="Modul der sporer reagenser.">reagens-overblik</span>
+      Biokemilab vil styre 
+      <span class="hoverTooltip" data-tooltip="Fx reagenser til autoanalyser, HPLC, Ion Selective Electrode.">reagenser</span>
       i LIMS.
     `,
     logicLong:`
-      Biokemilab har reagenser, som ofte løber tør midt i analyser. 
-      De vil have LIMS til at tracke lagerbeholdning.
+      Biokemilab bruger mange reagenser (fx til hormonanalyser, 
+      <span class="hoverTooltip" data-tooltip="High-Performance Liquid Chromatography.">HPLC</span>, 
+      <span class="hoverTooltip" data-tooltip="Ion Selective Electrode: måler Na+, K+ i blod.">ISE</span>, autoanalyser). 
+      De vil have LIMS til at tracke reagensbeholdning og kvalitet (QC).
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:"Interview biokemikere om reagens-behov.",
+        stepDescription:`
+          Interview biokemikere om reagens-forbrug, QC-kontroller og 
+          <span class="hoverTooltip" data-tooltip="TDM, hormoner, enzymer, elektrolytter.">analysetyper</span>.
+        `,
         choiceA:{
           label:"Dybt interview",
-          text:"+3 tid => +2 development",
+          text:"+3 tid => +2 development (du opdager nye features).",
           applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
         choiceB:{
@@ -385,7 +445,11 @@ window.hospitalTasks = [
       },
       {
         location:"leverandør",
-        stepDescription:"Kan leverandøren udvikle reagens-modulet?",
+        stepDescription:`
+          Kan leverandøren udvikle 
+          <span class="hoverTooltip" data-tooltip="Automatisk reagens-lot track, QC, forbrugsalarmer.">reagens-modul</span> 
+          til LIMS?
+        `,
         choiceA:{
           label:"Premium-løsning",
           text:"+2 tid, -120 kr => +2 stability",
@@ -399,7 +463,11 @@ window.hospitalTasks = [
       },
       {
         location:"dokumentation",
-        stepDescription:"Reagens-rapport til CAB.",
+        stepDescription:`
+          Reagens-rapport: 
+          <span class="hoverTooltip" data-tooltip="Hvordan trackes lot-numre, QC checks, forbrug pr. dag.">modulbeskrivelse</span> 
+          til CAB.
+        `,
         choiceA:{
           label:"Udførlig dok",
           text:"+2 tid => ingen risk",
@@ -417,19 +485,19 @@ window.hospitalTasks = [
   {
     title:"Klinisk Genetik – VariantDatabase",
     shortDesc:`
-      Genetik vil have en 
-      <span class="hoverTooltip" data-tooltip="Database for genvarianter i LIMS.">VariantDatabase</span>
-      til arvelige mutationer.
+      Genetik vil have 
+      <span class="hoverTooltip" data-tooltip="Samling af geninformationer (mutationer).">VariantDatabase</span>
+      i LIMS.
     `,
     logicLong:`
-      Klinisk Genetik sporer arvelige mutationer og vil have en 
-      <span class="hoverTooltip" data-tooltip="Samling af geninformationer, meget data.">variantdatabase</span>.
-      Datamængden kan blive stor.
+      Klinisk Genetik sporer arvelige mutationer og vil integrere 
+      <span class="hoverTooltip" data-tooltip="Fx HPC-løsning til BigData, AI til variantfortolkning.">større dataanalyse</span> 
+      i LIMS. De har brug for HPC-kapacitet, replikering.
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:"Koordiner med genetikere om store datamængder.",
+        stepDescription:"Koordiner med genetikere om store datasæt, HPC og AI-ønsker.",
         choiceA:{
           label:"Genetik-workshop",
           text:"+3 tid => +2 development",
@@ -437,13 +505,17 @@ window.hospitalTasks = [
         },
         choiceB:{
           label:"Antag normal mængde",
-          text:"+1 tid => +1 dev, +5% risk",
+          text:"+1 tid => +1 dev, +5% risk (du undervurderer data).",
           applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05}
         }
       },
       {
         location:"infrastruktur",
-        stepDescription:"Databasekrav kan sprænge serverne?",
+        stepDescription:`
+          Databasekrav kan sprænge serverne. 
+          Opsæt HPC og replikering for 
+          <span class="hoverTooltip" data-tooltip="DNA-data, stor variation, BigData.">genvarianter</span>.
+        `,
         choiceA:{
           label:"Ny HPC-løsning",
           text:"+2 tid, -150 kr => +2 stability, +1 security",
@@ -457,7 +529,7 @@ window.hospitalTasks = [
       },
       {
         location:"dokumentation",
-        stepDescription:"Genetik-projekt kræver streng datasikkerhed i rapport til CAB.",
+        stepDescription:"CAB kræver streng datasikkerhed for geninfo (GDPR).",
         choiceA:{
           label:"Omfattende dok",
           text:"+2 tid => +1 security",
@@ -473,59 +545,62 @@ window.hospitalTasks = [
   },
 
   {
-    title:"Overbelægning i Akutafdelingen",
+    title:"Nyt Mikrobiologi-Lab",
     shortDesc:`
-      Akut vil integrere 
-      <span class="hoverTooltip" data-tooltip="Blodprøver og vitale parametre i LIMS.">hurtige blodprøver</span>
-      i LIMS.
+      Mikrobiologien skal have 
+      <span class="hoverTooltip" data-tooltip="PCR-hood, MALDI-TOF, BACTEC, dyrkninger.">udstyr</span>
+      integreret i LIMS.
     `,
     logicLong:`
-      Akutafdelingen modtager patienter 24/7. 
-      De kræver hurtigere blodprøvesvar i LIMS. 
-      Stor driftpåvirkning, men stor gevinst.
+      Mikrobiologi-lab udfører 
+      <span class="hoverTooltip" data-tooltip="Bakteriedyrkning, virusPCR, mykologi, resistens.">dybdegående analyser</span> 
+      og vil have LIMS til MALDI-TOF, PCR-hood, BACTEC. 
+      Desuden <span class="hoverTooltip" data-tooltip="Antibiogram-tests for resistens.">antibiogram</span> 
+      skal logges i LIMS.
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:"Tal med akut-personalet om ønsket svartid.",
+        stepDescription:"Tal med mikrobiologerne om analyser (PCR, mykologi, MALDI).",
         choiceA:{
-          label:"Detaljeret kartlægning",
-          text:"+3 tid => +2 stability",
-          applyEffect:{ timeCost:3, statChange:{ stability:2 } }
+          label:"Grundig behovsafdækning",
+          text:"+3 tid => +2 development (du fanger alt).",
+          applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
         choiceB:{
-          label:"Hurtig snak",
-          text:"+1 tid => +1 stability, +5% risk",
-          applyEffect:{ timeCost:1, statChange:{ stability:1 }, riskyPlus:0.05}
+          label:"Hurtig samtale",
+          text:"+1 tid => +1 dev, +5% risk (noget glemmes).",
+          applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
-        location:"it-jura",
+        location:"infrastruktur",
         stepDescription:`
-          Akut-data er følsomt. Tjek lovkrav! 
-          <span class="hoverTooltip" data-tooltip="GDPR-lignende regler for akutte data.">Datalov</span>
+          Integrér MALDI-TOF og 
+          <span class="hoverTooltip" data-tooltip="PCR-hood, BACTEC.">mikrobiologiapparater</span> 
+          med LIMS (dataoverførsel).
         `,
         choiceA:{
-          label:"Juridisk specialtjek",
-          text:"+2 tid, -60 kr => +1 security",
-          applyEffect:{ timeCost:2, moneyCost:60, statChange:{ security:1 } }
+          label:"Opsæt dedikeret interface",
+          text:"+2 tid, -120 kr => +2 stability",
+          applyEffect:{ timeCost:2, moneyCost:120, statChange:{ stability:2 } }
         },
         choiceB:{
-          label:"Antag alt OK",
-          text:"+5% risk => synergyEffect:{ rushedJura:true}",
-          applyEffect:{ riskyPlus:0.05, synergyEffect:{ rushedJura:true} }
+          label:"Genbrug eksisterende interface",
+          text:"+1 tid => synergyEffect:{ lackInfra:true}, +5% risk",
+          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true }, riskyPlus:0.05 }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"CAB vil se en plan for akut-blodprøver.",
+        stepDescription:"CAB vil se protokoller for dyrkning, PCR, MALDI.",
         choiceA:{
-          label:"Fuld dok",
+          label:"Omfattende dok",
           text:"+2 tid => ingen risk",
           applyEffect:{ timeCost:2 }
         },
         choiceB:{
-          label:"Skip doc",
+          label:"Minimal",
           text:"+5% risk => docSkipCount++",
           applyEffect:{ riskyPlus:0.05 }
         }
