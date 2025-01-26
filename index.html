@@ -1,211 +1,191 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Forvalter: LIMS – Tooltips & Forundersøg</title>
+  <title>IT Tycoon: LIMS Forvaltning - Learning Edition</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <h1>IT Tycoon: LIMS Forvaltning (Learning Edition)</h1>
+    <div id="scoreboard">
+      <div id="scores">
+        <span class="score-item">Time left: <span id="time-left">100</span></span>
+        <span class="score-item">Money: <span id="money-left">1000</span></span>
+        <span class="score-item">Completed Tasks: <span id="tasks-completed">0</span></span>
 
-<header>
-  <h1>IT Forvalter: LIMS – Tooltips & Forundersøg</h1>
-  <div id="scoreboard">
-    <div id="scores">
-      <!-- Tooltips i scoreboard via data-tooltip -->
-      <span class="score-item hoverTooltip" data-tooltip="Tilgængelig tid i denne PI. Løb ikke tør!">
-        Tid: <span id="time-left">90</span>
-      </span>
-      <span class="score-item hoverTooltip" data-tooltip="Din økonomi. Går du i minus, falder hospitalets tilfredshed.">
-        Penge: <span id="money-left">2000</span>
-      </span>
-      <span class="score-item hoverTooltip" data-tooltip="Antal gennemførte opgaver i denne PI.">
-        Opgaver: <span id="tasks-completed">0</span>
-      </span>
-      <span class="score-item hoverTooltip" data-tooltip="It-sikkerhed for LIMS. Højt tal = få sårbarheder.">
-        Sikkerhed: <span id="security-value">100</span>
-      </span>
-      <span class="score-item hoverTooltip" data-tooltip="Hvor stabilt LIMS kører (driftssikkerhed, oppetid, robusthed).">
-        Stabilitet: <span id="stability-value">100</span>
-      </span>
-      <span class="score-item hoverTooltip" data-tooltip="Hvor moderne og funktionsrigt systemet er.">
-        Udvikling: <span id="development-value">100</span>
-      </span>
-      <span class="score-item hoverTooltip" data-tooltip="Hospitalets tilfredshed med LIMS. Pas på ikke at skuffe dem!">
-        Hospital: <span id="hospital-satisfaction">100</span>%
-      </span>
-    </div>
-  </div>
-</header>
+        <span class="score-item" style="color:#ff4444;">Security:</span>
+        <span id="security-value">100</span>
 
-<div id="main-container">
-  <div id="game-area">
-    <!-- Lokationer med data-tooltip -->
-    <div class="location hospital hoverTooltip"
-         data-tooltip="Hospitalet: Her taler du med drift & personale.">
-      🏥<br>Hospital
-    </div>
-    <div class="location infrastruktur hoverTooltip"
-         data-tooltip="Infrastruktur: Servere, netværk, hardware.">
-      🔧<br>Infrastruktur
-    </div>
-    <div class="location cybersikkerhed hoverTooltip"
-         data-tooltip="Cybersikkerhed: Hackermodstand, firewall, etc.">
-      💻<br>Cybersikkerhed
-    </div>
-    <div class="location informationssikkerhed hoverTooltip"
-         data-tooltip="Informationssikkerhed: GDPR, ISO27001, datahåndtering.">
-      🛡<br>Informationssikkerhed
-    </div>
-    <div class="location it-jura hoverTooltip"
-         data-tooltip="IT Jura: Kontrakter, licenser, datalovgivning.">
-      ⚖️<br>IT Jura
-    </div>
-    <div class="location leverandor hoverTooltip"
-         data-tooltip="Leverandør: Ekstern part, support & implementering.">
-      📦<br>Leverandør
-    </div>
-    <div class="location medicinsk-udstyr hoverTooltip"
-         data-tooltip="Medicinsk Udstyr: Apparater til laboratorier, integration med LIMS.">
-      🩺<br>Medicinsk
-    </div>
-    <div class="location dokumentation hoverTooltip"
-         data-tooltip="Dokumentation: Beskriver ændringerne, CAB tjekker altid!">
-      📄<br>Dokumentation
-    </div>
-  </div>
+        <span class="score-item" style="color:#44ff44;">Stability:</span>
+        <span id="stability-value">100</span>
 
-  <div id="task-side">
-    <div id="active-task">
-      <h2>Aktiv Opgave</h2>
-      <h3 id="active-task-headline">Ingen aktiv opgave</h3>
-      <p id="active-task-description"></p>
-      <div id="task-steps">
-        <h4>Trin:</h4>
-        <ul id="steps-list"><li>Ingen aktiv opgave</li></ul>
+        <span class="score-item" style="color:#4444ff;">Development:</span>
+        <span id="development-value">100</span>
+
+        <span class="score-item" style="color:#ffc107;">Hospital Satisfaction:</span>
+        <span id="hospital-satisfaction">100</span>%
       </div>
     </div>
-    <div id="available-tasks">
-      <h2>Mulige Opgaver</h2>
-      <ul id="tasks-list">
-        <li>Ingen opgaver tilgængelige</li>
-      </ul>
+  </header>
+
+  <div id="main-container">
+    <div id="game-area">
+      <!-- 8 location boxes, for example: -->
+      <div class="location infrastruktur" id="infrastruktur">
+        <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
+      </div>
+      <div class="location informationssikkerhed" id="informationssikkerhed">
+        <span class="loc-icon" style="font-size:2rem;">🛡️</span> Informationssikkerhed
+      </div>
+      <div class="location hospital" id="hospital">
+        <span class="loc-icon" style="font-size:2rem;">🏥</span> Hospital
+      </div>
+      <div class="location leverandor" id="leverandor">
+        <span class="loc-icon" style="font-size:2rem;">📦</span> Leverandør
+      </div>
+      <div class="location medicinsk-udstyr" id="medicinsk-udstyr">
+        <span class="loc-icon" style="font-size:2rem;">🩺</span> Medicinsk Udstyr
+      </div>
+      <div class="location it-jura" id="it-jura">
+        <span class="loc-icon" style="font-size:2rem;">⚖️</span> IT Jura
+      </div>
+      <div class="location cybersikkerhed" id="cybersikkerhed">
+        <span class="loc-icon" style="font-size:2rem;">💻</span> Cybersikkerhed
+      </div>
+      <div class="location dokumentation" id="dokumentation">
+        <span class="loc-icon" style="font-size:2rem;">📄</span> Dokumentation
+      </div>
+    </div>
+
+    <div id="task-side">
+      <div id="active-task">
+        <h2>Active Task</h2>
+        <h3 id="active-task-headline">No active task</h3>
+        <p id="active-task-description"></p>
+        <div id="task-steps">
+          <h4>Steps to complete:</h4>
+          <ul id="steps-list">
+            <li>No active task</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="available-tasks">
+        <h2>Possible Tasks</h2>
+        <ul id="tasks-list">
+          <li>No tasks available</li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
 
-<footer>
-  <p>&copy; 2025 LIMS Forvalter – Tooltips & Forundersøg</p>
-</footer>
+  <footer>
+    <p>&copy; 2025 IT Tycoon ApS - Learning Edition</p>
+  </footer>
 
-<div id="popup-container"></div>
-<div id="floating-text-container"></div>
-
-<!-- Intro Modal -->
-<div id="intro-modal" class="modal">
-  <div class="modal-content">
-    <h2>Velkommen!</h2>
-    <p>
-      Du forvalter LIMS for hospitalet. Du har 90 tid pr. iteration (PI). 
-      Hospitalet stiller krav, og du kan sætte egne commits. 
-      Du kan lave forundersøgelse af opgaver for at minimere risiko!
-    </p>
-    <button id="intro-ok-btn" style="background-color:#27ae60;">Start Spillet</button>
-  </div>
-</div>
-
-<!-- Tutorial Modal -->
-<div id="tutorial-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2 id="tutorial-title">Tutorial</h2>
-    <p id="tutorial-text"></p>
-    <button id="tutorial-next-btn" style="background-color:#2ecc71;">Næste</button>
-  </div>
-</div>
-
-<!-- Scenario Modal -->
-<div id="scenario-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2 id="scenario-title"></h2>
-    <p id="scenario-flavor-text" style="font-style:italic; color:#ccc;"></p>
-    <p id="scenario-description"></p>
-    <div id="scenario-optionA" style="margin-bottom:10px;">
-      <strong><span id="scenario-a-label"></span></strong><br/>
-      <em id="scenario-a-text"></em>
-    </div>
-    <div id="scenario-optionB" style="margin-bottom:10px;">
-      <strong><span id="scenario-b-label"></span></strong><br/>
-      <em id="scenario-b-text"></em>
-    </div>
-    <div style="margin-top:12px;">
-      <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
-      <button id="scenario-b-btn">Vælg B</button>
+  <!-- Intro Modal -->
+  <div id="intro-modal" class="modal">
+    <div class="modal-content">
+      <h2 style="color:#1abc9c;">Welcome to IT Tycoon: LIMS Forvaltning - Learning Edition</h2>
+      <p style="color:#f1c40f;">
+        You are the IT manager for the LIMS (Laboratory Information Management System)
+        in a large hospital covering Biokemi, Patologi, Immunologi, Mikrobiologi, 
+        and more. Your mission is to improve, maintain, and secure these systems
+        while learning about real-world processes, compliance, and best practices!
+      </p>
+      <p>
+        You have 100 time units and 2000 money. Each decision costs time & money—and 
+        skipping documentation can raise risk with the CAB (Change Advisory Board)! 
+        But new employees can explore "Dig Deeper" links for thorough explanations 
+        whenever they're curious. Good luck on your IT learning journey!
+      </p>
+      <button id="intro-ok-btn" style="background-color:#27ae60;">Get Started!</button>
     </div>
   </div>
-</div>
 
-<!-- Info Modal (til ordforklaring, fx DPDP-lov etc.) -->
-<div id="info-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2 id="info-modal-title">Ordforklaring</h2>
-    <p id="info-modal-text"></p>
-    <button id="info-modal-ok-btn" style="background-color:#2980b9;">OK</button>
+  <!-- Tutorial Modal -->
+  <div id="tutorial-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="tutorial-title"></h2>
+      <p id="tutorial-text"></p>
+      <button id="tutorial-next-btn" style="background-color:#2980b9;">Next</button>
+    </div>
   </div>
-</div>
 
-<!-- CAB Modal -->
-<div id="cab-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2>CAB Gennemgang</h2>
-    <p id="cab-summary"></p>
-    <button id="cab-ok-btn" style="background-color:#2ecc71;">Færdiggør</button>
+  <!-- Scenario Modal (used for location steps) -->
+  <div id="scenario-modal" class="modal" style="display:none;">
+    <div class="modal-content" id="scenario-modal-content">
+      <!-- new narrative snippet -->
+      <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
+
+      <h2 id="scenario-title"></h2>
+      <p id="scenario-flavor-text"></p>
+      <p id="scenario-description"></p>
+
+      <!-- "Dig Deeper" container -->
+      <div id="dig-deeper-links" style="display:none; margin-bottom: 8px;"></div>
+
+      <div id="scenario-optionA">
+        <strong>A: </strong><span id="scenario-a-label"></span><br/>
+        <em id="scenario-a-text"></em>
+      </div>
+      <div id="scenario-optionB" style="margin-top:8px;">
+        <strong>B: </strong><span id="scenario-b-label"></span><br/>
+        <em id="scenario-b-text"></em>
+      </div>
+
+      <div style="margin-top:12px;">
+        <button id="scenario-a-btn" style="margin-right:8px;">Choose A</button>
+        <button id="scenario-b-btn">Choose B</button>
+      </div>
+    </div>
   </div>
-</div>
 
-<div id="cab-result-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2 id="cab-result-title"></h2>
-    <p id="cab-result-text"></p>
-    <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
+  <!-- Popup container for floating text -->
+  <div id="popup-container"></div>
+  <div id="floating-text-container"></div>
+
+  <!-- End-of-Time Modal -->
+  <div id="end-modal" class="modal" style="display:none;">
+    <div class="modal-content" id="end-modal-content">
+      <h2>Time is up!</h2>
+      <p id="end-game-summary"></p>
+      <button id="end-ok-btn" style="background-color:#e74c3c;">Close</button>
+    </div>
   </div>
-</div>
 
-<!-- Task-Summary Modal -->
-<div id="task-summary-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2>Opgave Fuldført</h2>
-    <p id="task-summary-text"></p>
-    <button id="task-summary-ok-btn" style="background-color:#2980b9;">OK</button>
+  <!-- PI Start / PI End modals omitted for brevity, or included if you want them -->
+
+  <!-- CAB Final Approval Modal -->
+  <div id="cab-modal" class="modal" style="display:none;">
+    <div class="modal-content" id="cab-modal-content">
+      <h2>Final CAB Review</h2>
+      <p id="cab-summary"></p>
+      <button id="cab-ok-btn" style="background-color:#2ecc71;">Proceed</button>
+    </div>
   </div>
-</div>
 
-<!-- PI Start Modal -->
-<div id="pi-start-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2>PI Start</h2>
-    <p id="hospital-expectations-text"></p>
-    <h4>Dine egne Commits:</h4>
-    <label>Sikkerhed: <input type="number" id="commit-security" value="110" /></label><br/>
-    <label>Stabilitet: <input type="number" id="commit-stability" value="110" /></label><br/>
-    <label>Udvikling: <input type="number" id="commit-development" value="110" /></label><br/>
-    <button id="pi-start-ok-btn" style="margin-top:8px; background-color:#27ae60;">Fortsæt</button>
+  <!-- CAB Result Popup -->
+  <div id="cab-result-modal" class="modal" style="display:none;">
+    <div class="modal-content" id="cab-result-content">
+      <h2 id="cab-result-title"></h2>
+      <p id="cab-result-text"></p>
+      <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
+    </div>
   </div>
-</div>
 
-<!-- End-of-Time Modal (Inspect & Adapt) -->
-<div id="end-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h2>PI Slut – Inspect & Adapt</h2>
-    <p id="end-game-summary"></p>
-    <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
+  <!-- Task Summary Modal for knowledge recap -->
+  <div id="task-summary-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div id="task-summary-text"></div>
+      <button id="task-summary-ok-btn" style="background-color:#27ae60;">OK</button>
+    </div>
   </div>
-</div>
 
-<!-- Vores scripts + tasks -->
-<script src="scripts/tasks/cybersikkerhedTasks.js"></script>
-<script src="scripts/tasks/hospitalTasks.js"></script>
-<script src="scripts/tasks/infrastrukturTasks.js"></script>
-<script src="scripts/main.js"></script>
-
+  <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
+  <script src="scripts/tasks/hospitalTasks.js"></script>
+  <script src="scripts/main.js"></script>
 </body>
 </html>
