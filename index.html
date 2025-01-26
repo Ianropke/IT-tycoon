@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon: LIMS Forvaltning - Learning Edition</title>
+  <title>IT Tycoon: LIMS Forvaltning - Læringsudgave</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>IT Tycoon: LIMS Forvaltning (Learning Edition)</h1>
+    <h1>IT Tycoon: LIMS Forvaltning (Læringsudgave)</h1>
     <div id="scoreboard">
       <div id="scores">
-        <span class="score-item">Time left: <span id="time-left">100</span></span>
-        <span class="score-item">Money: <span id="money-left">1000</span></span>
-        <span class="score-item">Completed Tasks: <span id="tasks-completed">0</span></span>
+        <span class="score-item">Tid tilbage: <span id="time-left">100</span></span>
+        <span class="score-item">Penge: <span id="money-left">1000</span></span>
+        <span class="score-item">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
 
-        <span class="score-item" style="color:#ff4444;">Security:</span>
+        <span class="score-item" style="color:#ff4444;">Sikkerhed:</span>
         <span id="security-value">100</span>
 
-        <span class="score-item" style="color:#44ff44;">Stability:</span>
+        <span class="score-item" style="color:#44ff44;">Stabilitet:</span>
         <span id="stability-value">100</span>
 
-        <span class="score-item" style="color:#4444ff;">Development:</span>
+        <span class="score-item" style="color:#4444ff;">Udvikling:</span>
         <span id="development-value">100</span>
 
-        <span class="score-item" style="color:#ffc107;">Hospital Satisfaction:</span>
+        <span class="score-item" style="color:#ffc107;">Hospitalstilfredshed:</span>
         <span id="hospital-satisfaction">100</span>%
       </div>
     </div>
@@ -32,7 +32,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- 8 location boxes, for example: -->
+      <!-- Lokationsbokse (8 stk.) -->
       <div class="location infrastruktur" id="infrastruktur">
         <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
       </div>
@@ -61,47 +61,47 @@
 
     <div id="task-side">
       <div id="active-task">
-        <h2>Active Task</h2>
-        <h3 id="active-task-headline">No active task</h3>
+        <h2>Aktiv Opgave</h2>
+        <h3 id="active-task-headline">Ingen aktiv opgave</h3>
         <p id="active-task-description"></p>
         <div id="task-steps">
-          <h4>Steps to complete:</h4>
+          <h4>Trin, der skal gennemføres:</h4>
           <ul id="steps-list">
-            <li>No active task</li>
+            <li>Ingen aktiv opgave</li>
           </ul>
         </div>
       </div>
 
       <div id="available-tasks">
-        <h2>Possible Tasks</h2>
+        <h2>Mulige Opgaver</h2>
         <ul id="tasks-list">
-          <li>No tasks available</li>
+          <li>Ingen opgaver tilgængelige</li>
         </ul>
       </div>
     </div>
   </div>
 
   <footer>
-    <p>&copy; 2025 IT Tycoon ApS - Learning Edition</p>
+    <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
   </footer>
 
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2 style="color:#1abc9c;">Welcome to IT Tycoon: LIMS Forvaltning - Learning Edition</h2>
+      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
       <p style="color:#f1c40f;">
-        You are the IT manager for the LIMS (Laboratory Information Management System)
-        in a large hospital covering Biokemi, Patologi, Immunologi, Mikrobiologi, 
-        and more. Your mission is to improve, maintain, and secure these systems
-        while learning about real-world processes, compliance, and best practices!
+        Du er ansvarlig for LIMS (Laboratory Information Management System)
+        på et stort hospital med afdelinger inden for bl.a. Biokemi, Patologi,
+        Immunologi og Mikrobiologi. Din opgave er at vedligeholde, udvikle og 
+        sikre systemerne – samt lære vigtige faglige begreber undervejs!
       </p>
       <p>
-        You have 100 time units and 2000 money. Each decision costs time & money—and 
-        skipping documentation can raise risk with the CAB (Change Advisory Board)! 
-        But new employees can explore "Dig Deeper" links for thorough explanations 
-        whenever they're curious. Good luck on your IT learning journey!
+        Du har 100 tidsenheder og 2000 kr. Hver beslutning koster tid og penge, 
+        og at springe dokumentation over øger din risiko i CAB (Change Advisory Board). 
+        Du kan frit udforske “Mere info” og korte historier, hvis du vil fordybe dig. 
+        God fornøjelse!
       </p>
-      <button id="intro-ok-btn" style="background-color:#27ae60;">Get Started!</button>
+      <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
@@ -110,21 +110,21 @@
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
       <p id="tutorial-text"></p>
-      <button id="tutorial-next-btn" style="background-color:#2980b9;">Next</button>
+      <button id="tutorial-next-btn" style="background-color:#2980b9;">Næste</button>
     </div>
   </div>
 
-  <!-- Scenario Modal (used for location steps) -->
+  <!-- Scenario Modal (bruges til lokationstrin) -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content" id="scenario-modal-content">
-      <!-- new narrative snippet -->
+      <!-- narrativ snippet -->
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
 
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
       <p id="scenario-description"></p>
 
-      <!-- "Dig Deeper" container -->
+      <!-- Container til “Grav Dybere”-knapper -->
       <div id="dig-deeper-links" style="display:none; margin-bottom: 8px;"></div>
 
       <div id="scenario-optionA">
@@ -137,33 +137,31 @@
       </div>
 
       <div style="margin-top:12px;">
-        <button id="scenario-a-btn" style="margin-right:8px;">Choose A</button>
-        <button id="scenario-b-btn">Choose B</button>
+        <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
+        <button id="scenario-b-btn">Vælg B</button>
       </div>
     </div>
   </div>
 
-  <!-- Popup container for floating text -->
+  <!-- Popup container -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
   <!-- End-of-Time Modal -->
   <div id="end-modal" class="modal" style="display:none;">
     <div class="modal-content" id="end-modal-content">
-      <h2>Time is up!</h2>
+      <h2>Tiden er gået!</h2>
       <p id="end-game-summary"></p>
-      <button id="end-ok-btn" style="background-color:#e74c3c;">Close</button>
+      <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
     </div>
   </div>
-
-  <!-- PI Start / PI End modals omitted for brevity, or included if you want them -->
 
   <!-- CAB Final Approval Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-modal-content">
-      <h2>Final CAB Review</h2>
+      <h2>Endelig CAB-gennemgang</h2>
       <p id="cab-summary"></p>
-      <button id="cab-ok-btn" style="background-color:#2ecc71;">Proceed</button>
+      <button id="cab-ok-btn" style="background-color:#2ecc71;">Fortsæt</button>
     </div>
   </div>
 
@@ -176,7 +174,7 @@
     </div>
   </div>
 
-  <!-- Task Summary Modal for knowledge recap -->
+  <!-- Task Summary Modal (vidensopsummering) -->
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="task-summary-text"></div>
@@ -184,8 +182,10 @@
     </div>
   </div>
 
-  <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
+  <!-- Indlæs dine tasks-filer og main.js -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
+  <script src="scripts/tasks/infrastrukturTasks.js"></script>
+  <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 </html>
