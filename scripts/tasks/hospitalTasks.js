@@ -5,336 +5,393 @@ window.hospitalTasks = [
   {
     title: "Immunologi-LIMS Udvidelse",
     shortDesc: `
-      Immunologiafdelingen ønsker bedre integration af 
-      <span class="hoverTooltip" data-tooltip="Autoimmun stainer og flow-løsninger.">autoimmunt lab</span>
-      og <span class="hoverTooltip" data-tooltip="Fx Flowcytometri, ELISA-læser.">instrumenter</span>.
+      Immunology wants extended LIMS integration 
+      with autoimmun stainer & flow cytometry data.
     `,
     logicLong: `
-      Immunologerne laver analyser af autoantistoffer (ANA, ANCA) 
-      og bruger fx 
-      <span class="hoverTooltip" data-tooltip="Maskine til at farve autoantistoffer.">autoimmun stainer</span>
-      og 
-      <span class="hoverTooltip" data-tooltip="Flowcytometri: laserbaseret celletælling og -profilering.">flowcytometre</span>.
-      De vil have LIMS til at fange alle data automatiseret.
+      The immunology lab handles autoantibody tests (ANA, ANCA) 
+      and uses flow cytometers. They want direct data capture 
+      in LIMS to reduce manual entry and errors.
+    `,
+    narrativeIntro: `
+      "Immunology staff are excited about the new stainer 
+       that automates certain assays. They worry about 
+       integration issues with older LIMS modules, 
+       but trust you'll handle it."
+    `,
+    digDeeperLinks: [
+      { label: "Autoimmun Stainer Info", url: "https://example.com/autoimmune-stainer" },
+      { label: "Flow Cytometry Basics", url: "https://example.com/flow-cytometry" }
+    ],
+    knowledgeRecap: `
+      In real immunology labs, failing to integrate instruments 
+      can cause data transcription errors. 
+      Proper interface setup ensures reliability, speeds up results, 
+      and reduces staff workload significantly.
     `,
     steps: [
       {
         location: "hospital",
         stepDescription: `
-          Drøft med immunologiens overlæge, der ønsker 
-          <span class="hoverTooltip" data-tooltip="ELISA, flow, autoimmun stainer.">instrumentintegration</span> 
-          og resultatoverførsel.
+          Discuss staff's demands for full instrument integration 
+          (flow data, autoimmun stainer logs).
         `,
-        choiceA: {
-          label: "Detaljeret kravworkshop",
-          text: "+3 tid => +2 development (du opdager alle ønsker).",
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        choiceA:{
+          label: "Detailed workshop",
+          text: "+3 time => +2 development. 
+                 You identify all needed instrument interfaces.",
+          applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
-        choiceB: {
-          label: "Overfladisk samtale",
-          text: "+1 tid => +1 dev, +5% risk (du overser måske vigtige ønsker).",
-          applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
+        choiceB:{
+          label: "Brief conversation",
+          text: "+1 time => +1 dev, +5% risk (some requirements missed).",
+          applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
         location: "infrastruktur",
         stepDescription: `
-          Sikre dataoverførsel fra 
-          <span class="hoverTooltip" data-tooltip="Flowcytometer, stainer, etc.">immunologiske instrumenter</span>
-          til LIMS.
+          Ensure stable data transfer from stainer & flow cytometer 
+          to LIMS. Could require new server resources.
         `,
-        choiceA: {
-          label: "Opsæt dedikeret integrationsserver",
-          text: "+2 tid, -100 kr => +2 stability",
-          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 2 } }
+        choiceA:{
+          label: "Dedicated integration server",
+          text: "+2 time, -100 money => +2 stability 
+                 (reliable data capture).",
+          applyEffect:{ timeCost:2, moneyCost:100, statChange:{ stability:2 } }
         },
-        choiceB: {
-          label: "Brug eksisterende infrastruktur",
-          text: "+1 tid => synergyEffect:{ lackInfra:true}, +5% risk",
-          applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
+        choiceB:{
+          label: "Reuse existing infra",
+          text: "+1 time => synergyEffect:{ lackInfra:true }, +5% risk.",
+          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true }, riskyPlus:0.05 }
         }
       },
       {
         location: "dokumentation",
         stepDescription: `
-          Skriv 
-          <span class="hoverTooltip" data-tooltip="Protokoller for autoimmun stainer, flow-indstillinger.">protokoldokumentation</span> 
-          til CAB.
+          Document new immunology workflows for CAB, 
+          including reference to autoantibody panels.
         `,
-        choiceA: {
-          label: "Fuld rapport",
-          text: "+2 tid => ingen ekstra risk",
-          applyEffect: { timeCost: 2 }
+        choiceA:{
+          label: "Full protocol doc",
+          text: "+2 time => no extra risk",
+          applyEffect:{ timeCost:2 }
         },
-        choiceB: {
-          label: "Minimal",
+        choiceB:{
+          label: "Minimal doc",
           text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect:{ riskyPlus:0.05 }
         }
       }
     ]
   },
 
   {
-    title: "Patologi – Digital Arbejdsgang",
+    title: "Patologi – Digital Pathology",
     shortDesc: `
-      Patologi vil skifte til 
-      <span class="hoverTooltip" data-tooltip="Scanning af histosnit, AI for diagnostik.">digital patologi</span> 
-      med <span class="hoverTooltip" data-tooltip="Makroskopisk udskæring, embedding station, mikrotom, autostainer.">automatiserede processer</span>.
+      Pathology wants to implement digital scanning 
+      & AI analysis of histology slides.
     `,
     logicLong: `
-      Afdelingen har 
-      <span class="hoverTooltip" data-tooltip="Vævskassetter, snit, farvning.">makroskopisk udskæring</span>, 
-      embedding station, 
-      <span class="hoverTooltip" data-tooltip="Maskine der skærer tynde paraffinsnit.">mikrotom</span>
-      og autostainer. 
-      De vil scanne snittene digitalt og bruge AI. LIMS skal fange alle skridt.
+      The pathology lab handles tissue samples via 
+      macroscopic grossing, embedding, microtomy, and stainers. 
+      They want to scan slides and use AI for faster reads.
+    `,
+    narrativeIntro: `
+      "Pathologists are anxious to reduce physical slide handling 
+       and dream of remote consultations with specialists. 
+       But the new digital scanners produce large image files 
+       that need HPC or robust storage."
+    `,
+    digDeeperLinks: [
+      { label: "Digital Pathology Primer", url: "https://example.com/digital-pathology" },
+      { label: "AI in Histology", url: "https://example.com/ai-histology" }
+    ],
+    knowledgeRecap: `
+      Many modern pathology labs transition to digital scanning. 
+      If you skip HPC or large storage, performance can degrade, 
+      and pathologists might revert to physical slides, 
+      losing the AI benefits.
     `,
     steps: [
       {
         location: "hospital",
         stepDescription: `
-          Mød med patologiens overlæge og teknikere, 
-          der ønsker <span class="hoverTooltip" data-tooltip="Registrering af alle skridt, fra udskæring til scanning.">komplet sporing</span>.
+          Talk with pathology about end-to-end digitization 
+          from grossing to scanning.
         `,
-        choiceA: {
-          label: "Detaljeret flowgennemgang",
-          text: "+3 tid => +2 stability (man finder flaskehalse).",
-          applyEffect: { timeCost: 3, statChange: { stability: 2 } }
+        choiceA:{
+          label: "Detailed flow analysis",
+          text: "+3 time => +2 stability 
+                 (identifying potential bottlenecks).",
+          applyEffect:{ timeCost:3, statChange:{ stability:2 } }
         },
-        choiceB: {
-          label: "Kort interview",
-          text: "+1 tid => +1 stability, +5% risk",
-          applyEffect: { timeCost: 1, statChange: { stability: 1 }, riskyPlus: 0.05 }
+        choiceB:{
+          label: "Quick interview",
+          text: "+1 time => +1 stability, +5% risk (some steps overlooked).",
+          applyEffect:{ timeCost:1, statChange:{ stability:1 }, riskyPlus:0.05 }
         }
       },
       {
         location: "infrastruktur",
         stepDescription: `
-          Planlæg 
-          <span class="hoverTooltip" data-tooltip="Digitale scannere kan generere store billedfiler.">storage</span>
-          og 
-          <span class="hoverTooltip" data-tooltip="AI-analyse kræver HPC eller GPU.">AI-kapacitet</span>
-          for scannede snit.
+          Plan HPC or robust storage for large scanned images 
+          and potential AI inference.
         `,
-        choiceA: {
-          label: "Køb GPU-server + stor disk",
-          text: "+2 tid, -150 kr => +2 development (AI-ready).",
-          applyEffect: { timeCost: 2, moneyCost: 150, statChange: { development: 2 } }
+        choiceA:{
+          label: "Buy GPU server & big disk",
+          text: "+2 time, -150 money => +2 development (AI ready).",
+          applyEffect:{ timeCost:2, moneyCost:150, statChange:{ development:2 } }
         },
-        choiceB: {
-          label: "Brug eksisterende CPU + disk",
-          text: "+5% risk => synergyEffect:{ lackInfra:true}",
-          applyEffect: { synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
+        choiceB:{
+          label: "Stick to existing CPU & disk",
+          text: "+5% risk => synergyEffect:{ lackInfra:true } 
+                 (slow AI).",
+          applyEffect:{ riskyPlus:0.05, synergyEffect:{ lackInfra:true } }
         }
       },
       {
         location: "dokumentation",
         stepDescription: `
-          CAB kræver 
-          <span class="hoverTooltip" data-tooltip="Hvordan håndterer man snit, farver, scanning, AI-output.">arbejdsgangs-dokumentation</span>.
+          CAB requires 
+          workflow documentation for digital pathology & 
+          how AI results are validated.
         `,
-        choiceA: {
-          label: "Fuld workflow-doc",
-          text: "+2 tid => ingen risk",
-          applyEffect: { timeCost: 2 }
+        choiceA:{
+          label: "Comprehensive doc",
+          text: "+2 time => no risk",
+          applyEffect:{ timeCost:2 }
         },
-        choiceB: {
-          label: "Spring over",
+        choiceB:{
+          label: "Skip doc",
           text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect:{ riskyPlus:0.05 }
         }
       }
     ]
   },
 
   {
-    title: "Klinikledelsen vil have Dashboards",
+    title: "Dashboards for Clinic Leadership",
     shortDesc: `
-      Direktionen ønsker 
-      <span class="hoverTooltip" data-tooltip="Brugervenlige oversigter for KPI'er, fx TAT, sample flow.">LIMS-dashboards</span>
-      for analyser.
+      Hospital directors want user-friendly 
+      LIMS dashboards to track TAT & KPI.
     `,
     logicLong: `
-      Ledelsen savner overblik over 
-      <span class="hoverTooltip" data-tooltip="Turn Around Time: Tid fra prøve modtagelse til svar.">TAT</span>, 
-      sample flow og 
-      <span class="hoverTooltip" data-tooltip="Hvor mange prøver, hvilke analyser er forsinkede.">KPI’er</span>. 
-      De vil have et dashboard i LIMS, så de kan styre ressourcer bedre.
+      They lack real-time stats on test volumes, 
+      turn-around times (TAT), and sample backlog. 
+      LIMS-based dashboards can help them allocate resources quickly.
+    `,
+    narrativeIntro: `
+      "A group of directors is eager to see colorful graphs 
+       that highlight any testing delays. 
+       They also want automatic weekly reports 
+       emailed to department heads."
+    `,
+    digDeeperLinks: [
+      { label: "HL7 & Dashboarding", url: "https://example.com/hl7-dash" },
+      { label: "TAT (Turn-Around Time) Concepts", url: "https://example.com/tat-concepts" }
+    ],
+    knowledgeRecap: `
+      Providing real-time dashboards helps management address 
+      bottlenecks. But if you ignore GDPR or show personal data 
+      in broad dashboards, compliance issues can occur. 
+      Always confirm the minimal data principle.
     `,
     steps: [
       {
         location: "hospital",
         stepDescription: `
-          Mød med direktionsgruppen for at definere 
-          <span class="hoverTooltip" data-tooltip="Hvilke målinger? fx TAT, fejlrate, reagensforbrug.">dashboardets indhold</span>.
+          Work with leadership to define dashboard metrics 
+          (TAT, sample flow, error rates).
         `,
-        choiceA: {
-          label: "Workshop med ledelsen",
-          text: "+3 tid => +2 development (grundig kravafdækning).",
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        choiceA:{
+          label: "Full workshop",
+          text: "+3 time => +2 development 
+                 (you find what truly matters).",
+          applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
-        choiceB: {
-          label: "Prototype hurtigt",
-          text: "+1 tid => +1 dev, +5% risk (misforståelser).",
-          applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
+        choiceB:{
+          label: "Prototype quickly",
+          text: "+1 time => +1 dev, +5% risk 
+                 (some leadership demands missed).",
+          applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
         location: "it-jura",
         stepDescription: `
-          Nye dashboards viser måske 
-          <span class="hoverTooltip" data-tooltip="Patientdata eller medarbejderperformance. Skal overholde GDPR.">personfølsomme data</span>.
+          Ensure dashboards comply with 
+          GDPR minimal data approach. 
+          Possibly do a small DPIA.
         `,
-        choiceA: {
-          label: "Dyb jura-check",
-          text: "+2 tid, -50 kr => +1 security",
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 1 } }
+        choiceA:{
+          label: "DPIA & thorough check",
+          text: "+2 time, -50 money => +1 security.",
+          applyEffect:{ timeCost:2, moneyCost:50, statChange:{ security:1 } }
         },
-        choiceB: {
+        choiceB:{
           label: "Minimal check",
-          text: "Spar tid => +1 dev, +5% risk pga. mulig lovbrud.",
-          applyEffect: { statChange: { development: 1 }, riskyPlus: 0.05 }
+          text: "Saves time => +1 dev, +5% risk 
+                 (possible data overexposure).",
+          applyEffect:{ statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
         location: "dokumentation",
         stepDescription: `
-          Skriv 
-          <span class="hoverTooltip" data-tooltip="GDPR, datasikkerhed, hvad lagres i dashboard.">GDPR & dashboard-dokumentation</span>.
+          Document the new dashboard approach 
+          (metrics, privacy, disclaimers) for CAB.
         `,
-        choiceA: {
-          label: "Fuld dok",
-          text: "+2 tid => ingen ekstra risk.",
-          applyEffect: { timeCost: 2 }
+        choiceA:{
+          label: "Full doc",
+          text: "+2 time => no extra risk",
+          applyEffect:{ timeCost:2 }
         },
-        choiceB: {
-          label: "Spring over",
+        choiceB:{
+          label: "Skip doc",
           text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect:{ riskyPlus:0.05 }
         }
       }
     ]
   },
 
   {
-    title: "Multi-sprog i LIMS",
+    title: "Multi-Language LIMS",
     shortDesc: `
-      Flere udenlandske ansatte ønsker LIMS på fx engelsk, 
-      <span class="hoverTooltip" data-tooltip="Tysk, fransk, spansk, alt efter personalets behov.">tysk</span> 
-      eller fransk.
+      International staff wants LIMS in multiple languages (English, French…).
     `,
     logicLong: `
-      Hospitalet har mange internationale læger. 
-      De ønsker menuer og rapporter i flere sprog. 
-      Det kan kræve oversættelse af f.eks. 
-      <span class="hoverTooltip" data-tooltip="Instrumentnavne, pipetteringsrobot, flowcytometer.">instrument-felter</span> 
-      i LIMS.
+      The hospital hires many foreign specialists. 
+      They want language pack expansions for menus, 
+      instrument data fields, and PDF reports.
+    `,
+    narrativeIntro: `
+      "You see confusion as some doctors guess at Danish menu labels. 
+       A multi-lingual solution might reduce errors 
+       and frustration but requires thorough translation."
+    `,
+    digDeeperLinks: [
+      { label: "ISO 27799 & Language Issues", url: "https://example.com/iso-27799-lang" }
+    ],
+    knowledgeRecap: `
+      Providing multi-language support helps staff 
+      avoid misunderstandings in critical lab results. 
+      But skipping server upgrades can cause partial translations 
+      or encoding issues, leading to confusion.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Find ud af, hvilke sprog der reelt er mest nødvendige.",
-        choiceA: {
-          label: "Kravworkshop",
-          text: "+3 tid => +2 development (prioriterer korrekte sprog).",
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        stepDescription: "Identify top-needed languages (English, French, etc.).",
+        choiceA:{
+          label: "Detailed survey",
+          text: "+3 time => +2 development 
+                 (you map real staff language needs).",
+          applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
-        choiceB: {
-          label: "Skøn baseret på personalelister",
-          text: "+1 tid => +1 dev, +5% risk (du overser noget).",
-          applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
+        choiceB:{
+          label: "Guess based on memory",
+          text: "+1 time => +1 dev, +5% risk 
+                 (some needed languages missed).",
+          applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
         location: "infrastruktur",
         stepDescription: `
-          Sikre at <span class="hoverTooltip" data-tooltip="Serveren skal have flere sprogpakker til interface.">serveren</span> 
-          håndterer sprogpakkernes ressourcer.
+          Ensure server handles multiple 
+          <span class="hoverTooltip" data-tooltip="UTF-8, resource files.">language packs</span>.
         `,
-        choiceA: {
-          label: "Opgrader system",
-          text: "+2 tid, -100 kr => +2 stability (klar til multi-lingual).",
-          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 2 } }
+        choiceA:{
+          label: "Upgrade system",
+          text: "+2 time, -100 money => +2 stability (multi-locale ready).",
+          applyEffect:{ timeCost:2, moneyCost:100, statChange:{ stability:2 } }
         },
-        choiceB: {
-          label: "Behold eksisterende",
-          text: "+1 tid => synergyEffect:{ lackInfra:true}",
-          applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true } }
+        choiceB:{
+          label: "Keep existing setup",
+          text: "+1 time => synergyEffect:{ lackInfra:true }, +5% risk (partial translations break).",
+          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true }, riskyPlus:0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: `
-          CAB vil se en 
-          <span class="hoverTooltip" data-tooltip="Plan for sprogversioner, vedligehold.">oversættelsesplan</span>.
-        `,
-        choiceA: {
-          label: "Detaljeret plan",
-          text: "+2 tid => ingen risk",
-          applyEffect: { timeCost: 2 }
+        stepDescription: "CAB needs a plan for multi-lingual LIMS maintenance.",
+        choiceA:{
+          label: "Detailed translation plan",
+          text: "+2 time => no risk",
+          applyEffect:{ timeCost:2 }
         },
-        choiceB: {
-          label: "Minimal",
+        choiceB:{
+          label: "Minimal doc",
           text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect:{ riskyPlus:0.05 }
         }
       }
     ]
   },
 
   {
-    title: "Projekt: WeekendServerNedluk",
-    shortDesc: `
-      Hospitalet vil lukke systemet en weekend for store 
-      <span class="hoverTooltip" data-tooltip="Opdatering af servers, net, LIMS-version.">opgraderinger</span>.
+    title:"WeekendServerNedluk",
+    shortDesc:"Hospital wants to shut down systems over a weekend for major upgrades.",
+    logicLong:`
+      Management aims to avoid weekday disruptions by using weekend downtime, 
+      but labs (patologi, mikrobiologi) run tests 24/7. 
+      They worry about time-critical samples.
     `,
-    logicLong: `
-      For at undgå driftforstyrrelser i hverdagen, 
-      vil ledelsen køre en weekend-nedluk. 
-      Fx 
-      <span class="hoverTooltip" data-tooltip="Patologi har autostainere i gang, microbiologi har MALDI-TOF testruns, etc.">afdelinger</span>
-      er dog nervøse.
+    narrativeIntro:`
+      "It's Friday afternoon. Some staff fear losing half their weekend 
+       if the upgrade goes awry. Others hope Monday won't bring chaos."
     `,
-    steps: [
+    digDeeperLinks:[
+      { label:"IT Beredskabsplan Sample", url:"https://example.com/it-beredskabsplan" }
+    ],
+    knowledgeRecap:`
+      Coordinating a planned downtime can ensure minimal impact, 
+      but if the plan is forced on staff last minute, 
+      morale and trust suffer. 
+      Thorough doc helps everyone prepare for possible rollback.
+    `,
+    steps:[
       {
         location:"hospital",
-        stepDescription:"Drøft med personalet, om de kan undvære LIMS i en hel weekend.",
+        stepDescription:"Check if labs can manage without LIMS for 48 hours.",
         choiceA:{
-          label:"Sæt møder op",
-          text:"+3 tid => +2 stability (man sikrer enighed).",
+          label:"Hold staff meetings",
+          text:"+3 time => +2 stability (everyone on same page).",
           applyEffect:{ timeCost:3, statChange:{ stability:2 } }
         },
         choiceB:{
-          label:"Tving plan igennem",
-          text:"0 tid => -10 hospitalSatisfaction, personalet er sure.",
+          label:"Force the plan",
+          text:"0 time => -10 hospitalSatisfaction, staff is upset.",
           applyEffect:{ statChange:{ hospitalSatisfaction:-10 } }
         }
       },
       {
         location:"infrastruktur",
-        stepDescription:"Udfør planlagte server- og netopgraderinger i weekend-lukketiden.",
+        stepDescription:"Perform big infra upgrades during weekend-lukketid.",
         choiceA:{
-          label:"Stor infrastrukturpakke",
-          text:"+3 tid, -150 kr => +2 stability, +1 development",
+          label:"Large upgrade package",
+          text:"+3 time, -150 money => +2 stability, +1 development",
           applyEffect:{ timeCost:3, moneyCost:150, statChange:{ stability:2, development:1 } }
         },
         choiceB:{
-          label:"Kun kritiske fixes",
-          text:"+1 tid, -50 kr => +1 stability, +5% risk",
+          label:"Only critical fixes",
+          text:"+1 time, -50 money => +1 stability, +5% risk",
           applyEffect:{ timeCost:1, moneyCost:50, statChange:{ stability:1 }, riskyPlus:0.05 }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"Skriv weekend-rapport til CAB om alt, inkl. patologi-løsninger.",
+        stepDescription:"Create a weekend-upgrade report for CAB, referencing fallback approach.",
         choiceA:{
-          label:"Grundig rapport",
-          text:"+2 tid => ingen ekstra risk",
+          label:"Thorough report",
+          text:"+2 time => no extra risk",
           applyEffect:{ timeCost:2 }
         },
         choiceB:{
-          label:"Minimal notits",
+          label:"Minimal note",
           text:"+5% risk => docSkipCount++",
           applyEffect:{ riskyPlus:0.05 }
         }
@@ -344,69 +401,69 @@ window.hospitalTasks = [
 
   {
     title:"BlodprøveAutomatisering",
-    shortDesc:`
-      Automatisér blodprøvehåndtering med 
-      <span class="hoverTooltip" data-tooltip="Robot kan sortere, centrifugere, tjekke stregkoder.">robotudstyr</span>,
-      pipetteringsrobot & autoanalyser.
-    `,
+    shortDesc:"Automate blood sample handling with robots & autoanalyzers.",
     logicLong:`
-      Hospitalets lab vil automatisere processer med pipetteringsrobot og
-      <span class="hoverTooltip" data-tooltip="Store maskiner, fx til CRP, leverprøver, nyretal.">autoanalyser</span>.
-      LIMS skal styre stregkoder, batchhåndtering og resultatoverførsel.
+      The lab wants to reduce manual pipetting and rely on 
+      pipetteringsrobot & autoanalyzers. 
+      LIMS must manage barcodes, batch, result retrieval.
+    `,
+    narrativeIntro:`
+      "You see staff constantly labeling tubes by hand, 
+       risking repetitive strain injuries. 
+       A new robot could revolutionize throughput, 
+       but only if LIMS is set up properly."
+    `,
+    digDeeperLinks:[
+      { label:"Robot Implementation in Lab", url:"https://example.com/lab-robot" },
+      { label:"Autoanalyzers 101", url:"https://example.com/autoanalyzers" }
+    ],
+    knowledgeRecap:`
+      Lab automation can drastically improve efficiency 
+      and reduce human error. 
+      But ignoring infrastructure or skipping doc can lead 
+      to partial integrations that still require manual backups.
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:`
-          Mød med lab-personalet, der har travlt og vil 
-          <span class="hoverTooltip" data-tooltip="Færre manuelle pipetteringer, mindre risiko for fejl.">automatisere</span>
-          blodprøver mest muligt.
-        `,
+        stepDescription:"Discuss with lab staff who want max automation for sample handling.",
         choiceA:{
-          label:"Grundig interviewrunde",
-          text:"+3 tid => +2 stability (du forstår workflowet).",
+          label:"Thorough interviews",
+          text:"+3 time => +2 stability (understand real workflow).",
           applyEffect:{ timeCost:3, statChange:{ stability:2 } }
         },
         choiceB:{
-          label:"Kort snak",
-          text:"+1 tid => +1 stability, +5% risk",
+          label:"Short talk",
+          text:"+1 time => +1 stability, +5% risk (some details missed).",
           applyEffect:{ timeCost:1, statChange:{ stability:1 }, riskyPlus:0.05 }
         }
       },
       {
         location:"infrastruktur",
-        stepDescription:`
-          Robotter kræver ny 
-          <span class="hoverTooltip" data-tooltip="Koordinering med autoanalyser, stregkodescannere.">integration</span>
-          og sikring mod overbelastning.
-        `,
+        stepDescription:"Robots need new net or dedicated sub-lan, or might overload existing traffic.",
         choiceA:{
-          label:"Dedikeret robot-net",
-          text:"+2 tid, -100 kr => +2 stability",
+          label:"Dedicated robot net",
+          text:"+2 time, -100 money => +2 stability",
           applyEffect:{ timeCost:2, moneyCost:100, statChange:{ stability:2} }
         },
         choiceB:{
-          label:"Brug eksisterende kabling",
-          text:"+1 tid => synergyEffect:{ lackInfra:true}, +5% risk",
-          applyEffect:{ timeCost:1, synergyEffect:{lackInfra:true}, riskyPlus:0.05 }
+          label:"Reuse existing cables",
+          text:"+1 time => synergyEffect:{ lackInfra:true}, +5% risk",
+          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true}, riskyPlus:0.05}
         }
       },
       {
         location:"dokumentation",
-        stepDescription:`
-          Lav 
-          <span class="hoverTooltip" data-tooltip="Beskrivelse af robot-flow, autoanalysers interface, QC.">automationsrapport</span> 
-          til CAB.
-        `,
+        stepDescription:"Write an automation report for CAB, covering robot-flow & QC.",
         choiceA:{
-          label:"Detaljeret",
-          text:"+2 tid => no risk",
+          label:"Detailed doc",
+          text:"+2 time => no risk",
           applyEffect:{ timeCost:2 }
         },
         choiceB:{
           label:"Skip doc",
           text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05 }
+          applyEffect:{ riskyPlus:0.05}
         }
       }
     ]
@@ -414,67 +471,66 @@ window.hospitalTasks = [
 
   {
     title:"Biokemi – ReagensHåndtering",
-    shortDesc:`
-      Biokemilab vil styre 
-      <span class="hoverTooltip" data-tooltip="Fx reagenser til autoanalyser, HPLC, Ion Selective Electrode.">reagenser</span>
-      i LIMS.
-    `,
+    shortDesc:"Biochemistry wants reagens-lot tracking in LIMS (QC checks).",
     logicLong:`
-      Biokemilab bruger mange reagenser (fx til hormonanalyser, 
-      <span class="hoverTooltip" data-tooltip="High-Performance Liquid Chromatography.">HPLC</span>, 
-      <span class="hoverTooltip" data-tooltip="Ion Selective Electrode: måler Na+, K+ i blod.">ISE</span>, autoanalyser). 
-      De vil have LIMS til at tracke reagensbeholdning og kvalitet (QC).
+      The lab uses many reagents for HPLC, Ion Selective Electrodes, etc. 
+      They need LIMS to track lot usage and trigger reorder 
+      before critical items run out.
+    `,
+    narrativeIntro:`
+      "Lab staff scramble to find a missing reagens bottle 
+       labeled incorrectly last week. 
+       They beg for a digital system that ensures 
+       every reagens is tracked meticulously."
+    `,
+    digDeeperLinks:[
+      { label:"HPLC Basics", url:"https://example.com/hplc-intro" },
+      { label:"QC in Biochemistry", url:"https://example.com/qc-biochem" }
+    ],
+    knowledgeRecap:`
+      Proper reagens tracking prevents costly test repeats or false results. 
+      LIMS-based reordering can avoid downtime. 
+      Thorough doc is key for ISO 27799 compliance.
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:`
-          Interview biokemikere om reagens-forbrug, QC-kontroller og 
-          <span class="hoverTooltip" data-tooltip="TDM, hormoner, enzymer, elektrolytter.">analysetyper</span>.
-        `,
+        stepDescription:"Interview biochemists about reagens usage, QC & reorder thresholds.",
         choiceA:{
-          label:"Dybt interview",
-          text:"+3 tid => +2 development (du opdager nye features).",
+          label:"Deep interview",
+          text:"+3 time => +2 development",
           applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
         choiceB:{
-          label:"Hurtig seddel",
-          text:"+1 tid => +1 dev, +5% risk",
+          label:"Quick notes",
+          text:"+1 time => +1 dev, +5% risk",
           applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
-        location:"leverandør",
-        stepDescription:`
-          Kan leverandøren udvikle 
-          <span class="hoverTooltip" data-tooltip="Automatisk reagens-lot track, QC, forbrugsalarmer.">reagens-modul</span> 
-          til LIMS?
-        `,
+        location:"leverandor",
+        stepDescription:"See if vendor can develop reagens-tracking module for LIMS.",
         choiceA:{
-          label:"Premium-løsning",
-          text:"+2 tid, -120 kr => +2 stability",
+          label:"Premium solution",
+          text:"+2 time, -120 money => +2 stability",
           applyEffect:{ timeCost:2, moneyCost:120, statChange:{ stability:2 } }
         },
         choiceB:{
-          label:"Billig plugin",
-          text:"+1 tid, -50 kr => +1 development, +5% risk",
+          label:"Cheaper plugin",
+          text:"+1 time, -50 money => +1 development, +5% risk",
           applyEffect:{ timeCost:1, moneyCost:50, statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:`
-          Reagens-rapport: 
-          <span class="hoverTooltip" data-tooltip="Hvordan trackes lot-numre, QC checks, forbrug pr. dag.">modulbeskrivelse</span> 
-          til CAB.
-        `,
+        stepDescription:"Reagens-lot doc for CAB, detailing QC & usage logs.",
         choiceA:{
-          label:"Udførlig dok",
-          text:"+2 tid => ingen risk",
+          label:"Thorough doc",
+          text:"+2 time => no risk",
           applyEffect:{ timeCost:2 }
         },
         choiceB:{
-          label:"Minimal",
+          label:"Minimal doc",
           text:"+5% risk => docSkipCount++",
           applyEffect:{ riskyPlus:0.05 }
         }
@@ -484,59 +540,69 @@ window.hospitalTasks = [
 
   {
     title:"Klinisk Genetik – VariantDatabase",
-    shortDesc:`
-      Genetik vil have 
-      <span class="hoverTooltip" data-tooltip="Samling af geninformationer (mutationer).">VariantDatabase</span>
-      i LIMS.
-    `,
+    shortDesc:"Genetics dept. wants a big variant database with HPC, replikering.",
     logicLong:`
-      Klinisk Genetik sporer arvelige mutationer og vil integrere 
-      <span class="hoverTooltip" data-tooltip="Fx HPC-løsning til BigData, AI til variantfortolkning.">større dataanalyse</span> 
-      i LIMS. De har brug for HPC-kapacitet, replikering.
+      They handle gene variant analysis, 
+      want HPC for large dataset processing 
+      and ensure data is secure (GDPR) 
+      with replikering for fail-safety.
+    `,
+    narrativeIntro:`
+      "A wave of new patient samples hits the genetics lab. 
+       They fret about HPC capacity. 
+       'We cannot do partial analysis, 
+        or we might miss a crucial mutation,' they say."
+    `,
+    digDeeperLinks:[
+      { label:"HPC for Genomics", url:"https://example.com/hpc-genomics" },
+      { label:"Replikering & GDPR", url:"https://example.com/repl-gdpr" }
+    ],
+    knowledgeRecap:`
+      Genetic labs generate huge data. 
+      HPC or GPU-based solutions help speed up variant calls. 
+      Skipping HPC or replikering can hamper efficiency 
+      and risk data loss for critical patient results.
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:"Koordiner med genetikere om store datasæt, HPC og AI-ønsker.",
+        stepDescription:"Coordinate with genetics about HPC & big data needs, mention possible AI expansions.",
         choiceA:{
-          label:"Genetik-workshop",
-          text:"+3 tid => +2 development",
+          label:"Genetics workshop",
+          text:"+3 time => +2 development",
           applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
         choiceB:{
-          label:"Antag normal mængde",
-          text:"+1 tid => +1 dev, +5% risk (du undervurderer data).",
+          label:"Assume normal data",
+          text:"+1 time => +1 dev, +5% risk (underestimate data).",
           applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05}
         }
       },
       {
         location:"infrastruktur",
-        stepDescription:`
-          Databasekrav kan sprænge serverne. 
-          Opsæt HPC og replikering for 
-          <span class="hoverTooltip" data-tooltip="DNA-data, stor variation, BigData.">genvarianter</span>.
-        `,
+        stepDescription:"Database could exceed existing server capacity. 
+                         HPC & replikering required for stable ops.",
         choiceA:{
-          label:"Ny HPC-løsning",
-          text:"+2 tid, -150 kr => +2 stability, +1 security",
+          label:"Buy HPC solution",
+          text:"+2 time, -150 money => +2 stability, +1 security",
           applyEffect:{ timeCost:2, moneyCost:150, statChange:{ stability:2, security:1 } }
         },
         choiceB:{
-          label:"Brug eksisterende disk",
+          label:"Use existing disk",
           text:"+5% risk => synergyEffect:{lackInfra:true}",
           applyEffect:{ riskyPlus:0.05, synergyEffect:{lackInfra:true} }
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"CAB kræver streng datasikkerhed for geninfo (GDPR).",
+        stepDescription:"CAB demands strict data security doc, referencing GDPR & HPC usage.",
         choiceA:{
-          label:"Omfattende dok",
-          text:"+2 tid => +1 security",
+          label:"Comprehensive doc",
+          text:"+2 time => +1 security",
           applyEffect:{ timeCost:2, statChange:{ security:1 } }
         },
         choiceB:{
-          label:"Spring delvis over",
+          label:"Partial doc",
           text:"+5% risk => docSkipCount++",
           applyEffect:{ riskyPlus:0.05 }
         }
@@ -545,62 +611,67 @@ window.hospitalTasks = [
   },
 
   {
-    title:"Nyt Mikrobiologi-Lab",
-    shortDesc:`
-      Mikrobiologien skal have 
-      <span class="hoverTooltip" data-tooltip="PCR-hood, MALDI-TOF, BACTEC, dyrkninger.">udstyr</span>
-      integreret i LIMS.
-    `,
+    title:"New Mikrobiologi Lab",
+    shortDesc:"Microbiology wants MALDI-TOF, PCR integration, track antibioticresistens.",
     logicLong:`
-      Mikrobiologi-lab udfører 
-      <span class="hoverTooltip" data-tooltip="Bakteriedyrkning, virusPCR, mykologi, resistens.">dybdegående analyser</span> 
-      og vil have LIMS til MALDI-TOF, PCR-hood, BACTEC. 
-      Desuden <span class="hoverTooltip" data-tooltip="Antibiogram-tests for resistens.">antibiogram</span> 
-      skal logges i LIMS.
+      The mikrobiologi lab does PCR, MALDI-TOF for ID, BACTEC for 
+      blood cultures, antibioticresistens. LIMS integration is essential 
+      to keep track of runs & results quickly.
+    `,
+    narrativeIntro:`
+      "An antibioticresistens outbreak is being monitored. 
+       They must process dozens of samples daily, 
+       so manual data entry won't scale."
+    `,
+    digDeeperLinks:[
+      { label:"MALDI-TOF Basics", url:"https://example.com/maldi-tof" },
+      { label:"Antibioticresistens Data", url:"https://example.com/ab-resist" }
+    ],
+    knowledgeRecap:`
+      In many microbiology labs, MALDI-TOF 
+      drastically speeds up organism ID. 
+      If you fail to integrate with LIMS, 
+      staff might do repeated or manual steps, risking delayed diagnoses.
     `,
     steps:[
       {
         location:"hospital",
-        stepDescription:"Tal med mikrobiologerne om analyser (PCR, mykologi, MALDI).",
+        stepDescription:"Discuss with mikrobiologi staff about large runs (PCR-hood, MALDI-TOF, BACTEC).",
         choiceA:{
-          label:"Grundig behovsafdækning",
-          text:"+3 tid => +2 development (du fanger alt).",
+          label:"Full needs analysis",
+          text:"+3 time => +2 development (capture all device data).",
           applyEffect:{ timeCost:3, statChange:{ development:2 } }
         },
         choiceB:{
-          label:"Hurtig samtale",
-          text:"+1 tid => +1 dev, +5% risk (noget glemmes).",
+          label:"Quick conversation",
+          text:"+1 time => +1 dev, +5% risk (some lab requirements missed).",
           applyEffect:{ timeCost:1, statChange:{ development:1 }, riskyPlus:0.05 }
         }
       },
       {
         location:"infrastruktur",
-        stepDescription:`
-          Integrér MALDI-TOF og 
-          <span class="hoverTooltip" data-tooltip="PCR-hood, BACTEC.">mikrobiologiapparater</span> 
-          med LIMS (dataoverførsel).
-        `,
+        stepDescription:"Integrate MALDI & PCR devices with LIMS for direct data feed.",
         choiceA:{
-          label:"Opsæt dedikeret interface",
-          text:"+2 tid, -120 kr => +2 stability",
+          label:"Dedicated interface solution",
+          text:"+2 time, -120 money => +2 stability",
           applyEffect:{ timeCost:2, moneyCost:120, statChange:{ stability:2 } }
         },
         choiceB:{
-          label:"Genbrug eksisterende interface",
-          text:"+1 tid => synergyEffect:{ lackInfra:true}, +5% risk",
-          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true }, riskyPlus:0.05 }
+          label:"Reuse old interface",
+          text:"+1 time => synergyEffect:{ lackInfra:true }, +5% risk",
+          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true }, riskyPlus:0.05}
         }
       },
       {
         location:"dokumentation",
-        stepDescription:"CAB vil se protokoller for dyrkning, PCR, MALDI.",
+        stepDescription:"CAB wants protocols for PCR, MALDI, antibioticresistens logging.",
         choiceA:{
-          label:"Omfattende dok",
-          text:"+2 tid => ingen risk",
+          label:"Full doc",
+          text:"+2 time => no risk",
           applyEffect:{ timeCost:2 }
         },
         choiceB:{
-          label:"Minimal",
+          label:"Minimal doc",
           text:"+5% risk => docSkipCount++",
           applyEffect:{ riskyPlus:0.05 }
         }
