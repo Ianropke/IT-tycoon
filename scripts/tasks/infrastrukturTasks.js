@@ -3,609 +3,555 @@
 window.infrastrukturTasks = [
 
   {
-    title:"Serverpark Genopgradering",
-    shortDesc:`
-      Modernize the aging server park with HPC capacity 
-      & failover to ensure stable LIMS performance.
+    title: "Serverpark Genopgradering",
+    shortDesc: "Modernisér en aldrende serverpark med HPC og failover for stabil drift.",
+    logicLong: `
+      Hospitalets servere er gamle og ustabile. Du vil tilføje HPC 
+      til tunge beregninger (AI, billedanalyse) samt failover-løsninger 
+      for at undgå kritiske nedbrud.
     `,
-    logicLong:`
-      The hospital's server cluster is old, 
-      risking frequent downtime. 
-      You want HPC additions for large computations (AI modules) 
-      plus failover to minimize system outages.
+    narrativeIntro: `
+      "Du træder ind i datacentret og ser rækker af larmende, 
+       ældre servere. En tekniker fortæller, at de genstarter 
+       ret ofte. HPC kan give ekstra kraft, men budgettet er stramt."
     `,
-    narrativeIntro:`
-      "Walking through the data center, you spot racks of dusty servers. 
-       Staff share stories of random restarts. 
-       HPC could supercharge performance, 
-       but the budget isn't infinite."
-    `,
-    digDeeperLinks:[
-      { label:"HPC & Failover Basics", url:"https://example.com/hpc-failover" },
-      { label:"ISO 27001 Datacenter", url:"https://example.com/iso27001-dc" }
+    digDeeperLinks: [
+      { label: "HPC Grundprincipper", url: "https://example.com/hpc-dk" },
+      { label: "Failover Løsninger", url: "https://example.com/failover-dk" }
     ],
-    knowledgeRecap:`
-      In real hospitals, ignoring HPC or skipping 
-      failover means critical LIMS tasks might freeze or crash 
-      under heavy loads. 
-      Proper doc helps meet ISO 27001 or NIS2 demands 
-      for robust infrastructure.
+    knowledgeRecap: `
+      Hvis man ignorerer HPC-behov, kan store analyser (AI, billedprocessering) 
+      belaste serverne voldsomt. Manglende failover risikerer driftstab 
+      og brud på NIS2-krav. Dokumentation viser, hvordan man genskaber systemet 
+      ved katastrofe.
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:`
-          Conduct a detailed 
-          <span class="hoverTooltip" data-tooltip="Evaluate HPC needs, cooling, failover solutions.">capacity analysis</span>
-          for HPC & failover.
-        `,
-        choiceA:{
-          label:"Thorough evaluation",
-          text:"+3 time, -150 money => +2 stability (solid plan).",
-          applyEffect:{ timeCost:3, moneyCost:150, statChange:{ stability:2 } }
+        location: "infrastruktur",
+        stepDescription: "Lav en grundig kapacitetsanalyse (strøm, køling, HPC-krav).",
+        choiceA: {
+          label: "Dybt tjek",
+          text: "+3 tid, -150 kr => +2 stability (gennemarbejdet plan).",
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 2 } }
         },
-        choiceB:{
-          label:"Quick check",
-          text:"+1 time, -50 money => +1 stability, +5% risk (oversight possible).",
-          applyEffect:{ timeCost:1, moneyCost:50, statChange:{ stability:1 }, riskyPlus:0.05 }
+        choiceB: {
+          label: "Overfladisk vurdering",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk (overser problemer).",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:`
-          Coordinate a 
-          <span class="hoverTooltip" data-tooltip="When can servers go offline without blocking lab ops?">service window</span>
-          with departments.
-        `,
-        choiceA:{
-          label:"Plan downtime carefully",
-          text:"+2 time => +2 hospitalSatisfaction (everyone informed).",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:2 } }
+        location: "hospital",
+        stepDescription: "Afklar servicevindue med afdelingerne, når servere skal opgraderes.",
+        choiceA: {
+          label: "Planlagt nedetid",
+          text: "+2 tid => +2 hospitalSatisfaction (alle informeres).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
-        choiceB:{
-          label:"No explanation",
-          text:"0 time => -10 hospitalSatisfaction, +5% risk",
-          applyEffect:{ statChange:{ hospitalSatisfaction:-10 }, riskyPlus:0.05 }
+        choiceB: {
+          label: "Ingen forklaring",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk (stor utilfredshed).",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"Document HPC & failover setup for CAB, referencing NIS2 resilience.",
-        choiceA:{
-          label:"Detailed report",
-          text:"+2 time => no extra risk",
-          applyEffect:{ timeCost:2 }
+        location: "dokumentation",
+        stepDescription: "Dokumentér HPC og failover-design til CAB, evt. ift. NIS2.",
+        choiceA: {
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Minimal doc",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05 }
+        choiceB: {
+          label: "Minimal dok",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title:"Netværksmodernisering i Laboratoriet",
-    shortDesc:`
-      Upgrade lab network (DNS, AD) 
-      for faster data & stable login.
+    title: "Netværksmodernisering i Laboratoriet",
+    shortDesc: "Opgradér netværket (DNS, AD) i laboratorierne for hurtigere data og stabil login.",
+    logicLong: `
+      Laboratorierne oplever forsinkelser og ustabile logins. 
+      Du vil modernisere switches, DNS-konfiguration 
+      og AD-integration for at optimere arbejdsgangene.
     `,
-    logicLong:`
-      Labs see frequent slowdowns, 
-      possibly from outdated switches, DNS misconfigs, 
-      or clunky AD integration. 
-      A modernization can reduce sample queue times 
-      and login issues.
+    narrativeIntro: `
+      "En bioanalytiker bander over, at systemet ofte 
+       mister forbindelse til AD. DNS-fejl gør login langsomt. 
+       Laboratoriechefen vil have netværket på højt niveau."
     `,
-    narrativeIntro:`
-      "A lab tech complains, 'Half our morning is spent waiting 
-       for the system to respond.' 
-       Others mention having to re-login due to AD timeouts. 
-       You sense a network overhaul is overdue."
-    `,
-    digDeeperLinks:[
-      { label:"DNS & AD Setup", url:"https://example.com/dns-ad-setup" },
-      { label:"ISO 27001 on Net Segmentation", url:"https://example.com/iso27001-netseg" }
+    digDeeperLinks: [
+      { label: "DNS/AD Opdateringer", url: "https://example.com/dns-ad-dk" },
+      { label: "ISO 27001 Netværksprincipper", url: "https://example.com/net-iso27001-dk" }
     ],
-    knowledgeRecap:`
-      Modernizing lab networks prevents data bottlenecks. 
-      Overlooking DNS/AD can lead to login chaos 
-      or repeated test fails. 
-      Thorough doc ensures accountability 
-      and meets NIS2's robust requirement.
+    knowledgeRecap: `
+      Med et stabilt netværk og god DNS/AD-opsætning 
+      undgår man hyppige login- eller svartidsproblemer. 
+      Uden dokumentation kan fejl gendannes 
+      og vedligehold blive uoverskuelig.
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:`
-          Diagnose net devices (switches, routers) & 
-          <span class="hoverTooltip" data-tooltip="DNS zones, AD group policies.">AD integration</span>.
-        `,
-        choiceA:{
-          label:"Detailed net analysis",
-          text:"+3 time, -150 money => +3 stability (fix all flaskehalse).",
-          applyEffect:{ timeCost:3, moneyCost:150, statChange:{ stability:3 } }
+        location: "infrastruktur",
+        stepDescription: "Undersøg netværksudstyr (switches, routere) samt DNS-opsætning og AD.",
+        choiceA: {
+          label: "Grundig netanalyse",
+          text: "+3 tid, -150 kr => +3 stability (alle flaskehalse rettes).",
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 3 } }
         },
-        choiceB:{
-          label:"Quick guess",
-          text:"+1 time, -50 money => +1 stability, +5% risk",
-          applyEffect:{ timeCost:1, moneyCost:50, statChange:{ stability:1 }, riskyPlus:0.05 }
+        choiceB: {
+          label: "Overfladisk check",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk (noget forbliver ustabilt).",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:"Plan potential downtime for DNS/AD changes with lab leads.",
-        choiceA:{
-          label:"Announce downtime",
-          text:"+2 time => +2 hospitalSatisfaction",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:2 } }
+        location: "hospital",
+        stepDescription: "Koordiner evt. nedetid med laboratorieledelsen ved DNS/AD-omlægning.",
+        choiceA: {
+          label: "Planlagt nedbrud",
+          text: "+2 tid => +2 hospitalSatisfaction",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
-        choiceB:{
-          label:"No heads up",
-          text:"0 time => -10 hospitalSatisfaction, +5% risk",
-          applyEffect:{ statChange:{ hospitalSatisfaction:-10 }, riskyPlus:0.05 }
+        choiceB: {
+          label: "Ingen varsel",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"Document network upgrade for CAB (ISO 27001 references).",
-        choiceA:{
-          label:"Full documentation",
-          text:"+2 time => no extra risk",
-          applyEffect:{ timeCost:2 }
+        location: "dokumentation",
+        stepDescription: "Dokumentér netopgraderingen til CAB (evt. ISO 27001 henvisning).",
+        choiceA: {
+          label: "Fuld dokumentation",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Short memo",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05}
+        choiceB: {
+          label: "Kort memo",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title:"Datacenter Opgradering",
-    shortDesc:`
-      Redo the datacenter (racks, cooling), 
-      add replikering for failover.
+    title: "Datacenter Opgradering",
+    shortDesc: "Forbedr køling, reoler og replikering i datacenter for sikker drift.",
+    logicLong: `
+      Hospitalets datacenter er presset på plads og køling. 
+      Du vil opgradere rack, strøm og indføre replikering, 
+      så data ikke går tabt ved fejl.
     `,
-    logicLong:`
-      The hospital's datacenter is short on cooling & capacity. 
-      You plan to upgrade racks, 
-      improve power, plus set up real-time replikering 
-      so data is safe if one center fails.
+    narrativeIntro: `
+      "Datacentret er hedt, og en ventilator summer anstrengt. 
+       Personalet advarer om risiko for overophedning. 
+       En reel opgradering er på høje tid."
     `,
-    narrativeIntro:`
-      "Rows of servers hum in a hot room. 
-       Technicians have to wear short sleeves in winter. 
-       You sense meltdown potential if usage spikes 
-       or the AC fails."
-    `,
-    digDeeperLinks:[
-      { label:"Datacenter & HPC Cooling", url:"https://example.com/datacenter-cool" },
-      { label:"Replikering + NIS2", url:"https://example.com/replikering-nis2" }
+    digDeeperLinks: [
+      { label: "Datacenter Køling", url: "https://example.com/dc-koling-dk" },
+      { label: "Replikering & ISO 27799", url: "https://example.com/repl-27799" }
     ],
-    knowledgeRecap:`
-      A well-cooled datacenter with replikering 
-      prevents catastrophic data loss. 
-      If you skip doc or do a quick fix, 
-      you might pass an external audit 
-      but risk meltdown in a real surge.
+    knowledgeRecap: `
+      God køling forhindrer nedbrud, og replikering sikrer data 
+      hvis en server fejler. Uden dokumentation er det svært 
+      at bevise compliance eller genoprette systemet 
+      i nødstilfælde.
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:"Check racks, cooling, replikering for HPC or large data loads.",
-        choiceA:{
-          label:"Extensive capacity check",
-          text:"+3 time, -120 money => +2 stability",
-          applyEffect:{ timeCost:3, moneyCost:120, statChange:{ stability:2 } }
+        location: "infrastruktur",
+        stepDescription: "Gennemfør kapacitetsanalyse (rack, køleanlæg, replikering).",
+        choiceA: {
+          label: "Stor analyse",
+          text: "+3 tid, -120 kr => +2 stability (grundigt overblik).",
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { stability: 2 } }
         },
-        choiceB:{
-          label:"Surface check",
-          text:"+1 time, -40 money => +1 stability, +5% risk",
-          applyEffect:{ timeCost:1, moneyCost:40, statChange:{ stability:1 }, riskyPlus:0.05 }
+        choiceB: {
+          label: "Overfladisk check",
+          text: "+1 tid, -40 kr => +1 stability, +5% risk (risiko for oversete fejl).",
+          applyEffect: { timeCost: 1, moneyCost: 40, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:"Notify them about partial downtime for new racks, AC install.",
-        choiceA:{
-          label:"Detailed plan",
-          text:"+2 time => +2 hospitalSatisfaction",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:2 } }
+        location: "hospital",
+        stepDescription: "Fortæl om mulig nedetid under rack/strømopgraderinger.",
+        choiceA: {
+          label: "Detaljeret plan",
+          text: "+2 tid => +2 hospitalSatisfaction",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
-        choiceB:{
-          label:"No explanation",
-          text:"0 time => -10 hospitalSatisfaction, +5% risk",
-          applyEffect:{ statChange:{ hospitalSatisfaction:-10}, riskyPlus:0.05}
+        choiceB: {
+          label: "Ingen forklaring",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"CAB wants failover & replikering design doc referencing NIS2.",
-        choiceA:{
-          label:"Comprehensive doc",
-          text:"+2 time => no risk",
-          applyEffect:{ timeCost:2 }
+        location: "dokumentation",
+        stepDescription: "CAB vil se design med replikering + failover.",
+        choiceA: {
+          label: "Omfattende rapport",
+          text: "+2 tid => ingen risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Minimal note",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05}
+        choiceB: {
+          label: "Minimal notits",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title:"Backup-løsning Modernisering",
-    shortDesc:`
-      Switch from båndbackup to disk/cloud + replikering 
-      for faster restores.
+    title: "Backup-løsning Modernisering",
+    shortDesc: "Skift fra båndbackup til disk/cloud + replikering for hurtigere restore.",
+    logicLong: `
+      Hospitalet kører ældre båndbackup. Ved genskabelse tager det lang tid. 
+      Du vil have disk/cloud og evt. replikering, så data 
+      nemt kan hentes tilbage.
     `,
-    logicLong:`
-      The hospital uses old tape backups, 
-      slow to restore. 
-      You want a more modern solution 
-      (disk + replikering or cloud) 
-      to quickly recover critical data.
+    narrativeIntro: `
+      "En akut situation førte til at en kritisk fil måtte gendannes 
+       fra bånd. Det tog alt for lang tid. Ledelsen kræver 
+       en hurtigere løsning."
     `,
-    narrativeIntro:`
-      "An urgent lab test result got lost 
-       after a random server crash. 
-       Staff had to rummage through tapes 
-       to partially restore. This fiasco 
-       must not be repeated."
-    `,
-    digDeeperLinks:[
-      { label:"Disk vs Cloud Backup", url:"https://example.com/disk-cloud-backup" },
-      { label:"Replikering Strategy", url:"https://example.com/repl-strategy" }
+    digDeeperLinks: [
+      { label: "Disk vs. Båndbackup", url: "https://example.com/disk-baand-dk" },
+      { label: "Replikering til Cloud", url: "https://example.com/repl-cloud-dk" }
     ],
-    knowledgeRecap:`
-      Modern backups let you recover quickly. 
-      Tapes are cheap but slow. 
-      A missed doc or partial approach 
-      might hamper your ISO or NIS2 compliance 
-      if you cannot restore fast enough.
+    knowledgeRecap: `
+      Med moderniseret backup mindsker du nedetid ved fejl. 
+      Bånd kan være billigt, men er ofte for langsomt. 
+      Dokumentation hjælper at bevise, at du kan overholde 
+      NIS2's krav om genopretning.
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:"Pick new backup approach: disk, cloud, or hybrid with replikering.",
-        choiceA:{
-          label:"Disk + Cloud Hybrid",
-          text:"+3 time, -120 money => +2 stability",
-          applyEffect:{ timeCost:3, moneyCost:120, statChange:{ stability:2 } }
+        location: "infrastruktur",
+        stepDescription: "Vælg ny backupmetode (disk, cloud, replikering).",
+        choiceA: {
+          label: "Disk + Cloud Hybrid",
+          text: "+3 tid, -120 kr => +2 stability (robust gendannelse).",
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { stability: 2 } }
         },
-        choiceB:{
-          label:"Keep tape + minimal disk",
-          text:"+1 time => synergyEffect:{ lackInfra:true}, +5% risk",
-          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true }, riskyPlus:0.05}
+        choiceB: {
+          label: "Behold bånd + lidt disk",
+          text: "+1 tid => synergyEffect:{ lackInfra:true }, +5% risk",
+          applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:"Plan when backups happen to avoid peak usage or messing results.",
-        choiceA:{
-          label:"Detailed scheduling",
-          text:"+2 time => +1 hospitalSatisfaction",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:1} }
+        location: "hospital",
+        stepDescription: "Planlæg tidspunkt for større backupkørsler uden at forstyrre drift.",
+        choiceA: {
+          label: "Detaljeret tidsplan",
+          text: "+2 tid => +1 hospitalSatisfaction",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 1 } }
         },
-        choiceB:{
-          label:"Nightly only, no test",
-          text:"0 time => +5% risk (untested backups).",
-          applyEffect:{ riskyPlus:0.05 }
+        choiceB: {
+          label: "Bare kør om natten",
+          text: "0 tid => +5% risk (ingen test).",
+          applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"CAB wants a new backup & replikering strategy doc.",
-        choiceA:{
-          label:"Full doc",
-          text:"+2 time => no risk",
-          applyEffect:{ timeCost:2}
+        location: "dokumentation",
+        stepDescription: "CAB kræver backup-strategi med replikering beskrevet.",
+        choiceA: {
+          label: "Fuld doc",
+          text: "+2 tid => ingen risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Sparse doc",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05}
+        choiceB: {
+          label: "Sparsom doc",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title:"Virtualiseringsprojekt",
-    shortDesc:`
-      Migrate LIMS servers to virtual machines, 
-      implement live migration & test environment.
+    title: "Virtualiseringsprojekt",
+    shortDesc: "Kør LIMS på virtuelle maskiner, evt. med live migration og testmiljø.",
+    logicLong: `
+      Mange fysiske servere er underudnyttet. Ved virtualisering 
+      sparer man ressourcer og kan let flytte VM’er. Personalet 
+      frygter dog nye fejlscenarier.
     `,
-    logicLong:`
-      The hospital has many physical servers. 
-      By virtualizing, you reduce hardware usage 
-      and can do live migration for minimal downtime. 
-      But staff might fear new complexities.
+    narrativeIntro: `
+      "En netadmin peger på en stak gamle servere. 
+       'Vi kunne nedbringe strømforbrug og øge driftssikkerhed, 
+        men hvis noget går galt i migreringen, 
+        bliver det rod.'"
     `,
-    narrativeIntro:`
-      "Rows of old servers fill the data center. 
-       'We could house these in half the space 
-        if we go virtual,' the lead admin says. 
-       Yet some worry about potential misconfig."
-    `,
-    digDeeperLinks:[
-      { label:"Hypervisor Options", url:"https://example.com/hypervisor-compare" },
-      { label:"ISO 27001 Virtualization Security", url:"https://example.com/iso27001-virt" }
+    digDeeperLinks: [
+      { label: "Hypervisor Valg", url: "https://example.com/hypervisor-dk" },
+      { label: "Virt. Sikkerhed", url: "https://example.com/iso27001-virtualisering" }
     ],
-    knowledgeRecap:`
-      Virtualization often saves cost and offers flexible failover. 
-      If you skip synergy or doc, 
-      you might risk partial migrations that lead to meltdown 
-      if the hypervisor fails.
+    knowledgeRecap: `
+      Virtualisering mindsker hardwareomkostninger, 
+      men dårlig planlægning kan give nedetid. 
+      Dokumentation hjælper ved fejl, 
+      så man hurtigt kan rulle tilbage eller bruge testmiljøet.
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:"Choose a hypervisor (VMware, Hyper-V) & plan migrations.",
-        choiceA:{
-          label:"Detailed migration plan",
-          text:"+3 time, -100 money => +2 stability, +1 development",
-          applyEffect:{ timeCost:3, moneyCost:100, statChange:{ stability:2, development:1 } }
+        location: "infrastruktur",
+        stepDescription: "Vælg hypervisor (VMware, Hyper-V) og planlæg migrering af LIMS.",
+        choiceA: {
+          label: "Detaljeret migrationsplan",
+          text: "+3 tid, -100 kr => +2 stability, +1 development",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { stability: 2, development: 1 } }
         },
-        choiceB:{
-          label:"Quick migration",
-          text:"+1 time, -30 money => +1 stability, +5% risk",
-          applyEffect:{ timeCost:1, moneyCost:30, statChange:{ stability:1 }, riskyPlus:0.05}
+        choiceB: {
+          label: "Hurtig migrering",
+          text: "+1 tid, -30 kr => +1 stability, +5% risk (konfigurationsfejl?).",
+          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:"Notify departments about possible short downtimes during VM cutovers.",
-        choiceA:{
-          label:"Good communication",
-          text:"+2 time => +2 hospitalSatisfaction",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:2} }
+        location: "hospital",
+        stepDescription: "Informér afdelinger om mulig kort nedetid under VM-flyt.",
+        choiceA: {
+          label: "God kommunikation",
+          text: "+2 tid => +2 hospitalSatisfaction",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
-        choiceB:{
-          label:"No info",
-          text:"0 time => -10 hospitalSatisfaction, +5% risk",
-          applyEffect:{ statChange:{ hospitalSatisfaction:-10 }, riskyPlus:0.05}
+        choiceB: {
+          label: "Ingen info",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"CAB wants a virtualization & test environment doc referencing rollback plans.",
-        choiceA:{
-          label:"Comprehensive doc",
-          text:"+2 time => no risk",
-          applyEffect:{ timeCost:2}
+        location: "dokumentation",
+        stepDescription: "CAB vil se en VM-plan med testmiljø og fallback.",
+        choiceA: {
+          label: "Omfattende doc",
+          text: "+2 tid => ingen risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Minimal doc",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05}
+        choiceB: {
+          label: "Minimal doc",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title:"Netværkssegmentering",
-    shortDesc:`
-      Separate network into VLANs 
-      for stability & security, reduce blast radius.
+    title: "Netværkssegmentering",
+    shortDesc: "Opdel netværket i VLAN for bedre stabilitet og sikkerhed.",
+    logicLong: `
+      Hospitalets net er en flad struktur, så en fejl eller et angreb 
+      kan sprede sig vidt. Ved at segmentere med VLAN og 
+      IP-opdeling mindsker man risiko og nedbrudsomfang.
     `,
-    logicLong:`
-      The hospital network is flat—one glitch or attack 
-      can spread widely. VLAN-based segmentation 
-      limits damage. 
-      Some staff might be confused by new IP subnets.
+    narrativeIntro: `
+      "En driftsvagt fortæller, at en lille netfejl førte til 
+       stort nedbrud i en anden afdeling. VLAN kan begrænse 
+       spredningen, men folk klager ofte over IP-ændringer."
     `,
-    narrativeIntro:`
-      "An engineer warns: 'One misconfiguration could crash the entire domain.' 
-       VLAN segmentation is overdue, 
-       but there's pushback from those who fear new IP addresses."
-    `,
-    digDeeperLinks:[
-      { label:"VLAN & Net Segmentation", url:"https://example.com/vlan-seg" },
-      { label:"NIS2 & Minimizing Attack Spread", url:"https://example.com/nis2-attackspread" }
+    digDeeperLinks: [
+      { label: "VLAN og Net-Segmentering", url: "https://example.com/vlan-segment-dk" },
+      { label: "NIS2 og Skadebegrænsning", url: "https://example.com/nis2-begransning" }
     ],
-    knowledgeRecap:`
-      A well-segmented net keeps an infection in one zone. 
-      If you skip doc or synergy checks, 
-      staff might not update device IPs properly, 
-      leading to confusion and partial coverage.
+    knowledgeRecap: `
+      Segmentering gør, at et angreb eller fejl typisk kun 
+      rammer én zone. Hvis man springer dokumentation over, 
+      glemmer afdelinger ofte IP-skift og forstår ikke 
+      nye netregler, hvilket fører til kaos.
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:"Configure VLAN, router ACLs, new IP addressing for LIMS & departments.",
-        choiceA:{
-          label:"Deep net partition",
-          text:"+3 time, -120 money => +2 stability, +1 security",
-          applyEffect:{ timeCost:3, moneyCost:120, statChange:{ stability:2, security:1} }
+        location: "infrastruktur",
+        stepDescription: "Opsæt VLAN, routere og nye IP-adresser til LIMS og afdelinger.",
+        choiceA: {
+          label: "Dybt net-opdeling",
+          text: "+3 tid, -120 kr => +2 stability, +1 security (mindre risiko).",
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { stability: 2, security: 1 } }
         },
-        choiceB:{
-          label:"Minimal segmentation",
-          text:"+1 time, -40 money => +1 stability, +5% risk (some net still open).",
-          applyEffect:{ timeCost:1, moneyCost:40, statChange:{ stability:1 }, riskyPlus:0.05}
+        choiceB: {
+          label: "Minimal segmentering",
+          text: "+1 tid, -40 kr => +1 stability, +5% risk (stor spredning mulig).",
+          applyEffect: { timeCost: 1, moneyCost: 40, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:"Explain new IP addresses & login flows to departments.",
-        choiceA:{
-          label:"Clear communication",
-          text:"+2 time => +2 hospitalSatisfaction",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:2} }
+        location: "hospital",
+        stepDescription: "Forklar afdelinger om nye IP-adresser og login-flow.",
+        choiceA: {
+          label: "Detaljeret info",
+          text: "+2 tid => +2 hospitalSatisfaction",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
-        choiceB:{
-          label:"Quick mail only",
-          text:"0 time => -10 hospitalSatisfaction, +5% risk (dept confusion).",
-          applyEffect:{ statChange:{ hospitalSatisfaction:-10 }, riskyPlus:0.05}
+        choiceB: {
+          label: "Kort mail",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk (afdelinger forstår ikke ændringen).",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"CAB needs network diagram & VLAN policy referencing NIS2 resilience.",
-        choiceA:{
-          label:"Full diagram",
-          text:"+2 time => no risk",
-          applyEffect:{ timeCost:2 }
+        location: "dokumentation",
+        stepDescription: "CAB vil se netværksdiagrammer for VLAN og routerregler.",
+        choiceA: {
+          label: "Fuld diag",
+          text: "+2 tid => ingen risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Sparse doc",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05}
+        choiceB: {
+          label: "Sparsom doc",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title:"Forbedring af Dataoverførselshastighed",
-    shortDesc:`
-      Upgrade net to 10Gbit, add loadbalancering 
-      for faster LIMS performance.
+    title: "Forbedring af Dataoverførselshastighed",
+    shortDesc: "Opgradér net til 10Gbit og tilføj loadbalancering for hurtigere LIMS.",
+    logicLong: `
+      Brugerklager om langsom dataoverførsel. Ved at indføre 
+      10Gbit net og loadbalancering af servere 
+      kan man undgå flaskehalse.
     `,
-    logicLong:`
-      Users complain about slow file transfers. 
-      A 10Gbit upgrade plus loadbalancer 
-      can massively speed up data flow. 
-      Some fear it's too expensive or complex.
+    narrativeIntro: `
+      "Lab-personalet siger, at store billedfiler tager 
+       en evighed at uploade. En 10Gbit-forbindelse 
+       og loadbalancer vil potentielt løfte farten, 
+       men koster."
     `,
-    narrativeIntro:`
-      "Huge lab files often take ages to upload. 
-       The thought of 10Gbit 
-       plus a loadbalancer to share traffic 
-       excites the IT staff, 
-       but the finance team balks at cost."
-    `,
-    digDeeperLinks:[
-      { label:"10Gbit Implementation", url:"https://example.com/10gbit" },
-      { label:"Load Balancing 101", url:"https://example.com/load-balancing" }
+    digDeeperLinks: [
+      { label: "10Gbit Netværk", url: "https://example.com/10gbit-dk" },
+      { label: "Loadbalancering 101", url: "https://example.com/loadbalance-dk" }
     ],
-    knowledgeRecap:`
-      Upgrading to 10Gbit and employing a loadbalancer 
-      can drastically reduce bottlenecks for big lab or imaging files. 
-      Partial solutions or skipping doc could hamper adoption 
-      and cause leftover slow points.
+    knowledgeRecap: `
+      10Gbit og loadbalancering fjerner store dele 
+      af flaskehalse for tunge analyser. Uden doc 
+      ved ingen, hvordan det er sat op, 
+      og ved fejl kan man ikke fejlrette ordentligt.
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:"Install 10Gbit NICs/switches, set up loadbalancer across LIMS servers.",
-        choiceA:{
-          label:"Buy 10G hardware",
-          text:"+3 time, -200 money => +3 stability",
-          applyEffect:{ timeCost:3, moneyCost:200, statChange:{ stability:3 } }
+        location: "infrastruktur",
+        stepDescription: "Installer 10Gbit netkort/switche og opsæt loadbalancer på servere.",
+        choiceA: {
+          label: "Køb 10G-hardware",
+          text: "+3 tid, -200 kr => +3 stability (hurtig dataflow).",
+          applyEffect: { timeCost: 3, moneyCost: 200, statChange: { stability: 3 } }
         },
-        choiceB:{
-          label:"Keep 1G + minimal tuning",
-          text:"+1 time, -50 money => +1 stability, +5% risk",
-          applyEffect:{ timeCost:1, moneyCost:50, statChange:{ stability:1 }, riskyPlus:0.05}
+        choiceB: {
+          label: "Bliv på 1G og lidt tuning",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:"Explain downtime and new loadbalancer URL changes to staff.",
-        choiceA:{
-          label:"Full info",
-          text:"+2 time => +2 hospitalSatisfaction",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:2} }
+        location: "hospital",
+        stepDescription: "Fortæl brugerne om nedetid og ny URL ved loadbalancer.",
+        choiceA: {
+          label: "Grundig info",
+          text: "+2 tid => +2 hospitalSatisfaction",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
-        choiceB:{
-          label:"No notice",
-          text:"0 time => -10 hospitalSatisfaction, +5% risk",
-          applyEffect:{ statChange:{ hospitalSatisfaction:-10}, riskyPlus:0.05}
+        choiceB: {
+          label: "Ingen melding",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"CAB requires a net & loadbalancer plan, referencing SLA & NIS2.",
-        choiceA:{
-          label:"Detailed doc",
-          text:"+2 time => no risk",
-          applyEffect:{ timeCost:2}
+        location: "dokumentation",
+        stepDescription: "CAB kræver plan for loadbalancer og 10G net samt eventuel SLA.",
+        choiceA: {
+          label: "Grundig dokumentation",
+          text: "+2 tid => ingen risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Minimal doc",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05}
+        choiceB: {
+          label: "Minimal doc",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   },
 
   {
-    title:"Integration af Cloud-Løsninger",
-    shortDesc:`
-      Move parts of the infrastructure to cloud 
-      with AD/dns, ensure compliance.
+    title: "Integration af Cloud-Løsninger",
+    shortDesc: "Flyt dele af infrastrukturen til cloud (AWS/Azure) med AD og compliance.",
+    logicLong: `
+      Hospitalet overvejer at køre dele af LIMS i skyen for bedre skalerbarhed. 
+      Men der skal sikres VPN/DirectConnect, AD-trust, 
+      samt NIS2-lignende krav opfyldes.
     `,
-    logicLong:`
-      The hospital considers partial migration to AWS/Azure 
-      for better scaling. 
-      You must handle net connectivity, AD trust, 
-      and NIS2 plus data processor agreements.
+    narrativeIntro: `
+      "En cloudleverandør lover fleksibilitet og prisfordele. 
+       Men personalet frygter latency, 
+       og der skal laves en robust AD/dns-løsning."
     `,
-    narrativeIntro:`
-      "A cloud vendor rep claims near-infinite scaling. 
-       Meanwhile, the local staff worry about 
-       latency and robust AD trust across the WAN."
-    `,
-    digDeeperLinks:[
-      { label:"Cloud HPC or DNS Peering", url:"https://example.com/cloud-hpc" },
-      { label:"NIS2 Cloud Compliance", url:"https://example.com/nis2-cloud" }
+    digDeeperLinks: [
+      { label: "Cloud HPC eller DNS-peering", url: "https://example.com/cloud-dns-dk" },
+      { label: "NIS2 Cloud Overvejelser", url: "https://example.com/nis2-cloud-dk" }
     ],
-    knowledgeRecap:`
-      A well-planned cloud integration can reduce on-prem overhead 
-      and provide DR advantages. 
-      Skipping synergy or doc might result in half-baked solutions, 
-      plus potential compliance gaps.
+    knowledgeRecap: `
+      En velplanlagt cloud-integration mindsker 
+      on-prem udgifter og giver failover-muligheder. 
+      Hvis man overser synergy og dokumentation, 
+      kan man ende med halve løsninger 
+      og compliance-brud (GDPR/NIS2).
     `,
-    steps:[
+    steps: [
       {
-        location:"infrastruktur",
-        stepDescription:"Set up secure VPN/DirectConnect, AD trust, DNS-peering with cloud environment.",
-        choiceA:{
-          label:"Upgraded net link",
-          text:"+3 time, -150 money => +2 stability, +1 security",
-          applyEffect:{ timeCost:3, moneyCost:150, statChange:{ stability:2, security:1 } }
+        location: "infrastruktur",
+        stepDescription: "Konfigurer VPN/DirectConnect, AD-trust og DNS mellem cloud og lokalt net.",
+        choiceA: {
+          label: "Forbedret netforbindelse",
+          text: "+3 tid, -150 kr => +2 stability, +1 security",
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 2, security: 1 } }
         },
-        choiceB:{
-          label:"Use existing net path",
-          text:"+1 time => synergyEffect:{ lackInfra:true}, +5% risk",
-          applyEffect:{ timeCost:1, synergyEffect:{ lackInfra:true}, riskyPlus:0.05}
+        choiceB: {
+          label: "Brug eksisterende net",
+          text: "+1 tid => synergyEffect:{ lackInfra:true }, +5% risk (usikkert).",
+          applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"hospital",
-        stepDescription:"Inform staff about new cloud-latency & changed URLs for certain LIMS modules.",
-        choiceA:{
-          label:"Thorough presentation",
-          text:"+2 time => +2 hospitalSatisfaction",
-          applyEffect:{ timeCost:2, statChange:{ hospitalSatisfaction:2} }
+        location: "hospital",
+        stepDescription: "Fortæl afdelinger om ny cloud-løsning, mulig latency og ændrede URL'er.",
+        choiceA: {
+          label: "Grundig gennemgang",
+          text: "+2 tid => +2 hospitalSatisfaction",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
-        choiceB:{
-          label:"Short email",
-          text:"0 time => -10 hospitalSatisfaction, +5% risk",
-          applyEffect:{ statChange:{ hospitalSatisfaction:-10}, riskyPlus:0.05 }
+        choiceB: {
+          label: "Kort mail",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk (manglende buy-in).",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
-        location:"dokumentation",
-        stepDescription:"CAB wants a compliance doc referencing Data Processor Agreement & NIS2.",
-        choiceA:{
-          label:"Complete doc",
-          text:"+2 time => no risk",
-          applyEffect:{ timeCost:2}
+        location: "dokumentation",
+        stepDescription: "CAB kræver en compliance-rapport om cloud, inkl. Databehandleraftale.",
+        choiceA: {
+          label: "Fuld doc",
+          text: "+2 tid => ingen risk",
+          applyEffect: { timeCost: 2 }
         },
-        choiceB:{
-          label:"Minimal doc",
-          text:"+5% risk => docSkipCount++",
-          applyEffect:{ riskyPlus:0.05}
+        choiceB: {
+          label: "Minimal doc",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
