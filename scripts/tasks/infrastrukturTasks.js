@@ -1,50 +1,49 @@
 window.infrastrukturTasks = [
 
   {
-    title: "Opgradering af serverinfrastruktur",
-    shortDesc: "De gamle servere kæmper med ydeevne og kræver en modernisering.",
+    title: "Opgradering af Netværksinfrastruktur",
+    shortDesc: "Forældet netværksudstyr begrænser hastigheden og stabiliteten.",
     narrativeIntro: `
-      "IT-afdelingen konstaterer, at de nuværende servere ikke lever op til moderne krav, og hyppige nedbrud påvirker driften. Direktionen kræver en hurtig opgradering."
+      "IT-afdelingen konstaterer, at de nuværende routere og switches ikke lever op til kravene i et moderne netværk, hvilket fører til flaskehalse og ustabilitet."
     `,
     digDeeperLinks: [
-      { label: "Serveropgradering", text: "Modernisering af servere kan øge ydeevnen og forbedre driftssikkerheden." },
-      { label: "Hardware Best Practices", text: "Vedligeholdelse og opgradering af hardware er afgørende for en stabil IT-infrastruktur." }
+      { label: "Netværksoptimering", text: "Opgradering af netværksudstyret kan forbedre hastigheden og sikre en mere stabil forbindelse." }
     ],
     architectAdvice: `
-      Arkitekten understreger vigtigheden af at analysere den nuværende kapacitet, før en opgradering foretages. "En simpel udskiftning løser ikke de underliggende problemer – en grundig kapacitetstest er nødvendig." 
+      Arkitekten anbefaler en fuldstændig udskiftning af det forældede udstyr med moderne enheder for at sikre optimal netværksydelse.
     `,
     steps: [
       {
-        location: "datacenter",
-        stepDescription: "Evaluer de eksisterende serveres kapacitet og belastning.",
+        location: "infrastruktur",
+        stepDescription: "Evaluér den nuværende netværkshastighed og identificer flaskehalse.",
         choiceA: {
-          label: "Detaljeret kapacitetstest",
-          text: "+3 tid => +2 development (Giver et præcist overblik).",
+          label: "Detaljeret netværksanalyse",
+          text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtig skøn",
-          text: "+1 tid, +5% risk (Måske unøjagtig).",
+          label: "Hurtig evaluering",
+          text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Vælg og køb den nye serverhardware.",
+        stepDescription: "Investér i moderne routere og switches.",
         choiceA: {
-          label: "Køb topmoderne hardware",
-          text: "+2 tid, -200 kr => +2 security og +2 development.",
-          applyEffect: { timeCost: 2, moneyCost: 200, statChange: { security: 2, development: 2 } }
+          label: "Køb high-end udstyr",
+          text: "+2 tid, -150 kr, +3 security.",
+          applyEffect: { timeCost: 2, moneyCost: 150, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Genbrug eksisterende komponenter",
-          text: "+1 tid, +5% risk (Risiko for fejl i fremtiden).",
+          label: "Genbrug eksisterende udstyr",
+          text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Opdater dokumentationen for servermiljøet.",
+        location: "infrastruktur",
+        stepDescription: "Opdater netværksdokumentationen.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid.",
@@ -60,50 +59,49 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Netværksoptimering og båndbreddeudvidelse",
-    shortDesc: "Begrænset båndbredde fører til langsomme forbindelser og flaskehalse.",
+    title: "Modernisering af Serverpark",
+    shortDesc: "Gamle servere fører til lav ydeevne og hyppige nedbrud.",
     narrativeIntro: `
-      "Brugerne oplever forsinkelser og tab af forbindelser, hvilket påvirker den daglige drift. IT-afdelingen skal optimere netværket og udvide båndbredden."
+      "Serverparken er forældet og kan ikke følge med de stigende krav i en moderne it-drift. Der kræves en modernisering for at sikre driftssikkerheden."
     `,
     digDeeperLinks: [
-      { label: "Netværksoptimering", text: "Moderne netværksudstyr og korrekt segmentering kan øge ydeevnen markant." },
-      { label: "Båndbreddeudvidelse", text: "Investering i højkapacitetsudstyr sikrer en stabil forbindelse." }
+      { label: "Server Modernisering", text: "En modernisering af serverparken kan øge ydeevnen og reducere nedetid." }
     ],
     architectAdvice: `
-      Arkitekten anbefaler en detaljeret trafikmonitorering for at identificere flaskehalse, hvorefter investering i moderne routere og switches er afgørende.
+      Arkitekten anbefaler en fuld udskiftning af de ældre servere med nyere, mere effektive modeller.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Kortlæg den nuværende netværkstrafik og identificér flaskehalse.",
+        stepDescription: "Udfør en kapacitetstest på de nuværende servere.",
         choiceA: {
-          label: "Detaljeret trafikmonitorering",
-          text: "+3 tid => +2 development.",
+          label: "Detaljeret kapacitetstest",
+          text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk kontrol",
+          label: "Hurtig test",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "cybersikkerhed",
-        stepDescription: "Opgrader netværksudstyret med moderne routere og switches.",
+        location: "infrastruktur",
+        stepDescription: "Planlæg og køb nye servere.",
         choiceA: {
-          label: "Investér i high-end udstyr",
-          text: "+2 tid, -150 kr => +2 security.",
-          applyEffect: { timeCost: 2, moneyCost: 150, statChange: { security: 2 } }
+          label: "Omfattende planlægning",
+          text: "+3 tid, -200 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 200, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Fortsæt med nuværende udstyr",
+          label: "Hurtig beslutning",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Opdater netværksdokumentationen med de nye konfigurationer.",
+        location: "infrastruktur",
+        stepDescription: "Opdater dokumentationen for serverparken.",
         choiceA: {
           label: "Detaljeret dokumentation",
           text: "+2 tid.",
@@ -119,52 +117,51 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Datacenter Modernisering",
-    shortDesc: "Datacenteret er forældet med højt energiforbrug og ineffektive kølesystemer.",
+    title: "Optimering af Datacenter Drift",
+    shortDesc: "Ineffektiv drift i datacenteret skaber nedbrud og høje omkostninger.",
     narrativeIntro: `
-      "Det eksisterende datacenter kæmper med driftsomkostninger og risiko for nedbrud på grund af forældet infrastruktur. Modernisering er nødvendig for at sikre stabiliteten."
+      "Datacenteret lider af ineffektiv drift, hvilket fører til høje energiforbrug og ustabilitet. Der kræves optimering for at forbedre driftsikkerheden."
     `,
     digDeeperLinks: [
-      { label: "Datacenter Modernisering", text: "Opgradering af datacenteret kan reducere energiforbruget og forbedre driftsikkerheden." },
-      { label: "Energieffektivitet", text: "Moderne kølesystemer og optimeret infrastruktur sparer energi og penge." }
+      { label: "Datacenter Optimering", text: "En optimering af datacenterdriften kan reducere omkostninger og øge stabiliteten." }
     ],
     architectAdvice: `
-      Arkitekten fremhæver, at en grundig energianalyse og investering i moderne kølesystemer er nøglen til at modernisere datacenteret.
+      Arkitekten anbefaler en gennemgribende optimering af processerne i datacenteret for at minimere nedbrud og spare energi.
     `,
     steps: [
       {
-        location: "datacenter",
-        stepDescription: "Vurder det nuværende energiforbrug og belastningen i datacenteret.",
+        location: "infrastruktur",
+        stepDescription: "Udfør en detaljeret analyse af datacenterets drift.",
         choiceA: {
-          label: "Detaljeret energianalyse",
-          text: "+3 tid => +2 stability.",
-          applyEffect: { timeCost: 3, statChange: { stability: 2 } }
+          label: "Detaljeret driftanalyse",
+          text: "+3 tid, +2 development.",
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk vurdering",
+          label: "Hurtig evaluering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Opgrader kølesystemet med moderne teknologi.",
+        stepDescription: "Identificér og implementér optimeringsmuligheder (fx kølesystemer og strømbesparelser).",
         choiceA: {
-          label: "Installer avanceret kølesystem",
-          text: "+2 tid, -200 kr => +3 stability.",
-          applyEffect: { timeCost: 2, moneyCost: 200, statChange: { stability: 3 } }
+          label: "Omfattende optimering",
+          text: "+3 tid, -150 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Brug eksisterende system",
+          label: "Minimal optimering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Opdater al dokumentation for datacenteret.",
+        location: "infrastruktur",
+        stepDescription: "Opdater dokumentationen for driftsoptimering.",
         choiceA: {
-          label: "Omfattende dokumentation",
+          label: "Detaljeret dokumentation",
           text: "+2 tid.",
           applyEffect: { timeCost: 2 }
         },
@@ -178,25 +175,24 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Implementering af redundans i strømforsyningen",
-    shortDesc: "Manglende redundans i strømforsyningen øger risikoen for nedbrud.",
+    title: "Forbedring af Redundans i Infrastruktur",
+    shortDesc: "Manglende redundans skaber sårbarhed over for nedbrud.",
     narrativeIntro: `
-      "Strømforsyningen i IT-faciliteten er sårbar – et enkelt fejltrin kan forårsage omfattende nedbrud. Backup-systemer skal implementeres hurtigst muligt."
+      "Der er identificeret en mangel på redundans i kritiske systemer, hvilket gør infrastrukturen sårbar over for fejl og nedbrud."
     `,
     digDeeperLinks: [
-      { label: "UPS & Generatorer", text: "Redundante strømforsyningsløsninger sikrer kontinuerlig drift ved fejl." },
-      { label: "Redundans", text: "Ved at implementere redundans minimeres risikoen for driftsstop." }
+      { label: "Redundans", text: "Implementering af redundans sikrer, at systemer kan fortsætte med at køre ved fejl." }
     ],
     architectAdvice: `
-      Arkitekten anbefaler at installere et avanceret UPS-system og en generator, så der altid er backup ved strømsvigt.
+      Arkitekten anbefaler at opbygge redundante systemer og backup-løsninger for at øge driftssikkerheden.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Kortlæg strømforbruget og de eksisterende backup-løsninger.",
+        stepDescription: "Gennemfør en detaljeret analyse af nuværende redundans.",
         choiceA: {
           label: "Detaljeret analyse",
-          text: "+3 tid => +2 security.",
+          text: "+3 tid, +2 security.",
           applyEffect: { timeCost: 3, statChange: { security: 2 } }
         },
         choiceB: {
@@ -207,21 +203,21 @@ window.infrastrukturTasks = [
       },
       {
         location: "infrastruktur",
-        stepDescription: "Installer UPS og generatorer til redundant strømforsyning.",
+        stepDescription: "Implementer redundante systemer og backup-løsninger.",
         choiceA: {
-          label: "Investér i avanceret UPS",
-          text: "+2 tid, -150 kr => +3 stability.",
-          applyEffect: { timeCost: 2, moneyCost: 150, statChange: { stability: 3 } }
+          label: "Omfattende implementering",
+          text: "+3 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Brug standard UPS",
+          label: "Delvis implementering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Dokumentér backup- og redundansprocedurer.",
+        location: "infrastruktur",
+        stepDescription: "Dokumentér redundansprocedurerne.",
         choiceA: {
           label: "Detaljeret dokumentation",
           text: "+2 tid.",
@@ -237,49 +233,222 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Virtualisering af IT-miljøet",
-    shortDesc: "Fysisk infrastruktur skal virtualiseres for bedre udnyttelse af ressourcer.",
+    title: "Implementering af Cloud Integration",
+    shortDesc: "Cloud-løsninger kan øge fleksibiliteten og reducere omkostninger.",
     narrativeIntro: `
-      "Med stigende belastning og omkostninger vurderes det, at virtualisering af servere og applikationer kan optimere ressourcerne og øge fleksibiliteten."
+      "Infrastrukturen vurderes at have potentiale for at integrere cloud-teknologi, hvilket kan optimere ressourcernes udnyttelse og reducere kapitaludgifter."
     `,
     digDeeperLinks: [
-      { label: "Virtualisering", text: "Virtualisering kan reducere omkostninger og forbedre driftsfleksibiliteten." },
-      { label: "Cloud Integration", text: "En hybrid løsning kan kombinere lokal infrastruktur med skybaserede ressourcer." }
+      { label: "Cloud Integration", text: "En hybrid cloud-strategi kan kombinere fordelene ved lokal infrastruktur og skyen." }
     ],
     architectAdvice: `
-      Arkitekten anbefaler en gradvis overgang til virtualisering for at minimere risikoen for nedetid og optimere ydeevnen.
+      Arkitekten anbefaler en gradvis implementering af cloud-løsninger, hvor ikke-kritiske systemer migreres til skyen.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Vurder det nuværende fysiske IT-miljø.",
+        stepDescription: "Identificér systemer, der egner sig til cloud-migrering.",
         choiceA: {
-          label: "Detaljeret miljøanalyse",
+          label: "Detaljeret analyse",
           text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk analyse",
+          label: "Hurtig evaluering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Udarbejd en virtualiseringsstrategi.",
+        stepDescription: "Planlæg og implementer cloud integration for udvalgte systemer.",
         choiceA: {
-          label: "Omfattende planlægning",
-          text: "+2 tid, -50 kr => +3 development.",
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { development: 3 } }
+          label: "Omfattende implementering",
+          text: "+3 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig planlægning",
+          label: "Delvis implementering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
+        location: "infrastruktur",
+        stepDescription: "Dokumentér cloud-integrationsstrategien.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+2 tid.",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk.",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Opgradering af Kabelføring",
+    shortDesc: "Uorganiseret kabelføring skaber interferens og øger fejlrisikoen.",
+    narrativeIntro: `
+      "Den fysiske kabelføring i datacenteret er rodet og ineffektiv, hvilket forårsager signalforringelse og problemer med vedligeholdelsen."
+    `,
+    digDeeperLinks: [
+      { label: "Kabelføring", text: "Korrekt organiseret kabelføring reducerer interferens og letter fejlfinding." }
+    ],
+    architectAdvice: `
+      Arkitekten anbefaler en komplet omstrukturering af kabelføringen for at optimere ydeevnen og lette vedligeholdelsen.
+    `,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Inspicér den nuværende kabelføring og identificér problemerne.",
+        choiceA: {
+          label: "Detaljeret inspektion",
+          text: "+3 tid, +2 development.",
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig inspektion",
+          text: "+1 tid, +5% risk.",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Planlæg og implementer en ny kabelføringsstruktur.",
+        choiceA: {
+          label: "Omfattende planlægning",
+          text: "+3 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Hurtig løsning",
+          text: "+1 tid, +5% risk.",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Opdater dokumentationen for den nye kabelføring.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+2 tid.",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk.",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Energieffektivisering af Infrastruktur",
+    shortDesc: "Højt energiforbrug øger omkostninger og belastningen på systemerne.",
+    narrativeIntro: `
+      "Højt energiforbrug i it-infrastrukturen fører til høje driftsomkostninger og miljømæssige udfordringer. Energieffektivisering er afgørende."
+    `,
+    digDeeperLinks: [
+      { label: "Energieffektivitet", text: "Implementering af energieffektive løsninger kan reducere omkostninger og forbedre systemets levetid." }
+    ],
+    architectAdvice: `
+      Arkitekten anbefaler at implementere moderne, energieffektive teknologier og optimere driftsprocesserne.
+    `,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Udfør en energianalyse af infrastrukturen.",
+        choiceA: {
+          label: "Detaljeret energianalyse",
+          text: "+3 tid, +2 stability.",
+          applyEffect: { timeCost: 3, statChange: { stability: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig evaluering",
+          text: "+1 tid, +5% risk.",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Implementer energieffektive løsninger (fx LED-belysning, optimeret køling).",
+        choiceA: {
+          label: "Omfattende implementering",
+          text: "+3 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Minimal implementering",
+          text: "+1 tid, +5% risk.",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Opdater dokumentationen for de nye energieffektive tiltag.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+2 tid.",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk.",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Implementering af Virtualisering",
+    shortDesc: "Virtualisering optimerer udnyttelsen af hardware og reducerer omkostninger.",
+    narrativeIntro: `
+      "Overgangen til virtualisering kan optimere ressourceudnyttelsen og forenkle administrationen af infrastrukturen."
+    `,
+    digDeeperLinks: [
+      { label: "Virtualisering", text: "Virtualisering muliggør bedre udnyttelse af hardware og øger fleksibiliteten." }
+    ],
+    architectAdvice: `
+      Arkitekten anbefaler en gradvis implementering af virtualisering, så eksisterende systemer kan overføres med minimal nedetid.
+    `,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Kortlæg den nuværende fysiske hardware og udnyttelsesgraden.",
+        choiceA: {
+          label: "Detaljeret analyse",
+          text: "+3 tid, +2 development.",
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig evaluering",
+          text: "+1 tid, +5% risk.",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Implementer virtualiseringssoftware og migrér systemer.",
+        choiceA: {
+          label: "Omfattende implementering",
+          text: "+3 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Delvis implementering",
+          text: "+1 tid, +5% risk.",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
         stepDescription: "Dokumentér virtualiseringsprocessen.",
         choiceA: {
           label: "Detaljeret dokumentation",
@@ -296,22 +465,21 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Opgradering af netværksudstyr",
-    shortDesc: "Forældet udstyr forhindrer en optimal netværksydelse.",
+    title: "Sikkerhedsopdatering af Infrastrukturudstyr",
+    shortDesc: "Opdatering af firmware og software på infrastrukturkomponenter er nødvendig.",
     narrativeIntro: `
-      "Det eksisterende netværksudstyr kan ikke håndtere den stigende trafik, hvilket medfører flaskehalse og ustabilitet. En opgradering er nødvendig."
+      "Mange infrastrukturelementer kører på forældet firmware, hvilket kan udnyttes af angribere. En regelmæssig opdatering er derfor nødvendig."
     `,
     digDeeperLinks: [
-      { label: "Moderne Netværksudstyr", text: "Investering i moderne switches og routere kan forbedre hastighed og stabilitet." },
-      { label: "Hardwareopgradering", text: "Opgradering af nøglenheder er ofte den mest effektive løsning." }
+      { label: "Firmware Update", text: "Opdatering af firmware sikrer, at systemerne er beskyttede mod kendte sårbarheder." }
     ],
     architectAdvice: `
-      Arkitekten pointerer, at en investering i high-end netværksudstyr er en langsigtet løsning, der kan reducere driftsomkostninger og forbedre sikkerheden.
+      Arkitekten anbefaler en systematisk opdatering af firmware og software på alle infrastrukturkomponenter for at øge sikkerheden.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Evaluér det nuværende netværksudstyr.",
+        stepDescription: "Identificér udstyr med forældet firmware.",
         choiceA: {
           label: "Detaljeret evaluering",
           text: "+3 tid, +2 security.",
@@ -325,80 +493,21 @@ window.infrastrukturTasks = [
       },
       {
         location: "infrastruktur",
-        stepDescription: "Køb nyt netværksudstyr.",
+        stepDescription: "Udfør firmware- og softwareopdateringer.",
         choiceA: {
-          label: "Invester i high-end udstyr",
-          text: "+2 tid, -150 kr => +3 security.",
-          applyEffect: { timeCost: 2, moneyCost: 150, statChange: { security: 3 } }
+          label: "Omfattende patching",
+          text: "+3 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Vælg budgetudstyr",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater dokumentationen for netværksudstyret.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid.",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk.",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Optimering af kabelføring og fysisk infrastruktur",
-    shortDesc: "Rettet kabelføring kan minimere interferens og forbedre driftssikkerheden.",
-    narrativeIntro: `
-      "Det fysiske IT-miljø er rodet, og gamle kabler skaber potentielle interferensproblemer. En omstrukturering er nødvendig for at sikre optimal drift."
-    `,
-    digDeeperLinks: [
-      { label: "Kabelføring", text: "Korrekt kabelføring reducerer interferens og letter vedligeholdelsen." },
-      { label: "Datacenter Best Practices", text: "Et organiseret serverrum øger både ydeevnen og sikkerheden." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler en fuldstændig reorganisation af kabelføringen for at opnå bedre ydeevne og driftssikkerhed.
-    `,
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Inspektion af den eksisterende kabelføring.",
-        choiceA: {
-          label: "Detaljeret inspektion",
-          text: "+3 tid, +2 development.",
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig inspektion",
+          label: "Hurtig opdatering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Planlæg en omstrukturering af kabelføringen.",
-        choiceA: {
-          label: "Omfattende planlægning",
-          text: "+2 tid, -50 kr => +2 development.",
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig planlægning",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater dokumentationen med den nye kabelføring.",
+        stepDescription: "Dokumentér opdateringsprocessen.",
         choiceA: {
           label: "Detaljeret dokumentation",
           text: "+2 tid.",
@@ -414,40 +523,25 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Implementering af skybaserede løsninger",
-    shortDesc: "Integration af skyen kan øge fleksibiliteten og reducere omkostninger.",
+    title: "Digitalisering af Infrastrukturvedligeholdelse",
+    shortDesc: "Manuelle vedligeholdelsesprocesser skaber ineffektivitet og fejl.",
     narrativeIntro: `
-      "Med stigende krav til skalerbarhed overvejer IT-afdelingen at flytte dele af infrastrukturen til skyen for at opnå bedre fleksibilitet og omkostningseffektivitet."
+      "Vedligeholdelsen af infrastrukturen udføres manuelt, hvilket fører til fejl og høje omkostninger. Digitalisering kan optimere processerne og øge driftssikkerheden."
     `,
     digDeeperLinks: [
-      { label: "Cloud Computing", text: "Skybaserede løsninger kan reducere kapitaludgifter og øge skalerbarheden." },
-      { label: "Hybrid Cloud", text: "En hybrid model kombinerer fordelene ved lokal infrastruktur og skyen." }
+      { label: "Process Automation", text: "Digitalisering og automatisering af vedligeholdelsesprocesser kan reducere fejl og spare tid." }
     ],
     architectAdvice: `
-      Arkitekten anbefaler en hybrid løsning, hvor kun de systemer, der bedst egner sig til skyen, migreres, mens kritiske systemer forbliver on-premise.
+      Arkitekten anbefaler en fuld digitalisering af vedligeholdelsesprocedurerne for at sikre en mere effektiv drift.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Identificér systemer, der kan migreres til skyen.",
+        stepDescription: "Kortlæg nuværende vedligeholdelsesprocedurer.",
         choiceA: {
           label: "Detaljeret analyse",
           text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk vurdering",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Udvælg en skyudbyder og planlæg migreringen.",
-        choiceA: {
-          label: "Omfattende planlægning",
-          text: "+2 tid, -100 kr => +3 development.",
-          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { development: 3 } }
         },
         choiceB: {
           label: "Hurtig evaluering",
@@ -456,126 +550,22 @@ window.infrastrukturTasks = [
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Dokumentér skystrategien og migreringsplanen.",
-        choiceA: {
-          label: "Detaljeret dokumentation",
-          text: "+2 tid.",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk.",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Fejlfinding og vedligeholdelse af infrastruktur",
-    shortDesc: "Regelmæssig vedligeholdelse er afgørende for at undgå nedbrud.",
-    narrativeIntro: `
-      "Periodiske fejl i den fysiske infrastruktur skaber risiko for nedbrud. En systematisk vedligeholdelsesplan er nødvendig for at sikre kontinuerlig drift."
-    `,
-    digDeeperLinks: [
-      { label: "Preventivt Vedligehold", text: "Regelmæssig vedligeholdelse forhindrer større fejl og nedbrud." },
-      { label: "Fejlfindingsteknikker", text: "Tidlig detektion af fejl kan spare omkostninger og tid." }
-    ],
-    architectAdvice: `
-      Arkitekten understreger, at en systematisk vedligeholdelsesplan med periodiske kontroller kan minimere risikoen for nedbrud.
-    `,
-    steps: [
-      {
         location: "infrastruktur",
-        stepDescription: "Planlæg og implementer en vedligeholdelsesplan.",
+        stepDescription: "Implementer et digitalt vedligeholdelsessystem.",
         choiceA: {
-          label: "Detaljeret plan",
-          text: "+3 tid, +2 stability.",
-          applyEffect: { timeCost: 3, statChange: { stability: 2 } }
+          label: "Omfattende implementering",
+          text: "+3 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig plan",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-sikkerhed",
-        stepDescription: "Implementer fejldiagnostiske værktøjer.",
-        choiceA: {
-          label: "Avanceret værktøj",
-          text: "+2 tid, -50 kr, +2 stability.",
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { stability: 2 } }
-        },
-        choiceB: {
-          label: "Standard værktøj",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater dokumentationen for vedligeholdelsesprocedurer.",
-        choiceA: {
-          label: "Detaljeret dokumentation",
-          text: "+2 tid.",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk.",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Energioptimering i datacenteret",
-    shortDesc: "Højt energiforbrug øger driftsomkostninger og miljøpåvirkning.",
-    narrativeIntro: `
-      "Det nuværende datacenter lider af ineffektive kølesystemer og højt energiforbrug, hvilket både øger omkostninger og miljøpåvirkningen."
-    `,
-    digDeeperLinks: [
-      { label: "Energioptimering", text: "Optimering af energiforbruget kan reducere driftsomkostningerne betydeligt." },
-      { label: "Green IT", text: "Bæredygtige løsninger er essentielle for moderne datacentre." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler at investere i energieffektive systemer og opgradere kølesystemet for at reducere energiforbruget og omkostningerne.
-    `,
-    steps: [
-      {
-        location: "datacenter",
-        stepDescription: "Analyser energiforbruget i datacenteret.",
-        choiceA: {
-          label: "Detaljeret analyse",
-          text: "+3 tid, +2 stability.",
-          applyEffect: { timeCost: 3, statChange: { stability: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk analyse",
+          label: "Minimal implementering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Opgrader kølesystemet med energieffektive løsninger.",
-        choiceA: {
-          label: "Moderne kølesystem",
-          text: "+2 tid, -100 kr, +3 stability.",
-          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 3 } }
-        },
-        choiceB: {
-          label: "Behold eksisterende system",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér de implementerede energibesparende tiltag.",
+        stepDescription: "Dokumentér det nye system og uddan vedligeholdelsesteamet.",
         choiceA: {
           label: "Detaljeret dokumentation",
           text: "+2 tid.",
