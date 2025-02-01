@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon: LIMS Forvaltning - Læringsudgave</title>
+  <title>IT tycoon: LIMS forvaltning – læringsudgave</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>IT Tycoon: LIMS Forvaltning (Læringsudgave)</h1>
+    <h1>IT tycoon: LIMS forvaltning – læringsudgave</h1>
     <div id="scoreboard">
       <div id="scores">
         <span class="score-item">Tid tilbage: <span id="time-left">100</span></span>
-        <span class="score-item">Penge: <span id="money-left">1000</span></span>
+        <span class="score-item">Penge: <span id="money-left">2000</span></span>
         <span class="score-item">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
-
-        <span class="score-item" style="color:#ff4444;">Sikkerhed:</span>
-        <span id="security-value">100</span>
-
-        <span class="score-item" style="color:#44ff44;">Stabilitet:</span>
-        <span id="stability-value">100</span>
-
-        <span class="score-item" style="color:#4444ff;">Udvikling:</span>
-        <span id="development-value">100</span>
-
-        <span class="score-item" style="color:#ffc107;">Hospitalstilfredshed:</span>
-        <span id="hospital-satisfaction">100</span>%
+        <span class="score-item" style="color:#ff4444;">Sikkerhed: <span id="security-value">100</span></span>
+        <span class="score-item" style="color:#44ff44;">Stabilitet: <span id="stability-value">100</span></span>
+        <span class="score-item" style="color:#4444ff;">Udvikling: <span id="development-value">100</span></span>
+        <span class="score-item" style="color:#ffc107;">Hospitalstilfredshed: <span id="hospital-satisfaction">100</span>%</span>
       </div>
     </div>
   </header>
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationsbokse (8 stk.) -->
+      <!-- Lokationsbokse -->
       <div class="location infrastruktur" id="infrastruktur">
-        <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
+        <span class="loc-icon" style="font-size:2rem;">🔧</span>
+        Infrastruktur
       </div>
       <div class="location informationssikkerhed" id="informationssikkerhed">
-        <span class="loc-icon" style="font-size:2rem;">🛡️</span> Informationssikkerhed
+        <span class="loc-icon" style="font-size:2rem;">🛡️</span>
+        Informationssikkerhed
       </div>
       <div class="location hospital" id="hospital">
-        <span class="loc-icon" style="font-size:2rem;">🏥</span> Hospital
+        <span class="loc-icon" style="font-size:2rem;">🏥</span>
+        Hospital
       </div>
       <div class="location leverandor" id="leverandor">
-        <span class="loc-icon" style="font-size:2rem;">📦</span> Leverandør
+        <span class="loc-icon" style="font-size:2rem;">📦</span>
+        Leverandør
       </div>
       <div class="location medicinsk-udstyr" id="medicinsk-udstyr">
-        <span class="loc-icon" style="font-size:2rem;">🩺</span> Medicinsk Udstyr
+        <span class="loc-icon" style="font-size:2rem;">🩺</span>
+        Medicinsk udstyr
       </div>
       <div class="location it-jura" id="it-jura">
-        <span class="loc-icon" style="font-size:2rem;">⚖️</span> IT Jura
+        <span class="loc-icon" style="font-size:2rem;">⚖️</span>
+        IT jura
       </div>
       <div class="location cybersikkerhed" id="cybersikkerhed">
-        <span class="loc-icon" style="font-size:2rem;">💻</span> Cybersikkerhed
+        <span class="loc-icon" style="font-size:2rem;">💻</span>
+        Cybersikkerhed
       </div>
       <div class="location dokumentation" id="dokumentation">
-        <span class="loc-icon" style="font-size:2rem;">📄</span> Dokumentation
+        <span class="loc-icon" style="font-size:2rem;">📄</span>
+        Dokumentation
       </div>
     </div>
 
     <div id="task-side">
       <div id="active-task">
-        <h2>Aktiv Opgave</h2>
+        <h2>Aktiv opgave</h2>
         <h3 id="active-task-headline">Ingen aktiv opgave</h3>
         <p id="active-task-description"></p>
         <div id="task-steps">
@@ -73,7 +73,7 @@
       </div>
 
       <div id="available-tasks">
-        <h2>Mulige Opgaver</h2>
+        <h2>Mulige opgaver</h2>
         <ul id="tasks-list">
           <li>Ingen opgaver tilgængelige</li>
         </ul>
@@ -82,51 +82,35 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
+    <p>&copy; 2025 IT tycoon ApS – læringsudgave</p>
   </footer>
 
-  <!-- Intro Modal -->
+  <!-- Modaler -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
-      <p style="color:#f1c40f;">
-        Du er ansvarlig for LIMS (Laboratory Information Management System)
-        på et stort hospital med afdelinger inden for bl.a. Biokemi, Patologi,
-        Immunologi og Mikrobiologi. Din opgave er at vedligeholde, udvikle og 
-        sikre systemerne – samt lære vigtige faglige begreber undervejs!
-      </p>
+      <h2>Velkommen</h2>
       <p>
-        Du har 100 tidsenheder og 2000 kr. Hver beslutning koster tid og penge, 
-        og at springe dokumentation over øger din risiko i CAB (Change Advisory Board). 
-        Du kan frit udforske “Mere info” og korte historier, hvis du vil fordybe dig. 
-        God fornøjelse!
+        Du er ansvarlig for LIMS på et stort hospital med flere afdelinger. Du har 100 tidsenheder og 2000 kr. Hver beslutning koster tid og penge, og CAB holder øje med dig. Udforsk opgaverne, få arkitekthjælp, og opnå missionmålene!
       </p>
-      <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
+      <button id="intro-ok-btn" class="commit-button">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Tutorial Modal -->
   <div id="tutorial-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
       <p id="tutorial-text"></p>
-      <button id="tutorial-next-btn" style="background-color:#2980b9;">Næste</button>
+      <button id="tutorial-next-btn" class="commit-button">Næste</button>
     </div>
   </div>
 
-  <!-- Scenario Modal (bruges til lokationstrin) -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content" id="scenario-modal-content">
-      <!-- narrativ snippet -->
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
-
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
       <p id="scenario-description"></p>
-
-      <!-- Container til “Grav Dybere”-knapper -->
-      <div id="dig-deeper-links" style="display:none; margin-bottom: 8px;"></div>
-
+      <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
@@ -135,54 +119,40 @@
         <strong>B: </strong><span id="scenario-b-label"></span><br/>
         <em id="scenario-b-text"></em>
       </div>
-
       <div style="margin-top:12px;">
-        <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
-        <button id="scenario-b-btn">Vælg B</button>
+        <button id="scenario-a-btn" class="commit-button" style="margin-right:8px;">Vælg A</button>
+        <button id="scenario-b-btn" class="commit-button">Vælg B</button>
       </div>
     </div>
   </div>
 
-  <!-- Popup container -->
-  <div id="popup-container"></div>
-  <div id="floating-text-container"></div>
-
-  <!-- End-of-Time Modal -->
-  <div id="end-modal" class="modal" style="display:none;">
-    <div class="modal-content" id="end-modal-content">
-      <h2>Tiden er gået!</h2>
-      <p id="end-game-summary"></p>
-      <button id="end-ok-btn" style="background-color:#e74c3c;">Luk</button>
-    </div>
-  </div>
-
-  <!-- CAB Final Approval Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-modal-content">
-      <h2>Endelig CAB-gennemgang</h2>
+      <h2>Cab-gennemgang</h2>
       <p id="cab-summary"></p>
-      <button id="cab-ok-btn" style="background-color:#2ecc71;">Fortsæt</button>
+      <button id="cab-ok-btn" class="commit-button">Fortsæt</button>
     </div>
   </div>
 
-  <!-- CAB Result Popup -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-result-content">
       <h2 id="cab-result-title"></h2>
       <p id="cab-result-text"></p>
-      <button id="cab-result-ok-btn" style="background-color:#2ecc71;">OK</button>
+      <button id="cab-result-ok-btn" class="commit-button">OK</button>
     </div>
   </div>
 
-  <!-- Task Summary Modal (vidensopsummering) -->
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="task-summary-text"></div>
-      <button id="task-summary-ok-btn" style="background-color:#27ae60;">OK</button>
+      <button id="task-summary-ok-btn" class="commit-button">OK</button>
     </div>
   </div>
 
-  <!-- Indlæs dine tasks-filer og main.js -->
+  <div id="popup-container"></div>
+  <div id="floating-text-container"></div>
+
+  <!-- Scripts -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
