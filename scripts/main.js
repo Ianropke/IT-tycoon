@@ -1,14 +1,6 @@
 /************************************************************
  * main.js – Dansk læringsudgave
- * 
- * Ændringer:
- * 1. Tutorial og mission briefing: Udvidet tutorial med missionmål.
- * 2. Feedback og statistik: Slutrapporten evaluerer missionmålene.
- * 3. Flere læringselementer: "Mere Info"-knap åbner modal med intern læringstekst.
- * 4. Forbedret UI/UX: Modaler vises med fadeIn-animation.
- * 5. Dynamiske events: Tilfældige events påvirker gameState.
- * 6. Agil organisation: Missionmål præsenteres og evalueres.
- * 7. Bedre arkitekthjælp: Modal med tydelig anbefaling af de bedste valg per trin.
+ * (Se tidligere version for fuld implementering)
  ************************************************************/
 
 /* Globale konstanter */
@@ -140,19 +132,19 @@ const tutorialNextBtn  = getElementByIdSafe('tutorial-next-btn');
 let tutorialSteps = [
   {
     title:"Din rolle som LIMS-IT-ansvarlig",
-    text:"Du forvalter LIMS i et stort hospital. Du har tid og penge at styre efter. Hver beslutning koster tid og penge, og CAB holder øje med dig."
+    text:"Du forvalter LIMS i et stort hospital. Hver beslutning koster tid og penge, og CAB holder øje med dig."
   },
   {
     title:"CAB & dokumentation",
-    text:"CAB godkender ændringer. Hvis du ignorerer dokumentationen, stiger risikoen. Brug 'Mere Info' for uddybende forklaringer."
+    text:"CAB godkender ændringer. Ignorerer du dokumentationen, stiger risikoen. Brug 'Mere Info' for uddybning."
   },
   {
     title:"Få arkitekthjælp",
-    text:"I stedet for blot at undersøge opgaver, kan du få hjælp fra en IT-arkitekt, som tydeliggør de bedste valg for hvert trin og reducerer risikoen."
+    text:"Få hjælp fra en IT-arkitekt, som tydeliggør de bedste valg for hvert trin og reducerer risikoen."
   },
   {
     title:"Mission briefing",
-    text:"Hospitalet har sat følgende mål: Opnå mindst 110 i sikkerhed og 115 i udvikling. Prøv at opnå eller overgå disse mål i løbet af spillet."
+    text:"Hospitalet har sat mål: Opnå mindst 110 i sikkerhed og 115 i udvikling. Prøv at nå disse mål for ekstra bonus."
   }
 ];
 let tutorialIdx = 0;
@@ -253,6 +245,10 @@ function initGame(){
     ...window.hospitalTasks,
     ...window.infrastrukturTasks
   ];
+  
+  // Debug: Log antal opgaver i backlog
+  console.log("Backlog length:", window.backlog.length);
+  
   for(let i = 0; i < 3; i++){
     generateTask();
   }
@@ -267,7 +263,10 @@ function initGame(){
 function generateTask(){
   if(gameState.availableTasks.length >= 10) return;
   let notUsed = window.backlog.filter(t => !gameState.usedTasks.has(t.title));
-  if(!notUsed.length) return;
+  if(!notUsed.length) {
+    console.log("Ingen nye opgaver at tilføje");
+    return;
+  }
   let chosen = notUsed[Math.floor(Math.random() * notUsed.length)];
   gameState.usedTasks.add(chosen.title);
   
@@ -368,7 +367,7 @@ function getArchitectHelp(taskObj) {
       recChoice = step.choiceB.label;
     }
     if (recChoice) {
-      recFeedback += `<li>Trin ${index+1}: ${recChoice}</li>`;
+      recFeedback += `<li>Trin ${index + 1}: ${recChoice}</li>`;
     }
   });
   recFeedback += "</ul>";
@@ -529,7 +528,7 @@ function applyChoiceEffect(eff){
     }
   }
   if(eff.synergyEffect){
-    // Gem evt. synergyEffect i gameState for senere brug
+    // Eventuel håndtering af synergyEffect
   }
 }
 
