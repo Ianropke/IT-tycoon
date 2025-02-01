@@ -2,83 +2,23 @@ window.hospitalTasks = [
 
   {
     title: "Opgradering af Patientjournal System",
-    shortDesc: "Det nuværende journalsystem er langsomt og forældet.",
+    shortDesc: "Det nuværende journalsystem er forældet og ineffektivt.",
     narrativeIntro: `
-      "Hospitalets nuværende patientjournaler er papirbaserede og digitale systemer er langsomme, hvilket skaber frustration blandt læger og sygeplejersker. Direktionen kræver en hurtig modernisering for at sikre effektiv behandling."
+      "Patientjournalerne skaber flaskehalse og fejl i behandlingen. En opgradering er nødvendig for at sikre hurtig og nøjagtig adgang til patientdata."
     `,
     digDeeperLinks: [
-      { label: "Elektronisk Patientjournal", text: "Overgangen til elektroniske patientjournaler øger både hastigheden og nøjagtigheden i patientbehandlingen." },
-      { label: "Interoperabilitet", text: "Systemer skal kunne kommunikere med hinanden for at sikre en glidende patientrejse gennem hospitalet." }
+      { label: "Elektronisk Patientjournal", text: "Overgangen til et digitalt journalsystem kan forbedre behandlingen og reducere fejl." }
     ],
     architectAdvice: `
-      Arkitekten pointerer: "Den vigtigste handling her er at modernisere systemets kernefunktioner og sikre hurtig datatilgang. Uden en effektiv opgradering vil systemet fortsætte med at bremse klinikerne."
+      Arkitekten anbefaler en komplet opgradering af journalsystemet med fokus på hastighed og dataintegritet.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Evaluer den nuværende ydeevne og brugertilfredshed med journalsystemet.",
+        stepDescription: "Analyser den nuværende ydeevne og fejlrate i journalsystemet.",
         choiceA: {
-          label: "Detaljeret performance-analyse",
-          text: "+3 tid => +2 development (Giver et præcist billede af problemerne).",
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 tid, +5% risk (Risiko for at overse vigtige detaljer).",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-support",
-        stepDescription: "Implementer en ny softwareløsning med hurtig datatilgang.",
-        choiceA: {
-          label: "Omfattende systemopgradering",
-          text: "+3 tid, -100 kr => +3 security og +2 development.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3, development: 2 } }
-        },
-        choiceB: {
-          label: "Minimal opgradering",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater systemdokumentationen og uddannelsesmaterialet for personalet.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid.",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Spring dokumentation over",
-          text: "+5% risk.",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Integration af Laboratorie Information System (LIMS)",
-    shortDesc: "LIMS skal integreres med patientdata for at forbedre workflowet.",
-    narrativeIntro: `
-      "Der er behov for bedre integration mellem laboratoriets systemer og patientjournalerne, så testresultater hurtigt kan tilgås af klinikerne. Uden en god integration opstår der forsinkelser og fejl i behandlingen."
-    `,
-    digDeeperLinks: [
-      { label: "LIMS Integration", text: "En tæt integration mellem LIMS og journalsystemet forbedrer datakvaliteten og patientforløbet." },
-      { label: "Data Synkronisering", text: "Automatisk synkronisering minimerer risikoen for fejl og manglende data." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler: "En robust integrationsplatform er nøglen. Sørg for at datakvaliteten er høj, og at systemerne kommunikerer problemfrit."
-    `,
-    steps: [
-      {
-        location: "laboratorium",
-        stepDescription: "Analyser de nuværende integrationsbehov mellem systemerne.",
-        choiceA: {
-          label: "Detaljeret behovsanalyse",
-          text: "+3 tid => +2 development.",
+          label: "Detaljeret analyse",
+          text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
@@ -88,22 +28,22 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "it-support",
-        stepDescription: "Implementer en middleware-løsning til dataudveksling.",
+        location: "hospital",
+        stepDescription: "Implementer et nyt, digitalt journalsystem.",
         choiceA: {
           label: "Omfattende implementering",
-          text: "+3 tid, -100 kr => +3 security.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+          text: "+4 tid, -150 kr, +3 security.",
+          applyEffect: { timeCost: 4, moneyCost: 150, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Basal løsning",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          label: "Basal implementering",
+          text: "+2 tid, +5% risk.",
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Dokumentér integrationsprocessen og testresultater.",
+        location: "hospital",
+        stepDescription: "Opdater dokumentationen og uddannelsesmaterialet for det nye system.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid.",
@@ -119,50 +59,49 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Optimering af IT-support for klinikker",
-    shortDesc: "Forbedr responstiden og supportkvaliteten for de kliniske afdelinger.",
+    title: "Integration af LIMS med Patientdata",
+    shortDesc: "Manglende integration mellem laboratoriets LIMS og patientdata skaber fejl.",
     narrativeIntro: `
-      "Klinikkerne klager over lange ventetider og lav supportkvalitet, hvilket påvirker patientbehandlingen. Der skal implementeres nye procedurer og værktøjer for at øge supporteffektiviteten."
+      "Fejl i dataudvekslingen mellem LIMS og patientjournaler fører til forsinkelser i behandlingen. En effektiv integration er nødvendig."
     `,
     digDeeperLinks: [
-      { label: "IT Support Best Practices", text: "Effektive supportstrategier sikrer hurtigere respons og højere brugertilfredshed." },
-      { label: "Ticketing Systems", text: "Moderne ticketing-systemer kan automatisere og optimere supportprocesserne." }
+      { label: "LIMS Integration", text: "Effektiv integration sikrer hurtig adgang til laboratorieprøver og testresultater." }
     ],
     architectAdvice: `
-      Arkitekten anbefaler: "En dybdegående evaluering af de nuværende supportprocesser er essentiel. Investér i træning og nye værktøjer for at opnå hurtigere responstider."
+      Arkitekten anbefaler en strømlinet integration, der sikrer korrekt dataudveksling mellem systemerne.
     `,
     steps: [
       {
-        location: "it-support",
-        stepDescription: "Mål og evaluer de nuværende support-metrics.",
+        location: "hospital",
+        stepDescription: "Kortlæg behovet for dataudveksling mellem LIMS og journalsystemet.",
         choiceA: {
-          label: "Detaljeret evaluering",
+          label: "Detaljeret behovsanalyse",
           text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk evaluering",
+          label: "Hurtig evaluering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Træn supportpersonalet og implementer et nyt ticketing-system.",
+        stepDescription: "Implementer en middleware-løsning for integration.",
         choiceA: {
-          label: "Omfattende træning",
-          text: "+3 tid, -50 kr => +3 security.",
-          applyEffect: { timeCost: 3, moneyCost: 50, statChange: { security: 3 } }
+          label: "Omfattende implementering",
+          text: "+4 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 4, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Begrænset træning",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          label: "Basal løsning",
+          text: "+2 tid, +5% risk.",
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Dokumentér de nye supportprocedurer.",
+        location: "hospital",
+        stepDescription: "Dokumentér integrationsprocessen.",
         choiceA: {
           label: "Detaljeret dokumentation",
           text: "+2 tid.",
@@ -178,22 +117,21 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Digitalisering af patientbooking",
-    shortDesc: "Manuelle bookingsystemer fører til fejl og ineffektivitet.",
+    title: "Digitalisering af Patientbooking",
+    shortDesc: "Manuelle bookingprocesser fører til fejl og ineffektivitet.",
     narrativeIntro: `
-      "Patientbookinger bliver håndteret manuelt, hvilket resulterer i dobbeltbookinger og forkerte tidsplaner. En digital løsning er nødvendig for at optimere flowet og reducere administrative fejl."
+      "Det nuværende bookingsystem skaber dobbeltbookinger og tidskonflikter. En digital løsning er nødvendig for at optimere processen."
     `,
     digDeeperLinks: [
-      { label: "Digital Booking Systems", text: "Automatiserede bookingsystemer øger præcisionen og sparer tid." },
-      { label: "Patient Scheduling", text: "Effektive tidsplanlægningsværktøjer sikrer en bedre patientoplevelse." }
+      { label: "Digital Booking", text: "Digitalisering af bookingprocessen øger effektiviteten og reducerer fejl." }
     ],
     architectAdvice: `
-      Arkitekten siger: "En velintegreret digital bookingsløsning kan reducere administrative byrder og forbedre patientoplevelsen. Fokusér på integration med eksisterende systemer."
+      Arkitekten anbefaler en fuld digitalisering af bookingprocessen med integration til øvrige systemer.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg den nuværende bookingproces og identificer problemerne.",
+        stepDescription: "Analyser den nuværende bookingproces og identificer flaskehalse.",
         choiceA: {
           label: "Detaljeret procesanalyse",
           text: "+3 tid, +2 development.",
@@ -206,24 +144,24 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "it-support",
-        stepDescription: "Udvikl og implementer en digital bookingløsning.",
+        location: "hospital",
+        stepDescription: "Implementer et digitalt bookingsystem.",
         choiceA: {
-          label: "Omfattende udvikling",
-          text: "+3 tid, -100 kr, +3 security.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+          label: "Omfattende implementering",
+          text: "+4 tid, -150 kr, +3 security.",
+          applyEffect: { timeCost: 4, moneyCost: 150, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Minimal udvikling",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          label: "Basal implementering",
+          text: "+2 tid, +5% risk.",
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Dokumentér den nye bookingsløsning og uddannelsesmateriale for personalet.",
+        location: "hospital",
+        stepDescription: "Opdater dokumentationen og træningsmaterialet for det nye system.",
         choiceA: {
-          label: "Omfattende dokumentation",
+          label: "Detaljeret dokumentation",
           text: "+2 tid.",
           applyEffect: { timeCost: 2 }
         },
@@ -237,111 +175,51 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Forbedring af driftsikkerhed i Operationsstuen",
-    shortDesc: "Operationsstuen kræver pålidelig IT-support for kritiske procedurer.",
+    title: "Forbedring af IT-support for Klinikker",
+    shortDesc: "Ineffektive supportprocesser fører til lange ventetider og fejl.",
     narrativeIntro: `
-      "Systemfejl i operationsstuen kan have livstruende konsekvenser. Der skal implementeres ekstra sikkerheds- og redundansforanstaltninger for at sikre kontinuerlig drift under operationer."
+      "Klinikkerne oplever dårlig IT-support, hvilket påvirker patientbehandlingen. En optimeret supportløsning er nødvendig."
     `,
     digDeeperLinks: [
-      { label: "Surgical IT Systems", text: "Høj driftsikkerhed er afgørende for operationsstuer." },
-      { label: "Critical Infrastructure", text: "Redundans og backup-systemer minimerer risikoen for nedbrud." }
+      { label: "IT Support Best Practices", text: "Effektive supportprocesser reducerer ventetider og øger patienttilfredsheden." }
     ],
     architectAdvice: `
-      Arkitekten understreger: "I operationsstuen er ingen fejl acceptable. Fokusér på redundans og hurtig fejlfinding for at sikre patienternes sikkerhed."
-    `,
-    steps: [
-      {
-        location: "operationsstue",
-        stepDescription: "Audit af nuværende IT-systemer i operationsstuen.",
-        choiceA: {
-          label: "Detaljeret audit",
-          text: "+3 tid, +2 security.",
-          applyEffect: { timeCost: 3, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig audit",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementér redundante systemer og backup-løsninger.",
-        choiceA: {
-          label: "Fuld redundans",
-          text: "+3 tid, -100 kr, +3 security.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Delvis redundans",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér de nye procedurer og udfør tests.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid.",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk.",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Opdatering af Medicinsk Udstyrsregistrering",
-    shortDesc: "Registreringssystemet for medicinsk udstyr er forældet og ineffektivt.",
-    narrativeIntro: `
-      "En nøjagtig registrering af medicinsk udstyr er afgørende for både vedligeholdelse og drift. Det nuværende system skaber fejl og unødvendige omkostninger."
-    `,
-    digDeeperLinks: [
-      { label: "Asset Management", text: "Effektiv registrering af udstyr mindsker omkostninger og fejl." },
-      { label: "Medical Equipment Tracking", text: "Moderne systemer kan spore udstyr i realtid." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler: "Moderniser udstyrsregistreringen med et digitalt system, så du altid har styr på, hvilket udstyr der er tilgængeligt, og hvornår vedligeholdelse er nødvendig."
+      Arkitekten anbefaler en dybdegående evaluering af supportprocesserne med fokus på automatisering og træning af personalet.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg det nuværende registreringssystem og identificer mangler.",
+        stepDescription: "Mål den nuværende responstid og supportkvalitet.",
         choiceA: {
-          label: "Detaljeret kortlægning",
+          label: "Detaljeret evaluering",
           text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk evaluering",
+          label: "Hurtig evaluering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "it-support",
-        stepDescription: "Implementer et nyt digitalt registreringssystem.",
+        location: "hospital",
+        stepDescription: "Implementer et nyt IT-supportsystem med automatisering.",
         choiceA: {
           label: "Omfattende implementering",
-          text: "+3 tid, -100 kr => +3 security.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+          text: "+4 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 4, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Basal implementering",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          label: "Minimal implementering",
+          text: "+2 tid, +5% risk.",
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Opdater al dokumentation og uddannelsesmateriale.",
+        location: "hospital",
+        stepDescription: "Dokumentér de nye supportprocedurer og uddan personalet.",
         choiceA: {
-          label: "Omfattende dokumentation",
+          label: "Detaljeret dokumentation",
           text: "+2 tid.",
           applyEffect: { timeCost: 2 }
         },
@@ -355,22 +233,21 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Implementering af IoT Overvågning i Hospitalet",
-    shortDesc: "IoT-enheder kan optimere overvågningen af kritisk udstyr og miljøforhold.",
+    title: "Modernisering af Klinisk IT-infrastruktur",
+    shortDesc: "Forældet IT-infrastruktur hæmmer effektiv patientbehandling.",
     narrativeIntro: `
-      "Med stigende krav til driftsstabilitet overvejes implementeringen af IoT-enheder, der kontinuerligt overvåger alt fra temperatur til udstyrsstatus i hele hospitalet."
+      "Det nuværende IT-miljø er langsomt og ustabilt, hvilket fører til forsinkelser i behandling og diagnosticering. Modernisering er nødvendig for at sikre kontinuerlig drift."
     `,
     digDeeperLinks: [
-      { label: "IoT in Healthcare", text: "IoT-teknologi kan skabe smartere, mere effektive hospitaler." },
-      { label: "Smart Hospital", text: "Integration af IoT øger sikkerheden og effektiviteten i hospitalsdriften." }
+      { label: "Klinisk IT Modernisering", text: "Opgradering af IT-infrastruktur kan forbedre behandlingsprocesserne og patientflowet." }
     ],
     architectAdvice: `
-      Arkitekten siger: "Implementer IoT i et pilotområde og udvid herefter, hvis resultaterne er positive. Vær særligt opmærksom på dataintegrationen."
+      Arkitekten anbefaler en fuld modernisering af infrastrukturen med fokus på hastighed og stabilitet.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Vurder hvilke områder, der har størst behov for overvågning.",
+        stepDescription: "Analyser den nuværende infrastruktur og identificer flaskehalse.",
         choiceA: {
           label: "Detaljeret analyse",
           text: "+3 tid, +2 development.",
@@ -383,24 +260,24 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Installer IoT-sensorer i de udvalgte områder.",
+        location: "hospital",
+        stepDescription: "Opgrader hardware og software for bedre ydeevne.",
         choiceA: {
-          label: "Pilotinstallation",
-          text: "+2 tid, -100 kr => +2 security.",
-          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { security: 2 } }
+          label: "Omfattende opgradering",
+          text: "+4 tid, -150 kr, +3 security.",
+          applyEffect: { timeCost: 4, moneyCost: 150, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Begrænset installation",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          label: "Basal opgradering",
+          text: "+2 tid, +5% risk.",
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Dokumentér installation og opfølgningsprocedurer.",
+        location: "hospital",
+        stepDescription: "Opdater dokumentationen og uddannelsesmaterialet.",
         choiceA: {
-          label: "Omfattende dokumentation",
+          label: "Detaljeret dokumentation",
           text: "+2 tid.",
           applyEffect: { timeCost: 2 }
         },
@@ -414,24 +291,23 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Forbedring af Kommunikationsinfrastruktur",
-    shortDesc: "Kommunikationssystemerne mellem afdelingerne skal moderniseres.",
+    title: "Implementering af Elektroniske Patientjournaler",
+    shortDesc: "Digitalisering af patientjournaler for at øge effektiviteten.",
     narrativeIntro: `
-      "Interne kommunikationskanaler er fragmenterede, hvilket fører til misforståelser og forsinkelser i beslutningsprocessen. En samlet løsning kan effektivisere kommunikationen og øge patientbehandlingen."
+      "Overgangen til elektroniske journaler kan forbedre datatilgængeligheden og reducere fejl i patientbehandlingen."
     `,
     digDeeperLinks: [
-      { label: "Unified Communications", text: "Sammenkædte kommunikationssystemer forbedrer samarbejdet." },
-      { label: "Hospital Networking", text: "Moderne netværk sikrer hurtig og pålidelig kommunikation." }
+      { label: "Digital Patientjournal", text: "En digital løsning giver hurtig adgang til patientinformation og forbedrer behandlingskvaliteten." }
     ],
     architectAdvice: `
-      Arkitekten understreger: "En centraliseret kommunikationsplatform vil ikke kun forbedre intern kommunikation, men også øge sikkerheden ved at samle alle data på ét sted."
+      Arkitekten anbefaler en fuld digitalisering af patientjournalerne med en brugervenlig grænseflade.
     `,
     steps: [
       {
-        location: "it-support",
-        stepDescription: "Audit af de nuværende kommunikationssystemer.",
+        location: "hospital",
+        stepDescription: "Analyser de nuværende journalsystemer for fejl og ineffektivitet.",
         choiceA: {
-          label: "Detaljeret audit",
+          label: "Detaljeret analyse",
           text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
@@ -442,81 +318,22 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Implementer en unified communication platform.",
+        location: "hospital",
+        stepDescription: "Implementer et nyt digitalt journalsystem.",
         choiceA: {
           label: "Omfattende implementering",
-          text: "+3 tid, -100 kr => +3 security.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+          text: "+4 tid, -150 kr, +3 security.",
+          applyEffect: { timeCost: 4, moneyCost: 150, statChange: { security: 3 } }
         },
         choiceB: {
           label: "Basal implementering",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          text: "+2 tid, +5% risk.",
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Træn personalet og dokumentér de nye systemer.",
-        choiceA: {
-          label: "Omfattende træning og dokumentation",
-          text: "+2 tid.",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk.",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Sikkerhedsopdatering for Patientdata",
-    shortDesc: "Patientdata skal beskyttes bedre mod uautoriseret adgang.",
-    narrativeIntro: `
-      "Hospitalet har modtaget advarsler om, at de nuværende sikkerhedsforanstaltninger ikke er tilstrækkelige til at beskytte patientdata. Dette kan føre til alvorlige brud på fortroligheden."
-    `,
-    digDeeperLinks: [
-      { label: "Data Security in Healthcare", text: "Sikker håndtering af patientdata er afgørende for at opretholde tilliden." },
-      { label: "HIPAA Compliance", text: "Overholdelse af lovgivning sikrer en standardiseret datasikkerhed." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler: "Implementer kryptering og strammere adgangskontrol for at sikre, at patientdata ikke kan tilgås uautoriseret."
-    `,
-    steps: [
-      {
-        location: "it-sikkerhed",
-        stepDescription: "Evaluer de nuværende sikkerhedsforanstaltninger for patientdata.",
-        choiceA: {
-          label: "Detaljeret evaluering",
-          text: "+3 tid, +2 security.",
-          applyEffect: { timeCost: 3, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk evaluering",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-sikkerhed",
-        stepDescription: "Implementer kryptering og styrkede adgangskontroller.",
-        choiceA: {
-          label: "Fuld implementering",
-          text: "+3 tid, -100 kr, +3 security.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Delvis implementering",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater sikkerhedspolitikker og procedurer.",
+        location: "hospital",
+        stepDescription: "Opdater dokumentationen og træningsmaterialet for personalet.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid.",
@@ -533,51 +350,50 @@ window.hospitalTasks = [
 
   {
     title: "Effektivisering af Administrative IT-processer",
-    shortDesc: "Manuelle processer skaber flaskehalse i den administrative drift.",
+    shortDesc: "Manuelle processer fører til ineffektivitet og fejl.",
     narrativeIntro: `
-      "Det administrative IT-miljø i hospitalet er præget af manuelle procedurer, der fører til fejl og ineffektivitet. Digitalisering og automatisering er nøglen til at spare tid og reducere omkostninger."
+      "Det administrative IT-miljø i hospitalet er præget af manuelle procedurer, der fører til fejl og spild af ressourcer. Digitalisering kan optimere disse processer."
     `,
     digDeeperLinks: [
-      { label: "Process Automation", text: "Automatisering af processer øger effektiviteten og reducerer fejl." },
-      { label: "Digital Workflow", text: "Digitalisering af administrative opgaver skaber en mere strømlinet drift." }
+      { label: "Process Automation", text: "Automatisering af processer øger effektiviteten og reducerer fejl." }
     ],
     architectAdvice: `
-      Arkitekten siger: "En grundig analyse af de administrative processer og en strategisk implementering af automatiseringsværktøjer kan frigive værdifuld tid og reducere fejl."
+      Arkitekten anbefaler en omfattende digitalisering af de administrative processer med fokus på automatisering og integration.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg og identificér flaskehalse i de administrative processer.",
+        stepDescription: "Kortlæg de nuværende administrative processer.",
         choiceA: {
           label: "Detaljeret procesanalyse",
           text: "+3 tid, +2 development.",
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk analyse",
+          label: "Hurtig evaluering",
           text: "+1 tid, +5% risk.",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "it-support",
-        stepDescription: "Implementer automatiseringsværktøjer til de mest tidskrævende processer.",
+        location: "hospital",
+        stepDescription: "Implementer digitale løsninger for automatisering.",
         choiceA: {
           label: "Omfattende implementering",
-          text: "+3 tid, -100 kr, +3 development.",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { development: 3 } }
+          text: "+4 tid, -100 kr, +3 security.",
+          applyEffect: { timeCost: 4, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Delvis implementering",
-          text: "+1 tid, +5% risk.",
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          label: "Minimal implementering",
+          text: "+2 tid, +5% risk.",
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Dokumentér de nye digitale processer og træn personalet.",
+        location: "hospital",
+        stepDescription: "Dokumentér de nye processer og træn personalet.",
         choiceA: {
-          label: "Omfattende dokumentation",
+          label: "Detaljeret dokumentation",
           text: "+2 tid.",
           applyEffect: { timeCost: 2 }
         },
@@ -589,5 +405,4 @@ window.hospitalTasks = [
       }
     ]
   }
-
 ];
