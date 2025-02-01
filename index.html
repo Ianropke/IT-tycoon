@@ -32,7 +32,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationsbokse (8 stk.) -->
+      <!-- Lokationsbokse -->
       <div class="location infrastruktur" id="infrastruktur">
         <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
       </div>
@@ -61,7 +61,7 @@
 
     <div id="task-side">
       <div id="active-task">
-        <h2>Aktiv Opgave</h2>
+        <h2>Aktiv opgave</h2>
         <h3 id="active-task-headline">Ingen aktiv opgave</h3>
         <p id="active-task-description"></p>
         <div id="task-steps">
@@ -70,10 +70,12 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
+        <!-- Knappen til arkitekthjælp -->
+        <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
       </div>
 
       <div id="available-tasks">
-        <h2>Mulige Opgaver</h2>
+        <h2>Mulige opgaver</h2>
         <ul id="tasks-list">
           <li>Ingen opgaver tilgængelige</li>
         </ul>
@@ -90,16 +92,10 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
       <p style="color:#f1c40f;">
-        Du er ansvarlig for LIMS (Laboratory Information Management System)
-        på et stort hospital med afdelinger inden for bl.a. Biokemi, Patologi,
-        Immunologi og Mikrobiologi. Din opgave er at vedligeholde, udvikle og 
-        sikre systemerne – samt lære vigtige faglige begreber undervejs!
+        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> på et stort hospital. Du styrer både tid og penge, og beslutninger har konsekvenser. Få ekstra info om fx <span class="hoverTooltip" data-tooltip="Domain Name System">DNS</span>, <span class="hoverTooltip" data-tooltip="Active Directory">AD</span> og <span class="hoverTooltip" data-tooltip="High Performance Computing">HPC</span> ved at føre musen hen over ordene.
       </p>
       <p>
-        Du har 100 tidsenheder og 2000 kr. Hver beslutning koster tid og penge, 
-        og at springe dokumentation over øger din risiko i CAB (Change Advisory Board). 
-        Du kan frit udforske “Mere info” og korte historier, hvis du vil fordybe dig. 
-        God fornøjelse!
+        Du har 100 tidsenheder og 2000 kr. Springer du dokumentation over, stiger risikoen i CAB (Change Advisory Board). God fornøjelse!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -114,16 +110,14 @@
     </div>
   </div>
 
-  <!-- Scenario Modal (bruges til lokationstrin) -->
+  <!-- Scenario Modal -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content" id="scenario-modal-content">
-      <!-- narrativ snippet -->
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
       <p id="scenario-description"></p>
-      <!-- Container til “Grav Dybere”-knapper -->
-      <div id="dig-deeper-links" style="display:none; margin-bottom: 8px;"></div>
+      <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
@@ -136,6 +130,14 @@
         <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn">Vælg B</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Arkitekthjælp Modal -->
+  <div id="architect-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div id="architect-content"></div>
+      <button class="commit-button" onclick="document.getElementById('architect-modal').style.display='none'">Luk</button>
     </div>
   </div>
 
@@ -161,7 +163,7 @@
     </div>
   </div>
 
-  <!-- CAB Result Popup -->
+  <!-- CAB Result Modal -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-result-content">
       <h2 id="cab-result-title"></h2>
@@ -170,7 +172,7 @@
     </div>
   </div>
 
-  <!-- Task Summary Modal (vidensopsummering) -->
+  <!-- Task Summary Modal -->
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="task-summary-text"></div>
