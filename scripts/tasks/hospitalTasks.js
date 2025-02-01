@@ -3,62 +3,63 @@
 window.hospitalTasks = [
 
   {
-    title: "Immunologi – LIMS Udvidelse",
+    title: "Immunologi – LIMS udvidelse",
     shortDesc: "Immunologiafdelingen ønsker bedre integration med stainers og flowcytometri.",
     logicLong: `
-      Immunologiafdelingen udfører mange autoantistof-tests (ANA, ANCA)
-      samt flowcytometri-analyser. De vil have data direkte ind i LIMS
-      for at undgå manuelle fejl og spare tid.
+      Immunologiafdelingen udfører mange autoantistof-tests (ANA, ANCA) samt flowcytometri-analyser. De vil have data direkte ind i LIMS for at undgå manuelle fejl og spare tid.
     `,
     narrativeIntro: `
-      I laboratoriet står en ny autoimmun stainer klar, men personalet mangler en fuld integration til LIMS. De er spændte på, om det kan lette hverdagen markant.
+      I laboratoriet står en ny autoimmun stainer klar, men personalet mangler en fuld integration til LIMS. De håber, at en bedre integration kan lette den daglige drift.
     `,
     learningInfo: `
-      Læringspunkt: En fuld integration mellem instrumenter og LIMS er afgørende for at undgå manuelle fejl og sikre datakvalitet. Ved at forbinde stainers og flowcytometri direkte med systemet reduceres risikoen for fejl og spildtid.
+      Læringspunkt: En fuld integration mellem laboratorieudstyr og LIMS er afgørende for at sikre datakvalitet og effektivitet. Ved at automatisere dataoverførslen mindskes risikoen for menneskelige fejl. Vigtige termer: <span class="hoverTooltip" data-tooltip="LIMS: Laboratory Information Management System – et system til styring af laboratoriedata">LIMS</span> og <span class="hoverTooltip" data-tooltip="Flowcytometri: Teknologi til at analysere celler">flowcytometri</span>.
     `,
     knowledgeRecap: `
-      I virkeligheden kan manglende instrumentintegration give forkerte data i patientjournaler. En fuld integration sikrer kvalitet og hurtigere svar til læger. Dokumentation er afgørende for fremtidig fejlfinding og efterlevelse af ISO 27799.
+      Manglende integration kan føre til forkerte data og tidskrævende manuelle indtastninger. En solid integration øger kvaliteten og opfylder standarder som ISO 27799.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Drøft behov for instrumentintegration (stainer + flowcytometer) med overlægen.",
+        stepDescription: "Drøft behovet for integration med overlægen og laboratoriepersonalet.",
         choiceA: {
           label: "Grundig workshop",
-          text: "+3 tid => +2 development (du opdager alle krav).",
+          text: "+3 tid => +2 development (alle krav afdækkes).",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
           label: "Kort samtale",
-          text: "+1 tid => +1 development, +5% risk (noget glemmes).",
+          text: "+1 tid => +1 development, +5% risk (nogle krav overses).",
           applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Sørg for stabil dataoverførsel til LIMS. Kræver måske ekstra server eller HPC.",
+        stepDescription: "Sørg for stabil dataoverførsel via en dedikeret server – evt. med HPC.",
         choiceA: {
           label: "Dedikeret server",
           text: "+2 tid, -100 kr => +2 stability (sikker datahåndtering).",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 2 } }
         },
         choiceB: {
           label: "Genbrug eksisterende",
-          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk (mulige kapacitetsproblemer).",
+          text: "+1 tid => +5% risk (mulige kapacitetsproblemer).",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér workflow for stainer/flow i LIMS til CAB.",
+        stepDescription: "Dokumentér integrationsprocessen til CAB.",
         choiceA: {
-          label: "Fuld protokol",
+          label: "Fuld dokumentation",
           text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Minimal dokumentation",
-          text: "+5% risk => docSkipCount++",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -66,60 +67,63 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Patologi – Digital Patologi",
-    shortDesc: "Patologien vil scanne vævssnit og bruge AI til hurtigere diagnose.",
+    title: "Patologi – digital patologi",
+    shortDesc: "Patologien vil digitalisere vævssnit og bruge AI til hurtigere diagnose.",
     logicLong: `
-      Afdelingen håndterer vævsprøver ved makroskopisk udskæring, embedding station, mikrotom og autostainer. De vil digitalisere snittene og bruge AI til at støtte diagnostik. Det kræver stor serverkapacitet.
+      Afdelingen håndterer vævsprøver ved makroskopisk udskæring, embedding, mikrotom og autostainer. Målet er at digitalisere snittene og anvende AI til diagnostik, hvilket kræver stor serverkapacitet.
     `,
     narrativeIntro: `
-      En ny skanner står klar til at digitalisere histologiske snit. Patologerne håber på fjernkonsultation og AI, men systemet producerer enorme billedfiler.
+      En ny skanner er installeret til digitalisering af histologiske snit, men systemet kæmper med at håndtere de store billedfiler.
     `,
     learningInfo: `
-      Læringspunkt: Digitalisering af patologi kan reducere den manuelle håndtering og fremskynde diagnosen. Det er vigtigt at sikre en god forbindelse mellem scanner og LIMS, så data behandles korrekt og hurtigt.
+      Læringspunkt: Digitalisering af patologi kan fremskynde diagnoseprocessen og reducere manuel håndtering. Det er vigtigt, at de store billedfiler behandles effektivt for at sikre hurtige svar.
     `,
     knowledgeRecap: `
-      Digital patologi reducerer fysisk slid og muliggør hurtigere svar. Uden en god HPC- eller lagerløsning kan svartider blive lange, og kvaliteten falder. Dokumentation er essentiel for fejlfinding og ISO 27001.
+      Digital patologi reducerer fysisk slid og øger hastigheden, men kræver en robust infrastruktur for at undgå langsomme svartider.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Drøft med patologerne om workflow fra snit til scanning og AI-analyse.",
+        stepDescription: "Drøft workflow fra snit til scanning med patologerne.",
         choiceA: {
           label: "Udførlig flowgennemgang",
-          text: "+3 tid => +2 stability (man undgår flaskehalse).",
+          text: "+3 tid => +2 stability (undgår flaskehalse).",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { stability: 2 } }
         },
         choiceB: {
           label: "Kort interview",
-          text: "+1 tid => +1 stability, +5% risk (vigtige trin overses).",
+          text: "+1 tid, +5% risk (nogle trin overses).",
           applyEffect: { timeCost: 1, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Opgradér storage/GPU for de store scanningsfiler og AI-kapacitet.",
+        stepDescription: "Opgradér storage og GPU for store billedfiler og AI-kapacitet.",
         choiceA: {
           label: "Køb HPC-løsning",
-          text: "+2 tid, -150 kr => +2 development (AI-klar).",
+          text: "+2 tid, -150 kr => +2 development (systemet er AI-klar).",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 150, statChange: { development: 2 } }
         },
         choiceB: {
           label: "Brug eksisterende server",
-          text: "+5% risk => synergyEffect: { lackInfra: true } (mulig langsom scanning).",
+          text: "+5% risk (mulig langsom scanning).",
           applyEffect: { riskyPlus: 0.05, synergyEffect: { lackInfra: true } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB kræver beskrivelse af digital patologi-workflow og AI-validering.",
+        stepDescription: "Dokumentér workflow og AI-validering til CAB.",
         choiceA: {
-          label: "Fuld workflow-dok",
-          text: "+2 tid => ingen risk.",
+          label: "Fuld workflow-dokumentation",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Ingen dokumentation",
-          text: "+5% risk => docSkipCount++",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -127,60 +131,63 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Klinikledelsen ønsker Dashboards",
+    title: "Klinikledelsen ønsker dashboards",
     shortDesc: "Direktionen vil have LIMS-dashboards til TAT og KPI.",
     logicLong: `
-      Ledelsen mangler overblik over prøveflow, turn-around times (TAT) og fejlprocenter. Med dashboards kan de fordele ressourcer og reagere på flaskehalse i realtid.
+      Ledelsen mangler et overblik over prøveflow, turn-around times (TAT) og fejlprocenter. Dashboards skal hjælpe med at fordele ressourcer og reagere hurtigt.
     `,
     narrativeIntro: `
-      På et møde efterlyser direktøren farverige grafer, der viser spidsbelastninger. Personalet frygter dog for meget dataeksponering, hvis GDPR ikke overholdes.
+      På et møde efterlyser direktøren farverige grafer, men personalet er bekymrede for, at for meget dataeksponering kan stride mod GDPR.
     `,
     learningInfo: `
-      Læringspunkt: Dashboards er vigtige for ledelsen for at få et hurtigt overblik over systemets ydeevne. Det er afgørende at balancere datapræsentation med sikkerhed, så følsomme oplysninger ikke udleveres.
+      Læringspunkt: Dashboards giver et hurtigt overblik over systemets ydeevne. Det er vigtigt at balancere information med databeskyttelse, så følsomme data ikke udleveres.
     `,
     knowledgeRecap: `
-      Realtids-dashboards hjælper med at fange forsinkelser. Hvis GDPR-krav overses, kan det medføre sanktioner. Dokumentation sikrer gennemsigtighed.
+      Realtids-dashboards hjælper med at fange forsinkelser, men uden ordentlig dokumentation kan det være svært at håndtere databeskyttelse og vedligehold.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Definér de vigtigste KPI'er (TAT, backlog, fejlrate) med ledelsen.",
+        stepDescription: "Definér de vigtigste KPI'er med ledelsen.",
         choiceA: {
           label: "Grundig workshop",
-          text: "+3 tid => +2 development (du fanger de reelle behov).",
+          text: "+3 tid => +2 development (de reelle behov afdækkes).",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
           label: "Prototype hurtigt",
-          text: "+1 tid => +1 development, +5% risk (mange krav overses).",
+          text: "+1 tid, +5% risk (vigtige krav overses).",
           applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "it-jura",
-        stepDescription: "Tjek at dashboards ikke viser persondata i strid med GDPR.",
+        stepDescription: "Sikre, at dashboards ikke viser persondata i strid med GDPR.",
         choiceA: {
           label: "Dyb juridisk gennemgang",
-          text: "+2 tid, -50 kr => +1 security (mindre risiko for databrud).",
+          text: "+2 tid, -50 kr => +1 security (mindre risiko).",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 1 } }
         },
         choiceB: {
           label: "Overfladisk check",
-          text: "Spar tid => +1 development, +5% risk (datalæk mulig).",
+          text: "Spar tid, +5% risk (vigtige data overses).",
           applyEffect: { statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér GDPR-hensyn og KPI-struktur til CAB.",
+        stepDescription: "Dokumentér KPI-strukturen og GDPR-hensyn til CAB.",
         choiceA: {
           label: "Fuld dokumentation",
-          text: "+2 tid => ingen ekstra risk",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Spring over",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal dokumentation",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -191,57 +198,60 @@ window.hospitalTasks = [
     title: "Multi-sprog i LIMS",
     shortDesc: "Flere udenlandske specialister efterspørger engelske og franske menuer.",
     logicLong: `
-      Hospitalet har rekrutteret udenlandsk sundhedspersonale, som ikke forstår danske menuer. De vil gerne have LIMS på flere sprog, hvilket kræver oversættelser og serveropsætning.
+      Hospitalet har udenlandsk sundhedspersonale, som ikke forstår danske menuer. LIMS skal understøtte flere sprog med oversættelser og passende serveropsætning.
     `,
     narrativeIntro: `
-      En fransk overlæge fumler rundt i danske menupunkter og klager over misforståelser. Personalet håber, at et flersproget LIMS kan løfte effektiviteten.
+      En fransk overlæge har svært ved at navigere i de danske menuer, hvilket fører til misforståelser.
     `,
     learningInfo: `
-      Læringspunkt: Et flersproget LIMS hjælper udenlandske medarbejdere med at undgå fejl. Det er vigtigt at opgradere serveren, så den kan håndtere unicode og sprogpakker, og samtidig sikre en ensartet brugeroplevelse.
+      Læringspunkt: Et flersproget LIMS reducerer fejl og øger effektiviteten. Det er vigtigt at sikre, at serveren håndterer unicode og sprogpakker korrekt.
     `,
     knowledgeRecap: `
-      Flersproget LIMS mindsker fejl for udenlandske ansatte. Uden opgradering kan der opstå tegnsætnings- eller encodingproblemer. Dokumentation sikrer langsigtet vedligehold.
+      Flersproget support er afgørende for udenlandske medarbejdere. Uden korrekt opsætning kan der opstå problemer med tegnsætning og encoding.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Find ud af hvilke sprog, der faktisk er vigtigst (engelsk, fransk osv.).",
+        stepDescription: "Identificer de vigtigste sprog (fx engelsk og fransk) med personalet.",
         choiceA: {
           label: "Grundig sprogundersøgelse",
           text: "+3 tid => +2 development (kvalificerede valg).",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
           label: "Gæt ud fra personalelister",
-          text: "+1 tid => +1 development, +5% risk (overser vigtige sprog).",
+          text: "+1 tid, +5% risk (vigtige sprog overses).",
           applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Serveren skal kunne håndtere sprogpakker og unicode-tegn.",
+        stepDescription: "Opgradér serveren til at håndtere sprogpakker og unicode.",
         choiceA: {
           label: "Opgradér systemet",
           text: "+2 tid, -100 kr => +2 stability (klar til i18n).",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 2 } }
         },
         choiceB: {
           label: "Behold eksisterende server",
-          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk (fejl i oversættelser).",
+          text: "+1 tid, +5% risk (oversættelser kan fejle).",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se en oversættelsesplan, inkl. vedligehold.",
+        stepDescription: "Dokumentér oversættelsesprocessen til CAB.",
         choiceA: {
           label: "Detaljeret plan",
-          text: "+2 tid => ingen risk",
+          text: "+2 tid => ingen risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Minimal dokumentation",
-          text: "+5% risk => docSkipCount++",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -249,19 +259,19 @@ window.hospitalTasks = [
   },
 
   {
-    title: "WeekendServerNedluk",
-    shortDesc: "Hospitalet vil lukke systemerne en weekend for store opgraderinger.",
+    title: "Weekendservernedluk",
+    shortDesc: "Hospitalet vil lukke systemerne i en weekend for store opgraderinger.",
     logicLong: `
-      Ledelsen ønsker at undgå hverdagens driftstop ved at samle opgraderinger i en weekend-lukning. Men laboratorierne kører delvist 24/7 og er bekymrede for hasteprøver.
+      For at undgå driftstop i hverdagen samler hospitalet opgraderinger og lukker systemerne i en weekend. Laboratorierne kører dog 24/7, så hasteprøver er en udfordring.
     `,
     narrativeIntro: `
-      Det er fredag eftermiddag, og en plan om weekend-lukning ryster de ansatte. Nogle håber på ro, andre frygter kaos mandag morgen.
+      Det er fredag eftermiddag, og en plan om weekendnedlukning skaber blandede reaktioner: Nogle håber på ro, mens andre frygter kaos mandag morgen.
     `,
     learningInfo: `
-      Læringspunkt: En planlagt nedlukning kan samle flere opgraderinger og minimere forstyrrelser i den daglige drift. Det er dog afgørende at kommunikere klart til personalet og have fallback-planer, så kritiske processer ikke påvirkes.
+      Læringspunkt: En planlagt nedlukning kan samle opgraderinger, men det er afgørende at kommunikere klart til personalet og have fallback-planer for kritiske processer.
     `,
     knowledgeRecap: `
-      Koordinering med afdelingerne sikrer minimal gene. Uden plan og dokumentation kan frustration og fejl opstå, og opgraderingen kan ende i forlænget nedtid.
+      En velkoordineret nedlukning minimerer forstyrrelser, men kræver omhyggelig planlægning og dokumentation for at undgå langvarig nedetid.
     `,
     steps: [
       {
@@ -270,6 +280,7 @@ window.hospitalTasks = [
         choiceA: {
           label: "Hold møder",
           text: "+3 tid => +2 stability (alle er forberedte).",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { stability: 2 } }
         },
         choiceB: {
@@ -280,10 +291,11 @@ window.hospitalTasks = [
       },
       {
         location: "infrastruktur",
-        stepDescription: "Udfør store server- og netopgraderinger i lukketiden.",
+        stepDescription: "Udfør større opgraderinger i nedlukningsperioden.",
         choiceA: {
           label: "Omfattende pakke",
           text: "+3 tid, -150 kr => +2 stability, +1 development",
+          recommended: true,
           applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 2, development: 1 } }
         },
         choiceB: {
@@ -294,15 +306,16 @@ window.hospitalTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Lav weekend-rapport til CAB, inkl. fallbackplan ved fejl.",
+        stepDescription: "Dokumentér nedlukningsplanen med fallback til CAB.",
         choiceA: {
           label: "Grundig rapport",
-          text: "+2 tid => ingen extra risk",
+          text: "+2 tid => ingen extra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Minimal notits",
-          text: "+5% risk => docSkipCount++",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -310,60 +323,63 @@ window.hospitalTasks = [
   },
 
   {
-    title: "BlodprøveAutomatisering",
-    shortDesc: "Automatisér blodprøvehåndtering via pipetteringsrobot og autoanalyser.",
+    title: "Blodprøveautomatisering",
+    shortDesc: "Automatisér håndtering af blodprøver med pipetteringsrobotter og autoanalyser.",
     logicLong: `
-      Laboratoriet vil fjerne manuelle pipetteringer og bruge pipetteringsrobotter + autoanalyser for at øge kvaliteten. LIMS skal styre stregkoder og batch, så alt kører gnidningsfrit.
+      Laboratoriet ønsker at fjerne manuelle pipetteringer og anvende robotter til at øge kvaliteten. LIMS skal styre stregkoder og batch, så alt kører gnidningsfrit.
     `,
     narrativeIntro: `
-      Teknikerne gentager den samme håndtering hundrede gange om dagen. En robot kan lette det monotone arbejde, men opsætningen skal fungere i praksis.
+      Teknikerne gentager den samme procedure utallige gange. En robot kan lette det monotone arbejde, men systemet skal fungere fejlfrit.
     `,
     learningInfo: `
-      Læringspunkt: Automatisering af blodprøvehåndtering kan øge effektiviteten og minimere fejl. Det er vigtigt at sikre, at robotten integreres korrekt med LIMS, og at kvalitetssikring (QC) er indbygget i systemet.
+      Læringspunkt: Automatisering kan øge hastigheden og reducere fejl i blodprøvehåndtering. Det er vigtigt, at robotten integreres korrekt med LIMS, og at kvalitetssikring (QC) er en del af systemet.
     `,
     knowledgeRecap: `
-      Automatisering øger hastigheden og mindsker fejl. Uden en stabil infrastruktur eller tilstrækkelig dokumentation risikerer man at stå uden support, hvis robotten fejler.
+      Automatisering øger effektiviteten, men uden en stabil infrastruktur eller tilstrækkelig dokumentation kan man risikere systemfejl.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Tal med laboratoriepersonalet, som er spændte på robotter.",
+        stepDescription: "Tal med laboratoriepersonalet om robotteknologi og QC.",
         choiceA: {
           label: "Dybt interview",
           text: "+3 tid => +2 stability (du forstår detaljerne).",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { stability: 2 } }
         },
         choiceB: {
           label: "Kort samtale",
-          text: "+1 tid => +1 stability, +5% risk (kan overse kritiske trin).",
+          text: "+1 tid, +5% risk (kritiske trin overses).",
           applyEffect: { timeCost: 1, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Robotter kræver net- og kapacitetscheck. Evt. dedikeret sub-net.",
+        stepDescription: "Sørg for et dedikeret netværk til robotter – evt. et sub-net.",
         choiceA: {
           label: "Robot-netværk",
           text: "+2 tid, -100 kr => +2 stability",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 100, statChange: { stability: 2 } }
         },
         choiceB: {
           label: "Brug eksisterende",
-          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk",
+          text: "+1 tid, +5% risk (kapacitetsproblemer).",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Skriv automationsrapport til CAB med QC og fallback.",
+        stepDescription: "Dokumentér robotintegrationen og QC-procedurer til CAB.",
         choiceA: {
-          label: "Detaljeret",
+          label: "Detaljeret rapport",
           text: "+2 tid => ingen risk",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Spring doc over",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal dokumentation",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -371,60 +387,63 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Biokemi – ReagensHåndtering",
+    title: "Biokemi – reagenshåndtering",
     shortDesc: "Biokemilab vil tracke reagenser i LIMS: lot-numre, QC og forbrug.",
     logicLong: `
-      Biokemi benytter reagenser til mange analyser (HPLC, Ion Selective, enzymer). De ønsker digital sporing af reagens-forbrug og automatisk alarm, når noget er ved at løbe tør.
+      Biokemi benytter reagenser til mange analyser. De ønsker digital sporing af reagensforbrug og automatisk alarm, når lageret nærmer sig udtømning.
     `,
     narrativeIntro: `
-      En bioanalytiker bander over at have løbet tør for reagens midt i en kørsel. De drømmer om en LIMS-løsning, der holder styr på lager og QC-resultater.
+      En bioanalytiker udtrykker frustration over at løbe tør for reagens midt i en kørsel. Personalet håber på et system, der automatisk kan spore og bestille nye reagenser.
     `,
     learningInfo: `
-      Læringspunkt: Effektiv sporing af reagenser er afgørende for at undgå forsinkelser og spild. Ved at digitalisere lagerstyringen i LIMS kan man hurtigt se, hvornår der skal bestilles nyt, og dermed opretholde kvaliteten.
+      Læringspunkt: Effektiv sporing af reagenser forhindrer forsinkelser og sikrer kontinuiteten i laboratorieprocesser. Digital sporing hjælper med at holde styr på forbruget og bestille nye reagenser til tiden.
     `,
     knowledgeRecap: `
-      Et effektivt reagensmodul hindrer spild, sikrer kvalitet og sporbarhed (ISO 27799). Uden dokumentation ved ingen, hvordan systemet skal vedligeholdes på sigt.
+      Et effektivt reagensmodul minimerer spild og sikrer sporbarhed. Uden ordentlig dokumentation ved ingen, hvordan systemet skal vedligeholdes på sigt.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Interview bioanalytikerne om reagens-behov, QC-tjek og lagerstyring.",
+        stepDescription: "Interview bioanalytikerne om deres behov og QC-tjek.",
         choiceA: {
           label: "Dybt interview",
           text: "+3 tid => +2 development",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Lille notits",
-          text: "+1 tid => +1 development, +5% risk (kan mangle vigtige ønsker).",
+          label: "Kort notits",
+          text: "+1 tid, +5% risk (vigtige krav overses).",
           applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "leverandor",
-        stepDescription: "Kan leverandøren udvikle et reagens-modul med automatisk QC?",
+        stepDescription: "Vurder om leverandøren kan udvikle et reagensmodul med automatiseret QC.",
         choiceA: {
           label: "Premium-løsning",
           text: "+2 tid, -120 kr => +2 stability",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 120, statChange: { stability: 2 } }
         },
         choiceB: {
-          label: "Billig plugin",
+          label: "Billigt plugin",
           text: "+1 tid, -50 kr => +1 development, +5% risk",
           applyEffect: { timeCost: 1, moneyCost: 50, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Reagensrapport til CAB: sporing af lot-numre og QC-resultater.",
+        stepDescription: "Dokumentér reagenssporing og QC til CAB.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid => ingen risk",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Minimal dokumentation",
-          text: "+5% risk => docSkipCount++",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -432,41 +451,43 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Klinisk Genetik – VariantDatabase",
-    shortDesc: "Genetik vil have en VariantDatabase med HPC og replikering.",
+    title: "Klinisk genetik – variantdatabase",
+    shortDesc: "Genetik vil have en variantdatabase med HPC og replikering.",
     logicLong: `
-      Afdelingen arbejder med genetiske prøver og ønsker at kunne håndtere store datamængder i en database med HPC og replikering. Sikkerhed og GDPR er kritisk.
+      Afdelingen arbejder med genetiske prøver og ønsker at håndtere store datamængder med HPC og replikering. Sikkerhed og GDPR er afgørende.
     `,
     narrativeIntro: `
-      Genetikerne får flere og flere prøver hver dag. De frygter, at en almindelig server ikke kan håndtere de store datasets. HPC og replikering kan give robusthed, men kræver en plan.
+      Genetikerne modtager flere prøver dagligt og frygter, at en almindelig server ikke kan håndtere de store datasæt.
     `,
     learningInfo: `
-      Læringspunkt: For at håndtere store genomiske data er det afgørende at have en database med HPC og replikering. Dette sikrer datasikkerhed og overholdelse af GDPR, idet data er beskyttet mod tab.
+      Læringspunkt: For at håndtere store genomiske data er det essentielt med HPC og replikering. Dette sikrer datasikkerhed og overholdelse af GDPR.
     `,
     knowledgeRecap: `
-      Store genomiske datamængder kræver HPC eller GPU-løsninger. Uden replikering kan vitale data tabes, hvilket strider mod GDPR. Dokumentation sikrer sporbarhed og compliance.
+      Store datamængder kræver avancerede løsninger. Uden replikering risikerer man datatab, og dokumentationen er nødvendig for sporbarhed.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Koordiner med genetikere om HPC-behov og mulig AI-udvidelse fremover.",
+        stepDescription: "Koordiner med genetikere om HPC-behov og mulige AI-udvidelser.",
         choiceA: {
           label: "Genetik-workshop",
-          text: "+3 tid => +2 development (du forstår big data krav).",
+          text: "+3 tid => +2 development",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
           label: "Antag lille datamængde",
-          text: "+1 tid => +1 development, +5% risk (undervurderer behov).",
+          text: "+1 tid, +5% risk (behov undervurderes).",
           applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Opsæt HPC + replikering, så data ikke tabes ved nedbrud.",
+        stepDescription: "Opsæt HPC og replikering, så data ikke tabes ved nedbrud.",
         choiceA: {
           label: "Ny HPC-løsning",
           text: "+2 tid, -150 kr => +2 stability, +1 security",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 150, statChange: { stability: 2, security: 1 } }
         },
         choiceB: {
@@ -477,15 +498,16 @@ window.hospitalTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB kræver streng datasikkerhed pga. GDPR.",
+        stepDescription: "Dokumentér datasikkerheden til CAB pga. GDPR.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid => +1 security",
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { security: 1 } }
         },
         choiceB: {
-          label: "Spring over",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal dokumentation",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -493,41 +515,43 @@ window.hospitalTasks = [
   },
 
   {
-    title: "Nyt Mikrobiologi-Lab",
+    title: "Nyt mikrobiologi-lab",
     shortDesc: "Mikrobiologi vil have MALDI-TOF og PCR-hood integreret i LIMS.",
     logicLong: `
-      Mikrobiologi-lab dyrker bakterier, analyserer antibiotikaresistens og bruger MALDI-TOF til hurtig ID. De vil have LIMS-integration til at håndtere store datakørsler effektivt.
+      Laboratoriet dyrker bakterier og analyserer antibiotikaresistens. De ønsker en integreret løsning, der håndterer MALDI-TOF data og PCR-resultater effektivt.
     `,
     narrativeIntro: `
-      Et nyt MALDI-TOF-apparat er ankommet, og lab-personalet jubler over hurtige artsbestemmelser. Men uden et LIMS-interface kan resultater blive forsinkede eller fejlindtastede.
+      Et nyt MALDI-TOF-apparat er ankommet, og lab-personalet er begejstrede for hurtige artsbestemmelser, men de oplever, at resultaterne ofte bliver forsinkede.
     `,
     learningInfo: `
-      Læringspunkt: En effektiv integration af MALDI-TOF og PCR-data i LIMS kan fremskynde diagnostikken og sikre korrekt dataregistrering. Korrekt opsætning mindsker risikoen for fejl.
+      Læringspunkt: Integration af MALDI-TOF og PCR-data i LIMS fremskynder diagnostik og forbedrer datakvaliteten. Det er vigtigt, at data overføres direkte og uden fejl.
     `,
     knowledgeRecap: `
-      Integration af MALDI-TOF og PCR-data fremskynder diagnosesvar. Uden en god infrastruktur og dokumentation kan man ende med manuelle løsninger og fejl i data.
+      En effektiv integration fremskynder diagnosesvar og mindsker fejl. Manglende dokumentation kan medføre manuelle løsninger og dataproblemer.
     `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Tal med mikrobiologerne om PCR, MALDI og resistensprocedurer.",
+        stepDescription: "Tal med mikrobiologerne om integration af PCR og MALDI-TOF.",
         choiceA: {
           label: "Grundig behovsafdækning",
-          text: "+3 tid => +2 development (alle analyser dækkes).",
+          text: "+3 tid => +2 development",
+          recommended: true,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtig samtale",
-          text: "+1 tid => +1 development, +5% risk (nogle krav glemmes).",
+          label: "Kort samtale",
+          text: "+1 tid, +5% risk (vigtige krav overses).",
           applyEffect: { timeCost: 1, statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Opsæt dedikeret interface til MALDI-TOF og PCR-hood, så data flyder direkte i LIMS.",
+        stepDescription: "Opsæt et dedikeret interface til MALDI-TOF og PCR-hood.",
         choiceA: {
           label: "Avanceret integration",
           text: "+2 tid, -120 kr => +2 stability",
+          recommended: true,
           applyEffect: { timeCost: 2, moneyCost: 120, statChange: { stability: 2 } }
         },
         choiceB: {
@@ -538,15 +562,16 @@ window.hospitalTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se protokoller for dyrkning, PCR og MALDI-logging.",
+        stepDescription: "Dokumentér integrationsprocessen til CAB.",
         choiceA: {
           label: "Fuld dokumentation",
           text: "+2 tid => ingen risk",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Minimal dokumentation",
-          text: "+5% risk => docSkipCount++",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
