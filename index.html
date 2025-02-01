@@ -13,7 +13,7 @@
       <div id="scores">
         <span class="score-item">Tid tilbage: <span id="time-left">100</span></span>
         <span class="score-item">Penge: <span id="money-left">2000</span></span>
-        <span class="score-item">Opgaver: <span id="tasks-completed">0</span></span>
+        <span class="score-item">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
         <span class="score-item" style="color:#ff4444;">Sikkerhed: <span id="security-value">100</span></span>
         <span class="score-item" style="color:#44ff44;">Stabilitet: <span id="stability-value">100</span></span>
         <span class="score-item" style="color:#4444ff;">Udvikling: <span id="development-value">100</span></span>
@@ -25,17 +25,37 @@
   <div id="main-container">
     <div id="game-area">
       <!-- Lokationsbokse -->
-      <div class="location" id="hospital">
-        <span class="loc-icon">🏥</span> Hospital
+      <div class="location infrastruktur" id="infrastruktur">
+        <span class="loc-icon" style="font-size:2rem;">🔧</span>
+        Infrastruktur
       </div>
-      <div class="location" id="infrastruktur">
-        <span class="loc-icon">🔧</span> Infrastruktur
+      <div class="location informationssikkerhed" id="informationssikkerhed">
+        <span class="loc-icon" style="font-size:2rem;">🛡️</span>
+        Informationssikkerhed
       </div>
-      <div class="location" id="cybersikkerhed">
-        <span class="loc-icon">💻</span> Cybersikkerhed
+      <div class="location hospital" id="hospital">
+        <span class="loc-icon" style="font-size:2rem;">🏥</span>
+        Hospital
       </div>
-      <div class="location" id="dokumentation">
-        <span class="loc-icon">📄</span> Dokumentation
+      <div class="location leverandor" id="leverandor">
+        <span class="loc-icon" style="font-size:2rem;">📦</span>
+        Leverandør
+      </div>
+      <div class="location medicinsk-udstyr" id="medicinsk-udstyr">
+        <span class="loc-icon" style="font-size:2rem;">🩺</span>
+        Medicinsk udstyr
+      </div>
+      <div class="location it-jura" id="it-jura">
+        <span class="loc-icon" style="font-size:2rem;">⚖️</span>
+        IT jura
+      </div>
+      <div class="location cybersikkerhed" id="cybersikkerhed">
+        <span class="loc-icon" style="font-size:2rem;">💻</span>
+        Cybersikkerhed
+      </div>
+      <div class="location dokumentation" id="dokumentation">
+        <span class="loc-icon" style="font-size:2rem;">📄</span>
+        Dokumentation
       </div>
     </div>
 
@@ -51,6 +71,7 @@
           </ul>
         </div>
       </div>
+
       <div id="available-tasks">
         <h2>Mulige opgaver</h2>
         <ul id="tasks-list">
@@ -65,18 +86,16 @@
   </footer>
 
   <!-- Modaler -->
-  <!-- Intro modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
       <h2>Velkommen</h2>
       <p>
-        Du er ansvarlig for LIMS på et stort hospital. Du har 100 tidsenheder og 2000 kr. Hver beslutning koster ressourcer, og CAB holder øje med dig. Udforsk opgaverne, få arkitekthjælp, og opnå missionmålene!
+        Du er ansvarlig for LIMS på et stort hospital med flere afdelinger. Du har 100 tidsenheder og 2000 kr. Hver beslutning koster tid og penge, og CAB holder øje med dig. Udforsk opgaverne, få arkitekthjælp, og opnå missionmålene!
       </p>
       <button id="intro-ok-btn" class="commit-button">Kom i gang!</button>
     </div>
   </div>
 
-  <!-- Tutorial modal -->
   <div id="tutorial-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
@@ -85,7 +104,6 @@
     </div>
   </div>
 
-  <!-- Scenario modal -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content" id="scenario-modal-content">
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
@@ -102,13 +120,12 @@
         <em id="scenario-b-text"></em>
       </div>
       <div style="margin-top:12px;">
-        <button id="scenario-a-btn" class="commit-button">Vælg A</button>
+        <button id="scenario-a-btn" class="commit-button" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn" class="commit-button">Vælg B</button>
       </div>
     </div>
   </div>
 
-  <!-- CAB modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-modal-content">
       <h2>Cab-gennemgang</h2>
@@ -117,7 +134,6 @@
     </div>
   </div>
 
-  <!-- CAB result modal -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content" id="cab-result-content">
       <h2 id="cab-result-title"></h2>
@@ -126,7 +142,6 @@
     </div>
   </div>
 
-  <!-- Task summary modal -->
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="task-summary-text"></div>
@@ -134,20 +149,10 @@
     </div>
   </div>
 
-  <!-- End-of-game modal -->
-  <div id="end-modal" class="modal" style="display:none;">
-    <div class="modal-content" id="end-modal-content">
-      <h2>Tiden er gået!</h2>
-      <p id="end-game-summary"></p>
-      <button id="end-ok-btn" class="commit-button">Luk</button>
-    </div>
-  </div>
-
-  <!-- Popup og flydende tekst containere -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
-  <!-- Scripts: Task-filer og main.js -->
+  <!-- Scripts -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
