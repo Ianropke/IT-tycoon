@@ -1,124 +1,64 @@
 // scripts/tasks/infrastrukturTasks.js
 
 window.infrastrukturTasks = [
-
   {
-    title: "Serverpark Genopgradering",
+    title: "Serverpark genopgradering",
     shortDesc: "Modernisér en aldrende serverpark med HPC og failover for stabil drift.",
     logicLong: `
-      Hospitalets servere er gamle og ustabile. Du vil tilføje HPC 
-      til tunge beregninger (AI, billedanalyse) samt failover-løsninger 
-      for at undgå kritiske nedbrud.
+      Hospitalets servere er gamle og ustabile. Du skal tilføje HPC til tunge beregninger (f.eks. AI og billedanalyse) samt implementere failover-løsninger for at undgå kritiske nedbrud.
     `,
     narrativeIntro: `
-      Du træder ind i datacentret og ser rækker af larmende, ældre servere. En tekniker fortæller, at de genstarter ret ofte. HPC kan give ekstra kraft, men budgettet er stramt.
+      Når du træder ind i datacentret, ser du rækker af gamle, larmende servere, der genstarter ofte. Personalet er bekymrede for driftstab, hvis der ikke foretages en opgradering.
     `,
     learningInfo: `
-      Læringspunkt: Ved at modernisere serverparken med HPC og failover-løsninger sikres en stabil drift. 
-      <span class="hoverTooltip" data-tooltip="High Performance Computing: Avanceret beregningskapacitet til tunge beregninger">HPC</span> giver ekstra regnekraft, mens en korrekt implementeret failover forhindrer nedbrud og driftstab.
-      Det er vigtigt at dokumentere, hvordan systemet kan genoprettes ved fejl.
+      Læringspunkt: En opgradering af serverparken med <span class="hoverTooltip" data-tooltip="HPC: High Performance Computing, som øger beregningskapaciteten">HPC</span> og failover sikrer en stabil drift. En detaljeret kapacitetsanalyse er afgørende for en succesfuld opgradering.
+    `,
+    knowledgeRecap: `
+      Forældede servere kan føre til driftsproblemer. En moderne serverpark med failover reducerer risikoen for nedbrud og understøtter de krævende opgaver.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Lav en grundig kapacitetsanalyse (strøm, køling, HPC-krav).",
+        stepDescription: "Foretag en detaljeret kapacitetsanalyse af serverparken (strøm, køling, HPC-krav).",
         choiceA: {
           label: "Dybt tjek",
-          text: "+3 tid, -150 kr => +2 stability (gennemarbejdet plan).",
+          text: "+3 tid, -150 kr => +2 stability.",
+          recommended: true,
           applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 2 } }
         },
         choiceB: {
           label: "Overfladisk vurdering",
-          text: "+1 tid, -50 kr => +1 stability, +5% risk (overser problemer).",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk.",
           applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Afklar servicevindue med afdelingerne, når servere skal opgraderes.",
+        stepDescription: "Koordiner med IT-afdelingen for at planlægge en opgradering uden for normal drift.",
         choiceA: {
           label: "Planlagt nedetid",
-          text: "+2 tid => +2 hospitalSatisfaction (alle informeres).",
-          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
-        },
-        choiceB: {
-          label: "Ingen forklaring",
-          text: "0 tid => -10 hospitalSatisfaction, +5% risk (stor utilfredshed).",
-          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér HPC og failover-design til CAB, evt. ift. NIS2.",
-        choiceA: {
-          label: "Detaljeret rapport",
-          text: "+2 tid => ingen ekstra risk",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Minimal dok",
-          text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Netværksmodernisering i Laboratoriet",
-    shortDesc: "Opgradér netværket (DNS, AD) i laboratorierne for hurtigere data og stabil login.",
-    logicLong: `
-      Laboratorierne oplever forsinkelser og ustabile logins. Du vil modernisere switches, DNS-konfiguration og AD-integration for at optimere arbejdsgangene.
-    `,
-    narrativeIntro: `
-      En bioanalytiker bander over, at systemet ofte mister forbindelse til AD. DNS-fejl gør login langsomt. Laboratoriechefen vil have netværket på højt niveau.
-    `,
-    learningInfo: `
-      Læringspunkt: En stabil netværksinfrastruktur er afgørende for et velfungerende laboratorium. 
-      Ved at optimere <span class="hoverTooltip" data-tooltip="Domain Name System: System til oversættelse af domænenavne til IP-adresser">DNS</span> og 
-      <span class="hoverTooltip" data-tooltip="Active Directory: Microsofts katalogtjeneste til at håndtere brugere og ressourcer">AD</span> sikres hurtige logins og en robust drift.
-      Korrekt konfiguration forhindrer flaskehalse og nedbrud.
-    `,
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Undersøg netværksudstyr (switches, routere) samt DNS-opsætning og AD.",
-        choiceA: {
-          label: "Grundig netanalyse",
-          text: "+3 tid, -150 kr => +3 stability (alle flaskehalse rettes).",
-          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 3 } }
-        },
-        choiceB: {
-          label: "Overfladisk check",
-          text: "+1 tid, -50 kr => +1 stability, +5% risk (noget forbliver ustabilt).",
-          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "hospital",
-        stepDescription: "Koordiner evt. nedetid med laboratorieledelsen ved DNS/AD-omlægning.",
-        choiceA: {
-          label: "Planlagt nedbrud",
-          text: "+2 tid => +2 hospitalSatisfaction",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
         choiceB: {
           label: "Ingen varsel",
-          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
           applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér netopgraderingen til CAB (evt. ISO 27001 henvisning).",
+        stepDescription: "Udarbejd en detaljeret opgraderingsrapport til CAB.",
         choiceA: {
-          label: "Fuld dokumentation",
-          text: "+2 tid => ingen ekstra risk",
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Kort memo",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal rapport",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -126,58 +66,63 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Datacenter Opgradering",
-    shortDesc: "Forbedr køling, reoler og replikering i datacenter for sikker drift.",
+    title: "Netværksmodernisering i laboratoriet",
+    shortDesc: "Opgradér netværket (DNS, AD) for hurtigere data og stabil login.",
     logicLong: `
-      Hospitalets datacenter er presset på plads og køling. Du vil opgradere rack, strøm og indføre replikering, så data ikke går tabt ved fejl.
+      Laboratorierne oplever forsinkelser og ustabile logins pga. forældede netværkskomponenter. Du skal modernisere udstyret og konfigurere DNS og AD korrekt.
     `,
     narrativeIntro: `
-      Datacentret er hedt, og en ventilator summer anstrengt. Personalet advarer om risiko for overophedning. En reel opgradering er på høje tid.
+      En bioanalytiker klager over, at forbindelsen til AD ofte mistes, og DNS-fejl forårsager langsomme logins. Ledelsen ønsker et mere pålideligt netværk.
     `,
     learningInfo: `
-      Læringspunkt: En effektiv opgradering af datacenteret, herunder forbedret køling og replikering, er afgørende for datasikkerheden.
-      Ved at sikre, at data kan replikere og systemet kan genoprettes, opfyldes NIS2-kravene – og risikoen for nedbrud minimeres.
+      Læringspunkt: En opgradering af netværket, inklusiv korrekt opsætning af <span class="hoverTooltip" data-tooltip="DNS: Oversætter domænenavne til IP-adresser">DNS</span> og <span class="hoverTooltip" data-tooltip="AD: Active Directory til styring af netværksressourcer">AD</span>, er essentiel for hurtig og stabil drift.
+    `,
+    knowledgeRecap: `
+      Et robust netværk sikrer hurtige logins og minimal nedetid. Det kræver en grundig analyse og dokumentation for at sikre, at personalet kan tilpasse sig.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Gennemfør kapacitetsanalyse (rack, køleanlæg, replikering).",
+        stepDescription: "Udfør en detaljeret analyse af netværksudstyret og konfigurationen.",
         choiceA: {
-          label: "Stor analyse",
-          text: "+3 tid, -120 kr => +2 stability (grundigt overblik).",
-          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { stability: 2 } }
+          label: "Grundig netanalyse",
+          text: "+3 tid, -150 kr => +3 stability.",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 3 } }
         },
         choiceB: {
-          label: "Overfladisk check",
-          text: "+1 tid, -40 kr => +1 stability, +5% risk (risiko for oversete fejl).",
-          applyEffect: { timeCost: 1, moneyCost: 40, statChange: { stability: 1 }, riskyPlus: 0.05 }
+          label: "Overfladisk kontrol",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk.",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Fortæl om mulig nedetid under rack/strømopgraderinger.",
+        stepDescription: "Koordiner med laboratorieledelsen om nedetid ved netopgraderingen.",
         choiceA: {
-          label: "Detaljeret plan",
-          text: "+2 tid => +2 hospitalSatisfaction",
+          label: "Planlagt nedetid",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
         choiceB: {
-          label: "Ingen forklaring",
-          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          label: "Ingen varsel",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
           applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se design med replikering + failover.",
+        stepDescription: "Udarbejd en rapport over netopgraderingen til CAB.",
         choiceA: {
-          label: "Omfattende rapport",
-          text: "+2 tid => ingen risk",
+          label: "Detaljeret dokumentation",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal notits",
-          text: "+5% risk => docSkipCount++",
+          label: "Kort rapport",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -185,58 +130,127 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Backup-løsning Modernisering",
-    shortDesc: "Skift fra båndbackup til disk/cloud + replikering for hurtigere restore.",
+    title: "Datacenter opgradering",
+    shortDesc: "Opgrader køling, racks og strømforsyning for at sikre kontinuerlig drift.",
     logicLong: `
-      Hospitalet kører ældre båndbackup. Ved genskabelse tager det lang tid. Du vil have disk/cloud og evt. replikering, så data nemt kan hentes tilbage.
+      Datacenterets nuværende anlæg er forældet, og kølesystemet er ineffektivt. Du skal implementere moderne racks og energibesparende køleteknologier.
     `,
     narrativeIntro: `
-      En akut situation førte til, at en kritisk fil måtte gendannes fra bånd. Det tog alt for lang tid. Ledelsen kræver en hurtigere løsning.
+      Når du træder ind i datacentret, mærker du varmen og ser slidte serverracks. Personalet er bekymrede for overophedning og nedbrud.
     `,
     learningInfo: `
-      Læringspunkt: Overgangen fra båndbackup til en disk/cloud-løsning med replikering kan drastisk reducere genskabelsestiden. 
-      En veldokumenteret backup-strategi er nøglen til at opfylde NIS2-kravene og sikre, at data hurtigt kan hentes tilbage i tilfælde af fejl.
+      Læringspunkt: En opgradering af datacenteret med moderne kølesystemer og racks øger robustheden og sikrer kontinuerlig drift. Effektiv energiudnyttelse er afgørende.
+    `,
+    knowledgeRecap: `
+      En moderne datacenterløsning reducerer risikoen for overophedning og nedbrud. Dokumentation er nødvendig for at vise, hvordan systemet kan gendannes ved fejl.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Vælg ny backupmetode (disk, cloud, replikering).",
+        stepDescription: "Foretag en detaljeret analyse af datacenterets kapacitet, herunder køling og strømforsyning.",
         choiceA: {
-          label: "Disk + Cloud Hybrid",
-          text: "+3 tid, -120 kr => +2 stability (robust gendannelse).",
+          label: "Omfattende analyse",
+          text: "+3 tid, -150 kr => +2 stability.",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 2 } }
+        },
+        choiceB: {
+          label: "Overfladisk analyse",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk.",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Koordiner med driftsafdelingen for at planlægge opgraderingen uden nedetid.",
+        choiceA: {
+          label: "Planlagt opgradering",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
+        },
+        choiceB: {
+          label: "Uplanlagt opgradering",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en detaljeret opgraderingsrapport til CAB.",
+        choiceA: {
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal rapport",
+          text: "+5% risk (docSkipCount++).",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Backup-løsning modernisering",
+    shortDesc: "Skift fra båndbackup til en disk/cloud-løsning med replikering.",
+    logicLong: `
+      Den nuværende båndbackup er langsom ved genskabelse. Du skal implementere en moderne backup-løsning, der kombinerer disk og cloud med replikering for hurtig restore.
+    `,
+    narrativeIntro: `
+      En nylig filgendannelse tog alt for lang tid, hvilket skabte frustration. Personalet kræver en hurtigere og mere pålidelig backup-løsning.
+    `,
+    learningInfo: `
+      Læringspunkt: Moderne backup-teknologier med replikering reducerer nedetid og øger datasikkerheden. Det er essentielt med en detaljeret strategi og dokumentation.
+    `,
+    knowledgeRecap: `
+      Opgradering af backup-systemet mindsker risikoen for datatab og forbedrer restore-tiderne. Dokumentationen er afgørende for at demonstrere backup-strategiens effektivitet.
+    `,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Vælg den nye backupmetode og udarbejd en plan for overgangen.",
+        choiceA: {
+          label: "Disk + cloud hybrid",
+          text: "+3 tid, -120 kr => +2 stability.",
+          recommended: true,
           applyEffect: { timeCost: 3, moneyCost: 120, statChange: { stability: 2 } }
         },
         choiceB: {
-          label: "Behold bånd + lidt disk",
-          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk",
+          label: "Behold bånd, tilføj disk",
+          text: "+1 tid => +5% risk.",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Planlæg tidspunkt for større backupkørsler uden at forstyrre drift.",
+        stepDescription: "Planlæg backupkørsler uden at forstyrre den daglige drift.",
         choiceA: {
           label: "Detaljeret tidsplan",
-          text: "+2 tid => +1 hospitalSatisfaction",
+          text: "+2 tid => +1 hospitalSatisfaction.",
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 1 } }
         },
         choiceB: {
-          label: "Bare kør om natten",
-          text: "0 tid => +5% risk (ingen test).",
+          label: "Kør om natten",
+          text: "0 tid => +5% risk.",
           applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB kræver backup-strategi med replikering beskrevet.",
+        stepDescription: "Dokumentér backup-strategien til CAB.",
         choiceA: {
-          label: "Fuld doc",
-          text: "+2 tid => ingen risk",
+          label: "Fuld dokumentation",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Sparsom doc",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal dokumentation",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -245,57 +259,62 @@ window.infrastrukturTasks = [
 
   {
     title: "Virtualiseringsprojekt",
-    shortDesc: "Kør LIMS på virtuelle maskiner, evt. med live migration og testmiljø.",
+    shortDesc: "Overfør fysiske servere til virtuelle maskiner for bedre ressourceudnyttelse.",
     logicLong: `
-      Mange fysiske servere er underudnyttet. Ved virtualisering sparer man ressourcer og kan let flytte VM’er. Personalet frygter dog nye fejlscenarier.
+      Mange fysiske servere er underudnyttede. Ved virtualisering kan ressourcerne optimeres, og systemet kan skaleres mere fleksibelt – forudsætter en detaljeret migrationsplan.
     `,
     narrativeIntro: `
-      En netadmin peger på en stak gamle servere. Vi kunne nedbringe strømforbruget og øge driftssikkerheden, men hvis noget går galt under migreringen, bliver det rod.
+      Du bemærker, at gamle servere kører ineffektivt, og der er et stort potentiale for at reducere omkostninger og øge driftssikkerheden ved at virtualisere.
     `,
     learningInfo: `
-      Læringspunkt: Virtualisering kan reducere hardwareomkostninger og øge fleksibiliteten. 
-      En detaljeret migrationsplan og et testmiljø er nødvendige for at sikre en glidende overgang og minimere nedetid.
+      Læringspunkt: Virtualisering kan øge fleksibiliteten og reducere hardwareomkostninger, men kræver en veldefineret migrationsplan og et testmiljø for at sikre en glidende overgang.
+    `,
+    knowledgeRecap: `
+      Virtualisering optimerer ressourceudnyttelsen, men kræver omhyggelig planlægning og dokumentation.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Vælg hypervisor (VMware, Hyper-V) og planlæg migrering af LIMS.",
+        stepDescription: "Vælg en hypervisor (f.eks. VMware eller Hyper-V) og udarbejd en migrationsplan.",
         choiceA: {
           label: "Detaljeret migrationsplan",
-          text: "+3 tid, -100 kr => +2 stability, +1 development",
+          text: "+3 tid, -100 kr => +2 stability, +1 development.",
+          recommended: true,
           applyEffect: { timeCost: 3, moneyCost: 100, statChange: { stability: 2, development: 1 } }
         },
         choiceB: {
           label: "Hurtig migrering",
-          text: "+1 tid, -30 kr => +1 stability, +5% risk (konfigurationsfejl?).",
+          text: "+1 tid, -30 kr => +1 stability, +5% risk.",
           applyEffect: { timeCost: 1, moneyCost: 30, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Informér afdelinger om mulig kort nedetid under VM-flyt.",
+        stepDescription: "Informer afdelingerne om den forventede nedetid under migreringen.",
         choiceA: {
           label: "God kommunikation",
-          text: "+2 tid => +2 hospitalSatisfaction",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
         choiceB: {
-          label: "Ingen info",
-          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          label: "Ingen information",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
           applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se en VM-plan med testmiljø og fallback.",
+        stepDescription: "Udarbejd en detaljeret plan for virtualiseringen til CAB.",
         choiceA: {
-          label: "Omfattende doc",
-          text: "+2 tid => ingen risk",
+          label: "Omfattende dokumentation",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal doc",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal dokumentation",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -306,55 +325,60 @@ window.infrastrukturTasks = [
     title: "Netværkssegmentering",
     shortDesc: "Opdel netværket i VLAN for bedre stabilitet og sikkerhed.",
     logicLong: `
-      Hospitalets net er en flad struktur, så en fejl eller et angreb kan sprede sig vidt. Ved at segmentere med VLAN og IP-opdeling mindsker man risiko og nedbrudsomfang.
+      Hospitalets netværk er fladt, hvilket øger risikoen for udbredte nedbrud. Implementering af VLAN kan begrænse spredningen af fejl.
     `,
     narrativeIntro: `
-      En driftsvagt fortæller, at en lille netfejl førte til stort nedbrud i en anden afdeling. VLAN kan begrænse spredningen, men folk klager ofte over IP-ændringer.
+      En driftsvagt fortæller, at en lille netfejl for nylig førte til et omfattende nedbrud i en afdeling. Personalet er bekymrede over de nye IP-adresser.
     `,
     learningInfo: `
-      Læringspunkt: Netværkssegmentering med VLAN reducerer risikoen for, at fejl spreder sig. 
-      Det forudsætter, at medarbejderne lærer de nye <span class="hoverTooltip" data-tooltip="Virtual LAN: En metode til at opdele et fysisk netværk i flere logiske netværk">VLAN</span>‑konfigurationer og IP-adresser, så de kan tilpasse sig den nye struktur.
+      Læringspunkt: Netværkssegmentering med VLAN mindsker risikoen for, at fejl spreder sig. Det er vigtigt at informere personalet klart om de nye IP-strukturer.
+    `,
+    knowledgeRecap: `
+      Segmentering reducerer nedbrudsomfanget, men kræver detaljeret dokumentation for at sikre, at alle forstår de nye netværksregler.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Opsæt VLAN, routere og nye IP-adresser til LIMS og afdelinger.",
+        stepDescription: "Planlæg en detaljeret VLAN-struktur og konfigurer routere.",
         choiceA: {
-          label: "Dybt net-opdeling",
-          text: "+3 tid, -120 kr => +2 stability, +1 security (mindre risiko).",
+          label: "Omfattende segmentering",
+          text: "+3 tid, -120 kr => +2 stability, +1 security.",
+          recommended: true,
           applyEffect: { timeCost: 3, moneyCost: 120, statChange: { stability: 2, security: 1 } }
         },
         choiceB: {
           label: "Minimal segmentering",
-          text: "+1 tid, -40 kr => +1 stability, +5% risk (stor spredning mulig).",
+          text: "+1 tid, -40 kr => +1 stability, +5% risk.",
           applyEffect: { timeCost: 1, moneyCost: 40, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Forklar afdelinger om nye IP-adresser og login-flow.",
+        stepDescription: "Informer personalet om de nye IP-adresser og loginprocedurer.",
         choiceA: {
           label: "Detaljeret info",
-          text: "+2 tid => +2 hospitalSatisfaction",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
         choiceB: {
-          label: "Kort mail",
-          text: "0 tid => -10 hospitalSatisfaction, +5% risk (afdelinger forstår ikke ændringen).",
+          label: "Kort info",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
           applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se netværksdiagrammer for VLAN og routerregler.",
+        stepDescription: "Udarbejd en detaljeret netværksplan til CAB.",
         choiceA: {
-          label: "Fuld diag",
-          text: "+2 tid => ingen risk",
+          label: "Fuld dokumentation",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Sparsom doc",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal dokumentation",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
@@ -362,121 +386,258 @@ window.infrastrukturTasks = [
   },
 
   {
-    title: "Forbedring af Dataoverførselshastighed",
-    shortDesc: "Opgradér net til 10Gbit og tilføj loadbalancering for hurtigere LIMS.",
+    title: "SD-WAN implementering",
+    shortDesc: "Opgrader netværket med SD-WAN for bedre trafikstyring og fleksibilitet.",
     logicLong: `
-      Brugerklager om langsom dataoverførsel. Ved at indføre 10Gbit net og loadbalancering af servere kan man undgå flaskehalse.
+      SD-WAN muliggør effektiv styring af netværkstrafik, optimerer båndbreddeudnyttelsen og øger forbindelsens stabilitet.
     `,
     narrativeIntro: `
-      Lab-personalet siger, at store billedfiler tager en evighed at uploade. En 10Gbit-forbindelse og loadbalancer vil potentielt løfte farten, men koster.
+      Du hører, at andre hospitaler har haft stor succes med SD-WAN, og personalet er nysgerrige efter at se, hvordan det kan forbedre netværksydelsen her.
     `,
     learningInfo: `
-      Læringspunkt: Opgradering til 10Gbit-netværk og implementering af <span class="hoverTooltip" data-tooltip="Loadbalancering: Fordeling af trafik mellem flere servere for optimal ydelse">loadbalancering</span> kan fjerne flaskehalse. 
-      Det er afgørende at kommunikere ændringerne klart til brugerne, så de forstår, hvorfor systemet ændres, og hvordan de kan tilpasse sig.
+      Læringspunkt: SD-WAN forbedrer netværksadministrationen ved at fordele trafikken optimalt. Det er vigtigt med en detaljeret implementeringsplan for at integrere SD-WAN med den eksisterende infrastruktur.
+    `,
+    knowledgeRecap: `
+      SD-WAN optimerer trafikken, men kræver omhyggelig planlægning og dokumentation for at sikre en problemfri integration.
     `,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Installer 10Gbit netkort/switche og opsæt loadbalancer på servere.",
+        stepDescription: "Analyser det eksisterende netværk og identificer flaskehalse.",
         choiceA: {
-          label: "Køb 10G-hardware",
-          text: "+3 tid, -200 kr => +3 stability (hurtig dataflow).",
-          applyEffect: { timeCost: 3, moneyCost: 200, statChange: { stability: 3 } }
+          label: "Omfattende analyse",
+          text: "+3 tid, -100 kr => +2 stability.",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { stability: 2 } }
         },
         choiceB: {
-          label: "Bliv på 1G og lidt tuning",
-          text: "+1 tid, -50 kr => +1 stability, +5% risk",
+          label: "Overfladisk analyse",
+          text: "+1 tid, -30 kr => +1 stability, +5% risk.",
+          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { stability: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Koordiner med netværksteamet for implementering.",
+        choiceA: {
+          label: "Planlagt implementering",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig implementering",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér SD-WAN implementeringen til CAB.",
+        choiceA: {
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Kort rapport",
+          text: "+5% risk (docSkipCount++).",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Infrastruktur-overvågning",
+    shortDesc: "Implementér et overvågningssystem til servere og netværk.",
+    logicLong: `
+      Et robust overvågningssystem giver realtidsindsigt i infrastrukturens ydeevne og kan advare om potentielle nedbrud.
+    `,
+    narrativeIntro: `
+      Du bemærker, at visse servere kører ineffektivt, og personalet ønsker et bedre overblik over systemets tilstand.
+    `,
+    learningInfo: `
+      Læringspunkt: Infrastruktur-overvågning er afgørende for tidlig identifikation af problemer. Et system med realtidsdata kan forhindre større nedbrud.
+    `,
+    knowledgeRecap: `
+      Et godt overvågningssystem øger driftsikkerheden. Det er nødvendigt med en detaljeret dokumentation af systemet for at sikre compliance.
+    `,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Installer og konfigurer overvågningssoftware til servere og netværk.",
+        choiceA: {
+          label: "Avanceret opsætning",
+          text: "+3 tid, -100 kr => +2 stability, +1 security.",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { stability: 2, security: 1 } }
+        },
+        choiceB: {
+          label: "Basal opsætning",
+          text: "+1 tid, -30 kr => +1 stability, +5% risk.",
+          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { stability: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Informer personalet om de nye overvågningsprocedurer.",
+        choiceA: {
+          label: "Detaljeret briefing",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
+        },
+        choiceB: {
+          label: "Kort briefing",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en detaljeret overvågningsplan til CAB.",
+        choiceA: {
+          label: "Fuld dokumentation",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal dokumentation",
+          text: "+5% risk (docSkipCount++).",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Energioptimering i datacenter",
+    shortDesc: "Reducer energiforbruget ved at opgradere kølesystemer og hardware.",
+    logicLong: `
+      Datacenterets energiforbrug er højt på grund af forældet køleteknologi og ineffektive servere. Du skal implementere energibesparende tiltag.
+    `,
+    narrativeIntro: `
+      Ved ankomsten bemærker du, at datacentret er overophedet og bruger meget energi, hvilket skaber bekymring for driftsomkostningerne.
+    `,
+    learningInfo: `
+      Læringspunkt: Energioptimering i datacentret kan reducere omkostninger og forbedre systemets miljømæssige fodaftryk. Moderne kølesystemer og effektiv hardware er nøglen.
+    `,
+    knowledgeRecap: `
+      Energibesparende tiltag reducerer driftsomkostninger og øger bæredygtigheden. Det er vigtigt med detaljeret dokumentation af de implementerede løsninger.
+    `,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Foretag en detaljeret energianalyse af datacenteret.",
+        choiceA: {
+          label: "Omfattende analyse",
+          text: "+3 tid, -100 kr => +2 stability.",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { stability: 2 } }
+        },
+        choiceB: {
+          label: "Overfladisk analyse",
+          text: "+1 tid, -30 kr => +1 stability, +5% risk.",
+          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { stability: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Informer driftsafdelingen om de planlagte energibesparende tiltag.",
+        choiceA: {
+          label: "Detaljeret briefing",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
+        },
+        choiceB: {
+          label: "Kort briefing",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
+          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér de energibesparende tiltag til CAB.",
+        choiceA: {
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal rapport",
+          text: "+5% risk (docSkipCount++).",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Cloud-infrastruktur integration",
+    shortDesc: "Integrér den lokale infrastruktur med cloud-tjenester for øget skalerbarhed.",
+    logicLong: `
+      Hospitalet ønsker at udnytte cloud-teknologier for at forbedre fleksibilitet og skalerbarhed i infrastrukturen. Du skal integrere lokale systemer med cloud-løsninger.
+    `,
+    narrativeIntro: `
+      Du bemærker, at den nuværende infrastruktur er begrænset, og at en hybrid løsning med cloud kan tilbyde bedre ressourceudnyttelse og fleksibilitet.
+    `,
+    learningInfo: `
+      Læringspunkt: Integration med cloud-tjenester kan øge fleksibiliteten og reducere omkostningerne. En vellykket hybrid infrastruktur kræver en robust plan for sikker dataoverførsel.
+    `,
+    knowledgeRecap: `
+      Cloud-integration giver øget skalerbarhed, men kræver detaljeret planlægning og dokumentation for at sikre sikkerhed og driftssikkerhed.
+    `,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Analyser den eksisterende infrastruktur og udarbejd en integrationsplan.",
+        choiceA: {
+          label: "Omfattende analyse",
+          text: "+3 tid, -150 kr => +2 stability, +1 security.",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 2, security: 1 } }
+        },
+        choiceB: {
+          label: "Overfladisk analyse",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk.",
           applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Fortæl brugerne om nedetid og ny URL ved loadbalancer.",
+        stepDescription: "Koordiner med interne teams og cloud-specialister om integrationen.",
         choiceA: {
-          label: "Grundig info",
-          text: "+2 tid => +2 hospitalSatisfaction",
+          label: "Planlagt integration",
+          text: "+2 tid => +2 hospitalSatisfaction.",
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
         choiceB: {
-          label: "Ingen melding",
-          text: "0 tid => -10 hospitalSatisfaction, +5% risk",
+          label: "Hurtig integration",
+          text: "0 tid => -10 hospitalSatisfaction, +5% risk.",
           applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB kræver plan for loadbalancer og 10G net samt eventuel SLA.",
+        stepDescription: "Udarbejd en detaljeret cloud-integrationsrapport til CAB.",
         choiceA: {
-          label: "Grundig dokumentation",
-          text: "+2 tid => ingen risk",
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk.",
+          recommended: true,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal doc",
-          text: "+5% risk => docSkipCount++",
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  {
-    title: "Integration af Cloud-Løsninger",
-    shortDesc: "Flyt dele af infrastrukturen til cloud (AWS/Azure) med AD og compliance.",
-    logicLong: `
-      Hospitalet overvejer at køre dele af LIMS i skyen for bedre skalerbarhed. Men der skal sikres VPN/DirectConnect, AD-trust, samt NIS2-lignende krav opfyldes.
-    `,
-    narrativeIntro: `
-      En cloudleverandør lover fleksibilitet og prisfordele. Men personalet frygter latency, og der skal laves en robust AD/dns-løsning.
-    `,
-    learningInfo: `
-      Læringspunkt: En vellykket cloud-integration kræver, at VPN/DirectConnect, <span class="hoverTooltip" data-tooltip="AD-trust: Tillid mellem on-premise og cloud Active Directory">AD-trust</span> og DNS er korrekt konfigureret. 
-      En solid løsning kan reducere on-premise omkostninger og sikre, at systemet opfylder både GDPR og NIS2.
-    `,
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Konfigurer VPN/DirectConnect, AD-trust og DNS mellem cloud og lokalt net.",
-        choiceA: {
-          label: "Forbedret netforbindelse",
-          text: "+3 tid, -150 kr => +2 stability, +1 security",
-          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { stability: 2, security: 1 } }
-        },
-        choiceB: {
-          label: "Brug eksisterende net",
-          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk (usikkert).",
-          applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "hospital",
-        stepDescription: "Fortæl afdelinger om ny cloud-løsning, mulig latency og ændrede URL'er.",
-        choiceA: {
-          label: "Grundig gennemgang",
-          text: "+2 tid => +2 hospitalSatisfaction",
-          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
-        },
-        choiceB: {
-          label: "Kort mail",
-          text: "0 tid => -10 hospitalSatisfaction, +5% risk (manglende buy-in).",
-          applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "CAB kræver en compliance-rapport om cloud, inkl. Databehandleraftale.",
-        choiceA: {
-          label: "Fuld doc",
-          text: "+2 tid => ingen risk",
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Minimal doc",
-          text: "+5% risk => docSkipCount++",
+          label: "Minimal rapport",
+          text: "+5% risk (docSkipCount++).",
           applyEffect: { riskyPlus: 0.05 }
         }
       }
     ]
   }
-
 ];
