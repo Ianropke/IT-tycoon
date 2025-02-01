@@ -70,7 +70,7 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
-        <!-- Knappen til arkitekthjælp -->
+        <!-- Arkitekthjælp-knap erstatter den gamle "Undersøg"-knap -->
         <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
       </div>
 
@@ -92,10 +92,10 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
       <p style="color:#f1c40f;">
-        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> på et stort hospital. Du styrer både tid og penge, og beslutninger har konsekvenser. Få ekstra info om fx <span class="hoverTooltip" data-tooltip="Domain Name System">DNS</span>, <span class="hoverTooltip" data-tooltip="Active Directory">AD</span> og <span class="hoverTooltip" data-tooltip="High Performance Computing">HPC</span> ved at føre musen hen over ordene.
+        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> på et stort hospital. Du styrer tid og penge, og beslutninger har konsekvenser. Få ekstra info om fx <span class="hoverTooltip" data-tooltip="Domain Name System">DNS</span>, <span class="hoverTooltip" data-tooltip="Active Directory">AD</span> og <span class="hoverTooltip" data-tooltip="High Performance Computing">HPC</span> ved at føre musen hen over ordene.
       </p>
       <p>
-        Du har 100 tidsenheder og 2000 kr. Springer du dokumentation over, stiger risikoen i CAB (Change Advisory Board). God fornøjelse!
+        Du har 100 tidsenheder og 2000 kr. Springer du dokumentation over, stiger risikoen i CAB. God fornøjelse!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -118,13 +118,16 @@
       <p id="scenario-flavor-text"></p>
       <p id="scenario-description"></p>
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
+      <!-- Valgmuligheder med "Mere Info"-knapper -->
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
-        <em id="scenario-a-text"></em>
+        <em id="scenario-a-text"></em><br/>
+        <button id="scenario-a-more-info" class="commit-button small">Mere Info</button>
       </div>
       <div id="scenario-optionB" style="margin-top:8px;">
         <strong>B: </strong><span id="scenario-b-label"></span><br/>
-        <em id="scenario-b-text"></em>
+        <em id="scenario-b-text"></em><br/>
+        <button id="scenario-b-more-info" class="commit-button small">Mere Info</button>
       </div>
       <div style="margin-top:12px;">
         <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
@@ -137,7 +140,19 @@
   <div id="architect-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="architect-content"></div>
+      <!-- Eksempel: spilleren kan vælge et anbefalet valg via en knap -->
+      <p>Hvis du vælger et anbefalet valg, reduceres risikoen med 5%.</p>
+      <button class="commit-button" onclick="chooseArchitect('A')">Vælg A</button>
+      <button class="commit-button" onclick="chooseArchitect('B')">Vælg B</button>
       <button class="commit-button" onclick="document.getElementById('architect-modal').style.display='none'">Luk</button>
+    </div>
+  </div>
+
+  <!-- "Mere Info" Modal -->
+  <div id="more-info-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div id="more-info-content"></div>
+      <button id="more-info-close-btn" class="commit-button">Luk</button>
     </div>
   </div>
 
