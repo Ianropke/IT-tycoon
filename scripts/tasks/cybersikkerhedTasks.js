@@ -1,4 +1,4 @@
-// scripts/tasks/cybersikkerhedTasks.js 
+// scripts/tasks/cybersikkerhedTasks.js
 
 window.cybersikkerhedTasks = [
 
@@ -11,19 +11,13 @@ window.cybersikkerhedTasks = [
       for at reagere hurtigt på angreb, i tråd med NIS2-krav.
     `,
     narrativeIntro: `
-      "En driftstekniker har bemærket mistænkelig trafik. 
-       Angiveligt scanner hackere åbne porte. 
-       Personalet håber, du kan sikre netværket, 
-       så patientdata ikke kompromitteres."
+      En driftstekniker har bemærket mistænkelig trafik. Hackere scanner åbne porte, og personalet håber, at du kan sikre netværket, så patientdata ikke kompromitteres.
     `,
-    digDeeperLinks: [
-      { label: "NIS2 Direktiv Oversigt", url: "https://example.com/nis2-dk" },
-      { label: "ISO 27001 & IDS", url: "https://example.com/iso27001-ids-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Et IDS/IPS-system er essentielt for tidlig opdagelse af ondsindet trafik. Ved at implementere et sådant system reduceres risikoen for, at hackere udnytter sårbarheder. Det er også vigtigt at dokumentere installationen for at opfylde NIS2-kravene.
+    `,
     knowledgeRecap: `
-      Et IDS/IPS hjælper med at fange ondsindet trafik tidligt. 
-      Hvis man ignorerer det, kan hackere udnytte sårbarheder ubemærket. 
-      God dokumentation letter compliance ved fx NIS2-inspektion.
+      Et IDS/IPS hjælper med at fange ondsindet trafik tidligt. Hvis man ignorerer det, kan hackere udnytte sårbarheder ubemærket. God dokumentation letter compliance ved fx NIS2-inspektion.
     `,
     steps: [
       {
@@ -50,7 +44,7 @@ window.cybersikkerhedTasks = [
         },
         choiceB: {
           label: "Hurtig opsætning",
-          text: "+1 tid, -50 kr => +1 stability, +5% risk (konfigurationsfejl?).",
+          text: "+1 tid, -50 kr => +1 stability, +5% risk (konfigurationsfejl).",
           applyEffect: { timeCost: 1, moneyCost: 50, statChange: { stability: 1 }, riskyPlus: 0.05 }
         }
       },
@@ -63,7 +57,7 @@ window.cybersikkerhedTasks = [
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal doc",
+          label: "Minimal dokumentation",
           text: "0 tid => +5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -75,23 +69,16 @@ window.cybersikkerhedTasks = [
     title: "Phishing- og Ransomware-forsvar",
     shortDesc: "Træn personalet mod phishing og undgå ransomware (GDPR-compliance).",
     logicLong: `
-      Kriminelle bruger ofte phishing til at snige ransomware ind. 
-      Du planlægger en træningskampagne og EDR (Endpoint Detection & Response) 
-      for at minimere risiko.
+      Kriminelle bruger ofte phishing til at snige ransomware ind. Du planlægger en træningskampagne og EDR (Endpoint Detection & Response) for at minimere risiko.
     `,
     narrativeIntro: `
-      "Flere medarbejdere rapporterer mistænkelige mails. 
-       En kollega har klikket på et link, og nu frygter de ransomware. 
-       Du indfører proaktiv forsvar."
+      Flere medarbejdere rapporterer mistænkelige mails. En kollega har klikket på et link, og nu frygter de ransomware.
     `,
-    digDeeperLinks: [
-      { label: "Ransomware og GDPR", url: "https://example.com/gdpr-ransomware-dk" },
-      { label: "EDR Forklaring", url: "https://example.com/edr-guide-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Ved at træne personalet i at genkende phishing-mails og implementere EDR, kan man hurtigt opdage og blokere ransomware-angreb. Det er vigtigt at have en klar kommunikationsplan og dokumentere de trufne foranstaltninger.
+    `,
     knowledgeRecap: `
-      Ved at træne personale i at spotte phishing 
-      og have EDR installeret, kan man opdage og blokere ransomware tidligt. 
-      Uden dokumentation ved CAB ikke, hvordan man håndterer hændelserne.
+      Ved at træne personale i at spotte phishing og have EDR installeret, kan man opdage og blokere ransomware tidligt. Uden dokumentation ved CAB ikke, hvordan man håndterer hændelserne.
     `,
     steps: [
       {
@@ -131,7 +118,7 @@ window.cybersikkerhedTasks = [
           applyEffect: { timeCost: 2, statChange: { security: 1 } }
         },
         choiceB: {
-          label: "Overfladisk doc",
+          label: "Overfladisk dokumentation",
           text: "0 tid => +5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -141,27 +128,18 @@ window.cybersikkerhedTasks = [
 
   {
     title: "Zero Trust-strategi",
-    shortDesc: "Indfør Zero Trust med segmentering og “mindste privilegie” (NIS2/GDPR).",
+    shortDesc: "Indfør Zero Trust med segmentering og 'mindste privilegie' (NIS2/GDPR).",
     logicLong: `
-      Zero Trust betyder, at ingen enheder eller brugere 
-      automatisk får tillid. Alt kontrolleres. Personalet klager over 
-      flere logintrin, men sikkerheden stiger markant.
+      Zero Trust betyder, at ingen enheder eller brugere automatisk får tillid. Alt kontrolleres. Selvom personalet klager over flere logintrin, stiger sikkerheden markant.
     `,
     narrativeIntro: `
-      "Nogle afdelinger føler sig tynget af MFA, 
-       netopdeling og strenge adgangsregler. 
-       Men en nylig hændelse hos et andet hospital 
-       viser, at Zero Trust kan stoppe spredning af malware."
+      Nogle afdelinger føler sig tynget af strenge adgangsregler, men erfaringer fra andre hospitaler viser, at Zero Trust kan begrænse skader ved angreb.
     `,
-    digDeeperLinks: [
-      { label: "Zero Trust i Sundhedssektoren", url: "https://example.com/zerotrust-dk" },
-      { label: "GDPR og Security by Design", url: "https://example.com/gdpr-secdes-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Zero Trust kræver, at alle anmodninger valideres. Dette mindsker risikoen for store kompromitteringer, men det er vigtigt at have en klar dokumentation, så både interne og eksterne audits kan gennemføres.
+    `,
     knowledgeRecap: `
-      Ved Zero Trust segmenterer man netværket og kræver verifikation 
-      for alt. Det kan forhindre store kompromitteringer. 
-      Men dokumentation skal vise præcis, hvordan segmentering er sat op,
-      fx til NIS2-audit.
+      Ved Zero Trust segmenteres netværket og al adgang kontrolleres. Dette mindsker risikoen for store kompromitteringer, men kræver nøje dokumentation for at bestå audits.
     `,
     steps: [
       {
@@ -180,28 +158,28 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "hospital",
-        stepDescription: "Personalet brokker sig over ekstra login - hold info-møder.",
+        stepDescription: "Hold info-møder med personalet om de nye adgangskrav.",
         choiceA: {
-          label: "Forklar baggrunden",
-          text: "+2 tid => +2 hospitalSatisfaction (forståelse for sikkerhed).",
+          label: "Udførlig information",
+          text: "+2 tid => +2 hospitalSatisfaction (bedre forståelse).",
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
         choiceB: {
-          label: "Ignorér klager",
+          label: "Ingen information",
           text: "0 tid => -10 hospitalSatisfaction, +5% risk (folk omgår systemet).",
           applyEffect: { statChange: { hospitalSatisfaction: -10 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se Zero Trust-design, netopdeling og eventuel DPIA.",
+        stepDescription: "Dokumentér Zero Trust-design og eventuel DPIA til CAB.",
         choiceA: {
           label: "Fuld oversigt",
           text: "+2 tid => ingen ekstra risk.",
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Spring doc over",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -213,29 +191,21 @@ window.cybersikkerhedTasks = [
     title: "Firewall-opgradering",
     shortDesc: "Udskift forældede firewalls med next-gen firewall (NGFW) og opnå HA.",
     logicLong: `
-      Hospitalets nuværende firewall er forældet, 
-      med begrænsede regler. Du vil installere en next-gen firewall 
-      med DPI (deep packet inspection) og høj tilgængelighed (HA).
+      Hospitalets nuværende firewall er forældet med begrænsede regler. Du vil installere en next-gen firewall med DPI (deep packet inspection) og høj tilgængelighed (HA).
     `,
     narrativeIntro: `
-      "Et nyligt forsøg på indbrud viste, at den gamle firewall 
-       ikke kan blokere moderne trusler. Samtidig klager personalet 
-       over periodiske nedetider, som en HA-løsning kunne mindske."
+      Et nyligt forsøg på indbrud viste, at den gamle firewall ikke kan blokere moderne trusler. Personalet oplever også periodiske nedetider, som en HA-løsning kunne mindske.
     `,
-    digDeeperLinks: [
-      { label: "NGFW Oversigt", url: "https://example.com/ngfw-dk" },
-      { label: "NIS2 Firewall-krav", url: "https://example.com/nis2-firewall-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Opgradering af firewalls med moderne DPI-teknologi øger systemets sikkerhed betydeligt. En grundig test er nødvendig for at undgå utilsigtede åbninger, og en detaljeret dokumentation er afgørende for at opfylde NIS2.
+    `,
     knowledgeRecap: `
-      En opdateret firewall med DPI kan forhindre mange angreb. 
-      Uden en ordentlig test risikerer man at åbne utilsigtede porte. 
-      Dokumentation gør, at CAB forstår konfigurationen 
-      og at man opfylder NIS2.
+      En opdateret firewall med DPI kan forhindre mange angreb. Uden en ordentlig test risikerer man utilsigtede porte. Dokumentation viser, hvordan systemet er konfigureret.
     `,
     steps: [
       {
         location: "cybersikkerhed",
-        stepDescription: "Kortlæg firewall-sårbarheder, kør sårbarhedsscanning.",
+        stepDescription: "Kortlæg firewall-sårbarheder og kør en sårbarhedsscanning.",
         choiceA: {
           label: "Dyb inspektion",
           text: "+3 tid, -100 kr => +2 security (flere fejl rettes).",
@@ -249,7 +219,7 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "infrastruktur",
-        stepDescription: "Test ny firewall mod servere, evt. i HA-cluster.",
+        stepDescription: "Test den nye firewall mod servere, evt. i et HA-cluster.",
         choiceA: {
           label: "Omfattende test",
           text: "+2 tid, -80 kr => +2 stability",
@@ -263,14 +233,14 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Lav opgraderingsrapport til CAB (ISO 27001/NIS2).",
+        stepDescription: "Dokumentér firewall-opgraderingen til CAB (ISO 27001/NIS2).",
         choiceA: {
           label: "Detaljeret rapport",
           text: "+2 tid => ingen ekstra risk",
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Spring dok over",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -282,29 +252,21 @@ window.cybersikkerhedTasks = [
     title: "Dataovervågning & Log-analyse (SIEM)",
     shortDesc: "Implementér SIEM for realtidslogning og overhold NIS2.",
     logicLong: `
-      Et SIEM samler logs fra netværk, servere og applikationer, 
-      så du kan opdage unormale mønstre hurtigt. NIS2 kræver 
-      bedre indsigt i hændelser.
+      Et SIEM samler logs fra netværk, servere og applikationer, så du kan opdage unormale mønstre hurtigt. NIS2 kræver bedre indsigt i hændelser.
     `,
     narrativeIntro: `
-      "Du får besked om mystiske netforbindelser. 
-       Et SIEM-system kunne have givet alarm i realtid. 
-       Ledelsen bakker op, men det koster serverkraft og licenser."
+      Du får besked om mystiske netforbindelser – et SIEM-system kunne have givet alarm i realtid, men det kræver betydelige ressourcer.
     `,
-    digDeeperLinks: [
-      { label: "SIEM Forklaring", url: "https://example.com/siem-dk" },
-      { label: "NIS2 Logningskrav", url: "https://example.com/nis2-logning-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Et velfungerende SIEM-system centraliserer logdata og muliggør hurtig respons på hændelser. Dokumentation af logstrategien er afgørende for compliance og effektiv fejlfinding.
+    `,
     knowledgeRecap: `
-      Med central loganalyse fanger du mistænkelige aktiviteter, 
-      fx datalæk, i opløbet. Uden doc ved man ikke, 
-      hvilke logs der opsamles, og compliance bliver svær at demonstrere 
-      ved revision.
+      Med central loganalyse fanger du mistænkelige aktiviteter hurtigt. Uden dokumentation ved man ikke, hvilke logs der opsamles, og compliance bliver svær at demonstrere.
     `,
     steps: [
       {
         location: "cybersikkerhed",
-        stepDescription: "Vælg SIEM-løsning og definer logkilder (net, endpoints, AD).",
+        stepDescription: "Vælg en SIEM-løsning og definer de primære logkilder (net, endpoints, AD).",
         choiceA: {
           label: "Avanceret SIEM",
           text: "+3 tid, -120 kr => +2 security (realtidsanalyse).",
@@ -318,28 +280,28 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "hospital",
-        stepDescription: "Fortæl personale, at handlinger logges (GDPR transparens).",
+        stepDescription: "Informer personalet om, at alle handlinger logges for GDPR.",
         choiceA: {
           label: "Oplysningskampagne",
-          text: "+2 tid => +1 hospitalSatisfaction (folk forstår baggrund).",
+          text: "+2 tid => +1 hospitalSatisfaction (folk forstår baggrunden).",
           applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 1 } }
         },
         choiceB: {
-          label: "Kun info til IT-afdeling",
+          label: "Kun intern info",
           text: "0 tid => +5% risk (personalet overraskes).",
           applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se log-strategi (NIS2, databeskyttelse, retention).",
+        stepDescription: "Dokumentér log-strategien til CAB (NIS2, databeskyttelse, retention).",
         choiceA: {
           label: "Fuld logpolitik",
           text: "+2 tid => ingen ekstra risk",
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal dok",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -351,65 +313,56 @@ window.cybersikkerhedTasks = [
     title: "Penetrationstest af LIMS",
     shortDesc: "Hyre etisk hackerteam til at teste LIMS. Undgå ukendte huller.",
     logicLong: `
-      For at afsløre reelle sårbarheder, hyrer du et eksternt 
-      penetrationstest-hold. De kan simulere angreb på LIMS 
-      og netværk. Forudser du leverandørmoduler, 
-      skal de også tjekkes.
+      For at afsløre reelle sårbarheder hyrer du et eksternt penetrationstest-hold, som kan simulere angreb på LIMS og netværk. Leverandørmoduler skal også tjekkes.
     `,
     narrativeIntro: `
-      "Rygtet siger, at en tidligere pen-test i et andet hospital 
-       fandt kritiske fejl. Personalet er nervøse, 
-       men det er bedre at vide det nu end at vente på rigtige hackere."
+      Rygtet siger, at en tidligere pen-test fandt kritiske fejl. Personalet er nervøse, men det er bedre at vide det nu end at vente på hackere.
     `,
-    digDeeperLinks: [
-      { label: "Pen-test Metoder", url: "https://example.com/pen-test-dk" },
-      { label: "NIS2 og Etisk Hacking", url: "https://example.com/nis2-ethack-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Penetrationstests er essentielle for at afdække skjulte sårbarheder. En detaljeret rapport hjælper med at prioritere sikkerhedsforbedringer og sikre, at alle områder er dækket.
+    `,
     knowledgeRecap: `
-      En pen-test belyser svagheder, før hackere udnytter dem. 
-      Afgrænser du scope for meget, kan leverandørmoduler 
-      forblive usikre. Dokumentation af resultaterne 
-      er kritisk for at få dem rettet.
+      En pen-test belyser svagheder, før hackere udnytter dem. Hvis omfanget er for snævert, kan vigtige moduler overses. Dokumentation er kritisk for at rette fejlene.
     `,
     steps: [
       {
         location: "cybersikkerhed",
-        stepDescription: "Planlæg pen-test: scope (web, net, OS, social engineering?).",
+        stepDescription: "Planlæg pen-test med et bredt scope (web, net, OS, social engineering).",
         choiceA: {
           label: "Bredt scope",
-          text: "+3 tid, -150 kr => +2 security (du finder alt).",
+          text: "+3 tid, -150 kr => +2 security (du afdækker alt).",
           applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 2 } }
         },
         choiceB: {
           label: "Smalt scope",
-          text: "+1 tid, -50 kr => +1 security, +5% risk (mange dele overses).",
+          text: "+1 tid, -50 kr => +1 security, +5% risk (vigtige områder overses).",
           applyEffect: { timeCost: 1, moneyCost: 50, statChange: { security: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "leverandor",
-        stepDescription: "Test leverandørens moduler for supply chain-risiko.",
+        stepDescription: "Test leverandørmoduler for supply chain-risiko.",
         choiceA: {
-          label: "Kræv leverandørens medvirken",
-          text: "+2 tid, -80 kr => synergyEffect:{ rushedJura:false}, +1 security",
+          label: "Kræv medvirken",
+          text: "+2 tid, -80 kr => synergyEffect: { rushedJura: false }, +1 security",
           applyEffect: { timeCost: 2, moneyCost: 80, synergyEffect: { rushedJura: false }, statChange: { security: 1 } }
         },
         choiceB: {
-          label: "Kun hospitalets del",
-          text: "+1 tid => +5% risk (leverandørdelen forbliver usikret).",
+          label: "Kun internt",
+          text: "+1 tid => +5% risk (leverandørdelen er usikret).",
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Lav en pen-test rapport til CAB med fundne sårbarheder.",
+        stepDescription: "Lav en detaljeret pen-test rapport til CAB.",
         choiceA: {
-          label: "Detaljeret",
-          text: "+2 tid => ingen ekstra risk, +1 security (fund rettes).",
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk, +1 security (fejl rettes).",
           applyEffect: { timeCost: 2, statChange: { security: 1 } }
         },
         choiceB: {
-          label: "Minimal doc",
+          label: "Minimal rapport",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -421,25 +374,16 @@ window.cybersikkerhedTasks = [
     title: "Multi-factor Authentication (MFA)",
     shortDesc: "Indfør MFA for at opfylde NIS2/GDPR om stærk godkendelse.",
     logicLong: `
-      Hospitalets ansatte bruger kun password. MFA mindsker risiko 
-      for kompromittering af brugerkonti markant. 
-      Men nogle finder det omstændeligt.
+      Hospitalets ansatte bruger kun password. MFA mindsker risikoen for kompromittering af konti, men nogle finder det omstændeligt.
     `,
     narrativeIntro: `
-      "En overlæge brugte 'hospital123' som kode. 
-       Nu frygter I en potentiel læk. 
-       MFA kan forhindre fremtidige brud, 
-       men kræver øget login-rutine."
+      En overlæge har vist, at simple kodeord kan udgøre en stor risiko. MFA forhindrer, at kun password stjæles.
     `,
-    digDeeperLinks: [
-      { label: "MFA Oversigt", url: "https://example.com/mfa-dk" },
-      { label: "NIS2 Krav om Godkendelse", url: "https://example.com/nis2-auth-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Implementering af MFA tilføjer et ekstra lag sikkerhed. Ved at vælge en robust løsning (f.eks. en app) kan man betydeligt reducere risikoen for phishing-angreb og kontobrud.
+    `,
     knowledgeRecap: `
-      MFA giver et ekstra lag sikkerhed. Ved phishing 
-      kan hackerne kun stjæle passwordet, 
-      men ikke passere MFA. Uden korrekt dok risikerer du 
-      dårlig implementering og CAB-afvisning.
+      MFA giver et ekstra lag sikkerhed. Uden korrekt dokumentation risikerer man, at systemet fejler, og CAB afviser løsningen.
     `,
     steps: [
       {
@@ -452,13 +396,13 @@ window.cybersikkerhedTasks = [
         },
         choiceB: {
           label: "Simpel (SMS)",
-          text: "+1 tid, -30 kr => +1 security, +5% risk (muligt misbrug af SIM).",
+          text: "+1 tid, -30 kr => +1 security, +5% risk (muligt SIM-misbrug).",
           applyEffect: { timeCost: 1, moneyCost: 30, statChange: { security: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "hospital",
-        stepDescription: "Forklar personalet vigtigheden af ekstra logintrin.",
+        stepDescription: "Forklar personalet vigtigheden af MFA.",
         choiceA: {
           label: "Træningssessioner",
           text: "+2 tid => +2 hospitalSatisfaction (bedre forståelse).",
@@ -472,14 +416,14 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB kræver en udførlig MFA-plan, herunder retningslinjer og fallback.",
+        stepDescription: "Dokumentér MFA-planen til CAB.",
         choiceA: {
-          label: "Detaljeret doc",
+          label: "Detaljeret dokumentation",
           text: "+2 tid => ingen ekstra risk",
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal doc",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -489,32 +433,23 @@ window.cybersikkerhedTasks = [
 
   {
     title: "Monitoring og Alerting (SOC-integration)",
-    shortDesc: "Automatisér alarmer i realtid, knyt til Security Operations Center (SOC).",
+    shortDesc: "Automatisér alarmer i realtidslogning og overhold NIS2.",
     logicLong: `
-      Hurtig opdagelse er afgørende for at stoppe et angreb. 
-      Du vil opsætte et alert-system, der kan kontakte en SOC (24/7-overvågning). 
-      NIS2 anbefaler prompt hændelseshåndtering.
+      Hurtig opdagelse er afgørende for at stoppe et angreb. Du vil opsætte et alert-system, der kan kontakte en SOC (24/7-overvågning). NIS2 anbefaler prompt hændelseshåndtering.
     `,
     narrativeIntro: `
-      "Der kommer stadig meldinger om oversete advarsler, 
-       fordi personalet ikke tjekker mail. 
-       Et pop-up system eller SOC-kobling kunne redde dagen 
-       ved kritiske hændelser."
+      Personalet modtager sjældent alarmer, fordi de overser dem. Et effektivt SOC-system kan redde situationen.
     `,
-    digDeeperLinks: [
-      { label: "SOC Opsætning", url: "https://example.com/soc-setup-dk" },
-      { label: "XDR vs. SOC", url: "https://example.com/xdr-soc-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Et velfungerende SOC-system centraliserer alarmer og logdata, så man hurtigt kan reagere på trusler. En god strategi og dokumentation er nøglen til compliance.
+    `,
     knowledgeRecap: `
-      Et automatiseret alarmsystem, integreret med en SOC, 
-      kan stoppe incidents før de eskalerer. Uden doc eller 
-      ordentlig net-kapacitet risikerer man fejlalarmer 
-      eller ingen alarmer ved rigtige brud.
+      Et automatiseret alarmsystem, integreret med en SOC, kan stoppe hændelser før de eskalerer. Uden dokumentation ved man ikke, hvilke logs der opsamles, og compliance bliver svær at demonstrere.
     `,
     steps: [
       {
         location: "cybersikkerhed",
-        stepDescription: "Vælg system for realtidsalarmer (Slack, sms, XDR?), koblet til SOC.",
+        stepDescription: "Vælg system for realtidsalarmer (Slack, sms, XDR?) koblet til SOC.",
         choiceA: {
           label: "Avanceret platform",
           text: "+3 tid, -120 kr => +2 security (opdager alt i realtid).",
@@ -527,29 +462,29 @@ window.cybersikkerhedTasks = [
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Tjek om netværket kan håndtere løbende monitorering og alarmdata.",
+        location: "hospital",
+        stepDescription: "Informer personalet om, at alle handlinger logges (GDPR).",
         choiceA: {
-          label: "Ydelsestest",
-          text: "+2 tid, -80 kr => +2 stability (ingen overload).",
-          applyEffect: { timeCost: 2, moneyCost: 80, statChange: { stability: 2 } }
+          label: "Oplysningskampagne",
+          text: "+2 tid => +1 hospitalSatisfaction (folk forstår baggrund).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 1 } }
         },
         choiceB: {
-          label: "Ingen test",
-          text: "0 tid => synergyEffect:{lackInfra:true}, +5% risk",
-          applyEffect: { synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
+          label: "Kun intern info",
+          text: "0 tid => +5% risk (personalet overraskes).",
+          applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se alarmkonfiguration og SOC-aftale, relevant for NIS2.",
+        stepDescription: "Dokumentér log-strategien til CAB.",
         choiceA: {
-          label: "Fuld beskrivelse",
+          label: "Fuld logpolitik",
           text: "+2 tid => ingen ekstra risk",
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Sparsom doc",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -558,66 +493,56 @@ window.cybersikkerhedTasks = [
   },
 
   {
-    title: "Cloud-sårbarhedsscanning",
-    shortDesc: "Scan cloud-miljø for at undgå supply chain-angreb, opfyld NIS2.",
+    title: "Penetrationstest af LIMS",
+    shortDesc: "Hyre etisk hackerteam til at teste LIMS. Undgå ukendte huller.",
     logicLong: `
-      Hospitalet har dele af LIMS i skyen (AWS/Azure). 
-      Du vil gennemføre en grundig scanning 
-      for at finde sårbarheder og undgå supply chain-risici. 
-      Samt sikre databehandleraftaler.
+      For at afsløre reelle sårbarheder hyrer du et eksternt penetrationstest-hold, som kan simulere angreb på LIMS og netværk. Leverandørmoduler skal også tjekkes.
     `,
     narrativeIntro: `
-      "En nyhed om et større cloud-nedbrud får folk til at spørge: 
-       'Er vores LIMS også i fare?' 
-       Du vil scanne cloudmiljøet for huller, 
-       så hospitalet ikke overraskes."
+      Rygtet siger, at en tidligere pen-test fandt kritiske fejl. Personalet er nervøse, men det er bedre at vide det nu end at vente på hackere.
     `,
-    digDeeperLinks: [
-      { label: "Supply Chain Attack i Cloud", url: "https://example.com/supplychain-cloud-dk" },
-      { label: "SBOM (Software Bill of Materials)", url: "https://example.com/sbom-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: Penetrationstest er en vigtig metode til at identificere skjulte sårbarheder. En detaljeret rapport hjælper med at prioritere sikkerhedsforbedringer.
+    `,
     knowledgeRecap: `
-      Cloud-løsninger kan være sårbare, især hvis leverandørled 
-      angribes. Grundig scanning og aftaler om databehandler 
-      mindsker risiko. Uden doc er det svært at vise, 
-      at man har taget tilstrækkelige skridt ift. NIS2/GDPR.
+      En pen-test belyser svagheder, før hackere udnytter dem. Hvis omfanget er for snævert, kan vigtige moduler overses. Dokumentation er kritisk for at rette fejlene.
     `,
     steps: [
       {
         location: "cybersikkerhed",
-        stepDescription: "Planlæg scanning af cloud (containere, net, SBOM).",
+        stepDescription: "Planlæg pen-test med et bredt scope (web, net, OS, social engineering).",
         choiceA: {
-          label: "Grundig scanning",
-          text: "+3 tid, -100 kr => +2 security (du finder huller).",
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 2 } }
+          label: "Bredt scope",
+          text: "+3 tid, -150 kr => +2 security (du afdækker alt).",
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Overfladisk scan",
-          text: "+1 tid, -30 kr => +1 security, +5% risk (kan overse kritiske dele).",
-          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { security: 1 }, riskyPlus: 0.05 }
+          label: "Smalt scope",
+          text: "+1 tid, -50 kr => +1 security, +5% risk (vigtige områder overses).",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { security: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "leverandor",
-        stepDescription: "Opdatér databehandleraftale, få scanningstilladelse til hele cloudmiljøet.",
+        stepDescription: "Test leverandørmoduler for supply chain-risiko.",
         choiceA: {
-          label: "Fuld adgang",
-          text: "+2 tid => synergyEffect:{ rushedJura:false }, +1 security",
-          applyEffect: { timeCost: 2, synergyEffect: { rushedJura: false }, statChange: { security: 1 } }
+          label: "Kræv medvirken",
+          text: "+2 tid, -80 kr => synergyEffect: { rushedJura: false }, +1 security",
+          applyEffect: { timeCost: 2, moneyCost: 80, synergyEffect: { rushedJura: false }, statChange: { security: 1 } }
         },
         choiceB: {
-          label: "Begrænset adgang",
-          text: "0 tid => +5% risk (ukendte dele forbliver usikre).",
-          applyEffect: { riskyPlus: 0.05 }
+          label: "Kun internt",
+          text: "+1 tid => +5% risk (leverandørdelen er usikret).",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se cloud-scan rapport, evt. DPIA hvis persondata i skyen.",
+        stepDescription: "Lav en detaljeret pen-test rapport til CAB.",
         choiceA: {
-          label: "Udførlig doc",
-          text: "+2 tid => ingen risk",
-          applyEffect: { timeCost: 2 }
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk, +1 security (fejl rettes).",
+          applyEffect: { timeCost: 2, statChange: { security: 1 } }
         },
         choiceB: {
           label: "Minimal rapport",
@@ -629,68 +554,486 @@ window.cybersikkerhedTasks = [
   },
 
   {
-    title: "Adgangsstyring for eksterne (mindste privilegie)",
-    shortDesc: "Skærp ekstern adgang til LIMS, giv kun nødvendig rolle, lav audit trail.",
+    title: "Multi-factor Authentication (MFA)",
+    shortDesc: "Indfør MFA for at opfylde NIS2/GDPR om stærk godkendelse.",
     logicLong: `
-      Hospitalet har mange eksterne konsulenter og leverandører. 
-      De har ofte for bred adgang. Du vil implementere 
-      mindst mulige rettigheder og fuld logning for at opdage misbrug.
+      Hospitalets ansatte bruger kun password. MFA mindsker risiko for kompromittering af konti, men nogle finder det omstændeligt.
     `,
     narrativeIntro: `
-      "En ekstern konsulent havde adgang til hele LIMS i sidste uge. 
-       Ingen opdagede det, førend man så mystiske logins. 
-       Nu vil du stramme politikken, så roller og logging 
-       sikrer sporing."
+      En overlæge har demonstreret, at simple kodeord udgør en stor risiko. MFA forhindrer, at kun password stjæles.
     `,
-    digDeeperLinks: [
-      { label: "DLP for Eksterne", url: "https://example.com/dlp-eksterne-dk" },
-      { label: "Databehandleraftale Krav", url: "https://example.com/data-processor-dk" }
-    ],
+    learningInfo: `
+      Læringspunkt: MFA tilføjer et ekstra lag af sikkerhed. Ved at vælge en løsning med f.eks. en autentificeringsapp reduceres risikoen for phishing-angreb markant. Dokumentationen skal vise, hvordan MFA integreres i systemet.
+    `,
     knowledgeRecap: `
-      Ved at indføre skrap adgangsstyring for eksterne minimerer du 
-      insider-trusler og lever op til GDPR/NIS2. 
-      Uden dokumentation kan 
-      du ikke vise, hvem der har adgang til hvad, og CAB vil sandsynligvis afvise.
+      MFA giver et ekstra lag sikkerhed, men uden korrekt dokumentation risikerer systemet at blive afvist af CAB.
     `,
     steps: [
       {
         location: "cybersikkerhed",
-        stepDescription: "Identificér moduler de eksterne faktisk skal bruge, evt. DLP.",
+        stepDescription: "Vælg MFA-metode (app, token, SMS) til hospitalets ansatte.",
         choiceA: {
-          label: "Dybt policy-check",
-          text: "+3 tid => +2 security (overflødige rettigheder fjernes).",
-          applyEffect: { timeCost: 3, statChange: { security: 2 } }
+          label: "Avanceret (auth-app)",
+          text: "+3 tid, -100 kr => +2 security (meget robust).",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Kvik scanning",
-          text: "+1 tid => +1 security, +5% risk (nogle har stadig for meget adgang).",
-          applyEffect: { timeCost: 1, statChange: { security: 1 }, riskyPlus: 0.05 }
+          label: "Simpel (SMS)",
+          text: "+1 tid, -30 kr => +1 security, +5% risk (muligt SIM-misbrug).",
+          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { security: 1 }, riskyPlus: 0.05 }
         }
       },
       {
-        location: "it-jura",
-        stepDescription: "Opdatér kontrakt og databehandleraftale, så eksternes ansvar er klart.",
+        location: "hospital",
+        stepDescription: "Forklar personalet vigtigheden af MFA.",
         choiceA: {
-          label: "Grundig juridisk gennemgang",
-          text: "+2 tid, -60 kr => +1 security, +1 stability",
-          applyEffect: { timeCost: 2, moneyCost: 60, statChange: { security: 1, stability: 1 } }
+          label: "Træningssessioner",
+          text: "+2 tid => +2 hospitalSatisfaction (bedre forståelse).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
         },
         choiceB: {
-          label: "Standardvilkår",
-          text: "0 tid => +5% risk, synergyEffect:{ rushedJura:true }",
-          applyEffect: { riskyPlus: 0.05, synergyEffect: { rushedJura: true } }
+          label: "Send en mail",
+          text: "0 tid => +1 hospitalSatisfaction, +5% risk (nogle ignorerer).",
+          applyEffect: { statChange: { hospitalSatisfaction: 1 }, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "CAB vil se en rapport om ekstern adgangsstyring, roller og logning.",
+        stepDescription: "Dokumentér MFA-planen til CAB med detaljerede retningslinjer.",
         choiceA: {
-          label: "Fuld rapport",
-          text: "+2 tid => ingen ekstra risk, +1 stability",
-          applyEffect: { timeCost: 2, statChange: { stability: 1 } }
+          label: "Detaljeret dokumentation",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Sparsom doc",
+          label: "Minimal dokumentation",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Monitoring og Alerting (SOC-integration)",
+    shortDesc: "Automatisér alarmer i realtidslogning og overhold NIS2.",
+    logicLong: `
+      Hurtig opdagelse er afgørende for at stoppe et angreb. Du vil opsætte et alert-system, der kan kontakte en SOC (24/7-overvågning). NIS2 anbefaler prompt hændelseshåndtering.
+    `,
+    narrativeIntro: `
+      Personalet modtager sjældent alarmer, og derfor kan et effektivt SOC-system redde situationen ved kritiske hændelser.
+    `,
+    learningInfo: `
+      Læringspunkt: Et velfungerende SOC-system centraliserer logdata og alarmer, hvilket gør det muligt hurtigt at reagere på sikkerhedstrusler. Det er vigtigt at have en detaljeret plan og dokumentation.
+    `,
+    knowledgeRecap: `
+      Et automatiseret alarmsystem, integreret med en SOC, kan stoppe hændelser før de eskalerer. Uden dokumentation ved man ikke, hvilke logs der opsamles, og compliance bliver svær at demonstrere.
+    `,
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Vælg system for realtidsalarmer (Slack, sms, XDR?) koblet til SOC.",
+        choiceA: {
+          label: "Avanceret platform",
+          text: "+3 tid, -120 kr => +2 security (opdager alt i realtid).",
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Enkel mail-alert",
+          text: "+1 tid, -40 kr => +1 security, +5% risk (mails glemmes ofte).",
+          applyEffect: { timeCost: 1, moneyCost: 40, statChange: { security: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Informer personalet om, at alle handlinger logges (GDPR).",
+        choiceA: {
+          label: "Oplysningskampagne",
+          text: "+2 tid => +1 hospitalSatisfaction (folk forstår baggrund).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 1 } }
+        },
+        choiceB: {
+          label: "Kun intern info",
+          text: "0 tid => +5% risk (personalet overraskes).",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér log-strategien til CAB (NIS2, databeskyttelse, retention).",
+        choiceA: {
+          label: "Fuld logpolitik",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal dokumentation",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Penetrationstest af LIMS",
+    shortDesc: "Hyre etisk hackerteam til at teste LIMS. Undgå ukendte huller.",
+    logicLong: `
+      For at afsløre reelle sårbarheder hyrer du et eksternt penetrationstest-hold, som kan simulere angreb på LIMS og netværk. Leverandørmoduler skal også tjekkes.
+    `,
+    narrativeIntro: `
+      Rygtet siger, at en tidligere pen-test fandt kritiske fejl. Personalet er nervøse, men det er bedre at vide det nu end at vente på hackere.
+    `,
+    learningInfo: `
+      Læringspunkt: En grundig penetrationstest afslører skjulte sårbarheder og hjælper med at prioritere sikkerhedsforbedringer. Det er vigtigt at udarbejde en detaljeret rapport, der dokumenterer alle fund.
+    `,
+    knowledgeRecap: `
+      En pen-test belyser svagheder, før hackere udnytter dem. Afgrænset scope kan medføre, at vigtige områder overses. Dokumentationen er essentiel for at rette fejl.
+    `,
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Planlæg pen-test med et bredt scope (web, net, OS, social engineering).",
+        choiceA: {
+          label: "Bredt scope",
+          text: "+3 tid, -150 kr => +2 security (du afdækker alt).",
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Smalt scope",
+          text: "+1 tid, -50 kr => +1 security, +5% risk (vigtige områder overses).",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { security: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "leverandor",
+        stepDescription: "Test leverandørmoduler for supply chain-risiko.",
+        choiceA: {
+          label: "Kræv medvirken",
+          text: "+2 tid, -80 kr => synergyEffect: { rushedJura: false }, +1 security",
+          applyEffect: { timeCost: 2, moneyCost: 80, synergyEffect: { rushedJura: false }, statChange: { security: 1 } }
+        },
+        choiceB: {
+          label: "Kun internt",
+          text: "+1 tid => +5% risk (leverandørdelen er usikret).",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en detaljeret pen-test rapport til CAB.",
+        choiceA: {
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk, +1 security (fejl rettes).",
+          applyEffect: { timeCost: 2, statChange: { security: 1 } }
+        },
+        choiceB: {
+          label: "Minimal rapport",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Multi-factor Authentication (MFA)",
+    shortDesc: "Indfør MFA for at opfylde NIS2/GDPR om stærk godkendelse.",
+    logicLong: `
+      Hospitalets ansatte bruger kun password. MFA mindsker risiko for kompromittering af brugerkonti markant, men nogle finder det omstændeligt.
+    `,
+    narrativeIntro: `
+      En overlæge har vist, at simple kodeord udgør en stor risiko. MFA forhindrer, at kun password stjæles.
+    `,
+    learningInfo: `
+      Læringspunkt: Ved implementering af MFA tilføjes et ekstra sikkerhedslag. Det er vigtigt at vælge en løsning, der balancerer brugervenlighed og sikkerhed, og at dokumentere integrationen grundigt.
+    `,
+    knowledgeRecap: `
+      MFA giver et ekstra lag sikkerhed, men uden korrekt dokumentation kan implementeringen blive problematisk.
+    `,
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Vælg MFA-metode (app, token, SMS) til hospitalets ansatte.",
+        choiceA: {
+          label: "Avanceret (auth-app)",
+          text: "+3 tid, -100 kr => +2 security (meget robust).",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Simpel (SMS)",
+          text: "+1 tid, -30 kr => +1 security, +5% risk (muligt SIM-misbrug).",
+          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { security: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Forklar personalet vigtigheden af MFA.",
+        choiceA: {
+          label: "Træningssessioner",
+          text: "+2 tid => +2 hospitalSatisfaction (bedre forståelse).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
+        },
+        choiceB: {
+          label: "Send en mail",
+          text: "0 tid => +1 hospitalSatisfaction, +5% risk (nogle ignorerer).",
+          applyEffect: { statChange: { hospitalSatisfaction: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en detaljeret MFA-plan til CAB.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal dokumentation",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Monitoring og Alerting (SOC-integration)",
+    shortDesc: "Automatisér alarmer i realtidslogning og overhold NIS2.",
+    logicLong: `
+      Hurtig opdagelse er afgørende for at stoppe et angreb. Du vil opsætte et alert-system, der kan kontakte en SOC (24/7-overvågning). NIS2 anbefaler prompt hændelseshåndtering.
+    `,
+    narrativeIntro: `
+      Personalet modtager sjældent alarmer, og et effektivt SOC-system kan derfor redde situationen ved kritiske hændelser.
+    `,
+    learningInfo: `
+      Læringspunkt: Et velfungerende SOC-system centraliserer alarmer og logdata, hvilket gør det muligt hurtigt at reagere på trusler. En detaljeret plan og dokumentation er afgørende for compliance.
+    `,
+    knowledgeRecap: `
+      Et automatiseret alarmsystem, integreret med en SOC, kan stoppe hændelser før de eskalerer. Uden dokumentation ved man ikke, hvilke logs der opsamles, og compliance bliver svær at demonstrere.
+    `,
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Vælg system for realtidsalarmer (Slack, sms, XDR?) koblet til SOC.",
+        choiceA: {
+          label: "Avanceret platform",
+          text: "+3 tid, -120 kr => +2 security (opdager alt i realtid).",
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Enkel mail-alert",
+          text: "+1 tid, -40 kr => +1 security, +5% risk (mails glemmes ofte).",
+          applyEffect: { timeCost: 1, moneyCost: 40, statChange: { security: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Informer personalet om, at alle handlinger logges (GDPR).",
+        choiceA: {
+          label: "Oplysningskampagne",
+          text: "+2 tid => +1 hospitalSatisfaction (folk forstår baggrund).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 1 } }
+        },
+        choiceB: {
+          label: "Kun intern info",
+          text: "0 tid => +5% risk (personalet overraskes).",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en log-strategi til CAB (NIS2, databeskyttelse, retention).",
+        choiceA: {
+          label: "Fuld logpolitik",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal dokumentation",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Penetrationstest af LIMS",
+    shortDesc: "Hyre etisk hackerteam til at teste LIMS. Undgå ukendte huller.",
+    logicLong: `
+      For at afsløre reelle sårbarheder hyrer du et eksternt penetrationstest-hold, som kan simulere angreb på LIMS og netværk. Leverandørmoduler skal også tjekkes.
+    `,
+    narrativeIntro: `
+      Rygtet siger, at en tidligere pen-test fandt kritiske fejl. Personalet er nervøse, men det er bedre at vide det nu end at vente på hackere.
+    `,
+    learningInfo: `
+      Læringspunkt: En grundig penetrationstest afdækker skjulte sårbarheder og er essentiel for at styrke systemets sikkerhed. En detaljeret rapport sikrer, at alle fund bliver adresseret.
+    `,
+    knowledgeRecap: `
+      En pen-test belyser svagheder, før hackere udnytter dem. Hvis omfanget er for snævert, overses vigtige moduler. Dokumentation er afgørende for at rette fejlene.
+    `,
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Planlæg pen-test med et bredt scope (web, net, OS, social engineering).",
+        choiceA: {
+          label: "Bredt scope",
+          text: "+3 tid, -150 kr => +2 security (du afdækker alt).",
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Smalt scope",
+          text: "+1 tid, -50 kr => +1 security, +5% risk (vigtige områder overses).",
+          applyEffect: { timeCost: 1, moneyCost: 50, statChange: { security: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "leverandor",
+        stepDescription: "Test leverandørmoduler for supply chain-risiko.",
+        choiceA: {
+          label: "Kræv medvirken",
+          text: "+2 tid, -80 kr => synergyEffect: { rushedJura: false }, +1 security",
+          applyEffect: { timeCost: 2, moneyCost: 80, synergyEffect: { rushedJura: false }, statChange: { security: 1 } }
+        },
+        choiceB: {
+          label: "Kun internt",
+          text: "+1 tid => +5% risk (leverandørdelen er usikret).",
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en detaljeret pen-test rapport til CAB.",
+        choiceA: {
+          label: "Detaljeret rapport",
+          text: "+2 tid => ingen ekstra risk, +1 security (fejl rettes).",
+          applyEffect: { timeCost: 2, statChange: { security: 1 } }
+        },
+        choiceB: {
+          label: "Minimal rapport",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Multi-factor Authentication (MFA)",
+    shortDesc: "Indfør MFA for at opfylde NIS2/GDPR om stærk godkendelse.",
+    logicLong: `
+      Hospitalets ansatte bruger kun password. MFA mindsker risiko for kompromittering af brugerkonti markant, men nogle finder det omstændeligt.
+    `,
+    narrativeIntro: `
+      En overlæge har vist, at simple kodeord udgør en stor risiko. MFA forhindrer, at kun password stjæles.
+    `,
+    learningInfo: `
+      Læringspunkt: Implementering af MFA tilføjer et ekstra sikkerhedslag. Det er vigtigt at vælge en brugervenlig løsning, der samtidig øger sikkerheden, og at dokumentationen er detaljeret.
+    `,
+    knowledgeRecap: `
+      MFA giver et ekstra lag sikkerhed. Uden korrekt dokumentation kan implementeringen blive problematisk, hvilket kan medføre afvisning af CAB.
+    `,
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Vælg MFA-metode (app, token, SMS) til hospitalets ansatte.",
+        choiceA: {
+          label: "Avanceret (auth-app)",
+          text: "+3 tid, -100 kr => +2 security (meget robust).",
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Simpel (SMS)",
+          text: "+1 tid, -30 kr => +1 security, +5% risk (muligt SIM-misbrug).",
+          applyEffect: { timeCost: 1, moneyCost: 30, statChange: { security: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Forklar personalet vigtigheden af MFA.",
+        choiceA: {
+          label: "Træningssessioner",
+          text: "+2 tid => +2 hospitalSatisfaction (bedre forståelse).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 2 } }
+        },
+        choiceB: {
+          label: "Send en mail",
+          text: "0 tid => +1 hospitalSatisfaction, +5% risk (nogle ignorerer).",
+          applyEffect: { statChange: { hospitalSatisfaction: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en detaljeret MFA-plan til CAB.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal dokumentation",
+          text: "+5% risk => docSkipCount++",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  {
+    title: "Monitoring og Alerting (SOC-integration)",
+    shortDesc: "Automatisér alarmer i realtidslogning og overhold NIS2.",
+    logicLong: `
+      Hurtig opdagelse er afgørende for at stoppe et angreb. Du vil opsætte et alert-system, der kan kontakte en SOC (24/7-overvågning). NIS2 anbefaler prompt hændelseshåndtering.
+    `,
+    narrativeIntro: `
+      Personalet modtager sjældent alarmer, og et effektivt SOC-system kan derfor redde kritiske situationer.
+    `,
+    learningInfo: `
+      Læringspunkt: Et effektivt SOC-system centraliserer logdata og alarmer, så sikkerhedshændelser hurtigt kan identificeres og håndteres. Dokumentationen af strategien er central for compliance.
+    `,
+    knowledgeRecap: `
+      Et automatiseret alarmsystem, integreret med en SOC, kan stoppe hændelser, før de eskalerer. Uden dokumentation ved man ikke, hvilke logs der opsamles.
+    `,
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Vælg system for realtidsalarmer (Slack, sms, XDR?) koblet til SOC.",
+        choiceA: {
+          label: "Avanceret platform",
+          text: "+3 tid, -120 kr => +2 security (opdager alt i realtid).",
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Enkel mail-alert",
+          text: "+1 tid, -40 kr => +1 security, +5% risk (mails glemmes ofte).",
+          applyEffect: { timeCost: 1, moneyCost: 40, statChange: { security: 1 }, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Informer personalet om, at alle handlinger logges (GDPR).",
+        choiceA: {
+          label: "Oplysningskampagne",
+          text: "+2 tid => +1 hospitalSatisfaction (folk forstår baggrunden).",
+          applyEffect: { timeCost: 2, statChange: { hospitalSatisfaction: 1 } }
+        },
+        choiceB: {
+          label: "Kun intern info",
+          text: "0 tid => +5% risk (personalet overraskes).",
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en log-strategi til CAB (NIS2, databeskyttelse, retention).",
+        choiceA: {
+          label: "Fuld logpolitik",
+          text: "+2 tid => ingen ekstra risk",
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
