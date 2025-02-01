@@ -13,12 +13,10 @@ window.infrastrukturTasks = [
     narrativeIntro: `
       Du træder ind i datacentret og ser rækker af larmende, ældre servere. En tekniker fortæller, at de genstarter ret ofte. HPC kan give ekstra kraft, men budgettet er stramt.
     `,
-    digDeeperLinks: [
-      { label: "HPC Grundprincipper", url: "https://example.com/hpc-dk" },
-      { label: "Failover Løsninger", url: "https://example.com/failover-dk" }
-    ],
-    knowledgeRecap: `
-      Hvis man ignorerer HPC-behov, kan store analyser (AI, billedprocessering) belaste serverne voldsomt. Manglende failover risikerer driftstab og brud på NIS2-krav. Dokumentation viser, hvordan man genskaber systemet ved katastrofe.
+    learningInfo: `
+      Læringspunkt: Ved at modernisere serverparken med HPC og failover-løsninger sikres en stabil drift. 
+      <span class="hoverTooltip" data-tooltip="High Performance Computing: Avanceret beregningskapacitet til tunge beregninger">HPC</span> giver ekstra regnekraft, mens en korrekt implementeret failover forhindrer nedbrud og driftstab.
+      Det er vigtigt at dokumentere, hvordan systemet kan genoprettes ved fejl.
     `,
     steps: [
       {
@@ -75,12 +73,11 @@ window.infrastrukturTasks = [
     narrativeIntro: `
       En bioanalytiker bander over, at systemet ofte mister forbindelse til AD. DNS-fejl gør login langsomt. Laboratoriechefen vil have netværket på højt niveau.
     `,
-    digDeeperLinks: [
-      { label: "DNS/AD Opdateringer", url: "https://example.com/dns-ad-dk" },
-      { label: "ISO 27001 Netværksprincipper", url: "https://example.com/net-iso27001-dk" }
-    ],
-    knowledgeRecap: `
-      Med et stabilt netværk og god DNS/AD-opsætning undgår man hyppige login- eller svartidsproblemer. Uden dokumentation kan fejl gendannes og vedligehold blive uoverskuelig.
+    learningInfo: `
+      Læringspunkt: En stabil netværksinfrastruktur er afgørende for et velfungerende laboratorium. 
+      Ved at optimere <span class="hoverTooltip" data-tooltip="Domain Name System: System til oversættelse af domænenavne til IP-adresser">DNS</span> og 
+      <span class="hoverTooltip" data-tooltip="Active Directory: Microsofts katalogtjeneste til at håndtere brugere og ressourcer">AD</span> sikres hurtige logins og en robust drift.
+      Korrekt konfiguration forhindrer flaskehalse og nedbrud.
     `,
     steps: [
       {
@@ -137,12 +134,9 @@ window.infrastrukturTasks = [
     narrativeIntro: `
       Datacentret er hedt, og en ventilator summer anstrengt. Personalet advarer om risiko for overophedning. En reel opgradering er på høje tid.
     `,
-    digDeeperLinks: [
-      { label: "Datacenter Køling", url: "https://example.com/dc-koling-dk" },
-      { label: "Replikering & ISO 27799", url: "https://example.com/repl-27799" }
-    ],
-    knowledgeRecap: `
-      God køling forhindrer nedbrud, og replikering sikrer data, hvis en server fejler. Uden dokumentation er det svært at bevise compliance eller genoprette systemet i nødstilfælde.
+    learningInfo: `
+      Læringspunkt: En effektiv opgradering af datacenteret, herunder forbedret køling og replikering, er afgørende for datasikkerheden.
+      Ved at sikre, at data kan replikere og systemet kan genoprettes, opfyldes NIS2-kravene – og risikoen for nedbrud minimeres.
     `,
     steps: [
       {
@@ -199,12 +193,9 @@ window.infrastrukturTasks = [
     narrativeIntro: `
       En akut situation førte til, at en kritisk fil måtte gendannes fra bånd. Det tog alt for lang tid. Ledelsen kræver en hurtigere løsning.
     `,
-    digDeeperLinks: [
-      { label: "Disk vs. Båndbackup", url: "https://example.com/disk-baand-dk" },
-      { label: "Replikering til Cloud", url: "https://example.com/repl-cloud-dk" }
-    ],
-    knowledgeRecap: `
-      Med moderniseret backup mindsker du nedetid ved fejl. Bånd kan være billigt, men er ofte for langsomt. Dokumentation hjælper med at bevise, at du kan overholde NIS2's krav om genopretning.
+    learningInfo: `
+      Læringspunkt: Overgangen fra båndbackup til en disk/cloud-løsning med replikering kan drastisk reducere genskabelsestiden. 
+      En veldokumenteret backup-strategi er nøglen til at opfylde NIS2-kravene og sikre, at data hurtigt kan hentes tilbage i tilfælde af fejl.
     `,
     steps: [
       {
@@ -259,14 +250,11 @@ window.infrastrukturTasks = [
       Mange fysiske servere er underudnyttet. Ved virtualisering sparer man ressourcer og kan let flytte VM’er. Personalet frygter dog nye fejlscenarier.
     `,
     narrativeIntro: `
-      En netadmin peger på en stak gamle servere. "Vi kunne nedbringe strømforbrug og øge driftssikkerhed, men hvis noget går galt i migreringen, bliver det rod."
+      En netadmin peger på en stak gamle servere. Vi kunne nedbringe strømforbruget og øge driftssikkerheden, men hvis noget går galt under migreringen, bliver det rod.
     `,
-    digDeeperLinks: [
-      { label: "Hypervisor Valg", url: "https://example.com/hypervisor-dk" },
-      { label: "Virt. Sikkerhed", url: "https://example.com/iso27001-virtualisering" }
-    ],
-    knowledgeRecap: `
-      Virtualisering mindsker hardwareomkostninger, men dårlig planlægning kan give nedetid. Dokumentation hjælper ved fejl, så man hurtigt kan rulle tilbage eller bruge testmiljøet.
+    learningInfo: `
+      Læringspunkt: Virtualisering kan reducere hardwareomkostninger og øge fleksibiliteten. 
+      En detaljeret migrationsplan og et testmiljø er nødvendige for at sikre en glidende overgang og minimere nedetid.
     `,
     steps: [
       {
@@ -323,12 +311,9 @@ window.infrastrukturTasks = [
     narrativeIntro: `
       En driftsvagt fortæller, at en lille netfejl førte til stort nedbrud i en anden afdeling. VLAN kan begrænse spredningen, men folk klager ofte over IP-ændringer.
     `,
-    digDeeperLinks: [
-      { label: "VLAN og Net-Segmentering", url: "https://example.com/vlan-segment-dk" },
-      { label: "NIS2 og Skadebegrænsning", url: "https://example.com/nis2-begransning" }
-    ],
-    knowledgeRecap: `
-      Segmentering gør, at et angreb eller fejl typisk kun rammer én zone. Hvis man springer dokumentation over, glemmer afdelinger ofte IP-skift og forstår ikke nye netregler, hvilket fører til kaos.
+    learningInfo: `
+      Læringspunkt: Netværkssegmentering med VLAN reducerer risikoen for, at fejl spreder sig. 
+      Det forudsætter, at medarbejderne lærer de nye <span class="hoverTooltip" data-tooltip="Virtual LAN: En metode til at opdele et fysisk netværk i flere logiske netværk">VLAN</span>‑konfigurationer og IP-adresser, så de kan tilpasse sig den nye struktur.
     `,
     steps: [
       {
@@ -385,12 +370,9 @@ window.infrastrukturTasks = [
     narrativeIntro: `
       Lab-personalet siger, at store billedfiler tager en evighed at uploade. En 10Gbit-forbindelse og loadbalancer vil potentielt løfte farten, men koster.
     `,
-    digDeeperLinks: [
-      { label: "10Gbit Netværk", url: "https://example.com/10gbit-dk" },
-      { label: "Loadbalancering 101", url: "https://example.com/loadbalance-dk" }
-    ],
-    knowledgeRecap: `
-      10Gbit og loadbalancering fjerner store dele af flaskehalse for tunge analyser. Uden dokumentation ved ingen, hvordan det er sat op, og ved fejl kan man ikke fejlrette ordentligt.
+    learningInfo: `
+      Læringspunkt: Opgradering til 10Gbit-netværk og implementering af <span class="hoverTooltip" data-tooltip="Loadbalancering: Fordeling af trafik mellem flere servere for optimal ydelse">loadbalancering</span> kan fjerne flaskehalse. 
+      Det er afgørende at kommunikere ændringerne klart til brugerne, så de forstår, hvorfor systemet ændres, og hvordan de kan tilpasse sig.
     `,
     steps: [
       {
@@ -447,12 +429,9 @@ window.infrastrukturTasks = [
     narrativeIntro: `
       En cloudleverandør lover fleksibilitet og prisfordele. Men personalet frygter latency, og der skal laves en robust AD/dns-løsning.
     `,
-    digDeeperLinks: [
-      { label: "Cloud HPC eller DNS-peering", url: "https://example.com/cloud-dns-dk" },
-      { label: "NIS2 Cloud Overvejelser", url: "https://example.com/nis2-cloud-dk" }
-    ],
-    knowledgeRecap: `
-      En velplanlagt cloud-integration mindsker on-prem udgifter og giver failover-muligheder. Hvis man overser synergy og dokumentation, kan man ende med halve løsninger og compliance-brud (GDPR/NIS2).
+    learningInfo: `
+      Læringspunkt: En vellykket cloud-integration kræver, at VPN/DirectConnect, <span class="hoverTooltip" data-tooltip="AD-trust: Tillid mellem on-premise og cloud Active Directory">AD-trust</span> og DNS er korrekt konfigureret. 
+      En solid løsning kan reducere on-premise omkostninger og sikre, at systemet opfylder både GDPR og NIS2.
     `,
     steps: [
       {
