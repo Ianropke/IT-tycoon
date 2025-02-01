@@ -11,9 +11,9 @@ window.hospitalTasks = [
       for at undgå manuelle fejl og spare tid.
     `,
     narrativeIntro: `
-      "I laboratoriet står en ny autoimmun stainer klar, 
-       men personalet mangler en fuld integration til LIMS. 
-       De er spændte på, om det kan lette hverdagen markant."
+      I laboratoriet står en ny autoimmun stainer klar, 
+      men personalet mangler en fuld integration til LIMS. 
+      De er spændte på, om det kan lette hverdagen markant.
     `,
     digDeeperLinks: [
       { label: "Autoimmun Stainer Indblik", url: "https://example.com/autoimmun-stainer-dk" },
@@ -50,7 +50,7 @@ window.hospitalTasks = [
         },
         choiceB: {
           label: "Genbrug eksisterende",
-          text: "+1 tid => synergyEffect:{ lackInfra:true }, +5% risk (mulige kapacitetsproblemer).",
+          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk (mulige kapacitetsproblemer).",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
@@ -81,9 +81,9 @@ window.hospitalTasks = [
       stor serverkapacitet.
     `,
     narrativeIntro: `
-      "En ny skanner står klar til at digitalisere histologiske snit. 
-       Patologerne håber på fjernkonsultation og AI, men systemet 
-       producerer enorme billedfiler."
+      En ny skanner står klar til at digitalisere histologiske snit. 
+      Patologerne håber på fjernkonsultation og AI, men systemet 
+      producerer enorme billedfiler.
     `,
     digDeeperLinks: [
       { label: "Digital Patologi i Danmark", url: "https://example.com/digital-patologi-dk" },
@@ -120,7 +120,7 @@ window.hospitalTasks = [
         },
         choiceB: {
           label: "Brug eksisterende server",
-          text: "+5% risk => synergyEffect:{ lackInfra:true } (mulig langsom scanning).",
+          text: "+5% risk => synergyEffect: { lackInfra: true } (mulig langsom scanning).",
           applyEffect: { riskyPlus: 0.05, synergyEffect: { lackInfra: true } }
         }
       },
@@ -150,9 +150,9 @@ window.hospitalTasks = [
       reagere på flaskehalse i realtid.
     `,
     narrativeIntro: `
-      "På et møde efterlyser direktøren farverige grafer, 
-       der viser spidsbelastninger. Personalet frygter dog 
-       for meget data-eksponering, hvis GDPR ikke overholdes."
+      På et møde efterlyser direktøren farverige grafer, 
+      der viser spidsbelastninger. Personalet frygter dog 
+      for meget data-eksponering, hvis GDPR ikke overholdes.
     `,
     digDeeperLinks: [
       { label: "HL7 & Dashboard-løsninger", url: "https://example.com/dash-hl7-dk" },
@@ -189,7 +189,7 @@ window.hospitalTasks = [
         },
         choiceB: {
           label: "Overfladisk check",
-          text: "Spar tid => +1 dev, +5% risk (datalæk mulig).",
+          text: "Spar tid => +1 development, +5% risk (datalæk mulig).",
           applyEffect: { statChange: { development: 1 }, riskyPlus: 0.05 }
         }
       },
@@ -220,9 +220,9 @@ window.hospitalTasks = [
       oversættelser og serveropsætning.
     `,
     narrativeIntro: `
-      "En fransk overlæge fumler rundt i danske menupunkter 
-       og klager over misforståelser. Personale håber, 
-       at et flersproget LIMS kan løfte effektiviteten."
+      En fransk overlæge fumler rundt i danske menupunkter 
+      og klager over misforståelser. Personale håber, 
+      at et flersproget LIMS kan løfte effektiviteten.
     `,
     digDeeperLinks: [
       { label: "Sprogpakker & Server Encoding", url: "https://example.com/i18n-dk" },
@@ -259,7 +259,7 @@ window.hospitalTasks = [
         },
         choiceB: {
           label: "Behold eksisterende server",
-          text: "+1 tid => synergyEffect:{ lackInfra:true }, +5% risk (fejl i oversættelser).",
+          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk (fejl i oversættelser).",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
@@ -272,7 +272,7 @@ window.hospitalTasks = [
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal doc",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -290,9 +290,9 @@ window.hospitalTasks = [
       for hasteprøver.
     `,
     narrativeIntro: `
-      "Det er fredag eftermiddag, og en plan om weekend-lukning 
-       ryster de ansatte. Nogle håber på ro, 
-       andre frygter at møde kaos mandag morgen."
+      Det er fredag eftermiddag, og en plan om weekend-lukning 
+      ryster de ansatte. Nogle håber på ro, 
+      andre frygter at møde kaos mandag morgen.
     `,
     digDeeperLinks: [
       { label: "IT Beredskabsplan Eksempel", url: "https://example.com/it-beredskabsplan-dk" },
@@ -361,9 +361,9 @@ window.hospitalTasks = [
       så alt kører gnidningsfrit.
     `,
     narrativeIntro: `
-      "Teknikerne gentager den samme håndtering hundrede gange om dagen. 
-       En robot kan lette monotont arbejde, 
-       men opsætningen skal fungere i praksis."
+      Teknikerne gentager den samme håndtering hundrede gange om dagen. 
+      En robot kan lette monotont arbejde, 
+      men opsætningen skal fungere i praksis.
     `,
     digDeeperLinks: [
       { label: "Robotter i Blodprøvelab", url: "https://example.com/lab-robot-dk" },
@@ -401,7 +401,7 @@ window.hospitalTasks = [
         },
         choiceB: {
           label: "Brug eksisterende",
-          text: "+1 tid => synergyEffect:{ lackInfra:true }, +5% risk",
+          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
@@ -431,9 +431,9 @@ window.hospitalTasks = [
       og automatisk alarm, når noget er ved at løbe tør.
     `,
     narrativeIntro: `
-      "En bioanalytiker bander over at have løbet tør for reagens 
-       midt i en kørsel. De drømmer om en LIMS-løsning, 
-       der holder styr på lager og QC-resultater."
+      En bioanalytiker bander over at have løbet tør for reagens 
+      midt i en kørsel. De drømmer om en LIMS-løsning, 
+      der holder styr på lager og QC-resultater.
     `,
     digDeeperLinks: [
       { label: "QC i Biokemi", url: "https://example.com/qc-biokemi-dk" },
@@ -483,7 +483,7 @@ window.hospitalTasks = [
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal dok",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -500,10 +500,10 @@ window.hospitalTasks = [
       med HPC og replikering. Sikkerhed og GDPR er kritisk.
     `,
     narrativeIntro: `
-      "Genetikerne får flere og flere prøver hver dag. 
-       De frygter, at en almindelig server 
-       ikke kan håndtere de store datasets. HPC og 
-       replikering kan give robusthed, men kræver en plan."
+      Genetikerne får flere og flere prøver hver dag. 
+      De frygter, at en almindelig server 
+      ikke kan håndtere de store datasets. HPC og 
+      replikering kan give robusthed, men kræver en plan.
     `,
     digDeeperLinks: [
       { label: "HPC til Genetik", url: "https://example.com/hpc-genetik-dk" },
@@ -540,7 +540,7 @@ window.hospitalTasks = [
         },
         choiceB: {
           label: "Behold eksisterende disk",
-          text: "+5% risk => synergyEffect:{ lackInfra:true } (mulig flaskehals).",
+          text: "+5% risk => synergyEffect: { lackInfra: true } (mulig flaskehals).",
           applyEffect: { riskyPlus: 0.05, synergyEffect: { lackInfra: true } }
         }
       },
@@ -548,12 +548,12 @@ window.hospitalTasks = [
         location: "dokumentation",
         stepDescription: "CAB kræver streng datasikkerhed pga. GDPR.",
         choiceA: {
-          label: "Omfattende dok",
+          label: "Omfattende dokumentation",
           text: "+2 tid => +1 security",
           applyEffect: { timeCost: 2, statChange: { security: 1 } }
         },
         choiceB: {
-          label: "Spring doc over",
+          label: "Spring over",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -570,10 +570,10 @@ window.hospitalTasks = [
       til at håndtere store datakørsler effektivt.
     `,
     narrativeIntro: `
-      "Et nyt MALDI-TOF-apparat er ankommet, 
-       og lab-personalet jubler over hurtige artsbestemmelser. 
-       Men uden LIMS-interface kan resultater blive forsinkede 
-       eller fejlindtastede."
+      Et nyt MALDI-TOF-apparat er ankommet, 
+      og lab-personalet jubler over hurtige artsbestemmelser. 
+      Men uden LIMS-interface kan resultater blive forsinkede 
+      eller fejlindtastede.
     `,
     digDeeperLinks: [
       { label: "MALDI-TOF i Mikrobiologi", url: "https://example.com/maldi-tof-dk" },
@@ -610,7 +610,7 @@ window.hospitalTasks = [
         },
         choiceB: {
           label: "Genbrug gammel interface",
-          text: "+1 tid => synergyEffect:{ lackInfra:true }, +5% risk",
+          text: "+1 tid => synergyEffect: { lackInfra: true }, +5% risk",
           applyEffect: { timeCost: 1, synergyEffect: { lackInfra: true }, riskyPlus: 0.05 }
         }
       },
@@ -623,7 +623,7 @@ window.hospitalTasks = [
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Minimal doc",
+          label: "Minimal dokumentation",
           text: "+5% risk => docSkipCount++",
           applyEffect: { riskyPlus: 0.05 }
         }
