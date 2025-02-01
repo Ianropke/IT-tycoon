@@ -4,18 +4,16 @@
  * Al tekst i UI og pop-ups er oversat til dansk.
  * Variabler og funktioner er på engelsk for at undgå fejl.
  * 
- * Opdateringer:
- * - Brug af globale konstanter for tids-, penge- og risikoværdier.
- * - Rydning af interval ved spilslut.
- * - Feedback ved forkert lokationsvalg samt opdatering af docSkipCount.
- * - Robusthedstjek for DOM-elementer.
- * - Forsøg på at bruge structuredClone ved kopiering af task-objekter.
+ * Ændringer:
+ * 1. "Undersøg" er udskiftet med "Få Arkitekthjælp" for at simulere, at man får hjælp fra en arkitekt.
+ * 2. Ved generering af opgaver kontrolleres antallet af trin (3–6).
+ * 3. Læringselementet implementeres via en "Mere Info" knap i scenario-modalen, der viser en modal med intern læringstekst.
  ************************************************************/
 
 /* Globale konstanter */
-const TIME_COST_INVESTIGATE = 1;
-const MONEY_COST_INVESTIGATE = 20;
-const RISK_REDUCTION_INVESTIGATE = 0.05;
+const TIME_COST_HELP = 2;
+const MONEY_COST_HELP = 50;
+const RISK_REDUCTION_HELP = 0.10;
 const TIME_COST_STEP = 2;
 
 /* Hjælpefunktion til DOM-hentning med tjek */
@@ -118,15 +116,15 @@ let tutorialSteps = [
   },
   {
     title:"CAB & Dokumentation",
-    text:"CAB (Change Advisory Board) godkender ændringer. Springer du dok. over, stiger risiko. Udforsk ‘Grav Dybere’-knapper for forklaringer!"
+    text:"CAB (Change Advisory Board) godkender ændringer. Springer du dok. over, stiger risiko. Udforsk ‘Mere Info’ for uddybende forklaringer!"
   },
   {
-    title:"Undersøg opgaver",
-    text:"Du kan ‘Undersøge’ en opgave for at nedbringe risiko, men det koster tid/penge. Ofte investeringen værd."
+    title:"Få Arkitekthjælp",
+    text:"I stedet for blot at undersøge opgaver, kan du få hjælp fra en IT-arkitekt, som kan nedbringe risikoen og give dig værdifuld feedback."
   },
   {
     title:"Grav Dybere for læring",
-    text:"Ser du ‘Mere Info’-knapper eller historietekst, klik endelig. Som nyansat kan du lære en masse detaljer. Held og lykke!"
+    text:"Klik på 'Mere Info' for at få uddybende forklaringer af fagudtryk og koncepter – en vigtig del af din træning som forvalter."
   }
 ];
 let tutorialIdx = 0;
@@ -223,8 +221,16 @@ function generateTask(){
     newTask = JSON.parse(JSON.stringify(chosen));
   }
   
+  // Valider antallet af trin – minimum 3, maksimum 6
+  if (newTask.steps.length < 3) {
+    console.warn(`Opgaven "${newTask.title}" har mindre end 3 trin. Overvej at tilføje flere trin.`);
+  } else if(newTask.steps.length > 6) {
+    console.warn(`Opgaven "${newTask.title}" har flere end 6 trin. Kun de første 6 trin anvendes.`);
+    newTask.steps = newTask.steps.slice(0, 6);
+  }
+
   newTask.currentStep = 0;
-  newTask.preRiskReduction = 0; // akkumuleret ved "Undersøg"
+  newTask.preRiskReduction = 0; // akkumuleret ved arkitekthjælp
   gameState.availableTasks.push(newTask);
   renderTasks();
 }
@@ -262,14 +268,14 @@ function renderTasks(){
     let li = document.createElement('li');
     li.innerHTML = `<strong>${t.title}</strong><br/>${t.shortDesc || "Ingen beskrivelse"}`;
 
-    // Undersøg-knap
-    let invBtn = document.createElement('button');
-    invBtn.textContent = "Undersøg";
-    invBtn.classList.add('commit-button');
-    invBtn.style.marginRight = "6px";
-    invBtn.addEventListener('click', (e) => {
+    // Få Arkitekthjælp-knap
+    let helpBtn = document.createElement('button');
+    helpBtn.textContent = "Få Arkitekthjælp";
+    helpBtn.classList.add('commit-button');
+    helpBtn.style.marginRight = "6px";
+    helpBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      investigateTask(t);
+      getArchitectHelp(t);
     });
 
     // Forpligt-knap
@@ -281,25 +287,25 @@ function renderTasks(){
       assignTask(t.title);
     });
 
-    li.appendChild(invBtn);
+    li.appendChild(helpBtn);
     li.appendChild(comBtn);
     tasksList.appendChild(li);
   });
 }
 
-function investigateTask(taskObj){
-  if(gameState.time < TIME_COST_INVESTIGATE){
-    showPopup("Du har ikke nok tid til at undersøge!", "error");
+function getArchitectHelp(taskObj) {
+  if(gameState.time < TIME_COST_HELP) {
+    showPopup("Du har ikke nok tid til at få arkitekthjælp!", "error");
     return;
   }
-  if(gameState.money < MONEY_COST_INVESTIGATE){
-    showPopup("Du har ikke nok penge til at undersøge!", "error");
+  if(gameState.money < MONEY_COST_HELP) {
+    showPopup("Du har ikke nok penge til arkitekthjælp!", "error");
     return;
   }
-  applyTimeCost(TIME_COST_INVESTIGATE);
-  applyMoneyCost(MONEY_COST_INVESTIGATE);
-  taskObj.preRiskReduction += RISK_REDUCTION_INVESTIGATE;
-  showPopup(`Undersøgelse: -${TIME_COST_INVESTIGATE} tid, -${MONEY_COST_INVESTIGATE} kr, risiko -${(RISK_REDUCTION_INVESTIGATE * 100)}%`, "info", 4000);
+  applyTimeCost(TIME_COST_HELP);
+  applyMoneyCost(MONEY_COST_HELP);
+  taskObj.preRiskReduction += RISK_REDUCTION_HELP;
+  showPopup(`Arkitekten giver råd: -${(RISK_REDUCTION_HELP*100).toFixed(0)}% risiko, -${TIME_COST_HELP} tid, -${MONEY_COST_HELP} kr`, "info", 4000);
 }
 
 function assignTask(taskTitle){
@@ -381,17 +387,18 @@ function showScenarioModal(stepIndex){
   scenarioFlavorText.textContent = scenarioFlavorPool[Math.floor(Math.random() * scenarioFlavorPool.length)];
   scenarioDescription.innerHTML = st.stepDescription || "Standard scenarie...";
 
-  // Grav Dybere-knapper
+  // Læringsinfo: Hvis der findes en learningInfo i opgaven, vis en "Mere Info" knap.
   digDeeperLinksDiv.innerHTML = "";
-  if(t.digDeeperLinks && t.digDeeperLinks.length){
+  if(t.learningInfo) {
     digDeeperLinksDiv.style.display = "block";
-    t.digDeeperLinks.forEach(linkObj => {
-      let btn = document.createElement('button');
-      btn.classList.add('commit-button');
-      btn.textContent = "Mere info: " + linkObj.label;
-      btn.onclick = () => window.open(linkObj.url, "_blank");
-      digDeeperLinksDiv.appendChild(btn);
-    });
+    let moreInfoBtn = document.createElement('button');
+    moreInfoBtn.textContent = "Mere Info";
+    moreInfoBtn.classList.add('commit-button');
+    moreInfoBtn.style.marginTop = "10px";
+    moreInfoBtn.onclick = () => {
+      showLearningInfo(t.learningInfo);
+    };
+    digDeeperLinksDiv.appendChild(moreInfoBtn);
   } else {
     digDeeperLinksDiv.style.display = "none";
   }
@@ -412,6 +419,23 @@ function showScenarioModal(stepIndex){
   };
 }
 
+function showLearningInfo(infoText) {
+  let infoModal = document.createElement('div');
+  infoModal.classList.add('modal');
+  infoModal.style.display = "flex";
+  infoModal.innerHTML = `
+    <div class="modal-content">
+      <h2>Læringsinformation</h2>
+      <p>${infoText || "Ingen ekstra information tilgængelig."}</p>
+      <button class="commit-button" id="learning-info-close">Luk</button>
+    </div>
+  `;
+  document.body.appendChild(infoModal);
+  document.getElementById('learning-info-close').addEventListener('click', () => {
+    infoModal.remove();
+  });
+}
+
 function applyChoiceEffect(eff){
   if(!eff) return;
   if(eff.timeCost)  applyTimeCost(eff.timeCost);
@@ -423,7 +447,7 @@ function applyChoiceEffect(eff){
     }
   }
   if(eff.synergyEffect){
-    // fx synergyEffect:{lackInfra:true} – gem evt. i gameState for senere brug
+    // Gem evt. synergyEffect i gameState for senere brug
   }
 }
 
@@ -454,10 +478,10 @@ function finalizeStep(stepIndex){
   updateStepsList();
 
   if(t.currentStep >= t.steps.length){
-    // Anvend forundersøgelses-effekten
+    // Anvend arkitekthjælps-effekten
     if(t.preRiskReduction > 0){
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
-      showPopup(`Din undersøgelse gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
+      showPopup(`Arkitekthjælpen reducerede risikoen med ${(t.preRiskReduction * 100).toFixed(0)}%!`, "info", 4000);
     }
     showCABModal();
   }
@@ -499,9 +523,7 @@ function showCABResult(isSuccess){
 }
 
 function postCABTechnicalCheck(){
-  // Tjek om der stadig er en aktiv opgave – hvis opgaven allerede er afsluttet, så returner
   if(!gameState.activeTask) return;
-  
   cabResultModal.style.display = "none";
   let driftFail = gameState.riskyTotal * 0.3;
   if(Math.random() < driftFail){
@@ -523,7 +545,6 @@ function failTaskCAB(){
 
 function completeTaskCAB(){
   gameState.tasksCompleted++;
-  // Gem den netop afsluttede opgave, så vi kan vise en vidensopsummering
   gameState.lastFinishedTask = gameState.activeTask;
   endActiveTask();
 }
@@ -566,17 +587,13 @@ function showTaskSummaryModal(){
   taskSummaryModal.style.display = "flex";
 }
 
-// Slut spil
 function endGame(){
   showPopup("Tiden er brugt op!", "info", 3000);
   gameState.activeTask = null;
   activeTaskHeadline.textContent = "Ingen aktiv opgave";
   activeTaskDesc.textContent = "";
   stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
-
-  // Stop opgavegenererings-intervallet
   clearInterval(taskInterval);
-
   endModal.style.display = "flex";
   let sumText = `
     <strong>Slutresultat:</strong><br/>
@@ -590,7 +607,6 @@ function endGame(){
   endGameSummary.innerHTML = sumText;
 }
 
-// showPopup
 function showPopup(msg, type="success", duration=3000){
   const c = getElementByIdSafe('popup-container');
   let div = document.createElement('div');
@@ -603,7 +619,6 @@ function showPopup(msg, type="success", duration=3000){
   setTimeout(() => div.remove(), duration);
 }
 
-// Flyvende tekst
 function showFloatingText(txt, stat){
   const fc = getElementByIdSafe('floating-text-container');
   let div = document.createElement('div');
