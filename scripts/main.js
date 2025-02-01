@@ -182,7 +182,7 @@ Object.entries(locMap).forEach(([key, el]) => {
   });
 });
 
-// InitGame – sørg for at bruge fallback for task-arrays
+// InitGame – brug fallback for task-arrays
 function initGame(){
   window.backlog = [
     ...(window.cybersikkerhedTasks || []),
@@ -216,7 +216,7 @@ function generateTask(){
   renderTasks();
 }
 
-// Update scoreboard og hospitalstilfredshed
+// Update scoreboard og beregn hospitalstilfredshed
 function updateScoreboard(){
   calcHospitalSatisfaction();
   timeLeftEl.textContent   = gameState.time;
@@ -277,7 +277,7 @@ function assignTask(taskTitle){
   renderTasks();
 }
 
-// Update trin i opgaven
+// Update trin i opgaven – brug fallback hvis et step mangler lokation
 function updateStepsList(){
   const stepsList = document.getElementById('steps-list');
   stepsList.innerHTML = "";
@@ -287,8 +287,9 @@ function updateStepsList(){
   }
   let c = gameState.activeTask.currentStep || 0;
   gameState.activeTask.steps.forEach((st, i) => {
+    let loc = st.location || "ukendt lokation";
     let li = document.createElement('li');
-    li.textContent = `Trin ${i+1}: ${st.location}`;
+    li.textContent = `Trin ${i+1}: ${loc}`;
     if (i < c){
       li.style.textDecoration = "line-through";
       li.style.color = "#95a5a6";
@@ -309,7 +310,7 @@ function handleLocationClick(locName){
   }
   let i = gameState.activeTask.currentStep;
   if (i >= gameState.activeTask.steps.length) return;
-  let needed = gameState.activeTask.steps[i].location;
+  let needed = gameState.activeTask.steps[i].location || "ukendt lokation";
   if (locName !== needed) return;
   showScenarioModal(i);
 }
@@ -320,15 +321,17 @@ function showScenarioModal(stepIndex){
   scenarioModal.classList.add("fadeIn");
   let t = gameState.activeTask;
   let st = t.steps[stepIndex];
+  let loc = st.location || "ukendt lokation";
   if (t.narrativeIntro){
     scenarioNarrativeDiv.style.display = "block";
     scenarioNarrativeDiv.innerHTML = t.narrativeIntro;
   } else {
     scenarioNarrativeDiv.style.display = "none";
   }
-  scenarioTitle.textContent = `Trin ${stepIndex+1}: ${st.location}`;
+  scenarioTitle.textContent = `Trin ${stepIndex+1}: ${loc}`;
   scenarioFlavorText.textContent = scenarioFlavorPool[Math.floor(Math.random()*scenarioFlavorPool.length)];
   scenarioDescription.innerHTML = st.stepDescription || "Standard scenarie...";
+  // "Mere Info" knap skal vise en popup med tekst – ikke et eksternt link
   digDeeperLinksDiv.innerHTML = "";
   if (t.digDeeperLinks && t.digDeeperLinks.length){
     digDeeperLinksDiv.style.display = "block";
@@ -336,7 +339,8 @@ function showScenarioModal(stepIndex){
       let btn = document.createElement('button');
       btn.classList.add('commit-button');
       btn.textContent = "Mere info: " + linkObj.label;
-      btn.onclick = () => window.open(linkObj.url, "_blank");
+      // Ændr: Vis en pop-up med linkObj.text i stedet for at åbne et nyt vindue
+      btn.onclick = () => showMoreInfo(linkObj.text);
       digDeeperLinksDiv.appendChild(btn);
     });
   } else {
@@ -586,7 +590,7 @@ function showArchitectModal(){
   let analysisText = "";
   if (step) {
     analysisText = `<strong>Arkitektens analyse:</strong><br/>
-    "Dette projekt har flere vigtige trin, men det kritiske er <em>${step.location}</em>. 
+    "Dette projekt har flere vigtige trin, men det kritiske er <em>${step.location || "ukendt lokation"}</em>. 
     En grundig analyse af fx DNS og Active Directory er nødvendig for at undgå driftsforstyrrelser."<br/><br/>
     <strong>Anbefalede valg:</strong><br/>`;
     if (step.choiceA && step.choiceA.recommended) {
