@@ -28,7 +28,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "it-support",
         stepDescription: "Implementer et nyt, digitalt journalsystem.",
         choiceA: {
           label: "Omfattende implementering",
@@ -42,7 +42,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "dokumentation",
         stepDescription: "Opdater dokumentationen og uddannelsesmaterialet for det nye system.",
         choiceA: {
           label: "Omfattende dokumentation",
@@ -86,7 +86,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "laboratorium",
         stepDescription: "Implementer en middleware-løsning for integration.",
         choiceA: {
           label: "Omfattende implementering",
@@ -100,7 +100,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "dokumentation",
         stepDescription: "Dokumentér integrationsprocessen.",
         choiceA: {
           label: "Detaljeret dokumentation",
@@ -123,7 +123,7 @@ window.hospitalTasks = [
       "Det nuværende bookingsystem skaber dobbeltbookinger og tidskonflikter. En digital løsning er nødvendig for at optimere processen."
     `,
     digDeeperLinks: [
-      { label: "Digital Booking", text: "Digitalisering af bookingprocessen øger effektiviteten og reducerer fejl." }
+      { label: "Digital Booking", text: "En digital løsning giver hurtig adgang til patientinformation og forbedrer behandlingskvaliteten." }
     ],
     architectAdvice: `
       Arkitekten anbefaler en fuld digitalisering af bookingprocessen med integration til øvrige systemer.
@@ -144,7 +144,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "operationsstue",
         stepDescription: "Implementer et digitalt bookingsystem.",
         choiceA: {
           label: "Omfattende implementering",
@@ -158,7 +158,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "dokumentation",
         stepDescription: "Opdater dokumentationen og træningsmaterialet for det nye system.",
         choiceA: {
           label: "Detaljeret dokumentation",
@@ -202,7 +202,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "administration",
         stepDescription: "Implementer et nyt IT-supportsystem med automatisering.",
         choiceA: {
           label: "Omfattende implementering",
@@ -216,7 +216,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "dokumentation",
         stepDescription: "Dokumentér de nye supportprocedurer og uddan personalet.",
         choiceA: {
           label: "Detaljeret dokumentation",
@@ -234,12 +234,12 @@ window.hospitalTasks = [
 
   {
     title: "Modernisering af Klinisk IT-infrastruktur",
-    shortDesc: "Forældet IT-infrastruktur hæmmer effektiv patientbehandling.",
+    shortDesc: "Forældet IT-miljø hæmmer effektiv patientbehandling.",
     narrativeIntro: `
       "Det nuværende IT-miljø er langsomt og ustabilt, hvilket fører til forsinkelser i behandling og diagnosticering. Modernisering er nødvendig for at sikre kontinuerlig drift."
     `,
     digDeeperLinks: [
-      { label: "Klinisk IT Modernisering", text: "Opgradering af IT-infrastruktur kan forbedre behandlingsprocesserne og patientflowet." }
+      { label: "Klinisk IT Modernisering", text: "Opgradering af IT-infrastrukturen kan forbedre behandlingsprocesserne og patientflowet." }
     ],
     architectAdvice: `
       Arkitekten anbefaler en fuld modernisering af infrastrukturen med fokus på hastighed og stabilitet.
@@ -260,7 +260,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "it-support",
         stepDescription: "Opgrader hardware og software for bedre ydeevne.",
         choiceA: {
           label: "Omfattende opgradering",
@@ -274,7 +274,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "dokumentation",
         stepDescription: "Opdater dokumentationen og uddannelsesmaterialet.",
         choiceA: {
           label: "Detaljeret dokumentation",
@@ -318,7 +318,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "it-support",
         stepDescription: "Implementer et nyt digitalt journalsystem.",
         choiceA: {
           label: "Omfattende implementering",
@@ -332,7 +332,7 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
+        location: "dokumentation",
         stepDescription: "Opdater dokumentationen og træningsmaterialet for personalet.",
         choiceA: {
           label: "Omfattende dokumentation",
@@ -376,8 +376,8 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
-        stepDescription: "Implementer digitale løsninger for automatisering.",
+        location: "administration",
+        stepDescription: "Implementer digitale løsninger til automatisering.",
         choiceA: {
           label: "Omfattende implementering",
           text: "+4 tid, -100 kr, +3 security.",
@@ -390,8 +390,8 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "hospital",
-        stepDescription: "Dokumentér de nye processer og træn personalet.",
+        location: "dokumentation",
+        stepDescription: "Dokumentér de nye digitale processer og træn personalet.",
         choiceA: {
           label: "Detaljeret dokumentation",
           text: "+2 tid.",
