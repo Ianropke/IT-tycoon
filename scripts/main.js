@@ -1,6 +1,12 @@
 /************************************************************
  * main.js – Dansk læringsudgave
- * (Se tidligere version for fuld implementering)
+ * 
+ * Ændringer:
+ * 1. Udvidet tutorial med mission briefing (missionmål).
+ * 2. Evaluering af missionmål i slutrapporten.
+ * 3. Flere læringselementer med "Mere Info"-knap og tooltips.
+ * 4. Forbedret arkitekthjælp: Modal med en liste over anbefalede valg (recommended: true).
+ * 5. Dynamiske events, der påvirker gameState med popups.
  ************************************************************/
 
 /* Globale konstanter */
@@ -18,7 +24,7 @@ function getElementByIdSafe(id) {
   return el;
 }
 
-/* Enkel fadeIn-animation for modaler */
+/* Enkel fadeIn-animation for modaler (CSS skal indeholde .fadeIn) */
 function animateModal(modal) {
   modal.classList.add('fadeIn');
 }
@@ -76,7 +82,7 @@ const scenarioFlavorPool = [
   "Ledelsen ønsker hurtige resultater, men CAB er skeptisk…"
 ];
 
-// HTML-referencer
+/* HTML-referencer */
 const securityValueEl    = getElementByIdSafe('security-value');
 const stabilityValueEl   = getElementByIdSafe('stability-value');
 const developmentValueEl = getElementByIdSafe('development-value');
@@ -85,7 +91,6 @@ const moneyLeftEl        = getElementByIdSafe('money-left');
 const tasksCompletedEl   = getElementByIdSafe('tasks-completed');
 const hospitalSatEl      = getElementByIdSafe('hospital-satisfaction');
 
-// Scenario-modal
 const scenarioModal        = getElementByIdSafe('scenario-modal');
 const scenarioTitle        = getElementByIdSafe('scenario-title');
 const scenarioFlavorText   = getElementByIdSafe('scenario-flavor-text');
@@ -100,7 +105,6 @@ const scenarioBText        = getElementByIdSafe('scenario-b-text');
 const scenarioNarrativeDiv = getElementByIdSafe('scenario-narrative');
 const digDeeperLinksDiv    = getElementByIdSafe('dig-deeper-links');
 
-// CAB modaler
 const cabModal     = getElementByIdSafe('cab-modal');
 const cabSummary   = getElementByIdSafe('cab-summary');
 const cabOkBtn     = getElementByIdSafe('cab-ok-btn');
@@ -118,17 +122,17 @@ cabResultOkBtn.addEventListener('click', () => {
   postCABTechnicalCheck();
 });
 
-// Intro
+/* Intro modal */
 getElementByIdSafe('intro-ok-btn').addEventListener('click', () => {
   getElementByIdSafe('intro-modal').style.display = 'none';
   openTutorialModal();
 });
 
-// Tutorial
-const tutorialModal    = getElementByIdSafe('tutorial-modal');
-const tutorialTitleEl  = getElementByIdSafe('tutorial-title');
-const tutorialTextEl   = getElementByIdSafe('tutorial-text');
-const tutorialNextBtn  = getElementByIdSafe('tutorial-next-btn');
+/* Tutorial modal */
+const tutorialModal = getElementByIdSafe('tutorial-modal');
+const tutorialTitleEl = getElementByIdSafe('tutorial-title');
+const tutorialTextEl = getElementByIdSafe('tutorial-text');
+const tutorialNextBtn = getElementByIdSafe('tutorial-next-btn');
 let tutorialSteps = [
   {
     title:"Din rolle som LIMS-IT-ansvarlig",
@@ -136,7 +140,7 @@ let tutorialSteps = [
   },
   {
     title:"CAB & dokumentation",
-    text:"CAB godkender ændringer. Ignorerer du dokumentationen, stiger risikoen. Brug 'Mere Info' for uddybning."
+    text:"CAB godkender ændringer. Ignorerer du dokumentationen, stiger risikoen. Brug 'Mere Info' for uddybende forklaringer."
   },
   {
     title:"Få arkitekthjælp",
@@ -166,7 +170,7 @@ tutorialNextBtn.addEventListener('click', () => {
   showTutorialContent();
 });
 
-/* Mission briefing modal */
+/* Mission briefing modal (oprettes dynamisk) */
 function showMissionBriefing() {
   let missionModal = document.createElement('div');
   missionModal.classList.add('modal');
@@ -185,7 +189,7 @@ function showMissionBriefing() {
   `;
   document.body.appendChild(missionModal);
   animateModal(missionModal);
-  document.getElementById('mission-close-btn').addEventListener('click', () => {
+  getElementByIdSafe('mission-close-btn').addEventListener('click', () => {
     missionModal.remove();
     initGame();
   });
@@ -199,26 +203,26 @@ function triggerRandomEvent() {
 }
 
 /* End-of-game modal */
-const endModal       = getElementByIdSafe('end-modal');
+const endModal = getElementByIdSafe('end-modal');
 const endGameSummary = getElementByIdSafe('end-game-summary');
-const endOkBtn       = getElementByIdSafe('end-ok-btn');
+const endOkBtn = getElementByIdSafe('end-ok-btn');
 endOkBtn.addEventListener('click', () => {
   endModal.style.display = "none";
 });
 
 /* Task summary modal */
 const taskSummaryModal = getElementByIdSafe('task-summary-modal');
-const taskSummaryText  = getElementByIdSafe('task-summary-text');
+const taskSummaryText = getElementByIdSafe('task-summary-text');
 getElementByIdSafe('task-summary-ok-btn').addEventListener('click', () => {
   taskSummaryModal.style.display = "none";
   renderTasks();
 });
 
 /* Task list referencer */
-const tasksList          = getElementByIdSafe('tasks-list');
+const tasksList = getElementByIdSafe('tasks-list');
 const activeTaskHeadline = getElementByIdSafe('active-task-headline');
-const activeTaskDesc     = getElementByIdSafe('active-task-description');
-const stepsList          = getElementByIdSafe('steps-list');
+const activeTaskDesc = getElementByIdSafe('active-task-description');
+const stepsList = getElementByIdSafe('steps-list');
 
 /* Location referencer */
 const locMap = {
@@ -245,10 +249,9 @@ function initGame(){
     ...window.hospitalTasks,
     ...window.infrastrukturTasks
   ];
-  
-  // Debug: Log antal opgaver i backlog
   console.log("Backlog length:", window.backlog.length);
   
+  // Generér 3 opgaver som start
   for(let i = 0; i < 3; i++){
     generateTask();
   }
@@ -278,9 +281,9 @@ function generateTask(){
   }
   
   if (newTask.steps.length < 3) {
-    console.warn(`Opgaven "${newTask.title}" har mindre end 3 trin. Overvej at tilføje flere trin.`);
+    console.warn(`Opgaven "${newTask.title}" har mindre end 3 trin.`);
   } else if(newTask.steps.length > 6) {
-    console.warn(`Opgaven "${newTask.title}" har flere end 6 trin. Kun de første 6 trin anvendes.`);
+    console.warn(`Opgaven "${newTask.title}" har flere end 6 trin. Kun de første 6 anvendes.`);
     newTask.steps = newTask.steps.slice(0, 6);
   }
   
@@ -292,13 +295,13 @@ function generateTask(){
 
 function updateScoreboard(){
   calcHospitalSatisfaction();
-  timeLeftEl.textContent   = gameState.time;
-  moneyLeftEl.textContent  = gameState.money;
+  timeLeftEl.textContent = gameState.time;
+  moneyLeftEl.textContent = gameState.money;
   tasksCompletedEl.textContent = gameState.tasksCompleted;
-  securityValueEl.textContent   = gameState.security;
-  stabilityValueEl.textContent  = gameState.stability;
+  securityValueEl.textContent = gameState.security;
+  stabilityValueEl.textContent = gameState.stability;
   developmentValueEl.textContent = gameState.development;
-  hospitalSatEl.textContent     = Math.round(gameState.hospitalSatisfaction);
+  hospitalSatEl.textContent = Math.round(gameState.hospitalSatisfaction);
 }
 
 function calcHospitalSatisfaction(){
@@ -386,7 +389,7 @@ function getArchitectHelp(taskObj) {
   `;
   document.body.appendChild(architectModal);
   animateModal(architectModal);
-  document.getElementById('architect-close-btn').addEventListener('click', () => {
+  getElementByIdSafe('architect-close-btn').addEventListener('click', () => {
     architectModal.remove();
   });
 }
@@ -512,7 +515,7 @@ function showLearningInfo(infoText) {
   `;
   document.body.appendChild(infoModal);
   animateModal(infoModal);
-  document.getElementById('learning-info-close').addEventListener('click', () => {
+  getElementByIdSafe('learning-info-close').addEventListener('click', () => {
     infoModal.remove();
   });
 }
