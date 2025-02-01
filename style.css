@@ -150,6 +150,10 @@ footer {
 .commit-button:hover {
   background-color: #1c5980;
 }
+.commit-button.small {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+}
 
 footer p {
   margin: 0;
