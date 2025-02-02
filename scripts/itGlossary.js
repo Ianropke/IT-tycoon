@@ -1,33 +1,42 @@
 /************************************************************
- * itGlossary.js – Opdateret med flere cybersikkerhedsord.
+ * itGlossary.js – Udvidet med hospital-relaterede begreber
+ * og eksisterende cybersikkerhedsord.
  ************************************************************/
 
 window.itGlossary = {
-  // Fra tidligere
+
+  // Cybersikkerhed / Fælles IT
   "CAB": "Change Advisory Board: godkender/afviser planlagte IT-ændringer.",
   "Malware": "Ondsindet software (virus, trojan, ransomware osv.).",
   "Antivirus": "Software der beskytter systemer mod kendt malware via scanning.",
-  "Signature": "Et mønster der identificerer en bestemt malware-variant.",
-  "Phishing": "Angreb hvor brugere narres via falske mails/links til at afgive data.",
-  "Ransomware": "Malware der krypterer filer og kræver løsesum.",
-  "Backup": "En kopi af data til at gendanne systemer efter nedbrud eller angreb.",
-  "MFA": "Multi-Factor Authentication: Ekstra loginlag, fx password + kode.",
-  "Patch management": "Proces for løbende at opdatere software og lukke sårbarheder.",
-  "SIEM": "Security Information & Event Management: Samler logs og finder unormal adfærd.",
-  "IDS": "Intrusion Detection System: Overvåger netværk/servere for mistænkelig aktivitet.",
-  "Firewall": "Filtrerer netværkstrafik og blokerer ondsindede forbindelser.",
-  "Compliance": "At overholde lovkrav, licensaftaler og interne politikker (fx GDPR).",
-
-  // Nye begreber
-  "Penetrationstest": "En simuleret hacking-øvelse for at finde sårbarheder i systemer.",
+  "Signature": "Et mønster, der identificerer en specifik malware-variant.",
+  "Phishing": "Falske mails/links der narrer brugere til at afgive data (login, kreditkort).",
+  "Ransomware": "Malware, der krypterer filer og kræver løsesum.",
+  "Backup": "En kopi af data til at gendanne systemer efter nedbrud/angreb.",
+  "MFA": "Multi-Factor Authentication: Ekstra loginfaktor, fx password + engangskode.",
+  "Patch management": "Løbende opdatering af software for at lukke kendte sikkerhedshuller.",
+  "SIEM": "Security Information & Event Management: Samler logs og alarmerer ved unormal adfærd.",
+  "IDS": "Intrusion Detection System: Overvåger netværk for mistænkelig trafik.",
+  "Firewall": "Kontrollerer og filtrerer netværkstrafik, ofte i netværksperimeter.",
+  "Compliance": "Overholdelse af lovgivning (GDPR) og interne/eksterne krav.",
+  "Penetrationstest": "Simuleret hacking for at finde sårbarheder i systemer.",
   "Sårbarhedsscanning": "Automatisk scanning efter kendte svagheder i software og konfiguration.",
-  "Encryption": "Kryptering af data, så det kun kan læses af autoriserede parter.",
-  "Hypervisor": "Softwarelag der muliggør virtualisering af flere maskiner på én fysisk server."
-  // Du kan tilføje flere, hvis du vil
+  "Encryption": "Kryptering af data, så kun autoriserede kan læse dem.",
+
+  // Hospitalrelateret
+  "Patientjournal": "EPJ/EPR: Elektronisk system til at håndtere patientdata, historik, behandling.",
+  "Kliniske data": "Data relateret til patienter: prøvesvar, diagnoser, journaloplysninger.",
+  "LIMS": "Laboratory Information Management System: håndterer laboratorieprøver og testresultater.",
+  "Booking": "System til at planlægge tid/ressourcer, fx patienttider, operationsstuer.",
+  "Triage": "Processen hvor patienter vurderes og prioriteres efter behandlingsbehov.",
+  "Telemedicin": "Fjernmonitorering/behandling af patienter via video, apps eller online-løsninger.",
+  "EPR": "Elektronisk Patientjournal (også kaldet EPJ/EMR), system til at registrere og vise patientdata.",
+  "Integration": "Sammenkobling af systemer så data kan udveksles sikkert og automatisk.",
+  "Medicinordination": "Proces hvor læge ordinerer medicin digitalt, med kontrol mod fejlinteraktioner."
 };
 
 /**
- * Vis kun ordforklaringer for den aktive opgaves "glossaryTerms".
+ * Viser kun ordforklaringer for den aktive opgaves "glossaryTerms".
  */
 function showGlossaryForTask(){
   if(!window.gameState || !window.gameState.activeTask){
