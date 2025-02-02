@@ -32,7 +32,7 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationsbokse (6 stk.) -->
+      <!-- De 6 lokationer -->
       <div class="location hospital" id="hospital">
         <span class="loc-icon" style="font-size:2rem;">🏥</span> Hospital
       </div>
@@ -66,6 +66,8 @@
         </div>
         <!-- Arkitekthjælp-knap -->
         <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
+        <!-- Ekstra: en IT Ordbog-knap (valgfri) -->
+        <button onclick="showGlossary()" class="commit-button" style="margin-top:6px;">IT Ordbog</button>
       </div>
 
       <div id="available-tasks">
@@ -87,10 +89,12 @@
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
       <p style="color:#f1c40f;">
         Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> 
-        på et stort hospital. Du styrer tid og penge, og beslutninger har konsekvenser.
+        på et stort hospital. Du styrer tid og penge, og hver beslutning har konsekvenser.
       </p>
       <p>
-        Du har 100 tidsenheder og 2000 kr. Springer du dokumentation over, stiger risikoen i CAB. God fornøjelse!
+        Du har 100 tidsenheder og 2000 kr. Hver gang du springer dokumentation over, 
+        øger du risiko i CAB. Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling. 
+        Held og lykke!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -114,7 +118,7 @@
       <div id="scenario-description"></div>
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
 
-      <!-- To valg UDEN “Mere info”-knapper -->
+      <!-- To valg, UDEN “Mere info”-knapper under A/B -->
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
@@ -186,10 +190,12 @@
     </div>
   </div>
 
-  <!-- Indlæs dine tasks-filer og main.js -->
+  <!-- Indlæs dine task-filer, glossary og main.js -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
+
+  <script src="scripts/itGlossary.js"></script> <!-- NY ordbogsfil -->
   <script src="scripts/main.js"></script>
 </body>
 </html>
