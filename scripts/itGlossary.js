@@ -1,46 +1,64 @@
 /************************************************************
- * itGlossary.js – Ordbog. Viser kun ord, der er relevant for 
- * den aktive opgave (baseret på fx “glossaryTerms” i opgaven).
+ * itGlossary.js – Fælles ordbog med både IT-begreber
+ * fra dine tasks og SAFe-begreber (Scaled Agile Framework).
  ************************************************************/
 
 window.itGlossary = {
-  "VPN": "VPN (Virtuel Privat Netværk): En krypteret tunnel for sikker kommunikation.",
-  "MFA": "MFA (Multi-Factor Authentication): Kræver flere faktorer, fx password + engangskode.",
-  "IDS": "IDS (Intrusion Detection System): Overvåger netværk for mistænkelig aktivitet.",
-  "Firewall": "Firewall: Kontrollerer ind- og udgående trafik baseret på konfigurerede regler.",
-  "Patch": "Patch: En softwareopdatering, der lukker huller eller retter fejl.",
-  "Malware": "Malware: Ondsindet software (virus, trojan, ransomware osv.)",
-  "Signature": "Signatur (antivirus): Et mønster for kendt malware, bruges til at genkende trusler.",
-  "SIEM": "SIEM (Security Information and Event Management): Samler logs og finder unormal adfærd.",
-  "GDPR": "GDPR: Databeskyttelsesregler i EU for behandling af personfølsomme data.",
-  "Change Advisory Board": "CAB: Gruppe der godkender/afviser ændringer i IT-miljøet.",
-  "Ransomware": "Ransomware: Krypterer data og kræver løsesum for at frigive nøglen.",
-  "VLAN": "VLAN (Virtual LAN): Netværksopdeling for bedre sikkerhed og segmentering.",
-  "Hypervisor": "Hypervisor: Softwarelag, der muliggør virtualisering af flere maskiner på én fysisk server.",
-  // Tilføj flere begreber efter behov ...
+  // *** IT-BEGREBER (fra hospital/cyber/infrastruktur) ***
+
+  "CAB": "CAB (Change Advisory Board): godkender/afviser planlagte ændringer og vurderer risiko og dokumentation.",
+  "CE-mærkning": "CE-mærkning: EU’s sikkerheds- og kvalitetsmærke, fx for medicoteknisk udstyr.",
+  "Cloud-løsninger": "Cloud-løsninger: IT-ressourcer leveres eksternt og skaleres efter behov (f.eks. IaaS, PaaS, SaaS).",
+  "Digital booking": "Brug af elektronisk system til tidsbestilling, mindsker fejl og ventetider i patientbehandling.",
+  "Failover": "En metode, hvor et backup-system automatisk overtager drift ved nedbrud af primær system.",
+  "Firewall": "Software/hardware der filtrerer netværkstrafik for at blokere ondsindede forbindelser.",
+  "IDS": "Intrusion Detection System: Overvåger netværk/hosts for mistænkelig aktivitet og advarer ved angreb.",
+  "LIMS": "Laboratory Information Management System: Håndterer laboratorieprøver, analyser og resultater.",
+  "MFA": "Multi-Factor Authentication: Kræver flere login-faktorer (fx password + engangskode) for øget sikkerhed.",
+  "Patch management": "Proces for løbende at opdatere software for at lukke kendte sårbarheder og fejl.",
+  "Phishing": "Ondsindede mails/hjemmesider, der forsøger at narre brugere til at afgive følsomme oplysninger.",
+  "Ransomware": "Malware der krypterer filer og kræver løsesum for at frigive dem.",
+  "SIEM": "Security Information and Event Management: Samler logs og analyserer for unormal adfærd.",
+  "Telemedicin": "Fjernmonitorering/-behandling af patienter via video, apps eller online‑opfølgning.",
+  "Triage": "Metode til at vurdere og prioritere patienter efter deres behandlingsbehov.",
+  "Virtualisering": "At køre flere virtuelle maskiner på én fysisk server for bedre ressourceudnyttelse.",
+  
+  // *** SAFe-BEGREBER (Scaled Agile Framework) ***
+  
+  "SAFe": "Scaled Agile Framework: En metode til at skalere agile principper i store organisationer.",
+  "ART": "Agile Release Train: Et team-af-teams, der leverer løbende værdi inden for SAFe.",
+  "PI": "Program Increment: En tidsboks (typisk 8-12 uger) i SAFe, hvor ART-planlægning og leverancer koordineres.",
+  "Iteration": "En kort, gentagen tidsboks (sprint) hvor teams bygger og tester inkrementer af værdi.",
+  "WSJF": "Weighted Shortest Job First: Prioriteringsteknik i SAFe, der balancerer nytte, hastighed og risiko.",
+  "Scrum Master": "Rolle, der guider teamet i agile principper, fjerner blokeringer og faciliterer processer.",
+  "Product Owner": "Rolle med ansvar for backlog, prioritering, krav og repræsenterer forretningsbehov.",
+  "Release Train Engineer": "RTE: 'Chef Scrum Master' for hele ART, der koordinerer flere teams og fjerner blokeringer.",
+  "Feature (SAFe)": "En tjeneste eller produktfunktion med værdi for slutbrugeren, leveret inden for et PI.",
+  "Enabler": "En teknisk eller arkitektonisk opgave, der muliggør fremtidige funktioner eller forbedrer teknisk infrastruktur.",
+  "Program Kanban": "Et tavle-/workflow-system i SAFe til at styre features fra idé til implementering.",
+  "Backlog": "Liste over opgaver/funktioner, som prioriteres og planlægges i iterationer/PI’er.",
+  "User Story": "Beskrivelse af funktion set fra en brugers synsvinkel, i formatet 'Som [rolle] vil jeg...'."
 };
 
 /**
- * showGlossaryForTask() – Viser kun de ordforklaringer, 
- * der er relevante for den aktuelle opgave.
+ * showGlossaryForTask() – viser kun ordforklaringer, der
+ * er relevante for den aktuelle opgave. Opgaven skal have
+ * fx `glossaryTerms: ["VPN","Scrum Master",...]`.
  */
 function showGlossaryForTask(){
-  // Tjek om der er en aktiv opgave 
   if(!window.gameState || !window.gameState.activeTask){
-    alert("Ingen aktiv opgave – ingen ordforklaringer lige nu.");
+    alert("Ingen aktiv opgave valgt – ingen ordforklaringer lige nu.");
     return;
   }
-
   let task = window.gameState.activeTask;
-  // Vi antager, at opgaven evt. har "glossaryTerms: ['VPN','MFA',...]" 
-  // i sin definition. 
   if(!task.glossaryTerms || !task.glossaryTerms.length){
-    alert("Denne opgave har ingen specifikke IT-begreber i ordbogen.");
+    alert("Denne opgave har ingen tilknyttede IT-begreber i ordbogen.");
     return;
   }
 
-  let text = "<h2>IT-Begreber for denne opgave</h2><ul>";
+  let text = "<h2>IT Ordbog for denne opgave</h2><ul>";
   let foundAny = false;
+  
   task.glossaryTerms.forEach(term => {
     let definition = window.itGlossary[term];
     if(definition){
@@ -48,13 +66,13 @@ function showGlossaryForTask(){
       text += `<li><strong>${term}:</strong> ${definition}</li>`;
     }
   });
-  text += "</ul>";
 
+  text += "</ul>";
   if(!foundAny){
-    text = "<p>Ingen matchende IT-ord i ordbogen for denne opgave.</p>";
+    text = "<p>Ingen matchende termer fra ordbogen for denne opgave.</p>";
   }
 
-  // Brug showMoreInfo til at vise i en modal (hvis main.js har den)
+  // Hvis main.js har showMoreInfo(...) => vis i modal
   if(typeof showMoreInfo === "function"){
     showMoreInfo(text);
   } else {
