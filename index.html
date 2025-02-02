@@ -14,16 +14,16 @@
         <span class="score-item">Tid tilbage: <span id="time-left">100</span></span>
         <span class="score-item">Penge: <span id="money-left">2000</span></span>
         <span class="score-item">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
-        
+
         <span class="score-item" style="color:#ff4444;">Sikkerhed:</span>
         <span id="security-value">100</span>
-        
+
         <span class="score-item" style="color:#44ff44;">Stabilitet:</span>
         <span id="stability-value">100</span>
-        
+
         <span class="score-item" style="color:#4444ff;">Udvikling:</span>
         <span id="development-value">100</span>
-        
+
         <span class="score-item" style="color:#ffc107;">Hospitalstilfredshed:</span>
         <span id="hospital-satisfaction">100</span>%
       </div>
@@ -32,36 +32,21 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationsbokse (8-10 styk) -->
+      <!-- Lokationsbokse (6 stk.) -->
       <div class="location hospital" id="hospital">
         <span class="loc-icon" style="font-size:2rem;">🏥</span> Hospital
-      </div>
-      <div class="location it-support" id="it-support">
-        <span class="loc-icon" style="font-size:2rem;">💼</span> IT-support
-      </div>
-      <div class="location laboratorium" id="laboratorium">
-        <span class="loc-icon" style="font-size:2rem;">🔬</span> Laboratorium
-      </div>
-      <div class="location operationsstue" id="operationsstue">
-        <span class="loc-icon" style="font-size:2rem;">💉</span> Operationsstue
-      </div>
-      <div class="location administration" id="administration">
-        <span class="loc-icon" style="font-size:2rem;">🏢</span> Administration
       </div>
       <div class="location dokumentation" id="dokumentation">
         <span class="loc-icon" style="font-size:2rem;">📄</span> Dokumentation
       </div>
-      <div class="location it-jura" id="it-jura">
-        <span class="loc-icon" style="font-size:2rem;">⚖️</span> IT Jura
-      </div>
       <div class="location leverandor" id="leverandor">
         <span class="loc-icon" style="font-size:2rem;">📦</span> Leverandør
       </div>
-      <div class="location datacenter" id="datacenter">
-        <span class="loc-icon" style="font-size:2rem;">🖥️</span> Datacenter
-      </div>
       <div class="location infrastruktur" id="infrastruktur">
         <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
+      </div>
+      <div class="location it-jura" id="it-jura">
+        <span class="loc-icon" style="font-size:2rem;">⚖️</span> IT Jura
       </div>
       <div class="location cybersikkerhed" id="cybersikkerhed">
         <span class="loc-icon" style="font-size:2rem;">💻</span> Cybersikkerhed
@@ -79,7 +64,7 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
-        <!-- Arkitekthjælp-knap (bruges til at få gode råd) -->
+        <!-- Arkitekthjælp-knap -->
         <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
       </div>
 
@@ -101,8 +86,8 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
       <p style="color:#f1c40f;">
-        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> på et stort hospital. 
-        Du styrer tid og penge, og beslutninger har konsekvenser.
+        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> 
+        på et stort hospital. Du styrer tid og penge, og beslutninger har konsekvenser.
       </p>
       <p>
         Du har 100 tidsenheder og 2000 kr. Springer du dokumentation over, stiger risikoen i CAB. God fornøjelse!
@@ -129,7 +114,7 @@
       <div id="scenario-description"></div>
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
 
-      <!-- Valgmuligheder uden “Mere info”-knapper -->
+      <!-- To valg UDEN “Mere info”-knapper -->
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
@@ -193,7 +178,7 @@
     </div>
   </div>
 
-  <!-- "Mere Info" Modal (til links i digDeeperLinks) -->
+  <!-- “Mere Info” Modal (til opgavens generelle links) -->
   <div id="more-info-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="more-info-content"></div>
