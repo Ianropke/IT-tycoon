@@ -1,32 +1,27 @@
 window.infrastrukturTasks = [
 
-  // OPGAVE 1 (3 trin)
+  // Opgave 1 (3 trin)
   {
     title: "Opgradering af Netværkskerne",
-    shortDesc: "Det centrale netværksudstyr er forældet, hvilket skaber flaskehalse.",
+    shortDesc: "Det centrale netværksudstyr er forældet og skaber flaskehalse.",
     narrativeIntro: `
-      "IT-afdelingen konstaterer, at det nuværende core switch-udstyr ikke kan håndtere
-       den stigende trafik, hvilket resulterer i forsinkelser og nedetid."
+      "IT-afdelingen konstaterer, at netværkskernen er overbelastet, 
+       hvilket fører til langsom trafik for hele hospitalet."
     `,
-    digDeeperLinks: [
-      { label: "Netværkskerne Opgradering", text: "En solid netværkskerne er afgørende for høj hastighed og stabil drift." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler at fokusere på trin 2 for at få det rigtige udstyr
-      og undgå flaskehalse i kerneinfrastrukturen.
-    `,
+    glossaryTerms: ["Netværkskerne", "WAN", "CAB", "Load Balancer"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Analyser nuværende trafikmønstre og kapacitetsbehov.",
+        stepDescription: "Analyser netværksbehov og kapacitet ved spidsbelastning.",
         choiceA: {
-          label: "Detaljeret trafikanalyse",
+          label: "Detaljeret kapacitetsanalyse",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
+          label: "Overfladisk scanning",
           text: "+1 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
@@ -34,15 +29,15 @@ window.infrastrukturTasks = [
       },
       {
         location: "leverandor",
-        stepDescription: "Indhent og vælg nyt core switch-udstyr.",
+        stepDescription: "Indhent tilbud på ny netværkskerne med høj kapacitet.",
         choiceA: {
-          label: "High-end switches",
-          text: "+3 tid, -150 kr, +3 security",
-          recommended: true,  // Arkitekten fremhæver dette valg
-          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 3 } }
+          label: "High-end netværksudstyr",
+          text: "+3 tid, -120 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Billige switches",
+          label: "Billig opgradering",
           text: "+2 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 2, riskyPlus: 0.05 }
@@ -50,7 +45,7 @@ window.infrastrukturTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater netværksplan og dokumentation.",
+        stepDescription: "Opdater netværksplan og beskrivelser.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
@@ -67,32 +62,28 @@ window.infrastrukturTasks = [
     ]
   },
 
-  // OPGAVE 2 (4 trin)
+  // Opgave 2 (4 trin)
   {
-    title: "Udrulning af Virtualiseret Servermiljø",
-    shortDesc: "Fysiske servere er dyre i drift og pladskrævende. Virtualisering ønskes.",
+    title: "Virtualiseret Servermiljø",
+    shortDesc: "Fysiske servere fylder og er dyre; man ønsker virtualisering.",
     narrativeIntro: `
-      "En analyse viser at serverparken er for stor og ineffektiv. Virtualisering
-       kan frigøre ressourcer og lette vedligeholdelse."
+      "Hospitalets serverrum er fyldt, og strømforbruget er højt. 
+       Virtualisering kan frigøre ressourcer og lette vedligeholdelse."
     `,
-    digDeeperLinks: [
-      { label: "Servervirtualisering", text: "Virtualisering kan reducere hardwareomkostninger og forbedre skalérbarheden." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler trin 4, hvor dokumentationen er afgørende for en sikker og stabil drift.
-    `,
+    glossaryTerms: ["Virtualisering", "High Availability", "CAB"],
+
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Evaluer hvilke eksisterende servere egner sig til virtualisering.",
+        stepDescription: "Evaluer hvilke servere egner sig bedst til virtualisering.",
         choiceA: {
-          label: "Detaljeret kapacitetstest",
+          label: "Grundig kapacitetstest",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtig scanning",
+          label: "Overfladisk scanning",
           text: "+1 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
@@ -100,7 +91,7 @@ window.infrastrukturTasks = [
       },
       {
         location: "cybersikkerhed",
-        stepDescription: "Indfør sikkerhedslag i hypervisor-laget.",
+        stepDescription: "Beskyt hypervisor-laget mod angreb og isolér VM'er.",
         choiceA: {
           label: "Avanceret sikkerhed",
           text: "+3 tid, -80 kr, +3 security",
@@ -108,7 +99,7 @@ window.infrastrukturTasks = [
           applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Basal opsætning",
+          label: "Minimal sikring",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -118,13 +109,13 @@ window.infrastrukturTasks = [
         location: "it-jura",
         stepDescription: "Tjek licensaftaler og compliance ved brug af virtualisering.",
         choiceA: {
-          label: "Grundigt licens- og compliance-check",
+          label: "Grundigt licenscheck",
           text: "+2 tid, +2 security",
-          recommended: false,
+          recommended: true,
           applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Spring detaljer over",
+          label: "Ignorer licenskrav",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -132,11 +123,11 @@ window.infrastrukturTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér hele virtualiseringsprocessen og nye procedurer.",
+        stepDescription: "Beskriv driftsprocedurer for det nye virtualiserede miljø.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
-          recommended: true,  // Arkitekten pointerer dette som kritisk
+          recommended: false,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
@@ -149,26 +140,22 @@ window.infrastrukturTasks = [
     ]
   },
 
-  // OPGAVE 3 (5 trin)
+  // Opgave 3 (5 trin)
   {
-    title: "Styrkelse af netværkssikkerhed ved perimeter",
-    shortDesc: "Firewalls og perimeter-sikkerhed er forældet og kan udnyttes af angribere.",
+    title: "Implementering af Cloud-integration",
+    shortDesc: "Nogle systemer skal køre i skyen for fleksibel skalering.",
     narrativeIntro: `
-      "Sårbarheder i perimeter-forsvaret øger risikoen for hacking og nedbrud. 
-       IT-afdelingen vil opgradere firewall og IDS-løsning."
+      "Hospitalet vil flytte visse ikke-kritiske systemer til Cloud, 
+       men drift og sikkerhed skal sikres."
     `,
-    digDeeperLinks: [
-      { label: "Perimeter Sikkerhed", text: "Et robust perimeter forsinker eller stopper eksterne trusler effektivt." }
-    ],
-    architectAdvice: `
-      Arkitekten nævner trin 2 som altafgørende – valget af leverandør for firewall-løsningen er kritisk.
-    `,
+    glossaryTerms: ["Cloud-løsninger", "WAN", "Load Balancer", "CAB"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Gennemgå nuværende opsætning og find hullerne i perimeter.",
+        stepDescription: "Identificér hvilke systemer der egner sig til cloud-drift.",
         choiceA: {
-          label: "Grundig gaps-analyse",
+          label: "Omfattende behovsanalyse",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
@@ -181,130 +168,32 @@ window.infrastrukturTasks = [
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Vælg ny firewall-løsning og IDS/IPS med eksterne parter.",
+        location: "infrastruktur",
+        stepDescription: "Opsæt hybrid-cloud løsning med sikre forbindelser (VPN/WAN).",
         choiceA: {
-          label: "High-end firewall + IDS",
+          label: "Omfattende opsætning",
           text: "+3 tid, -120 kr, +3 security",
           recommended: true,
           applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Standard firewall",
+          label: "Minimal opsætning",
           text: "+2 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Implementer og konfigurer ny perimeter-løsning.",
-        choiceA: {
-          label: "Omfattende konfiguration",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Basiskonfiguration",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
         location: "cybersikkerhed",
-        stepDescription: "Overvåg og test perimeter med penetrationstests.",
+        stepDescription: "Beskyt data, der går til/fra Cloud (kryptering, access control).",
         choiceA: {
-          label: "Grundige tests",
+          label: "Avanceret Cloud-sikkerhed",
           text: "+3 tid, +3 security",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Ingen test",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater netværksplan og security-dokumentation.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen opdatering",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 4 (6 trin)
-  {
-    title: "Robustgørelse af Remote-arbejdspladser",
-    shortDesc: "Flere medarbejdere arbejder hjemmefra; den eksterne adgang er ustabil.",
-    narrativeIntro: `
-      "Hjemmearbejde bliver mere udbredt, men VPN-forbindelsen er ustabil og mangler opdateringer, 
-       hvilket hæmmer produktiviteten og skaber sikkerhedsrisici."
-    `,
-    digDeeperLinks: [
-      { label: "VPN & Remote-løsninger", text: "En robust, sikker forbindelse forbedrer medarbejdernes mulighed for hjemmearbejde." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver, at trin 3 (cybersikkerhed) er kritisk for at beskytte data eksternt.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Overblik over, hvor mange medarbejdere har brug for fjernadgang.",
-        choiceA: {
-          label: "Detaljeret oversigt",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Grov optælling",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opgrader VPN-server og netværksudstyr til stabil performance.",
-        choiceA: {
-          label: "High-performance VPN",
-          text: "+3 tid, -100 kr, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Billig VPN-løsning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Sørg for kryptering og to-faktoradgang for remote-brugere.",
-        choiceA: {
-          label: "Avanceret sikring",
-          text: "+3 tid, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basal adgang",
+          label: "Standard-sikkerhed",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -312,359 +201,11 @@ window.infrastrukturTasks = [
       },
       {
         location: "it-jura",
-        stepDescription: "Tjek compliance ved dataadgang uden for hospitalets net.",
+        stepDescription: "Tjek databehandleraftaler og lovkrav ved cloud-hosting.",
         choiceA: {
-          label: "Grundig compliance-check",
+          label: "Fuld compliance-gennemgang",
           text: "+2 tid, +2 security",
           recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ignorér detaljer",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Indhent ekstra licenser eller supportaftaler for VPN-løsningen.",
-        choiceA: {
-          label: "Fuld support",
-          text: "+2 tid, -50 kr, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ingen support",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater retningslinjer for hjemmearbejde og remoteadgang.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 5 (3 trin)
-  {
-    title: "Energieffektivisering af serverrum",
-    shortDesc: "Højt energiforbrug i serverrummet øger omkostninger og temperaturproblemer.",
-    narrativeIntro: `
-      "Strømforbruget er stigende, og kølingen kan ikke følge med, hvilket
-       fører til hyppige overophedningsalarmer i serverrummet."
-    `,
-    digDeeperLinks: [
-      { label: "Green IT-løsninger", text: "Optimeret køling og energistyring reducerer omkostninger og giver stabil drift." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 2 for at få en langsigtet infrastruktur, der er
-      skalerbar og energibesparende.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Mål og evaluer det nuværende energiforbrug i serverrummet.",
-        choiceA: {
-          label: "Detaljeret energianalyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig scanning",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opgrader kølesystemet og strømstyring.",
-        choiceA: {
-          label: "Energieffektiv køling",
-          text: "+3 tid, -80 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Standard-løsning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér nye procedurer for energistyring og vedligehold.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 6 (4 trin)
-  {
-    title: "Automatisering af netværkskonfiguration",
-    shortDesc: "Hyppige fejl sker ved manuelle ændringer i netværkskonfigurationen.",
-    narrativeIntro: `
-      "Netværksteamet bruger meget tid på at konfigurere switche og routere manuelt, 
-       og fejl sker ofte ved tastebommerter."
-    `,
-    digDeeperLinks: [
-      { label: "Network Automation", text: "Ved at automatisere netværksændringer mindsker man risikoen for fejl." }
-    ],
-    architectAdvice: `
-      Arkitekten peger på trin 3 (it-jura) for at sikre, at kritisk netværksinfrastruktur
-      overholder relevant lovgivning vedr. logging og ansvar.
-    `,
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Kortlæg nuværende manuelle konfigurationsprocesser.",
-        choiceA: {
-          label: "Detaljeret procesanalyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk kig",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Implementer rollebaserede adgange og logs for konfig-ændringer.",
-        choiceA: {
-          label: "Avanceret logging",
-          text: "+3 tid, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Minimal logning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Sikre lovkrav vedr. logging og ansvarlighed i netværksændringer.",
-        choiceA: {
-          label: "Grundig compliance",
-          text: "+2 tid, +2 security",
-          recommended: true,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ignorér detaljer",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Beskriv den nye automatiserede proces og uddan netværksteamet.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 7 (5 trin)
-  {
-    title: "Migration fra kabelført net til delvist trådløst net",
-    shortDesc: "Hospitalets netværk er kun kablet, men man ønsker trådløst i udvalgte områder.",
-    narrativeIntro: `
-      "Personale vil kunne tilgå systemer trådløst. Men at udvide netværket med Wi-Fi 
-       kræver planlægning, sikkerhed og ny infrastruktur."
-    `,
-    digDeeperLinks: [
-      { label: "Wi-Fi i hospitaler", text: "Trådløst net giver fleksibilitet, men øger også kravene til sikkerhed." }
-    ],
-    architectAdvice: `
-      Arkitekten påpeger, at trin 2 (cybersikkerhed) er kritisk for at sikre, at trådløs 
-      trafik ikke kompromitterer systemet.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Undersøg, hvor Wi-Fi skal dække, og hvilke områder der kan forblive kablet.",
-        choiceA: {
-          label: "Detaljeret kortlægning",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig vurdering",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Opsæt WPA3-kryptering, adskilte SSID'er og netværkssegmentering.",
-        choiceA: {
-          label: "Avanceret Wi-Fi sikkerhed",
-          text: "+3 tid, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basal kryptering",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Køb trådløse access points og vedligeholdelsesaftale.",
-        choiceA: {
-          label: "Kvalitets-AP og service",
-          text: "+2 tid, -80 kr, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, moneyCost: 80, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Billige APs uden service",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Integrer trådløst net i den eksisterende netværksinfrastruktur.",
-        choiceA: {
-          label: "Fuldt integreret",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Løsrevet opsætning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Beskriv nyt Wi-Fi-setup og uddan personalet i brugen.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 8 (6 trin)
-  {
-    title: "Opdatering af failover-løsning for kritiske systemer",
-    shortDesc: "Hospitalet har en gammel failover, som sjældent testes. Mulig høj risiko ved nedbrud.",
-    narrativeIntro: `
-      "I et kritisk nedbrud skal systemerne failover til backup. Men nuværende løsning er ikke testet 
-       og kan være ustabil."
-    `,
-    digDeeperLinks: [
-      { label: "Failover-løsninger", text: "Regelmæssig test og opdatering af failover minimerer nedetid ved fejl." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler, at trin 3 (it-jura) er vigtigt, fordi lovgivningen kræver
-      redundans for kritiske patientdata.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Identificér hvilke systemer skal have failover, og hvor de er mest sårbare.",
-        choiceA: {
-          label: "Omfattende sårbarhedsanalyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk tjek",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opgrader failover-hardware, så backup-servere kan overtage driften.",
-        choiceA: {
-          label: "Avanceret failover",
-          text: "+4 tid, -150 kr, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 4, moneyCost: 150, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basis-hardware",
-          text: "+2 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Sørg for at redundans opfylder lovpligtige krav for kritiske systemer.",
-        choiceA: {
-          label: "Grundigt compliance-tjek",
-          text: "+2 tid, +2 security",
-          recommended: true,  // Arkitekten pointerer dette
           applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
@@ -675,10 +216,72 @@ window.infrastrukturTasks = [
         }
       },
       {
-        location: "cybersikkerhed",
-        stepDescription: "Test failover-sikkerhed mod hackerangreb under skift.",
+        location: "dokumentation",
+        stepDescription: "Dokumentér hybrid-løsning, ansvarsfordeling og procedurer.",
         choiceA: {
-          label: "Penetrationstest i failover-scenarie",
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 4 (6 trin)
+  {
+    title: "Failover-løsning for kritiske systemer",
+    shortDesc: "Nuværende failover er ikke testet og kan være ustabil ved nedbrud.",
+    narrativeIntro: `
+      "Ved et kritisk nedbrud skal systemet failover til backup, men 
+       nuværende setup er sjældent testet og muligvis ude af sync."
+    `,
+    glossaryTerms: ["Failover", "High Availability", "CAB", "WAN"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Identificér kritiske systemer og hvor de er mest sårbare ved nedbrud.",
+        choiceA: {
+          label: "Omfattende sårbarhedsanalyse",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig scanning",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Opgradér hardware og software, så backupserverne kan overtage drift.",
+        choiceA: {
+          label: "Avanceret failover",
+          text: "+4 tid, -120 kr, +3 security",
+          recommended: false,
+          applyEffect: { timeCost: 4, moneyCost: 120, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Enkel failover",
+          text: "+2 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Test sikkerheden i failover-situationen, fx om hackere kan udnytte skift.",
+        choiceA: {
+          label: "Penetrationstest i failover",
           text: "+3 tid, +2 security",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { security: 2 } }
@@ -691,16 +294,32 @@ window.infrastrukturTasks = [
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Indhent aftale om hurtig udskiftning af defekt hardware.",
+        location: "it-jura",
+        stepDescription: "Sørg for at redundans opfylder krav for kritiske patientdata.",
         choiceA: {
-          label: "Service on-site 24/7",
+          label: "Grundigt compliance-check",
+          text: "+2 tid, +2 security",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ignorer lovkrav",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "leverandor",
+        stepDescription: "Forhandl on-site support til hurtig udskiftning af defekt hardware.",
+        choiceA: {
+          label: "24/7 serviceaftale",
           text: "+2 tid, -50 kr, +2 security",
           recommended: false,
           applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Ingen aftale",
+          label: "Ingen udvidet service",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -708,7 +327,7 @@ window.infrastrukturTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater failover-plan, testprocedurer og vedligeholdelsesplan.",
+        stepDescription: "Opdater failover-plan, testprocedurer og vedligeholdelsesrutiner.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
@@ -725,32 +344,28 @@ window.infrastrukturTasks = [
     ]
   },
 
-  // OPGAVE 9 (3 trin)
+  // Opgave 5 (3 trin)
   {
-    title: "Øg båndbredden til hospitalets cloud-tjenester",
-    shortDesc: "Cloud-løsninger bliver flaskehals pga. lav WAN-kapacitet.",
+    title: "Forbedring af WAN-båndbredde",
+    shortDesc: "Flaskehalse mod cloud-services og eksterne systemer pga. lav WAN-kapacitet.",
     narrativeIntro: `
-      "Flere systemer er cloud-baserede, men hospitalets internetforbindelse har ikke
-       kapacitet til at håndtere den stigende trafik, hvilket giver langsom drift."
+      "Hospitalets forbindelse mod internettet er ikke dimensioneret til 
+       stigende brug af cloud og videomøder."
     `,
-    digDeeperLinks: [
-      { label: "Cloud-Båndbredde", text: "Tilstrækkelig kapacitet er kritisk for at sikre flydende brug af cloud-tjenester." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 2, hvor leverandøren skal levere en ordentlig WAN-forbindelse.
-    `,
+    glossaryTerms: ["WAN","CAB","Cloud-løsninger"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg forbruget af båndbredde og identificér peakperioder.",
+        stepDescription: "Overvåg båndbreddeforbrug og identificér peak-perioder.",
         choiceA: {
-          label: "Detaljeret netanalyse",
+          label: "Grundig netværksanalyse",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtig vurdering",
+          label: "Hurtig stikprøve",
           text: "+1 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
@@ -761,12 +376,12 @@ window.infrastrukturTasks = [
         stepDescription: "Opgradér WAN-forbindelsen med højere båndbredde.",
         choiceA: {
           label: "Større WAN-aftale",
-          text: "+2 tid, -100 kr, +2 security",
+          text: "+2 tid, -80 kr, +2 security",
           recommended: true,
-          applyEffect: { timeCost: 2, moneyCost: 100, statChange: { security: 2 } }
+          applyEffect: { timeCost: 2, moneyCost: 80, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Fortsæt med nuværende",
+          label: "Fortsæt med nuværende linje",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -791,49 +406,28 @@ window.infrastrukturTasks = [
     ]
   },
 
-  // OPGAVE 10 (4 trin)
+  // Opgave 6 (4 trin)
   {
-    title: "Central logning af infrastrukturhændelser",
-    shortDesc: "Manglende logning gør det svært at fejlfinde og spore angreb på netværket.",
+    title: "Implementering af Load Balancer i DMZ",
+    shortDesc: "Ustabil drift for eksterne services pga. ujævn belastning.",
     narrativeIntro: `
-      "Supporten bruger lang tid på at lede efter logs spredt i forskellige enheder. 
-       En central logserver kan gøre fejlsøgning og sikkerhedsanalyse nemmere."
+      "Hospitalet driver flere eksterne webservices for samarbejdspartnere, men 
+       en enkelt server bliver let overbelastet."
     `,
-    digDeeperLinks: [
-      { label: "Central Logning", text: "Logkonsolidering giver overblik og muliggør hurtig fejlfinding." }
-    ],
-    architectAdvice: `
-      Arkitekten understreger at trin 3 (cybersikkerhed) er afgørende for at beskytte 
-      logs, så de ikke manipuleres.
-    `,
+    glossaryTerms: ["Load Balancer","High Availability","CAB","WAN"],
+
     steps: [
       {
-        location: "hospital",
-        stepDescription: "Undersøg behov for logning og identificér kritiske enheder.",
-        choiceA: {
-          label: "Grundig kortlægning",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk scanning",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
         location: "infrastruktur",
-        stepDescription: "Implementer central logserver og opsæt logindsamling.",
+        stepDescription: "Opsæt en load balancer i DMZ til at fordele trafikken.",
         choiceA: {
-          label: "Omfattende opsætning",
+          label: "Avanceret load balancing-løsning",
           text: "+3 tid, -80 kr, +3 security",
-          recommended: false,
+          recommended: true,
           applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Minimal opsætning",
+          label: "Simpel round-robin proxy",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -841,15 +435,31 @@ window.infrastrukturTasks = [
       },
       {
         location: "cybersikkerhed",
-        stepDescription: "Beskyt logserver mod manipulation og uautoriseret adgang.",
+        stepDescription: "Beskyttelse mod DDoS og scanningstrusler via load balancer.",
         choiceA: {
-          label: "Avanceret sikring",
-          text: "+3 tid, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, statChange: { security: 3 } }
+          label: "Avanceret DDoS-beskyttelse",
+          text: "+3 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Ingen særlige tiltag",
+          label: "Ingen speciel beskyttelse",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Tjek licensaftaler og regler for drift af eksterne services.",
+        choiceA: {
+          label: "Licens- og compliance-check",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ignorer formaliteter",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -857,9 +467,321 @@ window.infrastrukturTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér logpolitikker og retningslinjer for analyser.",
+        stepDescription: "Opdater netværksdiagram og driftsvejledning for load balancing.",
         choiceA: {
-          label: "Grundig dokumentation",
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 7 (5 trin)
+  {
+    title: "Sammenlægning af Datacentre",
+    shortDesc: "Flere spredte datacentre skaber kompleks drift, vil centralisere.",
+    narrativeIntro: `
+      "Hospitalet har to datacentre i forskellige bygninger, 
+       men vil samle ressourcer for enklere administration."
+    `,
+    glossaryTerms: ["High Availability","WAN","Virtualisering","CAB"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Afklar krav til oppetid, hastighed og georedundans.",
+        choiceA: {
+          label: "Detaljeret kravspecifikation",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig scanning",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "leverandor",
+        stepDescription: "Indhent tilbud på fælles server- og storage-løsning.",
+        choiceA: {
+          label: "Avanceret SAN/NAS-løsning",
+          text: "+3 tid, -100 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Behold spredte systemer",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Flyt servere til det centrale datacenter (evt. virtualization).",
+        choiceA: {
+          label: "Virtualiser + centralisér",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Manuel flytning + ingen virt.",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Sørg for fysisk og logisk sikkerhed i det nye centrale datacenter.",
+        choiceA: {
+          label: "Avanceret adgangskontrol + netværkssegmentering",
+          text: "+3 tid, +3 security",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Ingen ekstra sikring",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Opdater drift- og beredskabsplaner efter centraliseringen.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 8 (3 trin)
+  {
+    title: "Opsætning af HPC cluster til billedanalyse",
+    shortDesc: "Højtydende computekraft til MRI/CT-analyser og AI-modeller.",
+    narrativeIntro: `
+      "For at behandle store mængder billeddata vil hospitalet sætte 
+       et HPC cluster op, men det kræver god infrastruktur og sikkerhed."
+    `,
+    glossaryTerms: ["High Availability","WAN","Integration"],
+
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Indkøb hardware til HPC (GPU'er, high-speed netværk).",
+        choiceA: {
+          label: "Avanceret HPC-løsning",
+          text: "+3 tid, -150 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Basal servercluster",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Beskyt HPC-moduler og sikr, at data er krypteret ved overførsel.",
+        choiceA: {
+          label: "Avanceret HPC-sikkerhed",
+          text: "+3 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Basis HPC-sikkerhed",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Nedskriv HPC-opsætningen og rutiner for vedligeholdelse.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 9 (4 trin)
+  {
+    title: "Load Balancing af Intern Applikation",
+    shortDesc: "Intern applikation til personalet er ofte overbelastet pga. spidsbelastning.",
+    narrativeIntro: `
+      "Personalet klager over langsom performance i en intern portal ved vagtskiftet. 
+       IT vil indføre load balancing mellem flere app-servere."
+    `,
+    glossaryTerms: ["Load Balancer","Integration","CAB"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Analyser trafikmønstre ved vagtskifte, hvornår peak opstår.",
+        choiceA: {
+          label: "Detaljeret trafficanalyse",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Overfladisk kig i logs",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Sikre at load balanceren ikke blot åbner en ny angrebsflade.",
+        choiceA: {
+          label: "Avanceret LB-sikkerhed + DDoS-beskyttelse",
+          text: "+3 tid, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Ingen ekstra sikring",
+          text: "+2 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Opsæt flere app-servere bag load balanceren.",
+        choiceA: {
+          label: "Horizontal skalering",
+          text: "+2 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Fortsæt single server",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Beskriv nye driftsprocedurer og failover-strategi.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 10 (4 trin)
+  {
+    title: "Opsætning af HPC til store datasæt i Cloud",
+    shortDesc: "Vil køre HPC i Cloud for fleksibel skalering.",
+    narrativeIntro: `
+      "Hospitalet overvejer at køre HPC i skyen for at håndtere spidsbelastninger 
+       uden at investere i dyrt lokalt hardware."
+    `,
+    glossaryTerms: ["Cloud-løsninger","HPC","High Availability","WAN"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Vurder hvilke HPC-opgaver egner sig til cloud (datamængder, latency).",
+        choiceA: {
+          label: "Detaljeret HPC-analyse",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtigt overblik",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Beskyt data, der uploades/downloades fra HPC i skyen.",
+        choiceA: {
+          label: "End-to-end kryptering + IAM",
+          text: "+3 tid, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Standard TLS",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Tjek compliance ved håndtering af store datasæt (fx scanningsbilleder).",
+        choiceA: {
+          label: "Fuld lovtjek",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Overfladisk check",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér HPC-løsning i skyen, ansvar og driftsprocedurer.",
+        choiceA: {
+          label: "Omfattende dokumentation",
           text: "+2 tid",
           recommended: false,
           applyEffect: { timeCost: 2 }
