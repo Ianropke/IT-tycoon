@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT-Tycoon</title>
   <link rel="stylesheet" href="style.css">
@@ -9,32 +9,70 @@
 <body>
   <header>
     <h1>IT-Tycoon</h1>
-    <!-- Scoreboard -->
     <div id="scoreboard">
       <div id="scores">
-        <span class="score-item">Tid: <span id="time-left">100</span></span>
-        <span class="score-item">Penge: <span id="money-left">2000</span></span>
-        <span class="score-item">Fuldførte opgaver: <span id="tasks-completed">0</span></span>
+        <span class="score-item">Tid: 
+          <span id="time-left">100</span>
+        </span>
+        <span class="score-item">Penge: 
+          <span id="money-left">2000</span>
+        </span>
+        <span class="score-item">Fuldførte opgaver: 
+          <span id="tasks-completed">0</span>
+        </span>
 
-        <span class="score-item" style="color:#ff4444;">Sikkerhed: <span id="security-value">100</span></span>
-        <span class="score-item" style="color:#44ff44;">Stabilitet: <span id="stability-value">100</span></span>
-        <span class="score-item" style="color:#4444ff;">Udvikling: <span id="development-value">100</span></span>
-        <span class="score-item" style="color:#ffc107;">Hospitalstilf.: <span id="hospital-satisfaction">100</span>%</span>
+        <span class="score-item" style="color:#ff4444;">
+          Sikkerhed: <span id="security-value">100</span>
+        </span>
+        <span class="score-item" style="color:#44ff44;">
+          Stabilitet: <span id="stability-value">100</span>
+        </span>
+        <span class="score-item" style="color:#4444ff;">
+          Udvikling: <span id="development-value">100</span>
+        </span>
+        <span class="score-item" style="color:#ffc107;">
+          Hospitalstilf.: <span id="hospital-satisfaction">100</span>%
+        </span>
       </div>
     </div>
   </header>
 
   <div id="main-container">
+    <!-- Venstre side: 6 lokationer med tooltips -->
     <div id="game-area">
-      <!-- Lokationer (6) -->
-      <div class="location hospital" id="hospital">🏥 Hospital</div>
-      <div class="location dokumentation" id="dokumentation">📄 Dokumentation</div>
-      <div class="location leverandor" id="leverandor">📦 Leverandør</div>
-      <div class="location infrastruktur" id="infrastruktur">🔧 Infrastruktur</div>
-      <div class="location it-jura" id="it-jura">⚖️ IT Jura</div>
-      <div class="location cybersikkerhed" id="cybersikkerhed">💻 Cybersikkerhed</div>
+      <div class="location hospital hoverTooltip" 
+           id="hospital"
+           data-tooltip="Hospital: Kliniske opgaver og patientflows.">
+        <span class="loc-icon">🏥</span> Hospital
+      </div>
+      <div class="location dokumentation hoverTooltip"
+           id="dokumentation"
+           data-tooltip="Dokumentation: Change-beskrivelser, krav og compliance.">
+        <span class="loc-icon">📄</span> Dokumentation
+      </div>
+      <div class="location leverandor hoverTooltip"
+           id="leverandor"
+           data-tooltip="Leverandør: Samarbejde om eksterne IT-systemer og serviceaftaler.">
+        <span class="loc-icon">📦</span> Leverandør
+      </div>
+      <div class="location infrastruktur hoverTooltip"
+           id="infrastruktur"
+           data-tooltip="Infrastruktur: Netværk, servere, cloud, HPC, mm.">
+        <span class="loc-icon">🔧</span> Infrastruktur
+      </div>
+      <div class="location it-jura hoverTooltip"
+           id="it-jura"
+           data-tooltip="IT Jura: GDPR, licens, compliance og lovkrav.">
+        <span class="loc-icon">⚖️</span> IT Jura
+      </div>
+      <div class="location cybersikkerhed hoverTooltip"
+           id="cybersikkerhed"
+           data-tooltip="Cybersikkerhed: Firewall, antivirus, SIEM, patch, mm.">
+        <span class="loc-icon">💻</span> Cybersikkerhed
+      </div>
     </div>
 
+    <!-- Højre side: Aktiv opgave + Mulige opgaver -->
     <div id="task-side">
       <div id="active-task">
         <h2>Aktiv opgave</h2>
@@ -46,7 +84,7 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
-        <!-- Knapper -->
+        <!-- Knapper: Arkitekthjælp og IT Ordbog -->
         <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
         <button onclick="showGlossaryForTask()" class="commit-button">IT Ordbog (opgave)</button>
       </div>
@@ -61,20 +99,21 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 IT Tycoon ApS</p>
+    <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
   </footer>
 
-  <!-- Modaler -->
+  <!-- ========== MODALER ========== -->
+
   <!-- Intro Modal -->
-  <div id="intro-modal" class="modal">
+  <div id="intro-modal" class="modal" style="display:flex;">
     <div class="modal-content">
       <h2>Velkommen til IT-Tycoon</h2>
       <p>
         Du har 100 tidsenheder og 2000 kr. 
-        Din mission: nå sikkerhed >= 110 og udvikling >= 115. 
+        Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling. 
         Undgå for meget risiko i CAB ved at springe dokumentation over.
       </p>
-      <button id="intro-ok-btn" class="commit-button">Kom i gang!</button>
+      <button id="intro-ok-btn" class="commit-button" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
@@ -83,11 +122,20 @@
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
       <p id="tutorial-text"></p>
-      <button id="tutorial-next-btn" class="commit-button">Næste</button>
+      <button id="tutorial-next-btn" class="commit-button" style="background-color:#2980b9;">Næste</button>
     </div>
   </div>
 
-  <!-- Scenario Modal -->
+  <!-- Scenario-intro modal (valgfri til narrativeIntro som “rigtig” pop-up) -->
+  <div id="scenario-intro-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2 id="scenario-intro-title"></h2>
+      <p id="scenario-intro-text"></p>
+      <button id="scenario-intro-close-btn" class="commit-button">OK</button>
+    </div>
+  </div>
+
+  <!-- Scenario Modal (trinvalg) -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
@@ -125,11 +173,11 @@
     <div class="modal-content">
       <h2>Tiden er gået!</h2>
       <p id="end-game-summary"></p>
-      <button id="end-ok-btn" class="commit-button">Luk</button>
+      <button id="end-ok-btn" class="commit-button" style="background-color:#e74c3c;">Luk</button>
     </div>
   </div>
 
-  <!-- CAB Modal -->
+  <!-- CAB-gennemgang Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Endelig CAB-gennemgang</h2>
@@ -151,7 +199,7 @@
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="task-summary-text"></div>
-      <button id="task-summary-ok-btn" class="commit-button">OK</button>
+      <button id="task-summary-ok-btn" class="commit-button" style="background-color:#27ae60;">OK</button>
     </div>
   </div>
 
@@ -163,19 +211,19 @@
     </div>
   </div>
 
-  <!-- Popup container -->
+  <!-- Popup container + floating text -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
-  <!-- Indlæs tasks -->
+  <!-- Indlæs tasks-filer -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
 
-  <!-- Indlæs ordbog EFTER tasks men FØR main.js -->
+  <!-- itGlossary -->
   <script src="scripts/itGlossary.js"></script>
 
-  <!-- main.js -->
+  <!-- main.js med spillets logik -->
   <script src="scripts/main.js"></script>
 </body>
 </html>
