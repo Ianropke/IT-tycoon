@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Tycoon: LIMS Forvaltning - Læringsudgave</title>
+  <title>IT-Tycoon</title> <!-- 4) Spillets titel -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>IT Tycoon: LIMS Forvaltning (Læringsudgave)</h1>
+    <h1>IT-Tycoon</h1>
     <div id="scoreboard">
       <div id="scores">
         <span class="score-item">Tid tilbage: <span id="time-left">100</span></span>
@@ -32,23 +32,35 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- De 6 lokationer -->
-      <div class="location hospital" id="hospital">
+      <!-- 5) Lokationsbokse med tooltips (hoverTooltip + data-tooltip) -->
+      <div class="location hospital hoverTooltip" 
+           id="hospital" 
+           data-tooltip="Hospital: Her håndteres primære kliniske opgaver og patientrelaterede flows.">
         <span class="loc-icon" style="font-size:2rem;">🏥</span> Hospital
       </div>
-      <div class="location dokumentation" id="dokumentation">
+      <div class="location dokumentation hoverTooltip" 
+           id="dokumentation" 
+           data-tooltip="Dokumentation: Her formaliseres ændringer, procedurer og krav.">
         <span class="loc-icon" style="font-size:2rem;">📄</span> Dokumentation
       </div>
-      <div class="location leverandor" id="leverandor">
+      <div class="location leverandor hoverTooltip" 
+           id="leverandor" 
+           data-tooltip="Leverandør: Indkøb, aftaler og eksterne samarbejder om IT-løsninger.">
         <span class="loc-icon" style="font-size:2rem;">📦</span> Leverandør
       </div>
-      <div class="location infrastruktur" id="infrastruktur">
+      <div class="location infrastruktur hoverTooltip"
+           id="infrastruktur"
+           data-tooltip="Infrastruktur: Netværk, servere, storage og basis-IT.">
         <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
       </div>
-      <div class="location it-jura" id="it-jura">
+      <div class="location it-jura hoverTooltip" 
+           id="it-jura"
+           data-tooltip="IT-jura: Overholdelse af lovkrav, GDPR, licens og compliance.">
         <span class="loc-icon" style="font-size:2rem;">⚖️</span> IT Jura
       </div>
-      <div class="location cybersikkerhed" id="cybersikkerhed">
+      <div class="location cybersikkerhed hoverTooltip"
+           id="cybersikkerhed"
+           data-tooltip="Cybersikkerhed: Sårbarhedsscanning, firewall, AV og andre sikringsforanstaltninger.">
         <span class="loc-icon" style="font-size:2rem;">💻</span> Cybersikkerhed
       </div>
     </div>
@@ -66,8 +78,8 @@
         </div>
         <!-- Arkitekthjælp-knap -->
         <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
-        <!-- Ekstra: en IT Ordbog-knap (valgfri) -->
-        <button onclick="showGlossary()" class="commit-button" style="margin-top:6px;">IT Ordbog</button>
+        <!-- Knap til ordbog -->
+        <button onclick="showGlossaryForTask()" class="commit-button" style="margin-top:6px;">IT Ordbog for denne opgave</button>
       </div>
 
       <div id="available-tasks">
@@ -86,15 +98,14 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal">
     <div class="modal-content">
-      <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
+      <h2 style="color:#1abc9c;">Velkommen til IT-Tycoon</h2>
       <p style="color:#f1c40f;">
-        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> 
-        på et stort hospital. Du styrer tid og penge, og hver beslutning har konsekvenser.
+        Du er ansvarlig for LIMS (Laboratory Information Management System) på et stort hospital. 
+        Du styrer tid og penge, og hver beslutning har konsekvenser.
       </p>
       <p>
-        Du har 100 tidsenheder og 2000 kr. Hver gang du springer dokumentation over, 
-        øger du risiko i CAB. Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling. 
-        Held og lykke!
+        Du har 100 tidsenheder og 2000 kr. At springe dokumentation over øger risikoen i CAB. 
+        Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling. Held og lykke!
       </p>
       <button id="intro-ok-btn" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
@@ -118,7 +129,7 @@
       <div id="scenario-description"></div>
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
 
-      <!-- To valg, UDEN “Mere info”-knapper under A/B -->
+      <!-- To valg (A/B) UDEN “Mere info”-knapper -->
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
@@ -190,12 +201,12 @@
     </div>
   </div>
 
-  <!-- Indlæs dine task-filer, glossary og main.js -->
+  <!-- Indlæs dine tasks samt itGlossary og main.js -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
 
-  <script src="scripts/itGlossary.js"></script> <!-- NY ordbogsfil -->
-  <script src="scripts/main.js"></script>
+  <script src="scripts/itGlossary.js"></script> <!-- 1) Ordbog med mange ord -->
+  <script src="scripts/main.js"></script>       <!-- 2) main-koden -->
 </body>
 </html>
