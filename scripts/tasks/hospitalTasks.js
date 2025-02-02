@@ -2,62 +2,59 @@ window.hospitalTasks = [
 
   // Opgave 1 (3 trin)
   {
-    title: "Patientjournalsystem for sengeafsnit",
-    shortDesc: "Forældede patientjournaler gør arbejdet besværligt på sengeafsnittet.",
+    title: "Opgradering af Patientjournal System",
+    shortDesc: "Nuværende patientjournal er langsom og ineffektiv.",
     narrativeIntro: `
-      "Det nuværende journalsystem for sengeafsnittet er ustabilt. Personalet oplever lange svartider og uoverskuelig data."
+      "Hospitalet kæmper med en forældet elektronisk patientjournal (EPJ), 
+       der ofte fejler ved spidsbelastning."
     `,
-    digDeeperLinks: [
-      { label: "Elektronisk Journalfordele", text: "Mere effektiv dokumentation, bedre overblik og færre fejl i patientdata." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver især trin 2, hvor systemet skal implementeres sikkert for at undgå nedetid.
-    `,
+    glossaryTerms: ["Patientjournal", "Integration", "CAB"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg fejl og svartider i det nuværende journalsystem.",
+        stepDescription: "Analysér den nuværende EPJ for fejl og svartider.",
         choiceA: {
           label: "Detaljeret analyse",
-          text: "+3 tid, +2 development",
+          text: "+3 tid, +2 development.",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk evaluering",
-          text: "+1 tid, +5% risk",
+          label: "Overfladisk scanning",
+          text: "+1 tid, +5% risk.",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "dokumentation",
-        stepDescription: "Implementer et nyt digitalt journalsystem.",
+        location: "infrastruktur",
+        stepDescription: "Opgradér backend og servere for at understøtte ny EPJ-software.",
         choiceA: {
-          label: "Fuldt implementeret system",
-          text: "+4 tid, -100 kr, +3 security",
-          recommended: true,  // Arkitekthjælp fremhæver dette
-          applyEffect: { timeCost: 4, moneyCost: 100, statChange: { security: 3 } }
+          label: "Omfattende serveropgradering",
+          text: "+3 tid, -100 kr, +3 security.",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig install",
-          text: "+2 tid, +5% risk",
+          label: "Minimal serveropgradering",
+          text: "+2 tid, +5% risk.",
           recommended: false,
           applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Koordinér med ekstern leverandør om supportaftale.",
+        location: "dokumentation",
+        stepDescription: "Udfør ændringsbeskrivelser og teknisk dokumentation.",
         choiceA: {
-          label: "Fuld support",
-          text: "+2 tid, -50 kr, +2 security",
+          label: "Omfattende dokumentation",
+          text: "+2 tid.",
           recommended: false,
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 2 } }
+          applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Ingen supportaftale",
-          text: "+5% risk",
+          label: "Ingen dokumentation",
+          text: "+5% risk.",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -67,79 +64,75 @@ window.hospitalTasks = [
 
   // Opgave 2 (4 trin)
   {
-    title: "Integration af laboratorium-opgaver med hospitalets LIMS",
-    shortDesc: "Laboratoriet bruger eget system, som ikke er synkroniseret med hospitalets centrale LIMS.",
+    title: "Integration af LIMS og Patientdata",
+    shortDesc: "Laboratoriet bruger separat LIMS, som ikke taler med EPJ.",
     narrativeIntro: `
-      "Hospitalet vil samle data i ét LIMS, men laboratoriet kører et separat system. 
-       Mangel på integration forsinker svar og giver fejl i patientbehandlingen."
+      "Fejlagtige testresultater pga. manuelle indtastninger. 
+       Hospitalet ønsker en fuld integration mellem LIMS og patientjournalsystemet."
     `,
-    digDeeperLinks: [
-      { label: "LIMS-fordele", text: "Et LIMS kan håndtere laboratorieopgaver effektivt og integrere med patientjournalsystemer." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 4 for at sikre korrekt dokumentation af de nye processer.
-    `,
+    glossaryTerms: ["LIMS", "Integration", "CAB", "Kliniske data"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg dataflows mellem laboratoriet og hospitalet.",
+        stepDescription: "Kortlæg datamodeller for LIMS og EPJ, og identificér overlap.",
         choiceA: {
-          label: "Detaljeret behovsanalyse",
-          text: "+3 tid, +2 development",
+          label: "Detaljeret kortlægning",
+          text: "+3 tid, +2 development.",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
           label: "Hurtig scanning",
-          text: "+1 tid, +5% risk",
+          text: "+1 tid, +5% risk.",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "cybersikkerhed",
-        stepDescription: "Sørg for sikker dataoverførsel og krypterede laboratorieresultater.",
+        stepDescription: "Sørg for sikker overførsel af laboratorieresultater, evt. kryptering.",
         choiceA: {
-          label: "Avanceret kryptering",
-          text: "+3 tid, -80 kr, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+          label: "Krypteret dataudveksling",
+          text: "+3 tid, +3 security.",
+          recommended: true,
+          applyEffect: { timeCost: 3, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Basis sikkerhed",
-          text: "+5% risk",
+          label: "Ubeskyttet dataoverførsel",
+          text: "+2 tid, +5% risk.",
           recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Opsæt netværksforbindelse mellem lab-system og hospitalets servere.",
+        location: "it-jura",
+        stepDescription: "Tjek GDPR og patientlovgivning ift. data i laboratorieprøver.",
         choiceA: {
-          label: "Omfattende opsætning",
-          text: "+2 tid, +2 development",
+          label: "Fuldt compliance-check",
+          text: "+2 tid, +2 security.",
           recommended: false,
-          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Minimal opsætning",
-          text: "+5% risk",
+          label: "Minimal check",
+          text: "+5% risk.",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér de nye integrationsprocesser og testresultater.",
+        stepDescription: "Beskriv integrationsflow og ansvar mellem lab og klinik.",
         choiceA: {
-          label: "Detaljeret dokumentation",
-          text: "+2 tid",
-          recommended: true, // Arkitekten fremhæver dette trin
+          label: "Omfattende dokumentation",
+          text: "+2 tid.",
+          recommended: false,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
           label: "Ingen dokumentation",
-          text: "+5% risk",
+          text: "+5% risk.",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
         }
@@ -149,59 +142,71 @@ window.hospitalTasks = [
 
   // Opgave 3 (5 trin)
   {
-    title: "Undersøgelse af kritiske fejl på operationsafsnittet",
-    shortDesc: "Operationspersonale oplever systemnedbrud under procedurer.",
+    title: "Digital Booking for Akutmodtagelsen",
+    shortDesc: "Papirsedler og telefonopkald skaber kaos i booking og triage.",
     narrativeIntro: `
-      "Flere operationer har været forsinket pga. IT-nedbrud, hvilket skaber stor frustration.
-       Hospitalet ønsker at finde årsagen og fikse det hurtigt."
+      "Akutmodtagelsen oplever mangel på overblik i booking, hvilket giver lange ventetider 
+       og fejlprioriteringer i triage."
     `,
-    digDeeperLinks: [
-      { label: "Systemfejl i hospitaler", text: "Hyppige nedbrud kan udsætte patienter for risici og koste hospitalet dyrt." }
-    ],
-    architectAdvice: `
-      Arkitekten pointerer, at trin 2 er altafgørende for at undgå gentagne nedbrud.
-    `,
+    glossaryTerms: ["Booking", "Triage", "Integration"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Gennemgå fejlrapporter fra de sidste måneders operationer.",
+        stepDescription: "Identificér flaskehalse i den nuværende manuelle bookingproces.",
         choiceA: {
-          label: "Omfattende review",
-          text: "+3 tid, +2 development",
+          label: "Grundig procesanalyse",
+          text: "+3 tid, +2 development.",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtigt kig i loggen",
-          text: "+1 tid, +5% risk",
+          label: "Hurtig scanning",
+          text: "+1 tid, +5% risk.",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Forstærk netværksstabilitet og serverkapacitet ved operationsafsnittet.",
+        stepDescription: "Implementer digital bookingplatform med realtidsopdatering.",
         choiceA: {
-          label: "Omfattende opgradering",
-          text: "+4 tid, -120 kr, +3 security",
-          recommended: true, // Arkitekten
-          applyEffect: { timeCost: 4, moneyCost: 120, statChange: { security: 3 } }
+          label: "Omfattende opsætning",
+          text: "+3 tid, -80 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Billig løsning",
-          text: "+2 tid, +5% risk",
+          label: "Minimal opsætning",
+          text: "+5% risk",
           recommended: false,
-          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
+          applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
         location: "cybersikkerhed",
-        stepDescription: "Undersøg mulige hackerangreb eller malware.",
+        stepDescription: "Sørg for at bookingsystemet ikke kan misbruges (MFA, logging).",
         choiceA: {
-          label: "Grundig scanning",
+          label: "Avanceret sikkerhed",
           text: "+3 tid, +2 security",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ingen særlig sikring",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Tjek at bookingdata overholder patientlovgivning (GDPR).",
+        choiceA: {
+          label: "Fuld compliance-check",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
           label: "Overfladisk check",
@@ -211,32 +216,16 @@ window.hospitalTasks = [
         }
       },
       {
-        location: "it-jura",
-        stepDescription: "Sørg for lovpligtig rapportering af kritiske incidents.",
-        choiceA: {
-          label: "Rapportér efter reglerne",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Spring rapportering over",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
         location: "dokumentation",
-        stepDescription: "Opdater retningslinjer for driftsstabilitet i operationsafsnittet.",
+        stepDescription: "Nedskriv nye retningslinjer for digital booking og triage.",
         choiceA: {
-          label: "Opdater alt",
+          label: "Omfattende dokumentation",
           text: "+2 tid",
           recommended: false,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Ingen ajourføring",
+          label: "Ingen dokumentation",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -247,349 +236,18 @@ window.hospitalTasks = [
 
   // Opgave 4 (6 trin)
   {
-    title: "Overhaul af bookingprocedurer i akutmodtagelsen",
-    shortDesc: "Flaskehalse og forkerte prioriteringer skaber kaos i akutmodtagelsen.",
+    title: "Telemedicin til Kroniske Patienter",
+    shortDesc: "Hospitalet ønsker at tilbyde fjernmonitorering for kronikere.",
     narrativeIntro: `
-      "Akutmodtagelsen oplever overbelastning og vil indføre nye booking- og triageprocedurer
-       for at sikre hurtigere behandling."
+      "Kroniske patienter kan spare mange besøg ved telemedicinsk opfølgning, 
+       men IT-løsningen skal være sikker og lovlig."
     `,
-    digDeeperLinks: [
-      { label: "Akut triageprincipper", text: "Rette patient i rette tid kan redde liv og ressourcer." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 3 som kritisk for den samlede bookingløsning.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Analyser de nuværende procedurer i akutmodtagelsen.",
-        choiceA: {
-          label: "Dybtgående procesanalyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Lyn-evaluering",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Køb eller udvikl et dedikeret triagesystem.",
-        choiceA: {
-          label: "Køb standardløsning",
-          text: "+3 tid, -150 kr, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Hjemmelavet løsning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Sørg for krypteret datahåndtering i det nye booking/triagesystem.",
-        choiceA: {
-          label: "Avanceret kryptering",
-          text: "+3 tid, +3 security",
-          recommended: true,  // Arkitekten kritisk
-          applyEffect: { timeCost: 3, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basal sikkerhed",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opsæt serverkapacitet til triagesystemet.",
-        choiceA: {
-          label: "Fuldt skaleret opsætning",
-          text: "+2 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Minimal kapacitet",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Tjek at løsningen overholder GDPR ved akut datahåndtering.",
-        choiceA: {
-          label: "Grundigt compliance-tjek",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Spring dette over",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater retningslinjer og dokumentation for akutbooking.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
+    glossaryTerms: ["Telemedicin","Kliniske data","Compliance", "Integration"],
 
-  // Opgave 5 (3 trin)
-  {
-    title: "Digital blodprøvebestilling",
-    shortDesc: "Personalet bruger manuelle rekvisitioner, hvilket forårsager fejl i blodprøver.",
-    narrativeIntro: `
-      "Manuelle papirsedler gør, at der opstår fejl i bestilling af blodprøver.
-       Digitalisering kan minimere fejlkilder og spare tid."
-    `,
-    digDeeperLinks: [
-      { label: "Digitale bestillinger", text: "Elektroniske rekvisitioner reducerer tastefejl og sikrer hurtig overførsel." }
-    ],
-    architectAdvice: `
-      Arkitekten anbefaler trin 2 for sikkerhed og korrekt forbindelse til laboratoriedata.
-    `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Analysér hvor papirsedler fører til mest forsinkelse og fejl.",
-        choiceA: {
-          label: "Dybtgående analyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Kort oversigt",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Implementer et digitalt bestillingssystem med sikker dataoverførsel.",
-        choiceA: {
-          label: "Avanceret sikkerhed",
-          text: "+3 tid, -80 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basis løsning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér processen og uddan personalet i digital rekvisition.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // Opgave 6 (4 trin)
-  {
-    title: "Reduktion af fejl i medicinordination",
-    shortDesc: "Fejl opstår pga. mangelfuld IT-støtte til medicinbestilling.",
-    narrativeIntro: `
-      "Afdelingen har oplevet fejl i medicindosering, da IT-systemet ikke giver advarsler eller tjek ved ordination."
-    `,
-    digDeeperLinks: [
-      { label: "Medicin-it-systemer", text: "Automatiske tjek for interaktioner kan forhindre medicinfejl." }
-    ],
-    architectAdvice: `
-      Arkitekten mener, at trin 3 (it-jura) er kritisk pga. regler for medicinhåndtering.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Analyser nuværende proces for ordination.",
-        choiceA: {
-          label: "Grundig procesanalyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig scanning",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opsæt system for medicinchecks ved ordination.",
-        choiceA: {
-          label: "Omfattende opsætning",
-          text: "+3 tid, -100 kr, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basis opsætning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Sørg for overholdelse af medicinlovgivning og patientsikkerhed.",
-        choiceA: {
-          label: "Grundigt compliance-tjek",
-          text: "+2 tid, +2 security",
-          recommended: true,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Minimal kontrol",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater vejledning i medicinbestilling og dokumentér nye procedurer.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen ændringer",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // Opgave 7 (3 trin)
-  {
-    title: "Optimering af patienttransport internt i hospitalet",
-    shortDesc: "Manglende digital oversigt over transport-ressourcer fører til ventetid.",
-    narrativeIntro: `
-      "Portører og senge er i konstant bevægelse, men der er ingen digital opfølgning,
-       så patienter venter for længe på transport mellem afsnit."
-    `,
-    digDeeperLinks: [
-      { label: "Transport-IT", text: "Et overskueligt system kan fordele transportressourcer bedre." }
-    ],
-    architectAdvice: `
-      Arkitekten peger på trin 2 som nøglen for at sikre driftsikkerheden ved transport.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Analysér hvor transportflaskehalsene opstår.",
-        choiceA: {
-          label: "Detaljeret analyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk scanning",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementér digitalt bookingsystem til portører og senge.",
-        choiceA: {
-          label: "Fuldt system",
-          text: "+3 tid, -80 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Billig løsning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér arbejdsgange og opdater personalets rutiner.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // Opgave 8 (4 trin)
-  {
-    title: "Implementering af telemedicin til kroniske patienter",
-    shortDesc: "Hospitalet vil tilbyde telemedicinsk opfølgning for patienter med kroniske lidelser.",
-    narrativeIntro: `
-      "Mange patienter med kroniske sygdomme kan monitoreres hjemmefra,
-       men hospitalet mangler en sikker telemedicin-løsning."
-    `,
-    digDeeperLinks: [
-      { label: "Telemedicin Fordele", text: "Sparer tid for både patienter og hospital, og giver hurtigere indsats ved forværring." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 3 for at sikre at telemetriedata er ordentligt krypteret.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Identificér patientgrupper egnede til telemedicinsk opfølgning.",
+        stepDescription: "Identificér patientgrupper egnede til telemedicin.",
         choiceA: {
           label: "Omfattende kortlægning",
           text: "+3 tid, +2 development",
@@ -613,7 +271,7 @@ window.hospitalTasks = [
           applyEffect: { timeCost: 2, moneyCost: 80, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Vælg billigste tilbud",
+          label: "Vælg hurtigst mulige tilbud",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -621,97 +279,31 @@ window.hospitalTasks = [
       },
       {
         location: "cybersikkerhed",
-        stepDescription: "Sikre krypteret kommunikation af vitale målinger fra hjemmet.",
+        stepDescription: "Sikre krypteret kommunikation af vitale målinger hjemmefra.",
         choiceA: {
-          label: "Avanceret krypteringsopsætning",
+          label: "Avanceret kryptering + logging",
           text: "+3 tid, +3 security",
           recommended: true,
           applyEffect: { timeCost: 3, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Almindelig SSL",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér telemedicinske procedurer og ansvar.",
-        choiceA: {
-          label: "Detaljeret dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // Opgave 9 (5 trin)
-  {
-    title: "Overvågning af vitale målinger i intensivafsnittet",
-    shortDesc: "Intensivafsnittet ønsker IT-løsning til at holde øje med vitale data 24/7.",
-    narrativeIntro: `
-      "Patienter på intensiv skal monitoreres konstant, men personalet klager over,
-       at data spredes i flere systemer uden samlet overblik."
-    `,
-    digDeeperLinks: [
-      { label: "Overvågningssystemer", text: "Helst realtidsmonitorering, der advarer personalet ved kritiske ændringer." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 2 som kritisk, da systemet skal være pålidelig for kritiske patienter.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Analysér det nuværende workflow på intensivafsnittet.",
-        choiceA: {
-          label: "Omfattende workflow-analyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig gennemgang",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementer et stabilt overvågningssystem for vitale data.",
-        choiceA: {
-          label: "Avanceret, redundant system",
-          text: "+4 tid, -120 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 4, moneyCost: 120, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Enkel løsning",
+          label: "Kun basis-sikkerhed",
           text: "+2 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "cybersikkerhed",
-        stepDescription: "Sørg for at overvågningsdata ikke kan tilgås af uautoriserede.",
+        location: "infrastruktur",
+        stepDescription: "Opsæt kapacitet til at modtage store mængder telemetriedata.",
         choiceA: {
-          label: "Opsæt strenge adgangskrav",
-          text: "+2 tid, +2 security",
+          label: "Skaleret serverløsning",
+          text: "+2 tid, +2 development",
           recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Basal adgang",
+          label: "Minimal kapacitet",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -719,15 +311,15 @@ window.hospitalTasks = [
       },
       {
         location: "it-jura",
-        stepDescription: "Tjek overholdelse af patientlovgivning, da data er meget følsomt.",
+        stepDescription: "Overholdelse af GDPR ved fjernmonitorering af sundhedsdata.",
         choiceA: {
-          label: "Grundig compliance",
+          label: "Grundigt compliance-check",
           text: "+2 tid, +2 security",
           recommended: false,
           applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Hurtig tjek",
+          label: "Spring detaljer over",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -735,7 +327,7 @@ window.hospitalTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér de nye overvågningsprocedurer.",
+        stepDescription: "Udfør dokumentation af processer, ansvar og driftsaftaler.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
@@ -752,97 +344,44 @@ window.hospitalTasks = [
     ]
   },
 
-  // Opgave 10 (6 trin)
+  // Opgave 5 (3 trin)
   {
-    title: "Optimering af medicoteknisk udstyrs vedligeholdelse",
-    shortDesc: "Medicoteknisk udstyr kræver jævnlig vedligehold, men systemet herfor er ineffektivt.",
+    title: "Elektronisk Rekvisition af Blodprøver",
+    shortDesc: "Afdelingen bruger papirsedler til blodprøvebestilling, hvilket medfører fejl.",
     narrativeIntro: `
-      "Mange apparater i hospitalet får ikke rettidig service, hvilket
-       øger risikoen for fejl og nedbrud, især i kritiske situationer."
+      "Manuelle bestillinger fører til forkerte patientdata og dobbelthåndtering. 
+       En digital løsning kan reducere fejl."
     `,
-    digDeeperLinks: [
-      { label: "Udstyrservice", text: "Regelmæssig vedligehold og serviceforløb forlænger apparaters levetid og minimerer fejl." }
-    ],
-    architectAdvice: `
-      Arkitekten påpeger, at trin 4 (cybersikkerhed) er kritisk for at sikre, at
-      software på udstyret ikke kan kompromitteres.
-    `,
+    glossaryTerms: ["Kliniske data", "Integration"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Registrer alt medicoteknisk udstyr og dets servicehistorik.",
+        stepDescription: "Analysér hvor papirprocessen giver flest fejl og forsinkelser.",
         choiceA: {
-          label: "Omfattende kortlægning",
+          label: "Grundig procesanalyse",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Foreløbig registrering",
+          label: "Overfladisk tjek",
           text: "+1 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Indhent serviceaftaler fra diverse udstyrsleverandører.",
-        choiceA: {
-          label: "Fuld serviceaftale",
-          text: "+2 tid, -80 kr, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, moneyCost: 80, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ingen servicekontrakt",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opsæt IT-løsning, der overvåger apparatets tilstand.",
-        choiceA: {
-          label: "Moderne IoT-overvågning",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Manuel kontrol",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
         location: "cybersikkerhed",
-        stepDescription: "Sørg for softwareopdateringer og beskyttelse mod hacking.",
+        stepDescription: "Implementer sikker digital bestilling for blodprøver.",
         choiceA: {
-          label: "Avancerede sikkerhedstjek",
-          text: "+3 tid, +3 security",
+          label: "Avanceret E-rekvisition",
+          text: "+3 tid, -80 kr, +3 security",
           recommended: true,
-          applyEffect: { timeCost: 3, statChange: { security: 3 } }
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Basisopdateringer",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Overholdelse af regler for medicoteknisk udstyr (fx CE-mærkning).",
-        choiceA: {
-          label: "Grundigt compliance-tjek",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk check",
+          label: "Basal digital løsning",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -850,9 +389,431 @@ window.hospitalTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér serviceprocedurer og ansvar for vedligeholdelse.",
+        stepDescription: "Beskriv den nye procedure og lær personalet op.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 6 (4 trin)
+  {
+    title: "Effektivisering af Administrative IT-processer",
+    shortDesc: "Manuelle procedurer medfører fejl og forsinkelser i administrationen.",
+    narrativeIntro: `
+      "Administrationsteamet håndterer forsikringer og økonomi manuelt, 
+       hvilket koster tid og skaber papirbunker."
+    `,
+    glossaryTerms: ["Compliance","Integration"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Kortlæg de mest tunge manuelle arbejdsgange.",
+        choiceA: {
+          label: "Grundig procesanalyse",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig scanning",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "leverandor",
+        stepDescription: "Indkøb eller udvikling af digital sagsbehandlingsløsning.",
+        choiceA: {
+          label: "Omfattende system",
+          text: "+3 tid, -80 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Minimal løsning",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Overhold licensaftaler og persondataregler for administrative data.",
+        choiceA: {
+          label: "Grundigt compliance-check",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ignorer formaliteter",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér de nye procesflows og uddan admin-personale.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 7 (5 trin)
+  {
+    title: "Forbedring af IT-support for Kliniske Afdelinger",
+    shortDesc: "Lang ventetid på IT-support påvirker patientbehandling.",
+    narrativeIntro: `
+      "Klinikkerne oplever ringe IT-support, hvilket går ud over patientflowet. 
+       Hospitalet ønsker en hurtigere og automatiseret supportløsning."
+    `,
+    glossaryTerms: ["Kliniske data","CAB","Compliance"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Mål nuværende responstid og kvalitet i IT-support.",
+        choiceA: {
+          label: "Detaljeret evaluering",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig scanning",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Implementer nyt IT-supportsystem med automatisering.",
+        choiceA: {
+          label: "Omfattende implementering",
+          text: "+3 tid, -80 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Minimal implementering",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Sørg for, at supportsystemet ikke afslører følsomme data til uautoriserede.",
+        choiceA: {
+          label: "Sikker rollebaseret adgang",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ingen sikkerhedsforanstaltninger",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Overhold GDPR ifm. logs og sagsbehandling af kliniske fejl.",
+        choiceA: {
+          label: "Omhyggelig lov-tjek",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ingen compliance",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér de nye supportprocedurer og undervis personalet.",
         choiceA: {
           label: "Detaljeret dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 8 (4 trin)
+  {
+    title: "Modernisering af Klinisk IT-infrastruktur",
+    shortDesc: "Forældet hardware og netværk giver ustabil drift i flere klinikker.",
+    narrativeIntro: `
+      "Langsomme systemer og hyppige nedetider i klinikken. 
+       Hospitalet vil modernisere den kliniske IT-infrastruktur."
+    `,
+    glossaryTerms: ["Integration","CAB","Kliniske data"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Identificér de største flaskehalse i den kliniske drift.",
+        choiceA: {
+          label: "Omfattende kortlægning",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig scanning",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Opgradér netværksudstyr og serverkapacitet for bedre ydeevne.",
+        choiceA: {
+          label: "Omfattende opgradering",
+          text: "+3 tid, -100 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Minimal opgradering",
+          text: "+2 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Sørg for at nye systemer er beskyttet mod uautoriseret adgang.",
+        choiceA: {
+          label: "Stærke adgangskrav",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Standard logins",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Opdater dokumentation om den nye infrastruktur og driftsprocedurer.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 9 (5 trin)
+  {
+    title: "Administrativ Forbedring af Patientindlæggelser",
+    shortDesc: "Flaskehalse og papirarbejde ved indlæggelse øger ventetider.",
+    narrativeIntro: `
+      "Patientindlæggelse er bureaukratisk og langsomt. 
+       Hospitalet vil digitalisere og automatisere processerne."
+    `,
+    glossaryTerms: ["Booking","Integration","Compliance"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Kortlæg nuværende indlæggelsesprocedure.",
+        choiceA: {
+          label: "Detaljeret kortlægning",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig evaluering",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Opsæt en digital indlæggelsesplatform.",
+        choiceA: {
+          label: "Avanceret platform",
+          text: "+3 tid, -80 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Minimal digital opsætning",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Sikre patientdata og hindre uautoriseret adgang i det nye system.",
+        choiceA: {
+          label: "Role-based Access + logging",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Standard login",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Tjek krav om korrekt registrering af patientdata (GDPR).",
+        choiceA: {
+          label: "Fuld compliance-check",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Spring dette over",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér og uddan om nye indlæggelsesprocedurer.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 10 (4 trin)
+  {
+    title: "Elektronisk Lægemiddelordination",
+    shortDesc: "Fejl i medicindosering pga. manuelle ordinationer.",
+    narrativeIntro: `
+      "Papirordinationer og usikre systemer fører til medicindoseringsfejl. 
+       Hospitalet vil digitalisere og validere ordinationer automatisk."
+    `,
+    glossaryTerms: ["Kliniske data","Integration","Compliance"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Analyser nuværende proces for medicinordination og fejl.",
+        choiceA: {
+          label: "Detaljeret analyse",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Kort scanning",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Implementer digital ordinationssystem med kontrolmoduler.",
+        choiceA: {
+          label: "Omfattende implementering",
+          text: "+3 tid, -80 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Basal løsning",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Sikre, at ordinationssystem ikke kan manipuleres.",
+        choiceA: {
+          label: "Avancerede logs + rollebaseret adgang",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ingen ekstra sikring",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Beskriv nye procedurer og undervise i digital ordination.",
+        choiceA: {
+          label: "Omfattende dokumentation",
           text: "+2 tid",
           recommended: false,
           applyEffect: { timeCost: 2 }
