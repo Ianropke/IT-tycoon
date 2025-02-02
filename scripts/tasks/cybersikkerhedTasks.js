@@ -1,55 +1,54 @@
 window.cybersikkerhedTasks = [
 
-  // OPGAVE 1 (3 trin)
+  // Opgave 1 (3 trin)
   {
-    title: "Opdatering af anti-virus-løsning",
-    shortDesc: "Det nuværende antivirus er forældet og kan ikke fange nye trusler.",
+    title: "Opdatering af Antivirus-løsning",
+    shortDesc: "Det nuværende antivirus er forældet og fanger ikke nye trusler.",
     narrativeIntro: `
-      "IT-afdelingen bemærker, at virusscanneren sjældent opdateres. 
-       Nye trusler slipper muligvis igennem, hvilket øger angrebsfladen."
+      "Flere pc'er er blevet inficeret med malware på hospitalet. 
+       IT-afdelingen ønsker en bedre og mere moderne antivirus-løsning."
     `,
+    glossaryTerms: ["Antivirus", "Malware", "Signature", "CAB"],
+
     digDeeperLinks: [
-      { label: "Moderne AV-løsninger", text: "Med realtidsbeskyttelse og machine learning kan man fange nye trusler hurtigt." }
+      { label: "AV-scanningsmetoder", text: "Signaturbaseret scanning vs. heuristisk og AI-baseret scanning." }
     ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 2, hvor leverandøraftalen skal sikre hurtige signaturopdateringer.
-    `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg, hvor antivirus-løsningen er installeret, og hvor den mangler.",
+        stepDescription: "Analysér udbredelsen af det gamle antivirus på hospitalets maskiner.",
         choiceA: {
-          label: "Omfattende kortlægning",
-          text: "+3 tid, +2 development",
+          label: "Grundig undersøgelse",
+          text: "+3 tid, +2 development (bedre overblik).",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Hurtig scanning",
-          text: "+1 tid, +5% risk",
+          label: "Hurtig stikprøve",
+          text: "+1 tid, +5% risk (Risiko for oversete huller).",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
         }
       },
       {
         location: "leverandor",
-        stepDescription: "Vælg en ny AV-løsning og fastlægg signaturopdateringsaftale.",
+        stepDescription: "Vælg og køb ny antivirus-løsning med hyppige signaturopdateringer.",
         choiceA: {
-          label: "High-end AV med hyppige opdateringer",
-          text: "+3 tid, -80 kr, +3 security",
-          recommended: true,  // Arkitekten peger på dette
-          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+          label: "High-end antivirus",
+          text: "+3 tid, -100 kr, +3 security (god beskyttelse).",
+          recommended: true, // Arkitekten vil typisk fremhæve dette
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Billig, sjælden opdatering",
-          text: "+5% risk",
+          label: "Basal antivirus",
+          text: "+2 tid, +5% risk",
           recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater dokumentation for brug og retningslinjer.",
+        stepDescription: "Beskriv de nye AV-politikker og opdater personalet.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
@@ -66,32 +65,31 @@ window.cybersikkerhedTasks = [
     ]
   },
 
-  // OPGAVE 2 (3 trin)
+  // Opgave 2 (4 trin)
   {
-    title: "SIEM-logning af kritiske systemer",
-    shortDesc: "Mangel på central logning gør det svært at spore angreb.",
+    title: "Implementering af SIEM & Realtids-Logning",
+    shortDesc: "Mangel på central logning gør det svært at opdage hackingforsøg.",
     narrativeIntro: `
-      "Flere kritiske systemer logger kun lokalt. Ved hackerangreb går man glip af 
-       vigtige spor i realtid, og reaktionen forsinkes."
+      "Hospitalet har brug for et SIEM-system, der kan samle alle logs og 
+       levere alarmer i realtid ved mistænkelig aktivitet."
     `,
+    glossaryTerms: ["SIEM", "IDS", "CAB", "Malware"],
+
     digDeeperLinks: [
-      { label: "SIEM-fordele", text: "Et SIEM (Security Information & Event Management) samler logs centralt og opdager unormal aktivitet." }
+      { label: "SIEM-fordele", text: "En SIEM samler logs og alarmerer ved afvigelser. Kan reducere reaktionstid." }
     ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 2 for at sikre, at selve SIEM-løsningen konfigureres robust.
-    `,
     steps: [
       {
-        location: "hospital",
-        stepDescription: "Identificér de kritiske systemer, der mangler central logning.",
+        location: "cybersikkerhed",
+        stepDescription: "Vælg et SIEM-system, der kan håndtere hospitalets mange logs.",
         choiceA: {
-          label: "Detaljeret systemsurvey",
-          text: "+3 tid, +2 development",
+          label: "Avanceret SIEM",
+          text: "+3 tid, -120 kr, +3 security.",
           recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig scanning",
+          label: "Basal logserver",
           text: "+1 tid, +5% risk",
           recommended: false,
           applyEffect: { timeCost: 1, riskyPlus: 0.05 }
@@ -99,81 +97,15 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "infrastruktur",
-        stepDescription: "Implementer en SIEM-løsning med realtidskorrelation.",
+        stepDescription: "Opsæt integration til netværksudstyr, servere og klienter.",
         choiceA: {
-          label: "Avanceret SIEM",
-          text: "+3 tid, -100 kr, +3 security",
-          recommended: true, 
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basal logserver",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér logindsamling og reaktionsprocedurer.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 3 (4 trin)
-  {
-    title: "Håndtering af phishing-kampagner",
-    shortDesc: "Flere medarbejdere har klikket på phishing-links, hvilket kan kompromittere systemet.",
-    narrativeIntro: `
-      "HR har modtaget klager fra personale, der er blevet narret af falske e-mails. 
-       Man ønsker at iværksætte en kampagne mod phishing for at reducere fejl."
-    `,
-    digDeeperLinks: [
-      { label: "Phishing", text: "Phishing udgør en stor risiko, da mennesker ofte er det svageste led i sikkerhedskæden." }
-    ],
-    architectAdvice: `
-      Arkitekten peger på trin 4, hvor man dokumenterer og vedligeholder en anti-phishing-politik.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Gennemfør testphishing-kampagne for at se, hvor mange klikker.",
-        choiceA: {
-          label: "Omfattende kampagne",
+          label: "Omfattende opsætning",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Lille prøvetest",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Bloker kendte phishing-domæner og implementer e-mailfilter.",
-        choiceA: {
-          label: "Avanceret spamfilter + domæneliste",
-          text: "+3 tid, -80 kr, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basal spamfilter",
+          label: "Minimal opsætning",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -181,11 +113,11 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "it-jura",
-        stepDescription: "Tjek juridiske aspekter ift. logs og monitorering af medarbejder-mails.",
+        stepDescription: "Tjek compliance og logging af persondata i realtid.",
         choiceA: {
-          label: "Grundigt compliance-check",
+          label: "Grundigt lov- og GDPR-check",
           text: "+2 tid, +2 security",
-          recommended: false,
+          recommended: true,  // Arkitekten fremhæver vigtigheden
           applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
@@ -197,15 +129,15 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér anti-phishing-politik og uddannelsesmateriale.",
+        stepDescription: "Beskriv reaktionsprocedurer og loghåndtering i SIEM.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
-          recommended: true,
+          recommended: false,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Ingen politik",
+          label: "Ingen dokumentation",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -214,107 +146,20 @@ window.cybersikkerhedTasks = [
     ]
   },
 
-  // OPGAVE 4 (4 trin)
+  // Opgave 3 (3 trin)
   {
-    title: "Implementering af Multi-Factor Authentication (MFA)",
-    shortDesc: "Systemer er kun beskyttet af password; bruteforce-angreb er stigende.",
+    title: "Patch Management-proces",
+    shortDesc: "Sygehusets systemer mangler rettidige opdateringer.",
     narrativeIntro: `
-      "Der har været forsøg på at kompromittere konti. Et ekstra lag af sikkerhed med MFA 
-       vil kunne beskytte systemet mod stjålne passwords."
+      "En intern revision viser, at flere systemer er bagud med opdateringer, 
+       hvilket giver hackere en åben dør."
     `,
-    digDeeperLinks: [
-      { label: "MFA-fordele", text: "Multi-Factor Authentication mindsker risikoen for uautoriseret adgang betragteligt." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 2, hvor man integrerer MFA i infrastrukturen, som afgørende.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Gennemfør en analyse af, hvor MFA er mest nødvendigt.",
-        choiceA: {
-          label: "Omfattende analyse",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtig scanning",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementer MFA-løsning i login-flow for kritiske systemer.",
-        choiceA: {
-          label: "Fuldt integreret MFA",
-          text: "+3 tid, -100 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Basal MFA",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Konfigurer regler for to-faktor, fx engangskoder og godkendelses-apps.",
-        choiceA: {
-          label: "Avancerede MFA-metoder",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Kun SMS-kode",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Udgiv retningslinjer for MFA og hjælp til brugerne.",
-        choiceA: {
-          label: "Detaljeret vejledning",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen vejledning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
+    glossaryTerms: ["Patch management", "CAB", "Compliance", "Malware"],
 
-  // OPGAVE 5 (5 trin)
-  {
-    title: "E-mail-kryptering for patienthenvendelser",
-    shortDesc: "Patienter sender ofte følsomme oplysninger via e-mail, som ikke er krypteret.",
-    narrativeIntro: `
-      "Hospitalet modtager henvendelser med CPR-numre og diagnoses via almindelig mail. 
-       Dette udgør en stor sikkerhedsrisiko."
-    `,
-    digDeeperLinks: [
-      { label: "Mail-kryptering", text: "Kryptering (S/MIME eller lign.) beskytter følsomme oplysninger under transport." }
-    ],
-    architectAdvice: `
-      Arkitekten peger på trin 3 (dokumentation), da det er kritisk at personalet forstår 
-      proceduren for krypterede mails.
-    `,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Afdæk, hvor mange mails indeholder følsomme data.",
+        stepDescription: "Identificér systemer med kritiske ubesvarede opdateringer.",
         choiceA: {
           label: "Omfattende scanning",
           text: "+3 tid, +2 development",
@@ -329,16 +174,94 @@ window.cybersikkerhedTasks = [
         }
       },
       {
-        location: "cybersikkerhed",
-        stepDescription: "Implementer mailkryptering for udgående og indgående mails.",
+        location: "infrastruktur",
+        stepDescription: "Opsæt automatiseret patch management-løsning.",
         choiceA: {
-          label: "Avanceret S/MIME-løsning",
-          text: "+3 tid, -120 kr, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 3 } }
+          label: "Automatiseret patch-rulning",
+          text: "+3 tid, -100 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Basis SSL/TLS",
+          label: "Manuel patching",
+          text: "+2 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Nedskriv retningslinjer for patch-cyklus og compliance.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 4 (4 trin)
+  {
+    title: "Phishing-kampagne & træning",
+    shortDesc: "Flere medarbejdere klikker på falske links og mails.",
+    narrativeIntro: `
+      "Hospitalet har oplevet phishing-angreb, hvor brugere afslørede loginoplysninger. 
+       Der ønskes en kampagne for at sænke klikraten."
+    `,
+    glossaryTerms: ["Phishing", "Malware", "CAB", "Compliance"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Gennemfør testphishing-kampagne for at måle klikrate.",
+        choiceA: {
+          label: "Omfattende testkampagne",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Lille stikprøve",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Opsæt avanceret spamfilter mod kendte phishing-domæner.",
+        choiceA: {
+          label: "Avanceret spamfilter",
+          text: "+3 tid, -80 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Basal spamfilter",
+          text: "+2 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Tjek GDPR-aspekter i mail-logging og medarbejderovervågning.",
+        choiceA: {
+          label: "Omhyggelig compliance-gennemgang",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Spring compliance over",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -346,23 +269,131 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Forklar personalet, hvordan de håndterer krypterede e-mails.",
+        stepDescription: "Nedskriv ny anti-phishing-politik og vejledning.",
         choiceA: {
-          label: "Omfattende vejledning",
+          label: "Omfattende dokumentation",
           text: "+2 tid",
-          recommended: true,
+          recommended: false,
           applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Ingen vejledning",
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 5 (3 trin)
+  {
+    title: "Ransomware-forsvar: Offline-backups",
+    shortDesc: "Hospitalet er sårbart for ransomware, fordi backupen er online.",
+    narrativeIntro: `
+      "Ved et ransomware-angreb kan online-backups også krypteres. 
+       IT vil have en offline eller immutable backup-løsning."
+    `,
+    glossaryTerms: ["Ransomware", "Backup", "Malware", "CAB"],
+
+    steps: [
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Implementer offline/immutable backup, så angriber ikke kan slette/kryptere den.",
+        choiceA: {
+          label: "Sikker backup-løsning",
+          text: "+3 tid, -120 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Fortsat online backup",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
+        location: "infrastruktur",
+        stepDescription: "Opsæt en dedikeret server eller tapesystem til offline-lager.",
+        choiceA: {
+          label: "Dedikeret offline-løsning",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Recycled server",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Nedskriv rutiner for backup-test og gendannelsesprocedurer.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 6 (4 trin)
+  {
+    title: "MFA-implementering på kritiske systemer",
+    shortDesc: "Flere systemer bruger kun password, men bruteforce-angreb er stigende.",
+    narrativeIntro: `
+      "For at forhindre uautoriseret adgang vil hospitalet indføre Multi-Factor Authentication (MFA) 
+       på kritiske systemer."
+    `,
+    glossaryTerms: ["MFA", "CAB", "Penetrationstest"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Vurder hvilke brugergrupper og systemer har mest kritisk adgang.",
+        choiceA: {
+          label: "Grundig analyse",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig scanning",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Implementer MFA-løsning med fx mobil-app og engangskoder.",
+        choiceA: {
+          label: "Fuldt integreret MFA",
+          text: "+3 tid, -80 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Basal 2FA (SMS)",
+          text: "+2 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
+        }
+      },
+      {
         location: "it-jura",
-        stepDescription: "Overhold GDPR og krav om beskyttelse af personfølsomme data.",
+        stepDescription: "Tjek databeskyttelse og logging af MFA-brug.",
         choiceA: {
           label: "Grundigt compliance-check",
           text: "+2 tid, +2 security",
@@ -377,16 +408,16 @@ window.cybersikkerhedTasks = [
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Aftal supplerende drift- og supportaftale med mailudbyderen.",
+        location: "dokumentation",
+        stepDescription: "Opdater vejledning om MFA-login for personalet.",
         choiceA: {
-          label: "Fuldt service",
-          text: "+2 tid, -50 kr, +2 security",
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
           recommended: false,
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 2 } }
+          applyEffect: { timeCost: 2 }
         },
         choiceB: {
-          label: "Ingen support",
+          label: "Ingen dokumentation",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -395,26 +426,116 @@ window.cybersikkerhedTasks = [
     ]
   },
 
-  // OPGAVE 6 (5 trin)
+  // Opgave 7 (5 trin)
   {
-    title: "Sårbarhedsscanning af hospitalets netværk",
-    shortDesc: "Scanning udføres ikke regelmæssigt, sårbarheder kan forblive uopdagede.",
+    title: "Penetrationstest af kritiske systemer",
+    shortDesc: "Hospitalet vil aktivt opspore sårbarheder via pentest.",
     narrativeIntro: `
-      "Hospitalets systemer er store og komplekse. Hvis sårbarheder ikke opdages i tide,
-       kan angribere udnytte dem, før IT-personalet reagerer."
+      "Flere kritiske systemer er i drift, men har sjældent været testet af 
+       eksterne sikkerhedskonsulenter. En pentest kan afsløre svagheder."
     `,
-    digDeeperLinks: [
-      { label: "Vuln Scan", text: "Regelmæssig sårbarhedsscanning er en hjørnesten i forebyggende cybersikkerhed." }
-    ],
-    architectAdvice: `
-      Arkitekten peger på trin 2, hvor den automatiske scanning opsættes i infrastruktur-laget, som afgørende.
-    `,
+    glossaryTerms: ["Penetrationstest","Sårbarhedsscanning","CAB","Compliance"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Find ud af hvilke systemer og IP-adresser, der skal scannes.",
+        stepDescription: "Kortlæg, hvilke systemer er mest kritiske at teste.",
         choiceA: {
-          label: "Omfattende IP-kortlægning",
+          label: "Omfattende kortlægning",
+          text: "+3 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Overfladisk vurdering",
+          text: "+1 tid, +5% risk",
+          recommended: false,
+          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Bestil ekstern penetrationstest og sårbarhedsscanning.",
+        choiceA: {
+          label: "Fuld eksternt pentest-forløb",
+          text: "+3 tid, -150 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 150, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Basis intern scanning",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Lav en kontrolleret test-miljøopsætning for at undgå driftspåvirkning.",
+        choiceA: {
+          label: "Separate testservere",
+          text: "+2 tid, +2 development",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Test i produktionsmiljø",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "it-jura",
+        stepDescription: "Afklar juridiske forhold ved pentest (GDPR, aftaler, etc.).",
+        choiceA: {
+          label: "Dybdegående compliance-check",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Ignorer formaliteter",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Opsaml resultater og anbefalinger fra pentesten.",
+        choiceA: {
+          label: "Omfattende dokumentation",
+          text: "+2 tid",
+          recommended: false,
+          applyEffect: { timeCost: 2 }
+        },
+        choiceB: {
+          label: "Ingen dokumentation",
+          text: "+5% risk",
+          recommended: false,
+          applyEffect: { riskyPlus: 0.05 }
+        }
+      }
+    ]
+  },
+
+  // Opgave 8 (4 trin)
+  {
+    title: "Forbedring af Firewall-regler",
+    shortDesc: "Nuværende firewallregler er rodede og tillader for meget trafik.",
+    narrativeIntro: `
+      "Sårbarheder i perimeteret gør, at angribere kan nå interne systemer. 
+       En strammere firewall-strategi er nødvendig."
+    `,
+    glossaryTerms: ["Firewall","CAB","IDS","Malware"],
+
+    steps: [
+      {
+        location: "hospital",
+        stepDescription: "Identificér netværkssegmenter og risikozoner.",
+        choiceA: {
+          label: "Grundig netværksanalyse",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
@@ -427,261 +548,32 @@ window.cybersikkerhedTasks = [
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Implementer et system til automatisk sårbarhedsscanning.",
-        choiceA: {
-          label: "Automatiseret scanning",
-          text: "+3 tid, -100 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Manuel scanning af og til",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
         location: "cybersikkerhed",
-        stepDescription: "Analysér scanningsresultater og prioriter patching.",
+        stepDescription: "Opstram firewall-regler og segmentér netværket.",
         choiceA: {
-          label: "Grundig analyse",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Overfladisk review",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Vær sikker på, at scanning overholder regler om databehandling.",
-        choiceA: {
-          label: "Compliance-check",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ignorer juridiske krav",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater scanningsprocedurer og logs.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 7 (5 trin)
-  {
-    title: "Opdatering af patch management-proces",
-    shortDesc: "Hospitalet oplever forsinkede patches og sårbarheder forbliver åbne.",
-    narrativeIntro: `
-      "En intern revision viser, at systemer ofte er bagud med softwareopdateringer, 
-       hvilket giver angribere en åben dør."
-    `,
-    digDeeperLinks: [
-      { label: "Patch Management", text: "Regelmæssige patches lukker kendte huller og forhindrer mange angreb." }
-    ],
-    architectAdvice: `
-      Arkitekten mener, at trin 2 (infrastruktur) er centralt for at sikre automatiseret patchdistribution.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Undersøg, hvilke systemer er mest sårbare ved manglende patches.",
-        choiceA: {
-          label: "Prioriteret liste",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Få et overblik senere",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opsæt automatiseret patch-løsning, der ruller opdateringer ud regelmæssigt.",
-        choiceA: {
-          label: "Automatisk patch management",
-          text: "+3 tid, -100 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
-        },
-        choiceB: {
-          label: "Manuel patching",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Overvåg patchstatus og scanning for systemer, der mangler opdatering.",
-        choiceA: {
-          label: "Grundig overvågning",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ingen opfølgning",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Kontrollér licensforhold ved store softwareopdateringer.",
-        choiceA: {
-          label: "Licens- og compliance-check",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ignorer licens",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater patchprocedurerne og personalets vejledning.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+2 tid",
-          recommended: false,
-          applyEffect: { timeCost: 2 }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      }
-    ]
-  },
-
-  // OPGAVE 8 (6 trin)
-  {
-    title: "Incident Response-plan for cybersikkerhedshændelser",
-    shortDesc: "Hospitalet mangler en struktureret plan for håndtering af sikkerhedshændelser.",
-    narrativeIntro: `
-      "Ved hackingforsøg eller datalæk har hospitalet ingen klar procedure for,
-       hvem der gør hvad, og hvornår. Dette kan forlænge nedetid og forværre skader."
-    `,
-    digDeeperLinks: [
-      { label: "Incident Response", text: "En detaljeret plan minimerer skader og sikrer hurtig genopretning." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver, at trin 3 (cybersikkerhed) er kritisk for at definere 
-      selve reaktions- og eskaleringsprocessen.
-    `,
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Gennemgå nylige sikkerhedshændelser for at lære af fejl.",
-        choiceA: {
-          label: "Omfattende review",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
-        },
-        choiceB: {
-          label: "Hurtigt overblik",
-          text: "+1 tid, +5% risk",
-          recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Tjek lovkrav for datasikkerhed ved brud, fx GDPR-anmeldelse.",
-        choiceA: {
-          label: "Grundig lovpligtig rapportering",
-          text: "+2 tid, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ingen rapportering",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Definér reaktions- og eskaleringsprocedure for hacking og datalæk.",
-        choiceA: {
-          label: "Detaljeret IR-plan",
+          label: "Strenge firewall-regler",
           text: "+3 tid, +3 security",
           recommended: true,
           applyEffect: { timeCost: 3, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Minimal plan",
-          text: "+5% risk",
+          label: "Behold nuværende regler",
+          text: "+2 tid, +5% risk",
           recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
         location: "infrastruktur",
-        stepDescription: "Sørg for, at systemer kan isoleres hurtigt i nødsituationer.",
+        stepDescription: "Opsæt IDS/IPS i perimeter-laget for at fange angreb.",
         choiceA: {
-          label: "Segmentering og hurtig shutdown",
-          text: "+3 tid, +2 development",
+          label: "Avanceret IDS/IPS",
+          text: "+3 tid, -80 kr, +2 security",
           recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Ingenting",
-          text: "+5% risk",
-          recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Aftal ekstern støtte ved større sikkerhedshændelser.",
-        choiceA: {
-          label: "Ekstern krisehjælp",
-          text: "+2 tid, -50 kr, +2 security",
-          recommended: false,
-          applyEffect: { timeCost: 2, moneyCost: 50, statChange: { security: 2 } }
-        },
-        choiceB: {
-          label: "Ingen ekstern støtte",
+          label: "Ingen indtrængningsdetektering",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -689,7 +581,7 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater Incident Response-plan og del med personalet.",
+        stepDescription: "Nedskriv de nye firewall-regler og procedurer.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
@@ -706,49 +598,44 @@ window.cybersikkerhedTasks = [
     ]
   },
 
-  // OPGAVE 9 (3 trin)
+  // Opgave 9 (3 trin)
   {
-    title: "Optimering af adgangskontrol til serverrum",
-    shortDesc: "Fysisk adgang til serverrummet er ikke tilstrækkeligt sikret.",
+    title: "Håndtering af Zero-day sårbarheder",
+    shortDesc: "Nye sårbarheder opstår jævnligt, men hospitalet har ingen plan.",
     narrativeIntro: `
-      "Nogle medarbejdere, der ikke længere arbejder på hospitalet, har stadig 
-       nøglekort til serverrummet. Dette udgør en sikkerhedstrussel."
+      "Zero-day sårbarheder kan ramme hospitalets systemer før en officiel patch findes.
+       En reaktionsplan er nødvendig."
     `,
-    digDeeperLinks: [
-      { label: "Fysisk Sikkerhed", text: "Fysisk adgangskontrol er lige så vigtig som digitale sikkerhedsforanstaltninger." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 2 for at få en robust, elektronisk adgangskontrol 
-      med logging.
-    `,
+    glossaryTerms: ["Sårbarhedsscanning","Malware","CAB","Compliance"],
+
     steps: [
       {
-        location: "hospital",
-        stepDescription: "Gennemse nuværende nøglekort og fjern forældede tilgange.",
+        location: "cybersikkerhed",
+        stepDescription: "Implementer løbende sårbarhedsscanning for nye exploits.",
         choiceA: {
-          label: "Fuld kortrevision",
-          text: "+3 tid, +2 development",
-          recommended: false,
-          applyEffect: { timeCost: 3, statChange: { development: 2 } }
+          label: "Regelmæssige scanninger",
+          text: "+3 tid, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig oprydning",
-          text: "+1 tid, +5% risk",
+          label: "Kun manuel tjek",
+          text: "+5% risk",
           recommended: false,
-          applyEffect: { timeCost: 1, riskyPlus: 0.05 }
+          applyEffect: { riskyPlus: 0.05 }
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Opsæt elektronisk låsesystem med log over adgang.",
+        location: "it-jura",
+        stepDescription: "Tjek juridisk ansvar for at informere om potentielle databrud.",
         choiceA: {
-          label: "Avanceret låsesystem",
-          text: "+3 tid, -80 kr, +3 security",
-          recommended: true,
-          applyEffect: { timeCost: 3, moneyCost: 80, statChange: { security: 3 } }
+          label: "Grundigt compliance-tjek",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Mekanisk nøglesystem",
+          label: "Ignorer lovkrav",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -756,9 +643,9 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér adgangsregler og vedligeholdelseskontrol.",
+        stepDescription: "Opdater retningslinjer for zero-day håndtering og alarmprocedurer.",
         choiceA: {
-          label: "Detaljeret dokumentation",
+          label: "Omfattende dokumentation",
           text: "+2 tid",
           recommended: false,
           applyEffect: { timeCost: 2 }
@@ -773,27 +660,22 @@ window.cybersikkerhedTasks = [
     ]
   },
 
-  // OPGAVE 10 (4 trin)
+  // Opgave 10 (4 trin)
   {
-    title: "Opdatering af backupløsning mod ransomware",
-    shortDesc: "Hospitalet har en forældet backup, sårbar for ransomware-angreb.",
+    title: "Kryptering af data under transport",
+    shortDesc: "Hospitalet sender ofte følsomme data uden stærk kryptering.",
     narrativeIntro: `
-      "Ved et ransomware-angreb risikerer man at miste alle data, 
-       hvis backupen ikke er offline eller versionsstyret."
+      "Personfølsomme data sendes via netværket, men uden ordentlig kryptering. 
+       Hospitalet vil implementere stærk ende-til-ende-kryptering."
     `,
-    digDeeperLinks: [
-      { label: "Ransomware Backup", text: "En offline/immutable backup kan redde data, selv når alt andet er krypteret." }
-    ],
-    architectAdvice: `
-      Arkitekten fremhæver trin 3 (cybersikkerhed) for at sikre, at backupen er konfigureret 
-      robust mod ransomware.
-    `,
+    glossaryTerms: ["Encryption","Compliance","CAB","MFA"],
+
     steps: [
       {
         location: "hospital",
-        stepDescription: "Analyser hvilke datasæt er kritiske og skal sikres i backup.",
+        stepDescription: "Identificér workflows og systemer, hvor data transporteres i klartekst.",
         choiceA: {
-          label: "Grundig dataanalyse",
+          label: "Omfattende kortlægning",
           text: "+3 tid, +2 development",
           recommended: false,
           applyEffect: { timeCost: 3, statChange: { development: 2 } }
@@ -806,32 +688,32 @@ window.cybersikkerhedTasks = [
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Vælg backup-leverandør med versionsstyret, offline-lagring.",
+        location: "cybersikkerhed",
+        stepDescription: "Implementer TLS/SSL eller end-to-end-kryptering.",
         choiceA: {
-          label: "Immutable, versionsstyret backup",
-          text: "+3 tid, -120 kr, +3 security",
-          recommended: false,
-          applyEffect: { timeCost: 3, moneyCost: 120, statChange: { security: 3 } }
+          label: "Avanceret ende-til-ende-kryptering",
+          text: "+3 tid, -100 kr, +3 security",
+          recommended: true,
+          applyEffect: { timeCost: 3, moneyCost: 100, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Almindelig online-backup",
-          text: "+5% risk",
+          label: "Basis TLS",
+          text: "+2 tid, +5% risk",
           recommended: false,
-          applyEffect: { riskyPlus: 0.05 }
+          applyEffect: { timeCost: 2, riskyPlus: 0.05 }
         }
       },
       {
-        location: "cybersikkerhed",
-        stepDescription: "Konfigurer backupen, så ransomware ikke kan slette/kryptere den.",
+        location: "it-jura",
+        stepDescription: "Tjek lovkrav (GDPR) for kryptering af følsomme patientdata.",
         choiceA: {
-          label: "Robust anti-ransomware backup",
-          text: "+3 tid, +3 security",
-          recommended: true,  // Arkitekten
-          applyEffect: { timeCost: 3, statChange: { security: 3 } }
+          label: "Dybdegående compliance-check",
+          text: "+2 tid, +2 security",
+          recommended: false,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Standard backup",
+          label: "Overfladisk check",
           text: "+5% risk",
           recommended: false,
           applyEffect: { riskyPlus: 0.05 }
@@ -839,7 +721,7 @@ window.cybersikkerhedTasks = [
       },
       {
         location: "dokumentation",
-        stepDescription: "Beskriv backupprocedurer og gendannelsestest.",
+        stepDescription: "Opdater retningslinjer for sikker datatransport.",
         choiceA: {
           label: "Omfattende dokumentation",
           text: "+2 tid",
