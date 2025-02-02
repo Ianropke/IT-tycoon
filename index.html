@@ -32,30 +32,39 @@
 
   <div id="main-container">
     <div id="game-area">
-      <!-- Lokationsbokse -->
-      <div class="location infrastruktur" id="infrastruktur">
-        <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
-      </div>
-      <div class="location informationssikkerhed" id="informationssikkerhed">
-        <span class="loc-icon" style="font-size:2rem;">🛡️</span> Informationssikkerhed
-      </div>
+      <!-- Lokationsbokse (8-10 styk) -->
       <div class="location hospital" id="hospital">
         <span class="loc-icon" style="font-size:2rem;">🏥</span> Hospital
       </div>
-      <div class="location leverandor" id="leverandor">
-        <span class="loc-icon" style="font-size:2rem;">📦</span> Leverandør
+      <div class="location it-support" id="it-support">
+        <span class="loc-icon" style="font-size:2rem;">💼</span> IT-support
       </div>
-      <div class="location medicinsk-udstyr" id="medicinsk-udstyr">
-        <span class="loc-icon" style="font-size:2rem;">🩺</span> Medicinsk Udstyr
+      <div class="location laboratorium" id="laboratorium">
+        <span class="loc-icon" style="font-size:2rem;">🔬</span> Laboratorium
+      </div>
+      <div class="location operationsstue" id="operationsstue">
+        <span class="loc-icon" style="font-size:2rem;">💉</span> Operationsstue
+      </div>
+      <div class="location administration" id="administration">
+        <span class="loc-icon" style="font-size:2rem;">🏢</span> Administration
+      </div>
+      <div class="location dokumentation" id="dokumentation">
+        <span class="loc-icon" style="font-size:2rem;">📄</span> Dokumentation
       </div>
       <div class="location it-jura" id="it-jura">
         <span class="loc-icon" style="font-size:2rem;">⚖️</span> IT Jura
       </div>
+      <div class="location leverandor" id="leverandor">
+        <span class="loc-icon" style="font-size:2rem;">📦</span> Leverandør
+      </div>
+      <div class="location datacenter" id="datacenter">
+        <span class="loc-icon" style="font-size:2rem;">🖥️</span> Datacenter
+      </div>
+      <div class="location infrastruktur" id="infrastruktur">
+        <span class="loc-icon" style="font-size:2rem;">🔧</span> Infrastruktur
+      </div>
       <div class="location cybersikkerhed" id="cybersikkerhed">
         <span class="loc-icon" style="font-size:2rem;">💻</span> Cybersikkerhed
-      </div>
-      <div class="location dokumentation" id="dokumentation">
-        <span class="loc-icon" style="font-size:2rem;">📄</span> Dokumentation
       </div>
     </div>
 
@@ -70,7 +79,7 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
-        <!-- Arkitekthjælp-knap erstatter den gamle "Undersøg"-knap -->
+        <!-- Arkitekthjælp-knap (bruges til at få gode råd) -->
         <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
       </div>
 
@@ -92,7 +101,8 @@
     <div class="modal-content">
       <h2 style="color:#1abc9c;">Velkommen til IT Tycoon: LIMS Forvaltning – Læringsudgave</h2>
       <p style="color:#f1c40f;">
-        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> på et stort hospital. Du styrer tid og penge, og beslutninger har konsekvenser. Få ekstra info om fx <span class="hoverTooltip" data-tooltip="Domain Name System">DNS</span>, <span class="hoverTooltip" data-tooltip="Active Directory">AD</span> og <span class="hoverTooltip" data-tooltip="High Performance Computing">HPC</span> ved at føre musen hen over ordene.
+        Du er ansvarlig for <span class="hoverTooltip" data-tooltip="Laboratory Information Management System">LIMS</span> på et stort hospital. 
+        Du styrer tid og penge, og beslutninger har konsekvenser.
       </p>
       <p>
         Du har 100 tidsenheder og 2000 kr. Springer du dokumentation over, stiger risikoen i CAB. God fornøjelse!
@@ -116,19 +126,19 @@
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
-      <p id="scenario-description"></p>
+      <div id="scenario-description"></div>
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
-      <!-- Valgmuligheder med "Mere Info"-knapper -->
+
+      <!-- Valgmuligheder uden “Mere info”-knapper -->
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
-        <em id="scenario-a-text"></em><br/>
-        <button id="scenario-a-more-info" class="commit-button small">Mere Info</button>
+        <em id="scenario-a-text"></em>
       </div>
       <div id="scenario-optionB" style="margin-top:8px;">
         <strong>B: </strong><span id="scenario-b-label"></span><br/>
-        <em id="scenario-b-text"></em><br/>
-        <button id="scenario-b-more-info" class="commit-button small">Mere Info</button>
+        <em id="scenario-b-text"></em>
       </div>
+
       <div style="margin-top:12px;">
         <button id="scenario-a-btn" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn">Vælg B</button>
@@ -140,19 +150,7 @@
   <div id="architect-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="architect-content"></div>
-      <!-- Eksempel: spilleren kan vælge et anbefalet valg via en knap -->
-      <p>Hvis du vælger et anbefalet valg, reduceres risikoen med 5%.</p>
-      <button class="commit-button" onclick="chooseArchitect('A')">Vælg A</button>
-      <button class="commit-button" onclick="chooseArchitect('B')">Vælg B</button>
       <button class="commit-button" onclick="document.getElementById('architect-modal').style.display='none'">Luk</button>
-    </div>
-  </div>
-
-  <!-- "Mere Info" Modal -->
-  <div id="more-info-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <div id="more-info-content"></div>
-      <button id="more-info-close-btn" class="commit-button">Luk</button>
     </div>
   </div>
 
@@ -192,6 +190,14 @@
     <div class="modal-content">
       <div id="task-summary-text"></div>
       <button id="task-summary-ok-btn" style="background-color:#27ae60;">OK</button>
+    </div>
+  </div>
+
+  <!-- "Mere Info" Modal (til links i digDeeperLinks) -->
+  <div id="more-info-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div id="more-info-content"></div>
+      <button id="more-info-close-btn" class="commit-button">Luk</button>
     </div>
   </div>
 
