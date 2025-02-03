@@ -7,6 +7,27 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Intro Modal -->
+  <div id="intro-modal" class="modal" style="display:flex;">
+    <div class="modal-content intro-content">
+      <!-- Baggrundseffekt (kan være et billede eller CSS-animation) -->
+      <div class="intro-background"></div>
+      <!-- Tekstområde med fortælling -->
+      <div class="intro-text">
+        <h2>Velkommen til IT-Tycoon</h2>
+        <p>
+          Du træder ind i rollen som IT-ansvarlig for et stort hospital.  
+          Hospitalet kæmper med forældede systemer, nedbrud og ineffektive processer.  
+          Med kun 100 tidsenheder og 2000 kr. skal du navigere gennem komplekse IT-udfordringer  
+          og sikre en digital fremtid. Er du klar til at forvandle kaos til kontrol?
+        </p>
+      </div>
+      <!-- "Start dit eventyr" knap (skjult i starten) -->
+      <button id="intro-start-btn" class="commit-button" style="display:none;">Start dit eventyr</button>
+    </div>
+  </div>
+
+  <!-- Header, Scoreboard osv. -->
   <header>
     <h1>IT-Tycoon</h1>
     <div id="scoreboard">
@@ -74,18 +95,7 @@
     <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
   </footer>
 
-  <!-- ========== MODALER ========== -->
-
-  <!-- Intro Modal -->
-  <div id="intro-modal" class="modal" style="display:flex;">
-    <div class="modal-content">
-      <h2>Velkommen til IT-Tycoon</h2>
-      <p>Du har 100 tidsenheder og 2000 kr. Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling. Undgå for meget risiko i CAB ved at overholde dokumentationen.</p>
-      <button id="intro-ok-btn" class="commit-button" style="background-color:#27ae60;">Kom i gang!</button>
-    </div>
-  </div>
-
-  <!-- Tutorial Modal -->
+  <!-- De øvrige modaler (Tutorial, Scenario Intro, Scenario Modal, Arkitekthjælp, CAB, Task Summary, More Info osv.) -->
   <div id="tutorial-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
@@ -94,7 +104,6 @@
     </div>
   </div>
 
-  <!-- Scenario Intro Modal (viser opgaveskrivelsen efter Forpligt) -->
   <div id="scenario-intro-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="scenario-intro-title"></h2>
@@ -103,14 +112,13 @@
     </div>
   </div>
 
-  <!-- Scenario Modal (til trinvalg, inkl. "Mere info (trin)") -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
       <div id="scenario-description"></div>
-      <!-- DigDeeperLinks til opgaveniveau -->
+      <!-- DigDeeperLinks -->
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
@@ -121,13 +129,12 @@
         <em id="scenario-b-text"></em>
       </div>
       <div style="margin-top:12px;">
-        <button id="scenario-a-btn" class="commit-button" style="margin-right:8px;">Vælg A</button>
+        <button id="scenario-a-btn" class="commit-button">Vælg A</button>
         <button id="scenario-b-btn" class="commit-button">Vælg B</button>
       </div>
     </div>
   </div>
 
-  <!-- Arkitekthjælp Modal -->
   <div id="architect-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="architect-content"></div>
@@ -135,16 +142,6 @@
     </div>
   </div>
 
-  <!-- End-of-Time Modal -->
-  <div id="end-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h2>Tiden er gået!</h2>
-      <p id="end-game-summary"></p>
-      <button id="end-ok-btn" class="commit-button" style="background-color:#e74c3c;">Luk</button>
-    </div>
-  </div>
-
-  <!-- CAB Modal -->
   <div id="cab-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Endelig CAB-gennemgang</h2>
@@ -153,7 +150,6 @@
     </div>
   </div>
 
-  <!-- CAB Result Modal -->
   <div id="cab-result-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="cab-result-title"></h2>
@@ -162,7 +158,6 @@
     </div>
   </div>
 
-  <!-- Task Summary Modal -->
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="task-summary-text"></div>
@@ -170,7 +165,6 @@
     </div>
   </div>
 
-  <!-- "Mere Info" Modal -->
   <div id="more-info-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="more-info-content"></div>
@@ -187,7 +181,7 @@
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
 
-  <!-- Hovedlogik i main.js -->
+  <!-- Hovedlogik -->
   <script src="scripts/main.js"></script>
 </body>
 </html>
