@@ -237,7 +237,7 @@ footer {
   100% { opacity: 0; transform: translateY(-20px); }
 }
 
-/* Flydende tekst */
+/* Flydende Tekst */
 #floating-text-container {
   position: fixed;
   top: 0;
@@ -259,7 +259,53 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
-/* Responsivt design */
+/* Intro Modal Specifik styling */
+.intro-content {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+.intro-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('images/hospital-bg.jpg') center center / cover no-repeat;
+  opacity: 0.7;
+  animation: bgFadeIn 3s ease-out forwards;
+  z-index: -1;
+}
+@keyframes bgFadeIn {
+  from { opacity: 0; }
+  to { opacity: 0.7; }
+}
+.intro-text {
+  padding: 40px;
+  text-align: center;
+  animation: textFadeIn 3s ease-out forwards;
+}
+@keyframes textFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#intro-start-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  background-color: #27ae60;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  animation: buttonFadeIn 1s ease-out forwards;
+}
+@keyframes buttonFadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsivt Design */
 @media (max-width: 992px) {
   #scores {
     flex-wrap: wrap;
