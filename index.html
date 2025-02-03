@@ -14,7 +14,6 @@
         <span class="score-item">Tid: <span id="time-left">100</span></span>
         <span class="score-item">Penge: <span id="money-left">2000</span></span>
         <span class="score-item">Fuldførte: <span id="tasks-completed">0</span></span>
-
         <span class="score-item" style="color:#ff4444;">Sikkerhed: <span id="security-value">100</span></span>
         <span class="score-item" style="color:#44ff44;">Stabilitet: <span id="stability-value">100</span></span>
         <span class="score-item" style="color:#4444ff;">Udvikling: <span id="development-value">100</span></span>
@@ -32,16 +31,16 @@
       <div class="location hoverTooltip" id="dokumentation" data-tooltip="Dokumentation: Her formuleres krav, procedurer og compliance.">
         <span class="loc-icon">📄</span> Dokumentation
       </div>
-      <div class="location hoverTooltip" id="leverandor" data-tooltip="Leverandør: Her indgås aftaler og samarbejder med eksterne IT-partnere.">
+      <div class="location hoverTooltip" id="leverandor" data-tooltip="Leverandør: Her indgås aftaler med eksterne IT-partnere.">
         <span class="loc-icon">📦</span> Leverandør
       </div>
-      <div class="location hoverTooltip" id="infrastruktur" data-tooltip="Infrastruktur: Her styres netværk, servere, cloud mm.">
+      <div class="location hoverTooltip" id="infrastruktur" data-tooltip="Infrastruktur: Her styres netværk, servere, cloud og HPC.">
         <span class="loc-icon">🔧</span> Infrastruktur
       </div>
       <div class="location hoverTooltip" id="it-jura" data-tooltip="IT Jura: Her håndteres lovkrav, GDPR og compliance.">
         <span class="loc-icon">⚖️</span> IT Jura
       </div>
-      <div class="location hoverTooltip" id="cybersikkerhed" data-tooltip="Cybersikkerhed: Her styrkes systembeskyttelse med f.eks. firewall og antivirus.">
+      <div class="location hoverTooltip" id="cybersikkerhed" data-tooltip="Cybersikkerhed: Her styrkes systembeskyttelsen (firewall, antivirus, SIEM).">
         <span class="loc-icon">💻</span> Cybersikkerhed
       </div>
     </div>
@@ -81,10 +80,7 @@
   <div id="intro-modal" class="modal" style="display:flex;">
     <div class="modal-content">
       <h2>Velkommen til IT-Tycoon</h2>
-      <p>
-        Du har 100 tidsenheder og 2000 kr. Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling.
-        Undgå for meget risiko i CAB ved at overholde dokumentationen.
-      </p>
+      <p>Du har 100 tidsenheder og 2000 kr. Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling. Undgå for meget risiko i CAB ved at overholde dokumentationen.</p>
       <button id="intro-ok-btn" class="commit-button" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
@@ -107,17 +103,15 @@
     </div>
   </div>
 
-  <!-- Scenario Modal (til trinvalg og "Mere info (trin)") -->
+  <!-- Scenario Modal (til trinvalg, inkl. "Mere info (trin)") -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
       <div id="scenario-description"></div>
-      
-      <!-- digDeeperLinks til opgaveniveau -->
+      <!-- DigDeeperLinks til opgaveniveau -->
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
-      
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
@@ -126,7 +120,6 @@
         <strong>B: </strong><span id="scenario-b-label"></span><br/>
         <em id="scenario-b-text"></em>
       </div>
-      
       <div style="margin-top:12px;">
         <button id="scenario-a-btn" class="commit-button" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn" class="commit-button">Vælg B</button>
@@ -177,7 +170,7 @@
     </div>
   </div>
 
-  <!-- “Mere Info” Modal (til ekstra information, fx fra “Mere info (trin)”) -->
+  <!-- "Mere Info" Modal -->
   <div id="more-info-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="more-info-content"></div>
@@ -189,7 +182,7 @@
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
-  <!-- Indlæs task-filer -->
+  <!-- Indlæs dine task-filer -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
