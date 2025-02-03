@@ -15,33 +15,38 @@
         <span class="score-item">Penge: <span id="money-left">2000</span></span>
         <span class="score-item">Fuldførte: <span id="tasks-completed">0</span></span>
 
-        <span class="score-item" style="color:#ff4444;">Sikkerhed: 
-          <span id="security-value">100</span>
-        </span>
-        <span class="score-item" style="color:#44ff44;">Stabilitet: 
-          <span id="stability-value">100</span>
-        </span>
-        <span class="score-item" style="color:#4444ff;">Udvikling: 
-          <span id="development-value">100</span>
-        </span>
-        <span class="score-item" style="color:#ffc107;">Hospitalstilf.: 
-          <span id="hospital-satisfaction">100</span>%
-        </span>
+        <span class="score-item" style="color:#ff4444;">Sikkerhed: <span id="security-value">100</span></span>
+        <span class="score-item" style="color:#44ff44;">Stabilitet: <span id="stability-value">100</span></span>
+        <span class="score-item" style="color:#4444ff;">Udvikling: <span id="development-value">100</span></span>
+        <span class="score-item" style="color:#ffc107;">Hospitalstilf.: <span id="hospital-satisfaction">100</span>%</span>
       </div>
     </div>
   </header>
 
   <div id="main-container">
+    <!-- Venstre side: Lokationsbokse med grafik og tooltips -->
     <div id="game-area">
-      <!-- 6 Lokationer (ingen spørgsmålstegn, men tekst og evt. emojis) -->
-      <div class="location hospital" id="hospital">Hospital</div>
-      <div class="location dokumentation" id="dokumentation">Dokumentation</div>
-      <div class="location leverandor" id="leverandor">Leverandør</div>
-      <div class="location infrastruktur" id="infrastruktur">Infrastruktur</div>
-      <div class="location it-jura" id="it-jura">IT Jura</div>
-      <div class="location cybersikkerhed" id="cybersikkerhed">Cybersikkerhed</div>
+      <div class="location hoverTooltip" id="hospital" data-tooltip="Hospital: Her håndteres kliniske opgaver og patientflows.">
+        <span class="loc-icon">🏥</span> Hospital
+      </div>
+      <div class="location hoverTooltip" id="dokumentation" data-tooltip="Dokumentation: Her formuleres krav, procedurer og compliance.">
+        <span class="loc-icon">📄</span> Dokumentation
+      </div>
+      <div class="location hoverTooltip" id="leverandor" data-tooltip="Leverandør: Her indgås aftaler og samarbejder med eksterne IT-partnere.">
+        <span class="loc-icon">📦</span> Leverandør
+      </div>
+      <div class="location hoverTooltip" id="infrastruktur" data-tooltip="Infrastruktur: Her styres netværk, servere, cloud mm.">
+        <span class="loc-icon">🔧</span> Infrastruktur
+      </div>
+      <div class="location hoverTooltip" id="it-jura" data-tooltip="IT Jura: Her håndteres lovkrav, GDPR og compliance.">
+        <span class="loc-icon">⚖️</span> IT Jura
+      </div>
+      <div class="location hoverTooltip" id="cybersikkerhed" data-tooltip="Cybersikkerhed: Her styrkes systembeskyttelse med f.eks. firewall og antivirus.">
+        <span class="loc-icon">💻</span> Cybersikkerhed
+      </div>
     </div>
 
+    <!-- Højre side: Aktiv opgave og Mulige opgaver -->
     <div id="task-side">
       <div id="active-task">
         <h2>Aktiv opgave</h2>
@@ -70,14 +75,17 @@
     <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
   </footer>
 
-  <!-- ========== Alle modaler ========== -->
+  <!-- ========== MODALER ========== -->
 
   <!-- Intro Modal -->
-  <div id="intro-modal" class="modal">
+  <div id="intro-modal" class="modal" style="display:flex;">
     <div class="modal-content">
       <h2>Velkommen til IT-Tycoon</h2>
-      <p>Du har 100 tid og 2000 kr. Opnå mindst 110 i sikkerhed og 115 i udvikling. Undgå for meget risiko!</p>
-      <button id="intro-ok-btn" class="commit-button">Kom i gang!</button>
+      <p>
+        Du har 100 tidsenheder og 2000 kr. Din mission er at opnå mindst 110 i sikkerhed og 115 i udvikling.
+        Undgå for meget risiko i CAB ved at overholde dokumentationen.
+      </p>
+      <button id="intro-ok-btn" class="commit-button" style="background-color:#27ae60;">Kom i gang!</button>
     </div>
   </div>
 
@@ -86,11 +94,11 @@
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
       <p id="tutorial-text"></p>
-      <button id="tutorial-next-btn" class="commit-button">Næste</button>
+      <button id="tutorial-next-btn" class="commit-button" style="background-color:#2980b9;">Næste</button>
     </div>
   </div>
 
-  <!-- Scenario Intro Modal (pop op med opgaveskrivelsen) -->
+  <!-- Scenario Intro Modal (viser opgaveskrivelsen efter Forpligt) -->
   <div id="scenario-intro-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="scenario-intro-title"></h2>
@@ -99,17 +107,17 @@
     </div>
   </div>
 
-  <!-- Scenario Modal -->
+  <!-- Scenario Modal (til trinvalg og "Mere info (trin)") -->
   <div id="scenario-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="scenario-narrative" style="display:none; margin-bottom:8px; color:#f0dca0;"></div>
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
       <div id="scenario-description"></div>
-
-      <!-- “Mere info” knapper på opgaveniveau -->
+      
+      <!-- digDeeperLinks til opgaveniveau -->
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
-
+      
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
         <em id="scenario-a-text"></em>
@@ -118,7 +126,7 @@
         <strong>B: </strong><span id="scenario-b-label"></span><br/>
         <em id="scenario-b-text"></em>
       </div>
-
+      
       <div style="margin-top:12px;">
         <button id="scenario-a-btn" class="commit-button" style="margin-right:8px;">Vælg A</button>
         <button id="scenario-b-btn" class="commit-button">Vælg B</button>
@@ -139,7 +147,7 @@
     <div class="modal-content">
       <h2>Tiden er gået!</h2>
       <p id="end-game-summary"></p>
-      <button id="end-ok-btn" class="commit-button">Luk</button>
+      <button id="end-ok-btn" class="commit-button" style="background-color:#e74c3c;">Luk</button>
     </div>
   </div>
 
@@ -165,11 +173,11 @@
   <div id="task-summary-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="task-summary-text"></div>
-      <button id="task-summary-ok-btn" class="commit-button">OK</button>
+      <button id="task-summary-ok-btn" class="commit-button" style="background-color:#27ae60;">OK</button>
     </div>
   </div>
 
-  <!-- “Mere Info” Modal (til digDeeperLinks) -->
+  <!-- “Mere Info” Modal (til ekstra information, fx fra “Mere info (trin)”) -->
   <div id="more-info-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div id="more-info-content"></div>
@@ -177,16 +185,14 @@
     </div>
   </div>
 
-  <!-- Popup container + floating texts -->
+  <!-- Popup container og flydende tekst -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
-  <!-- Indlæs dine task-filer -->
+  <!-- Indlæs task-filer -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
-
-  <!-- Ingen IT-ordbog, da det er fjernet -->
 
   <!-- Hovedlogik i main.js -->
   <script src="scripts/main.js"></script>
