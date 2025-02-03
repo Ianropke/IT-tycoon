@@ -1,18 +1,8 @@
 /************************************************************
- * main.js – IT-Tycoon (endelig version)
- * 
- * Funktioner:
- *  - Intro og tutorial
- *  - Scoreboard (tid, penge, stats)
- *  - Opgavehåndtering: Mulige opgaver, aktiv opgave
- *  - Opgaveskrivelse pop-up (Scenario Intro Modal)
- *  - Scenario Modal med trinvalg og "Mere info (trin)"
- *  - Lokationsklik via de 6 lokationer med tooltips (defineret i index.html)
- *  - Arkitekthjælp, CAB-gennemgang, Task Summary og End-of-Time Modal
- *  - Ephemeral popups og flydende tekst
+ * main.js – IT-Tycoon (med intro)
  ************************************************************/
 
-// Arrays til tasks – skal være indlæst før main.js via dine task-filer.
+// Arrays til tasks – skal være indlæst via dine task-filer.
 window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
@@ -65,16 +55,21 @@ const hospitalSatEl    = document.getElementById('hospital-satisfaction');
 // Modaler
 const introModal       = document.getElementById('intro-modal');
 const tutorialModal    = document.getElementById('tutorial-modal');
-const scenarioModal    = document.getElementById('scenario-modal');
 const scenarioIntroModal = document.getElementById('scenario-intro-modal');
+const scenarioModal    = document.getElementById('scenario-modal');
+const architectModal   = document.getElementById('architect-modal');
 const cabModal         = document.getElementById('cab-modal');
 const cabResultModal   = document.getElementById('cab-result-modal');
-const endModal         = document.getElementById('end-modal');
 const taskSummaryModal = document.getElementById('task-summary-modal');
-const architectModal   = document.getElementById('architect-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
 // Indhold i modaler
+const tutorialTitleEl = document.getElementById('tutorial-title');
+const tutorialTextEl  = document.getElementById('tutorial-text');
+const scenarioIntroTitleEl = document.getElementById('scenario-intro-title');
+const scenarioIntroTextEl  = document.getElementById('scenario-intro-text');
+const scenarioIntroCloseBtn = document.getElementById('scenario-intro-close-btn');
+
 const scenarioTitle       = document.getElementById('scenario-title');
 const scenarioFlavorText  = document.getElementById('scenario-flavor-text');
 const scenarioDescription = document.getElementById('scenario-description');
@@ -84,7 +79,7 @@ const scenarioALabel      = document.getElementById('scenario-a-label');
 const scenarioAText       = document.getElementById('scenario-a-text');
 const scenarioBLabel      = document.getElementById('scenario-b-label');
 const scenarioBText       = document.getElementById('scenario-b-text');
-const scenarioNarrativeDiv= document.getElementById('scenario-narrative');
+const scenarioNarrativeDiv = document.getElementById('scenario-narrative');
 const digDeeperLinksDiv   = document.getElementById('dig-deeper-links');
 
 const cabSummary       = document.getElementById('cab-summary');
@@ -95,37 +90,17 @@ const taskSummaryText  = document.getElementById('task-summary-text');
 const architectContent = document.getElementById('architect-content');
 const moreInfoContent  = document.getElementById('more-info-content');
 
-// Scenario Intro Modal (pop-up med opgaveskrivelsen)
-const scenarioIntroTitleEl = document.getElementById('scenario-intro-title');
-const scenarioIntroTextEl  = document.getElementById('scenario-intro-text');
-const scenarioIntroCloseBtn= document.getElementById('scenario-intro-close-btn');
-
-/* --- Knappe-Event Listeners --- */
-document.getElementById('intro-ok-btn').addEventListener('click', () => {
-  introModal.style.display = "none";
+/* --- Knappe Event Listeners --- */
+document.getElementById('intro-start-btn').addEventListener('click', () => {
+  // Luk intro-modalen og start tutorialen
+  introModal.style.display = 'none';
   openTutorialModal();
 });
-document.getElementById('end-ok-btn').addEventListener('click', () => {
-  endModal.style.display = "none";
+
+document.getElementById('scenario-intro-close-btn').addEventListener('click', () => {
+  scenarioIntroModal.style.display = 'none';
 });
-document.getElementById('cab-ok-btn').addEventListener('click', () => {
-  cabModal.style.display = "none";
-  finalizeCABResult();
-});
-document.getElementById('cab-result-ok-btn').addEventListener('click', () => {
-  cabResultModal.style.display = "none";
-  postCABTechnicalCheck();
-});
-document.getElementById('task-summary-ok-btn').addEventListener('click', () => {
-  taskSummaryModal.style.display = "none";
-  renderTasks();
-});
-document.getElementById('more-info-close-btn').addEventListener('click', () => {
-  moreInfoModal.style.display = "none";
-});
-scenarioIntroCloseBtn.addEventListener('click', () => {
-  scenarioIntroModal.style.display = "none";
-});
+
 document.getElementById('architect-help-btn').addEventListener('click', () => {
   if (!gameState.activeTask) {
     showPopup("Ingen aktiv opgave!", "error");
@@ -138,9 +113,23 @@ document.getElementById('architect-help-btn').addEventListener('click', () => {
   showArchitectModal();
 });
 
+document.getElementById('cab-ok-btn').addEventListener('click', () => {
+  cabModal.style.display = 'none';
+  finalizeCABResult();
+});
+document.getElementById('cab-result-ok-btn').addEventListener('click', () => {
+  cabResultModal.style.display = 'none';
+  postCABTechnicalCheck();
+});
+document.getElementById('task-summary-ok-btn').addEventListener('click', () => {
+  taskSummaryModal.style.display = 'none';
+  renderTasks();
+});
+document.getElementById('more-info-close-btn').addEventListener('click', () => {
+  moreInfoModal.style.display = 'none';
+});
+
 /* --- Tutorial --- */
-const tutorialTitleEl = document.getElementById('tutorial-title');
-const tutorialTextEl  = document.getElementById('tutorial-text');
 const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { title: "Din rolle", text: "Du forvalter LIMS på et stort hospital. Tid, penge, dokumentation og cybersikkerhed er nøgler." },
@@ -166,13 +155,13 @@ tutorialNextBtn.addEventListener('click', () => {
   showTutorialContent();
 });
 
-/* --- Lokationer --- */
+/* --- Lokationsklik --- */
 const locMap = {
-  hospital:       document.getElementById('hospital'),
-  dokumentation:  document.getElementById('dokumentation'),
-  leverandor:     document.getElementById('leverandor'),
-  infrastruktur:  document.getElementById('infrastruktur'),
-  "it-jura":      document.getElementById('it-jura'),
+  hospital: document.getElementById('hospital'),
+  dokumentation: document.getElementById('dokumentation'),
+  leverandor: document.getElementById('leverandor'),
+  infrastruktur: document.getElementById('infrastruktur'),
+  "it-jura": document.getElementById('it-jura'),
   cybersikkerhed: document.getElementById('cybersikkerhed')
 };
 Object.entries(locMap).forEach(([k, el]) => {
@@ -188,27 +177,23 @@ function initGame(){
     ...(window.infrastrukturTasks || []),
     ...(window.cybersikkerhedTasks || [])
   ];
-  // Generér fx 5 startopgaver (forudsat backlog indeholder nok)
+  // Generér fx 5 startopgaver (hvis der er nok i backlog)
   for (let i = 0; i < 5; i++){
     generateTask();
   }
-  setInterval(() => {
-    if (gameState.availableTasks.length < 10) {
-      generateTask();
-    }
-  }, 10000);
+  // Eventuelt kan du opsætte et interval for løbende at tilføje opgaver
 }
 
 /* --- Scoreboard --- */
 function updateScoreboard(){
   calcHospitalSatisfaction();
-  timeLeftEl.textContent = gameState.time;
-  moneyLeftEl.textContent = gameState.money;
-  tasksCompletedEl.textContent = gameState.tasksCompleted;
-  securityValueEl.textContent = gameState.security;
-  stabilityValueEl.textContent = gameState.stability;
-  developmentValueEl.textContent = gameState.development;
-  hospitalSatEl.textContent = Math.round(gameState.hospitalSatisfaction);
+  document.getElementById('time-left').textContent = gameState.time;
+  document.getElementById('money-left').textContent = gameState.money;
+  document.getElementById('tasks-completed').textContent = gameState.tasksCompleted;
+  document.getElementById('security-value').textContent = gameState.security;
+  document.getElementById('stability-value').textContent = gameState.stability;
+  document.getElementById('development-value').textContent = gameState.development;
+  document.getElementById('hospital-satisfaction').textContent = Math.round(gameState.hospitalSatisfaction);
 }
 function calcHospitalSatisfaction(){
   let avg = (gameState.security + gameState.stability + gameState.development) / 3;
@@ -241,12 +226,12 @@ function renderTasks(){
   gameState.availableTasks.forEach(t => {
     let li = document.createElement('li');
     li.innerHTML = `<strong>${t.title}</strong><br/>${t.shortDesc || "Ingen beskrivelse"}`;
-    // Markér opgave ved klik (uden at forpligte)
+    // Ved klik markeres opgaven
     li.addEventListener('click', () => {
       gameState.selectedTask = t;
       showPopup(`Valgt opgave: ${t.title}`, "info", 2000);
     });
-    // Forpligt-knap
+    // "Forpligt" knap
     let comBtn = document.createElement('button');
     comBtn.textContent = "Forpligt";
     comBtn.classList.add('commit-button');
@@ -335,7 +320,7 @@ function showScenarioModal(stepIndex){
   let st = t.steps[stepIndex];
   let loc = st.location || "ukendt";
   
-  // Vis eventuelt narrative snippet (kan være samme som opgaveskrivelsen)
+  // Vis narrative snippet (evt. opgaveskrivelsen)
   if (t.narrativeIntro){
     scenarioNarrativeDiv.style.display = "block";
     scenarioNarrativeDiv.innerHTML = t.narrativeIntro;
@@ -364,7 +349,7 @@ function showScenarioModal(stepIndex){
     digDeeperLinksDiv.style.display = "none";
   }
   
-  // (NYT) "Mere info (trin)" – hvis st.stepContext findes
+  // Tilføj "Mere info (trin)"-knap hvis stepContext findes
   let modalContent = scenarioModal.querySelector('.modal-content');
   let oldContextDiv = modalContent.querySelector('#step-context-div');
   if (oldContextDiv) oldContextDiv.remove();
@@ -398,7 +383,7 @@ function showScenarioModal(stepIndex){
   };
 }
 
-/* --- Valgmuligheder og effekter --- */
+/* --- Valg-effekter --- */
 function applyChoiceEffect(eff){
   if (!eff) return;
   if (eff.timeCost)  applyTimeCost(eff.timeCost);
@@ -425,7 +410,7 @@ function applyStatChange(stat, delta){
   showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
 }
 
-/* --- Når et trin er gennemført --- */
+/* --- Når et trin er færdigt --- */
 function finalizeStep(stepIndex){
   let t = gameState.activeTask;
   if (!t) return;
@@ -590,7 +575,7 @@ function showFloatingText(txt, stat){
   setTimeout(() => div.remove(), 2000);
 }
 
-/* --- "Mere info" Modal --- */
+/* --- "Mere Info" Modal --- */
 function showMoreInfo(infoText){
   moreInfoContent.innerHTML = infoText;
   moreInfoModal.style.display = "flex";
@@ -631,3 +616,19 @@ function showArchitectModal(){
   architectModal.style.display = "flex";
   t.architectUsed = true;
 }
+
+/* --- Intro-funktionalitet --- */
+function startIntro() {
+  const introModal = document.getElementById('intro-modal');
+  introModal.style.display = 'flex';
+  // Efter 5 sekunder vises "Start dit eventyr" knappen
+  setTimeout(() => {
+    const startBtn = document.getElementById('intro-start-btn');
+    startBtn.style.display = 'block';
+  }, 5000);
+}
+
+// Start intro ved load
+window.addEventListener('load', () => {
+  startIntro();
+});
