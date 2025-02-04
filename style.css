@@ -23,66 +23,95 @@ header h1 {
   font-size: 2rem;
 }
 
-/* Dashboard – Ny topsektion med fast, lavere højde */
+/* Main container med to kolonner */
+#main-container {
+  display: flex;
+  height: calc(100vh - 280px); /* Eksempel: header + footer + margin fastsat til 280px samlet */
+  margin: 8px 20px;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* Venstre kolonne: Dashboard + Lokationsområde */
+#left-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 #dashboard {
   background-color: #34495e;
   padding: 16px;
-  margin: 16px auto;
   width: 100%;
   max-width: 800px;
-  height: 200px; /* Reduceret højde */
+  height: 150px; /* Mindre dashboard, justér efter behov */
   border-radius: 8px;
   overflow: hidden;
+  margin: 0 auto;
 }
 #dashboard h2 {
-  margin: 0 0 16px 0;
+  margin: 0 0 8px 0;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 #dashboard-canvas {
   width: 100% !important;
   height: 100% !important;
 }
-
-/* Layout for hovedindholdet */
-#main-container {
-  display: flex;
-  height: calc(100vh - 280px); /* 280px = header (ca. 80px) + dashboard (200px) */
-  margin: 8px 20px;
-  gap: 16px;
-  box-sizing: border-box;
-}
 #game-area {
   flex: 1;
-  background-color: #3a4c5c;
-  border: 1px solid #ecf0f1;
-  border-radius: 10px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: flex-start;
-  padding: 12px;
+  gap: 4px; /* Reduceret afstand mellem lokationsbokse */
+  justify-content: center;
+  align-items: center;
+  height: 150px; /* Mindre område til lokationsbokse */
   overflow-y: auto;
 }
-#task-side {
+.location {
+  width: 130px; /* Mindre bredde */
+  height: 70px;  /* Mindre højde */
+  margin: 2px;  /* Minimal margin */
+  border: 2px solid #bdc3c7;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #3d5466;
+  padding: 2px;
+  transition: background-color 0.3s;
+}
+.location:hover {
+  filter: brightness(1.15);
+}
+.loc-icon {
+  font-size: 1.3rem;
+  margin-bottom: 2px;
+}
+
+/* Højre kolonne: Opgaver */
+#right-column {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  overflow-y: auto;
+  gap: 8px;
+  height: 100%;
 }
-
-/* Opgavelister */
 #active-task, #available-tasks {
   background-color: #34495e;
   border: 2px solid #ecf0f1;
   border-radius: 5px;
   padding: 8px;
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
 }
-#active-task h3 {
+#active-task h2, #available-tasks h2 {
   margin-top: 0;
+  font-size: 1.3rem;
 }
 #tasks-list {
   list-style: none;
@@ -90,44 +119,17 @@ header h1 {
   margin: 0;
 }
 #tasks-list li {
-  margin: 8px 0;
-  padding: 8px;
+  margin: 4px 0;
+  padding: 6px;
   background-color: #2c3e50;
   border: 1px solid #444;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: background-color 0.3s, border 0.3s;
   cursor: pointer;
 }
 #tasks-list li:hover {
   background-color: #1abc9c;
-}
-
-/* Lokationsbokse med grafik og tooltips */
-.location {
-  width: 160px;
-  height: 90px;
-  margin: 8px;
-  border: 2px solid #bdc3c7;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  background-color: #3d5466;
-  padding: 4px;
-  position: relative;
-}
-.location:hover {
-  filter: brightness(1.15);
-}
-.loc-icon {
-  font-size: 1.6rem;
-  margin-bottom: 4px;
 }
 
 /* Knapper */
@@ -164,14 +166,14 @@ footer {
   position: absolute;
   background: rgba(0,0,0,0.75);
   color: #fff;
-  padding: 6px 8px;
+  padding: 4px 6px;
   border-radius: 4px;
   top: 110%;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
   z-index: 99999;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   pointer-events: none;
 }
 .hoverTooltip[data-tooltip]:hover::before {
@@ -180,7 +182,7 @@ footer {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border: 6px solid transparent;
+  border: 4px solid transparent;
   border-top-color: rgba(0,0,0,0.75);
   z-index: 99998;
 }
@@ -329,8 +331,8 @@ footer {
 /* Responsivt Design */
 @media (max-width: 992px) {
   .location {
-    width: 140px;
-    height: 80px;
+    width: 120px;
+    height: 70px;
   }
 }
 @media (max-width: 768px) {
@@ -338,14 +340,17 @@ footer {
     flex-direction: column;
     height: auto;
   }
+  #left-column, #right-column {
+    width: 100%;
+  }
   #game-area {
-    min-height: 300px;
+    height: auto;
   }
 }
 @media (max-width: 480px) {
   .location {
-    width: 120px;
-    height: 70px;
-    font-size: 1rem;
+    width: 100px;
+    height: 60px;
+    font-size: 0.9rem;
   }
 }
