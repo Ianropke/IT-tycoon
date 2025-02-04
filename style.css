@@ -39,23 +39,26 @@ header h1 {
   white-space: nowrap;
 }
 
-/* Dashboard */
+/* Dashboard – Fast højde og centrering */
 #dashboard {
   background-color: #34495e;
   padding: 16px;
-  margin: 8px 20px;
+  margin: 16px auto;
+  width: 100%;
+  max-width: 800px; /* Juster max bredde efter behov */
+  height: 300px; /* Fast højde for dashboardet */
   border-radius: 8px;
+  overflow: hidden;
 }
 #dashboard h2 {
   margin: 0 0 16px 0;
   text-align: center;
   font-size: 1.5rem;
 }
+/* Sørg for, at canvas fylder hele containeren */
 #dashboard-canvas {
   width: 100% !important;
-  max-width: 800px;
-  height: auto !important;
-  margin: 0 auto;
+  height: 100% !important;
 }
 
 /* Layout */
