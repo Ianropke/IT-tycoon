@@ -1,5 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (Opdateret med lavere skala og Arkitekthjælp)
+ * main.js – IT-Tycoon (Opdateret med justeret dashboard og tid)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -7,20 +7,20 @@ window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Missionmål (eksempel: opnå f.eks. 22 i udvikling)
+// Missionmål (eksempel: opnå 22 i både sikkerhed og udvikling)
 const missionGoals = {
   security: 22,
   development: 22
 };
 
-// Global gameState med lavere startværdier (alle elementer på samme skala)
+// Global gameState med justerede startværdier (alle elementer på samme skala)
+// Vi har øget tiden til 40, så den ikke løber ud for hurtigt.
 let gameState = {
   security: 20,
   stability: 20,
   development: 20,
-  // Hospitalstilfredshed fjernet, da den ikke bruges
   money: 20,
-  time: 20,
+  time: 40,
   tasksCompleted: 0,
   
   activeTask: null,      // Den opgave spilleren har forpligtet sig til
@@ -203,7 +203,7 @@ function initDashboard() {
   dashboardChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Penge', 'Tid', 'Opgaver'],
+      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Penge', 'Tid'],
       datasets: [{
         label: 'Nuværende Status',
         data: [
@@ -211,19 +211,27 @@ function initDashboard() {
           gameState.security, 
           gameState.development, 
           gameState.money,
-          gameState.time,
-          Math.min(gameState.tasksCompleted, 30)  // Cap opgaver til max 30, da vi bruger en mindre skala
+          gameState.time
         ],
-        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12', '#e67e22', '#3498db']
+        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12', '#e67e22']
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            font: { size: 12 }
+          }
+        }
+      },
       scales: {
         y: {
           beginAtZero: true,
-          max: 30,       // Fælles skala for alle elementer
+          max: 30,       // Fælles skala: 0-30 for alle KPI’er
           ticks: {
             stepSize: 2
           }
@@ -239,15 +247,14 @@ function updateDashboard() {
     gameState.security,
     gameState.development,
     gameState.money,
-    gameState.time,
-    Math.min(gameState.tasksCompleted, 30)
+    gameState.time
   ];
   dashboardChart.update();
 }
 
 /* --- Scoreboard --- */
 function updateScoreboard(){
-  // Vi opdaterer ikke længere en separat toptekst, da dashboardet viser alle KPI'er.
+  // Vi opdaterer ikke længere en separat scoretekst, da dashboardet viser alle KPI'er.
   updateDashboard();
 }
 
@@ -450,6 +457,7 @@ function applyMoneyCost(m){
   updateScoreboard();
 }
 function applyStatChange(stat, delta){
+  // Alle KPI’er bruger den samme skala (0-30)
   gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 30);
   updateScoreboard();
   showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
@@ -460,7 +468,7 @@ function finalizeStep(stepIndex){
   let t = gameState.activeTask;
   if (!t) return;
   t.currentStep++;
-  applyTimeCost(2);
+  applyTimeCost(1); // Reduceret tidsomkostning for at tilpasse den længere starttid
   updateStepsList();
   if (t.currentStep >= t.steps.length){
     if (t.preRiskReduction > 0){
@@ -519,7 +527,7 @@ function postCABTechnicalCheck(){
 }
 function failTaskCAB(){
   gameState.tasksCompleted++;
-  applyStatChange("hospitalSatisfaction", -10); // Denne værdi kan ignoreres, hvis hospitalstilfredshed ikke bruges
+  // Hospitalstilfredshed bruges ikke længere
   endActiveTask();
 }
 function completeTaskCAB(){
@@ -611,7 +619,6 @@ function showFloatingText(txt, stat){
   if (stat === "security") div.style.color = "#ff4444";
   else if (stat === "stability") div.style.color = "#44ff44";
   else if (stat === "development") div.style.color = "#4444ff";
-  else if (stat === "hospitalSatisfaction") div.style.color = "#ffc107";
   else div.style.color = "#ffffff";
   div.textContent = txt;
   fc.appendChild(div);
