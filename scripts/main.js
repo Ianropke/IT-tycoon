@@ -1,5 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (Opdateret med Dashboard-capping og Forvalter-tekst)
+ * main.js – IT-Tycoon (Opdateret med ét samlet dashboard)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -51,16 +51,10 @@ const scenarioFlavorPool = [
 ];
 
 /* --- HTML References --- */
-// Scoreboard
-const securityValueEl  = document.getElementById('security-value');
-const stabilityValueEl = document.getElementById('stability-value');
-const developmentValueEl = document.getElementById('development-value');
-const timeLeftEl       = document.getElementById('time-left');
-const moneyLeftEl      = document.getElementById('money-left');
-const tasksCompletedEl = document.getElementById('tasks-completed');
-const hospitalSatEl    = document.getElementById('hospital-satisfaction');
+// Dashboard (SAFe & Sprint KPI’er)
+const dashboardCanvas = document.getElementById('dashboard-canvas');
 
-// Modaler
+// Modaler og øvrige elementer
 const introModal       = document.getElementById('intro-modal');
 const tutorialModal    = document.getElementById('tutorial-modal');
 const scenarioIntroModal = document.getElementById('scenario-intro-modal');
@@ -71,10 +65,6 @@ const cabResultModal   = document.getElementById('cab-result-modal');
 const taskSummaryModal = document.getElementById('task-summary-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
-// Dashboard (SAFe & Sprint KPI’er)
-const dashboardCanvas = document.getElementById('dashboard-canvas');
-
-// Indhold i modaler
 const tutorialTitleEl = document.getElementById('tutorial-title');
 const tutorialTextEl  = document.getElementById('tutorial-text');
 const scenarioIntroTitleEl = document.getElementById('scenario-intro-title');
@@ -96,7 +86,6 @@ const digDeeperLinksDiv   = document.getElementById('dig-deeper-links');
 const cabSummary       = document.getElementById('cab-summary');
 const cabResultTitle   = document.getElementById('cab-result-title');
 const cabResultText    = document.getElementById('cab-result-text');
-const endGameSummary   = document.getElementById('end-game-summary');
 const taskSummaryText  = document.getElementById('task-summary-text');
 const architectContent = document.getElementById('architect-content');
 const moreInfoContent  = document.getElementById('more-info-content');
@@ -121,7 +110,7 @@ document.getElementById('architect-help-btn').addEventListener('click', () => {
     return;
   }
   if (gameState.activeTask.architectUsed) {
-    showPopup("Arkitekthjælp allerede brugt!", "error");
+    showPopup("Forvalterhjælp allerede brugt!", "error");
     return;
   }
   showArchitectModal();
@@ -215,17 +204,18 @@ function initDashboard() {
   dashboardChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Opgaver'],
+      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Penge', 'Tid', 'Opgaver'],
       datasets: [{
         label: 'Nuværende Status',
         data: [
           gameState.currentSprint, 
           gameState.security, 
           gameState.development, 
-          // For at forhindre, at opgaverne overstiger maks-værdien, cap tasksCompleted til 150
+          gameState.money,
+          gameState.time,
           Math.min(gameState.tasksCompleted, 150)
         ],
-        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12']
+        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12', '#e67e22', '#3498db']
       }]
     },
     options: {
@@ -249,21 +239,17 @@ function updateDashboard() {
     gameState.currentSprint,
     gameState.security,
     gameState.development,
+    gameState.money,
+    gameState.time,
     Math.min(gameState.tasksCompleted, 150)
   ];
   dashboardChart.update();
 }
 
-/* --- Scoreboard --- */
+/* --- Scoreboard (fjernet separat toptekst) --- */
 function updateScoreboard(){
   calcHospitalSatisfaction();
-  document.getElementById('time-left').textContent = gameState.time;
-  document.getElementById('money-left').textContent = gameState.money;
-  document.getElementById('tasks-completed').textContent = gameState.tasksCompleted;
-  document.getElementById('security-value').textContent = gameState.security;
-  document.getElementById('stability-value').textContent = gameState.stability;
-  document.getElementById('development-value').textContent = gameState.development;
-  document.getElementById('hospital-satisfaction').textContent = Math.round(gameState.hospitalSatisfaction);
+  // Opdater ikke længere den gamle scoretekst, da dashboardet viser KPI'erne.
   updateDashboard();
 }
 function calcHospitalSatisfaction(){
@@ -487,7 +473,7 @@ function finalizeStep(stepIndex){
   if (t.currentStep >= t.steps.length){
     if (t.preRiskReduction > 0){
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
-      showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
+      showPopup(`Din forvalterhjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
     showCABModal();
   }
@@ -564,12 +550,13 @@ function showTaskSummaryModal(){
   let s = gameState.security,
       st = gameState.stability,
       d = gameState.development,
-      h = Math.round(gameState.hospitalSatisfaction),
-      money = gameState.money;
+      money = gameState.money,
+      t = gameState.time;
   let summary = `
     <strong>Opgave fuldført!</strong><br/>
-    Aktuelle værdier:<br/>
-    Sikkerhed=${s}, Stabilitet=${st}, Udvikling=${d}, Hospitalstilfredshed=${h}%, Penge=${money}<br/><br/>
+    Nuværende status:<br/>
+    Sikkerhed = ${s}, Udvikling = ${d}<br/>
+    Penge = ${money}, Tid = ${t}<br/><br/>
     <strong>Mission Evaluering:</strong><br/>
     Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
     Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})<br/><br/>
@@ -596,15 +583,14 @@ function endGame(){
   let s = gameState.security,
       st = gameState.stability,
       d = gameState.development,
-      h = gameState.hospitalSatisfaction,
-      money = gameState.money;
+      money = gameState.money,
+      t = gameState.time;
   let sumText = `
     <strong>Slutresultat:</strong><br/>
-    Resterende penge: ${money}<br/>
+    Penge: ${money}<br/>
     Sikkerhed: ${s}<br/>
-    Stabilitet: ${st}<br/>
     Udvikling: ${d}<br/>
-    Hospitalstilfredshed: ${h}%<br/>
+    Tid: ${t}<br/>
     Fuldførte opgaver: ${gameState.tasksCompleted}<br/><br/>
     <strong>Mission Evaluering:</strong><br/>
     Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
@@ -652,11 +638,10 @@ function showMoreInfo(infoText){
 function showArchitectModal(){
   let t = gameState.activeTask;
   if (!t) return;
-  // Ændret overskrift fra "Arkitektens" til "Forvalterens"
   let analysis = `<strong>Forvalterens Opgaveanalyse:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som IT-forvalter er du ansvarlig for at sikre, at hospitalets systemer kører stabilt og effektivt. Dine beslutninger påvirker både innovation og drift, og balancen mellem risici og investeringer er altafgørende.
+    Som IT-forvalter er du ansvarlig for at sikre, at hospitalets systemer kører stabilt og effektivt. Dine beslutninger påvirker både innovation og drift – og balancen mellem risici og investeringer er altafgørende.
   </p>`;
   if (!t.steps || !t.steps.length){
     analysis += "Ingen trin i opgaven?!";
