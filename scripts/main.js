@@ -1,5 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (opdateret med spændende tekst)
+ * main.js – IT-Tycoon (med forbedret grafisk/UX og SAFe dashboard)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -32,7 +32,15 @@ let gameState = {
   riskyTotal: 0,
   finalFailChance: 0,
   
-  lastFinishedTask: null
+  lastFinishedTask: null,
+  
+  // Eksempel: Sprint- og SAFe-data
+  currentSprint: 1,
+  sprintGoals: {
+    tasksCompleted: 5,
+    security: 115,
+    development: 120
+  }
 };
 
 const scenarioFlavorPool = [
@@ -63,6 +71,9 @@ const cabResultModal   = document.getElementById('cab-result-modal');
 const taskSummaryModal = document.getElementById('task-summary-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
+// Dashboard (SAFe & Sprint KPI’er)
+const dashboardCanvas = document.getElementById('dashboard-canvas');
+
 // Indhold i modaler
 const tutorialTitleEl = document.getElementById('tutorial-title');
 const tutorialTextEl  = document.getElementById('tutorial-text');
@@ -92,9 +103,12 @@ const moreInfoContent  = document.getElementById('more-info-content');
 
 /* --- Knappe Event Listeners --- */
 document.getElementById('intro-start-btn').addEventListener('click', () => {
-  // Luk intro-modalen og start tutorialen
-  introModal.style.display = 'none';
-  openTutorialModal();
+  // Luk intro-modalen med en slide-out effekt og start tutorialen
+  introModal.classList.add('modal-slide-out');
+  setTimeout(() => {
+    introModal.style.display = 'none';
+    openTutorialModal();
+  }, 500);
 });
 
 document.getElementById('scenario-intro-close-btn').addEventListener('click', () => {
@@ -134,15 +148,15 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Som IT-arkitekt og strateg står du i spidsen for en digital revolution på hospitalet. Du skal omdanne forældede systemer til en banebrydende LIMS-løsning, hvor tid, penge, dokumentation og cybersikkerhed bliver dine vigtigste våben. Din beslutningskraft kan redde liv og sætte nye standarder for fremtidens sundhedsvæsen." 
+    text: "Som IT-arkitekt og strateg står du i spidsen for en digital revolution på hospitalet. Du skal forvandle forældede systemer til en banebrydende LIMS-løsning, hvor tid, penge, dokumentation og cybersikkerhed bliver dine vigtigste våben. Din beslutningskraft kan redde liv og sætte nye standarder for fremtidens sundhedsvæsen." 
   },
   { 
     title: "CAB & Dokumentation", 
-    text: "CAB er din skarpeste modstander - de kræver præcis dokumentation og lav risiko. Hver beslutning tæller, og manglende dokumentation kan koste dig dyrt. Tænk strategisk og undgå hurtige løsninger, der kan lede til katastrofale fejl." 
+    text: "CAB er din skarpeste modstander – de kræver præcis dokumentation og lav risiko. Hver beslutning tæller, og manglende dokumentation kan koste dig dyrt. Tænk strategisk og undgå hurtige løsninger, der kan lede til katastrofale fejl." 
   },
   { 
     title: "Målsætning", 
-    text: `Dit ultimative mål: Opnå mindst ${missionGoals.security} i sikkerhed og ${missionGoals.development} i udvikling, inden tiden løber ud. Din evne til at balancere risiko og investeringer vil afgøre hospitalets fremtid.` 
+    text: `Dit ultimative mål: Opnå mindst ${missionGoals.security} i sikkerhed og ${missionGoals.development} i udvikling, før tiden løber ud.`
   }
 ];
 let tutorialIdx = 0;
@@ -190,6 +204,39 @@ function initGame(){
   for (let i = 0; i < 5; i++){
     generateTask();
   }
+  // Opdater dashboard (Sprint-status og SAFe KPI’er)
+  updateDashboard();
+}
+
+/* --- Dashboard (med Chart.js) --- */
+let dashboardChart;
+function initDashboard() {
+  const ctx = dashboardCanvas.getContext('2d');
+  dashboardChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Opgaver'],
+      datasets: [{
+        label: 'Nuværende Status',
+        data: [gameState.currentSprint, gameState.security, gameState.development, gameState.tasksCompleted],
+        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12']
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+}
+function updateDashboard() {
+  if (!dashboardChart) return;
+  dashboardChart.data.datasets[0].data = [
+    gameState.currentSprint,
+    gameState.security,
+    gameState.development,
+    gameState.tasksCompleted
+  ];
+  dashboardChart.update();
 }
 
 /* --- Scoreboard --- */
@@ -202,6 +249,7 @@ function updateScoreboard(){
   document.getElementById('stability-value').textContent = gameState.stability;
   document.getElementById('development-value').textContent = gameState.development;
   document.getElementById('hospital-satisfaction').textContent = Math.round(gameState.hospitalSatisfaction);
+  updateDashboard();
 }
 function calcHospitalSatisfaction(){
   let avg = (gameState.security + gameState.stability + gameState.development) / 3;
@@ -234,12 +282,10 @@ function renderTasks(){
   gameState.availableTasks.forEach(t => {
     let li = document.createElement('li');
     li.innerHTML = `<strong>${t.title}</strong><br/>${t.shortDesc || "Ingen beskrivelse"}`;
-    // Ved klik markeres opgaven
     li.addEventListener('click', () => {
       gameState.selectedTask = t;
       showPopup(`Valgt opgave: ${t.title}`, "info", 2000);
     });
-    // "Forpligt" knap
     let comBtn = document.createElement('button');
     comBtn.textContent = "Forpligt";
     comBtn.classList.add('commit-button');
@@ -266,7 +312,6 @@ function assignTask(taskTitle){
   if (idx === -1) return;
   let chosen = gameState.availableTasks.splice(idx, 1)[0];
   gameState.activeTask = chosen;
-  // Vis opgaveskrivelsen via Scenario Intro Modal
   if (chosen.narrativeIntro){
     showScenarioIntroModal("Scenarie", chosen.narrativeIntro);
   }
@@ -328,7 +373,6 @@ function showScenarioModal(stepIndex){
   let st = t.steps[stepIndex];
   let loc = st.location || "ukendt";
   
-  // Vis narrative snippet (evt. opgaveskrivelsen)
   if (t.narrativeIntro){
     scenarioNarrativeDiv.style.display = "block";
     scenarioNarrativeDiv.innerHTML = t.narrativeIntro;
@@ -342,7 +386,7 @@ function showScenarioModal(stepIndex){
     ${st.stepDescription || "Standard scenarie..."}
   </p>`;
   
-  // DigDeeperLinks (ekstra info på opgavens niveau)
+  // DigDeeperLinks
   digDeeperLinksDiv.innerHTML = "";
   if (t.digDeeperLinks && t.digDeeperLinks.length){
     digDeeperLinksDiv.style.display = "block";
@@ -357,7 +401,7 @@ function showScenarioModal(stepIndex){
     digDeeperLinksDiv.style.display = "none";
   }
   
-  // Tilføj "Mere info (trin)"-knap hvis stepContext findes
+  // "Mere info (trin)" knap, hvis stepContext findes
   let modalContent = scenarioModal.querySelector('.modal-content');
   let oldContextDiv = modalContent.querySelector('#step-context-div');
   if (oldContextDiv) oldContextDiv.remove();
@@ -638,4 +682,5 @@ function startIntro() {
 // Start intro ved load
 window.addEventListener('load', () => {
   startIntro();
+  initDashboard(); // Initialiser dashboard efter load
 });
