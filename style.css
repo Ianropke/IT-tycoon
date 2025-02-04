@@ -26,7 +26,7 @@ header h1 {
 /* Main container med to kolonner */
 #main-container {
   display: flex;
-  height: calc(100vh - 280px); /* Eksempel: header + footer + dashboard fastsat til 280px samlet */
+  height: calc(100vh - 200px); /* Øget spilområde: Mindre margin til top og bund */
   margin: 8px 20px;
   gap: 16px;
   box-sizing: border-box;
