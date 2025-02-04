@@ -26,25 +26,27 @@ header h1 {
 /* Main container med to kolonner */
 #main-container {
   display: flex;
-  height: calc(100vh - 280px); /* Eksempel: header + footer + margin fastsat til 280px samlet */
+  height: calc(100vh - 280px); /* Eksempel: header + footer + dashboard fastsat til 280px samlet */
   margin: 8px 20px;
   gap: 16px;
   box-sizing: border-box;
 }
 
-/* Venstre kolonne: Dashboard + Lokationsområde */
+/* Venstre kolonne: Dashboard og Lokationsområde */
 #left-column {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
+/* Dashboard */
 #dashboard {
   background-color: #34495e;
   padding: 16px;
   width: 100%;
   max-width: 800px;
-  height: 150px; /* Mindre dashboard, justér efter behov */
+  height: 150px;  /* Dashboardet er reduceret til 150px i højde */
   border-radius: 8px;
   overflow: hidden;
   margin: 0 auto;
@@ -58,20 +60,22 @@ header h1 {
   width: 100% !important;
   height: 100% !important;
 }
+
+/* Lokationsområde */
 #game-area {
   flex: 1;
   display: flex;
   flex-wrap: wrap;
-  gap: 4px; /* Reduceret afstand mellem lokationsbokse */
+  gap: 4px;  /* Reduceret afstand mellem lokationsbokse */
   justify-content: center;
   align-items: center;
-  height: 150px; /* Mindre område til lokationsbokse */
+  height: 150px;  /* Mindre område til lokationsbokse */
   overflow-y: auto;
 }
 .location {
-  width: 130px; /* Mindre bredde */
+  width: 130px;  /* Mindre bredde */
   height: 70px;  /* Mindre højde */
-  margin: 2px;  /* Minimal margin */
+  margin: 2px;   /* Minimal margin */
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
@@ -93,7 +97,7 @@ header h1 {
   margin-bottom: 2px;
 }
 
-/* Højre kolonne: Opgaver */
+/* Højre kolonne: Opgavelister */
 #right-column {
   flex: 1;
   display: flex;
@@ -353,4 +357,14 @@ footer {
     height: 60px;
     font-size: 0.9rem;
   }
+}
+
+/* Animation til dashboardopdatering */
+.kpi-update {
+  animation: pulse 1s ease-out;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
