@@ -1,5 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (Opdateret med Dashboard & Spændende Tekster)
+ * main.js – IT-Tycoon (Opdateret med Dashboard-capping og Forvalter-tekst)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -222,7 +222,8 @@ function initDashboard() {
           gameState.currentSprint, 
           gameState.security, 
           gameState.development, 
-          gameState.tasksCompleted
+          // For at forhindre, at opgaverne overstiger maks-værdien, cap tasksCompleted til 150
+          Math.min(gameState.tasksCompleted, 150)
         ],
         backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12']
       }]
@@ -233,7 +234,7 @@ function initDashboard() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 150,  // Sæt y-aksen til at have en max-værdi på 150
+          max: 150,
           ticks: {
             stepSize: 10
           }
@@ -248,7 +249,7 @@ function updateDashboard() {
     gameState.currentSprint,
     gameState.security,
     gameState.development,
-    gameState.tasksCompleted
+    Math.min(gameState.tasksCompleted, 150)
   ];
   dashboardChart.update();
 }
@@ -647,14 +648,15 @@ function showMoreInfo(infoText){
   moreInfoModal.style.display = "flex";
 }
 
-/* --- Arkitekthjælp --- */
+/* --- Arkitekthjælp (Forvalter) --- */
 function showArchitectModal(){
   let t = gameState.activeTask;
   if (!t) return;
-  let analysis = `<strong>Arkitektens Opgaveanalyse:</strong><br/>
+  // Ændret overskrift fra "Arkitektens" til "Forvalterens"
+  let analysis = `<strong>Forvalterens Opgaveanalyse:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som arkitekt og strateg ser jeg på sammenhængen mellem dine beslutninger og de tekniske faldgruber, der kan true hospitalets drift. Hver beslutning er en investering – og dine valg skal balancere innovation med sikkerhed.
+    Som IT-forvalter er du ansvarlig for at sikre, at hospitalets systemer kører stabilt og effektivt. Dine beslutninger påvirker både innovation og drift, og balancen mellem risici og investeringer er altafgørende.
   </p>`;
   if (!t.steps || !t.steps.length){
     analysis += "Ingen trin i opgaven?!";
