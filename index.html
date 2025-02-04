@@ -16,40 +16,28 @@
       <div class="intro-text">
         <h2>Velkommen til IT-Tycoon</h2>
         <p>
-          Du træder ind i rollen som IT-ansvarlig for et stort hospital. 
-          Hospitalet kæmper med forældede systemer, nedbrud og ineffektive processer. 
-          Med kun 100 tidsenheder og 2000 kr. skal du navigere gennem komplekse IT-udfordringer 
-          og sikre en digital fremtid. Er du klar til at forvandle kaos til kontrol?
+          Du træder ind i rollen som IT-forvalter, der skal forvandle hospitalets forældede systemer til en digital fremtid. Med kun 100 tidsenheder og 2000 kr. i startkapital skal du balancere investeringer, risici og innovation for at sikre, at systemerne kører effektivt.
+          Er du klar til at gøre en forskel?
         </p>
       </div>
       <button id="intro-start-btn" class="commit-button" style="display:none;">Start dit eventyr</button>
     </div>
   </div>
 
-  <!-- Header med Scoreboard -->
+  <!-- Header med spillets titel -->
   <header>
     <h1>IT-Tycoon</h1>
-    <div id="scoreboard">
-      <div id="scores">
-        <span class="score-item">Tid: <span id="time-left">100</span></span>
-        <span class="score-item">Penge: <span id="money-left">2000</span></span>
-        <span class="score-item">Fuldførte: <span id="tasks-completed">0</span></span>
-        <span class="score-item" style="color:#ff4444;">Sikkerhed: <span id="security-value">100</span></span>
-        <span class="score-item" style="color:#44ff44;">Stabilitet: <span id="stability-value">100</span></span>
-        <span class="score-item" style="color:#4444ff;">Udvikling: <span id="development-value">100</span></span>
-        <span class="score-item" style="color:#ffc107;">Hospitalstilf.: <span id="hospital-satisfaction">100</span>%</span>
-      </div>
-    </div>
   </header>
 
-  <!-- Dashboard til Sprint-status og SAFe KPI’er -->
+  <!-- Dashboard: Interaktiv graf med alle KPI'er -->
   <section id="dashboard">
     <h2>Sprint Dashboard</h2>
     <canvas id="dashboard-canvas"></canvas>
   </section>
 
+  <!-- Main container med spilområdet og opgavelister -->
   <div id="main-container">
-    <!-- Venstre side: Lokationsbokse med grafik og tooltips -->
+    <!-- Venstre side: Lokationsbokse -->
     <div id="game-area">
       <div class="location hoverTooltip" id="hospital" data-tooltip="Hospital: Her håndteres kliniske opgaver og patientflows.">
         <span class="loc-icon">🏥</span> Hospital
@@ -66,12 +54,12 @@
       <div class="location hoverTooltip" id="it-jura" data-tooltip="IT Jura: Her håndteres lovkrav, GDPR og compliance.">
         <span class="loc-icon">⚖️</span> IT Jura
       </div>
-      <div class="location hoverTooltip" id="cybersikkerhed" data-tooltip="Cybersikkerhed: Her styrkes systembeskyttelsen (firewall, antivirus, SIEM).">
+      <div class="location hoverTooltip" id="cybersikkerhed" data-tooltip="Cybersikkerhed: Her styrkes systembeskyttelsen.">
         <span class="loc-icon">💻</span> Cybersikkerhed
       </div>
     </div>
 
-    <!-- Højre side: Aktiv opgave og Mulige opgaver -->
+    <!-- Højre side: Opgavelister -->
     <div id="task-side">
       <div id="active-task">
         <h2>Aktiv opgave</h2>
@@ -83,7 +71,7 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
-        <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
+        <button id="architect-help-btn" class="commit-button">Få forvalterhjælp</button>
       </div>
 
       <div id="available-tasks">
@@ -99,7 +87,7 @@
     <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
   </footer>
 
-  <!-- Modaler -->
+  <!-- Modaler (Tutorial, Scenario, Arkitekt, CAB, Task Summary, More Info) -->
   <div id="tutorial-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
