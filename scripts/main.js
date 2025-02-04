@@ -1,5 +1,6 @@
 /************************************************************
- * main.js – IT-Tycoon (Opdateret med justeret dashboard og tid)
+ * main.js – IT-Tycoon (Opdateret: Ingen penge eller tid,
+ *   fokus på sikkerhed, udvikling og stabil drift)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -7,23 +8,21 @@ window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Missionmål (eksempel: opnå 22 i både sikkerhed og udvikling)
+// Missionmål (målet er at opnå 22 i både sikkerhed, udvikling og drift)
 const missionGoals = {
   security: 22,
-  development: 22
+  development: 22,
+  drift: 22
 };
 
-// Global gameState med justerede startværdier (alle elementer på samme skala)
-// Vi har øget tiden til 40, så den ikke løber ud for hurtigt.
+// Global gameState med de tre centrale KPI'er
 let gameState = {
   security: 20,
-  stability: 20,
   development: 20,
-  money: 20,
-  time: 40,
+  drift: 20,           // Stabil drift
   tasksCompleted: 0,
   
-  activeTask: null,      // Den opgave spilleren har forpligtet sig til
+  activeTask: null,    // Den opgave spilleren har forpligtet sig til
   availableTasks: [],
   usedTasks: new Set(),
   
@@ -38,15 +37,16 @@ let gameState = {
   sprintGoals: {
     tasksCompleted: 5,
     security: 22,
-    development: 22
+    development: 22,
+    drift: 22
   }
 };
 
 const scenarioFlavorPool = [
-  "Personalet klager over ustabil drift…",
-  "En intern revisor snuser rundt efter dokumentationshuller…",
-  "En ny leverandør vil sælge dig en hurtig men usikker løsning…",
-  "Ledelsen ønsker hurtige resultater, men CAB er skeptisk…"
+  "Personalet bemærker udfordringer i systemets drift…",
+  "Der opstår tekniske problemer, som kræver en grundig gennemgang…",
+  "En ekstern konsulent peger på potentielle forbedringer…",
+  "Ledelsen er interesseret i, hvordan systemet kan optimeres yderligere…"
 ];
 
 /* --- HTML References --- */
@@ -136,15 +136,15 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Som IT-arkitekt og strateg står du i spidsen for en digital revolution på hospitalet. Du skal forvandle forældede systemer til en banebrydende LIMS-løsning, hvor tid, penge, dokumentation og cybersikkerhed bliver dine vigtigste våben. Din beslutningskraft kan redde liv og sætte nye standarder for fremtidens sundhedsvæsen." 
+    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter er det din opgave at sikre, at hospitalets systemer kører stabilt, samtidig med at du fremmer innovation gennem øget sikkerhed og udvikling. Lær at balancere disse tre nøgletal, og se hvordan dine strategiske beslutninger forbedrer både drift og kvalitet." 
   },
   { 
-    title: "CAB & Dokumentation", 
-    text: "CAB er din skarpeste modstander – de kræver præcis dokumentation og lav risiko. Hver beslutning tæller, og manglende dokumentation kan koste dig dyrt. Tænk strategisk og undgå hurtige løsninger, der kan lede til katastrofale fejl." 
+    title: "Læringskomponenter", 
+    text: "CAB og andre værktøjer i spillet fungerer som læringsressourcer, der hjælper dig med at dokumentere og evaluere dine beslutninger – så du kan se, hvordan selv små ændringer gør en stor forskel." 
   },
   { 
     title: "Målsætning", 
-    text: `Dit ultimative mål: Opnå mindst ${missionGoals.security} i sikkerhed og ${missionGoals.development} i udvikling, før tiden løber ud.`
+    text: `Dit mål: Opnå mindst ${missionGoals.security} i sikkerhed, ${missionGoals.development} i udvikling og ${missionGoals.drift} i stabil drift.`
   }
 ];
 let tutorialIdx = 0;
@@ -181,7 +181,7 @@ Object.entries(locMap).forEach(([k, el]) => {
 
 /* --- initGame --- */
 function initGame(){
-  updateScoreboard();
+  updateDashboard();
   // Saml tasks fra de eksterne filer
   window.backlog = [
     ...(window.hospitalTasks || []),
@@ -192,7 +192,6 @@ function initGame(){
   for (let i = 0; i < 5; i++){
     generateTask();
   }
-  // Opdater dashboard (Sprint-status og SAFe KPI’er)
   updateDashboard();
 }
 
@@ -203,35 +202,26 @@ function initDashboard() {
   dashboardChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Penge', 'Tid'],
+      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Drift', 'Opgaver'],
       datasets: [{
         label: 'Nuværende Status',
         data: [
           gameState.currentSprint, 
           gameState.security, 
           gameState.development, 
-          gameState.money,
-          gameState.time
+          gameState.drift,
+          Math.min(gameState.tasksCompleted, 30)
         ],
-        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12', '#e67e22']
+        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12', '#3498db']
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: true,
-          position: 'bottom',
-          labels: {
-            font: { size: 12 }
-          }
-        }
-      },
       scales: {
         y: {
           beginAtZero: true,
-          max: 30,       // Fælles skala: 0-30 for alle KPI’er
+          max: 30,
           ticks: {
             stepSize: 2
           }
@@ -246,15 +236,15 @@ function updateDashboard() {
     gameState.currentSprint,
     gameState.security,
     gameState.development,
-    gameState.money,
-    gameState.time
+    gameState.drift,
+    Math.min(gameState.tasksCompleted, 30)
   ];
   dashboardChart.update();
 }
 
 /* --- Scoreboard --- */
+// Da alle KPI'er nu vises i dashboardet, opdateres blot dashboardet.
 function updateScoreboard(){
-  // Vi opdaterer ikke længere en separat scoretekst, da dashboardet viser alle KPI'er.
   updateDashboard();
 }
 
@@ -304,10 +294,6 @@ function assignTask(taskTitle){
     showPopup("Du har allerede en aktiv opgave!", "error");
     return;
   }
-  if (gameState.time <= 0){
-    endGame();
-    return;
-  }
   let idx = gameState.availableTasks.findIndex(x => x.title === taskTitle);
   if (idx === -1) return;
   let chosen = gameState.availableTasks.splice(idx, 1)[0];
@@ -353,10 +339,6 @@ function updateStepsList(){
 function handleLocationClick(locName){
   if (!gameState.activeTask){
     showPopup("Vælg en opgave først!", "error");
-    return;
-  }
-  if (gameState.time <= 0){
-    endGame();
     return;
   }
   let i = gameState.activeTask.currentStep;
@@ -436,29 +418,20 @@ function showScenarioModal(stepIndex){
 }
 
 /* --- Valg-effekter --- */
+// Ignorer timeCost og moneyCost, da de ikke længere bruges.
 function applyChoiceEffect(eff){
   if (!eff) return;
-  if (eff.timeCost)  applyTimeCost(eff.timeCost);
-  if (eff.moneyCost) applyMoneyCost(eff.moneyCost);
-  if (eff.riskyPlus) gameState.riskyTotal += eff.riskyPlus;
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
       applyStatChange(stat, delta);
     }
   }
-}
-function applyTimeCost(t){
-  gameState.time = Math.max(gameState.time - t, 0);
-  updateScoreboard();
-  if (gameState.time <= 0) endGame();
-}
-function applyMoneyCost(m){
-  gameState.money = Math.max(gameState.money - m, -99999);
-  updateScoreboard();
+  if (eff.riskyPlus) gameState.riskyTotal += eff.riskyPlus;
 }
 function applyStatChange(stat, delta){
-  // Alle KPI’er bruger den samme skala (0-30)
-  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 30);
+  if (stat === "security" || stat === "development" || stat === "drift") {
+    gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 30);
+  }
   updateScoreboard();
   showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
 }
@@ -468,7 +441,6 @@ function finalizeStep(stepIndex){
   let t = gameState.activeTask;
   if (!t) return;
   t.currentStep++;
-  applyTimeCost(1); // Reduceret tidsomkostning for at tilpasse den længere starttid
   updateStepsList();
   if (t.currentStep >= t.steps.length){
     if (t.preRiskReduction > 0){
@@ -518,7 +490,7 @@ function postCABTechnicalCheck(){
   if (Math.random() < driftFail){
     showPopup("Implementeringen fejlede i praksis!", "error");
     gameState.tasksCompleted++;
-    applyStatChange("stability", -5);
+    applyStatChange("drift", -5);
     endActiveTask();
   } else {
     showPopup("Drifts-tjek lykkedes!", "success");
@@ -527,7 +499,8 @@ function postCABTechnicalCheck(){
 }
 function failTaskCAB(){
   gameState.tasksCompleted++;
-  // Hospitalstilfredshed bruges ikke længere
+  // Drift falder ved fejl – pengesystemet er fjernet.
+  applyStatChange("drift", -10);
   endActiveTask();
 }
 function completeTaskCAB(){
@@ -549,16 +522,15 @@ function endActiveTask(){
 function showTaskSummaryModal(){
   let s = gameState.security,
       d = gameState.development,
-      money = gameState.money,
-      t = gameState.time;
+      r = gameState.drift;
   let summary = `
     <strong>Opgave fuldført!</strong><br/>
     Nuværende status:<br/>
-    Sikkerhed = ${s}, Udvikling = ${d}<br/>
-    Penge = ${money}, Tid = ${t}<br/><br/>
+    Sikkerhed = ${s}, Udvikling = ${d}, Drift = ${r}<br/><br/>
     <strong>Mission Evaluering:</strong><br/>
     Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})<br/><br/>
+    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})<br/>
+    Drift: ${r >= missionGoals.drift ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.drift})
   `;
   let lastT = gameState.lastFinishedTask;
   if (lastT && lastT.knowledgeRecap){
@@ -573,7 +545,7 @@ function showTaskSummaryModal(){
 
 /* --- End-of-Time --- */
 function endGame(){
-  showPopup("Tiden er brugt op!", "info", 3000);
+  showPopup("Tiden er udløbet!", "info", 3000);
   gameState.activeTask = null;
   document.getElementById('active-task-headline').textContent = "Ingen aktiv opgave";
   document.getElementById('active-task-description').textContent = "";
@@ -581,18 +553,17 @@ function endGame(){
   endModal.style.display = "flex";
   let s = gameState.security,
       d = gameState.development,
-      money = gameState.money,
-      t = gameState.time;
+      r = gameState.drift;
   let sumText = `
     <strong>Slutresultat:</strong><br/>
-    Penge: ${money}<br/>
     Sikkerhed: ${s}<br/>
     Udvikling: ${d}<br/>
-    Tid: ${t}<br/>
+    Drift: ${r}<br/>
     Fuldførte opgaver: ${gameState.tasksCompleted}<br/><br/>
     <strong>Mission Evaluering:</strong><br/>
     Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})
+    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})<br/>
+    Drift: ${r >= missionGoals.drift ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.drift})
   `;
   endGameSummary.innerHTML = sumText;
 }
@@ -617,8 +588,8 @@ function showFloatingText(txt, stat){
   div.style.left = "50%";
   div.style.top = "50%";
   if (stat === "security") div.style.color = "#ff4444";
-  else if (stat === "stability") div.style.color = "#44ff44";
   else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "drift") div.style.color = "#f39c12";
   else div.style.color = "#ffffff";
   div.textContent = txt;
   fc.appendChild(div);
@@ -638,7 +609,7 @@ function showArchitectModal(){
   let analysis = `<strong>Arkitekthjælp:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som arkitekthjælp er min rolle at vejlede dig mod de mest kritiske beslutninger i denne opgave. Dine valg påvirker ikke blot den daglige drift, men sætter også kursen for hospitalets fremtid. Vær opmærksom på balancen mellem risici og investeringer, og brug denne hjælp til at træffe velovervejede beslutninger.
+    Som IT-forvalter er det din opgave at sikre, at hospitalets systemer kører både sikkert og effektivt. Arkitekthjælpen er her for at vejlede dig mod de kritiske beslutninger, der hjælper med at balancere sikkerhed, udvikling og drift – uden at betragte CAB som en fjende, men som en vigtig læringsressource.
   </p>`;
   if (!t.steps || !t.steps.length){
     analysis += "Ingen trin i opgaven?!";
