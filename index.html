@@ -24,43 +24,44 @@
     </div>
   </div>
 
-  <!-- Header med spillets titel -->
+  <!-- Header -->
   <header>
     <h1>IT-Tycoon</h1>
   </header>
 
-  <!-- Dashboard: Interaktiv graf med alle KPI'er -->
-  <section id="dashboard">
-    <h2>Sprint Dashboard</h2>
-    <canvas id="dashboard-canvas"></canvas>
-  </section>
-
-  <!-- Main container med spilområdet og opgavelister -->
+  <!-- Main container med to kolonner: Venstre = Dashboard + Lokationsbokse, Højre = Opgaver -->
   <div id="main-container">
-    <!-- Venstre side: Lokationsbokse -->
-    <div id="game-area">
-      <div class="location hoverTooltip" id="hospital" data-tooltip="Hospital: Her håndteres kliniske opgaver og patientflows.">
-        <span class="loc-icon">🏥</span> Hospital
-      </div>
-      <div class="location hoverTooltip" id="dokumentation" data-tooltip="Dokumentation: Her formuleres krav, procedurer og compliance.">
-        <span class="loc-icon">📄</span> Dokumentation
-      </div>
-      <div class="location hoverTooltip" id="leverandor" data-tooltip="Leverandør: Her indgås aftaler med eksterne IT-partnere.">
-        <span class="loc-icon">📦</span> Leverandør
-      </div>
-      <div class="location hoverTooltip" id="infrastruktur" data-tooltip="Infrastruktur: Her styres netværk, servere, cloud og HPC.">
-        <span class="loc-icon">🔧</span> Infrastruktur
-      </div>
-      <div class="location hoverTooltip" id="it-jura" data-tooltip="IT Jura: Her håndteres lovkrav, GDPR og compliance.">
-        <span class="loc-icon">⚖️</span> IT Jura
-      </div>
-      <div class="location hoverTooltip" id="cybersikkerhed" data-tooltip="Cybersikkerhed: Her styrkes systembeskyttelsen.">
-        <span class="loc-icon">💻</span> Cybersikkerhed
+    <!-- Venstre kolonne -->
+    <div id="left-column">
+      <!-- Dashboard -->
+      <section id="dashboard">
+        <h2>Sprint Dashboard</h2>
+        <canvas id="dashboard-canvas"></canvas>
+      </section>
+      <!-- Lokationsområde -->
+      <div id="game-area">
+        <div class="location hoverTooltip" id="hospital" data-tooltip="Hospital: Her håndteres kliniske opgaver og patientflows.">
+          <span class="loc-icon">🏥</span> Hospital
+        </div>
+        <div class="location hoverTooltip" id="dokumentation" data-tooltip="Dokumentation: Her formuleres krav, procedurer og compliance.">
+          <span class="loc-icon">📄</span> Dokumentation
+        </div>
+        <div class="location hoverTooltip" id="leverandor" data-tooltip="Leverandør: Her indgås aftaler med eksterne IT-partnere.">
+          <span class="loc-icon">📦</span> Leverandør
+        </div>
+        <div class="location hoverTooltip" id="infrastruktur" data-tooltip="Infrastruktur: Her styres netværk, servere, cloud og HPC.">
+          <span class="loc-icon">🔧</span> Infrastruktur
+        </div>
+        <div class="location hoverTooltip" id="it-jura" data-tooltip="IT Jura: Her håndteres lovkrav, GDPR og compliance.">
+          <span class="loc-icon">⚖️</span> IT Jura
+        </div>
+        <div class="location hoverTooltip" id="cybersikkerhed" data-tooltip="Cybersikkerhed: Her styrkes systembeskyttelsen.">
+          <span class="loc-icon">💻</span> Cybersikkerhed
+        </div>
       </div>
     </div>
-
-    <!-- Højre side: Opgavelister -->
-    <div id="task-side">
+    <!-- Højre kolonne -->
+    <div id="right-column">
       <div id="active-task">
         <h2>Aktiv opgave</h2>
         <h3 id="active-task-headline">Ingen aktiv opgave</h3>
@@ -71,9 +72,8 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
-        <button id="architect-help-btn" class="commit-button">Få forvalterhjælp</button>
+        <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
       </div>
-
       <div id="available-tasks">
         <h2>Mulige opgaver</h2>
         <ul id="tasks-list">
@@ -87,7 +87,7 @@
     <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
   </footer>
 
-  <!-- Modaler (Tutorial, Scenario, Arkitekt, CAB, Task Summary, More Info) -->
+  <!-- Modaler -->
   <div id="tutorial-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
