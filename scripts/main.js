@@ -1,5 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (med forbedret grafisk/UX og SAFe dashboard)
+ * main.js – IT-Tycoon (Opdateret med Dashboard & Spændende Tekster)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -24,7 +24,7 @@ let gameState = {
   time: 100,
   tasksCompleted: 0,
   
-  activeTask: null,      // Opgave du har forpligtet dig til
+  activeTask: null,      // Den opgave spilleren har forpligtet sig til
   availableTasks: [],
   usedTasks: new Set(),
   
@@ -34,7 +34,7 @@ let gameState = {
   
   lastFinishedTask: null,
   
-  // Eksempel: Sprint- og SAFe-data
+  // Eksempeldata for Sprint og SAFe KPI’er
   currentSprint: 1,
   sprintGoals: {
     tasksCompleted: 5,
@@ -218,13 +218,27 @@ function initDashboard() {
       labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Opgaver'],
       datasets: [{
         label: 'Nuværende Status',
-        data: [gameState.currentSprint, gameState.security, gameState.development, gameState.tasksCompleted],
+        data: [
+          gameState.currentSprint, 
+          gameState.security, 
+          gameState.development, 
+          gameState.tasksCompleted
+        ],
         backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12']
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 150,  // Sæt y-aksen til at have en max-værdi på 150
+          ticks: {
+            stepSize: 10
+          }
+        }
+      }
     }
   });
 }
@@ -679,8 +693,8 @@ function startIntro() {
   }, 5000);
 }
 
-// Start intro ved load
+// Start intro ved load og initialiser dashboard
 window.addEventListener('load', () => {
   startIntro();
-  initDashboard(); // Initialiser dashboard efter load
+  initDashboard();
 });
