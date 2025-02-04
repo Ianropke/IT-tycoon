@@ -1,5 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (Opdateret med ét samlet dashboard)
+ * main.js – IT-Tycoon (Opdateret med lavere skala og Arkitekthjælp)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -7,21 +7,20 @@ window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Missionmål
+// Missionmål (eksempel: opnå f.eks. 22 i udvikling)
 const missionGoals = {
-  security: 110,
-  development: 115
+  security: 22,
+  development: 22
 };
 
-// Global gameState
+// Global gameState med lavere startværdier (alle elementer på samme skala)
 let gameState = {
-  security: 100,
-  stability: 100,
-  development: 100,
-  hospitalSatisfaction: 100,
-  
-  money: 2000,
-  time: 100,
+  security: 20,
+  stability: 20,
+  development: 20,
+  // Hospitalstilfredshed fjernet, da den ikke bruges
+  money: 20,
+  time: 20,
   tasksCompleted: 0,
   
   activeTask: null,      // Den opgave spilleren har forpligtet sig til
@@ -38,8 +37,8 @@ let gameState = {
   currentSprint: 1,
   sprintGoals: {
     tasksCompleted: 5,
-    security: 115,
-    development: 120
+    security: 22,
+    development: 22
   }
 };
 
@@ -110,7 +109,7 @@ document.getElementById('architect-help-btn').addEventListener('click', () => {
     return;
   }
   if (gameState.activeTask.architectUsed) {
-    showPopup("Forvalterhjælp allerede brugt!", "error");
+    showPopup("Arkitekthjælp allerede brugt!", "error");
     return;
   }
   showArchitectModal();
@@ -213,7 +212,7 @@ function initDashboard() {
           gameState.development, 
           gameState.money,
           gameState.time,
-          Math.min(gameState.tasksCompleted, 150)
+          Math.min(gameState.tasksCompleted, 30)  // Cap opgaver til max 30, da vi bruger en mindre skala
         ],
         backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12', '#e67e22', '#3498db']
       }]
@@ -224,9 +223,9 @@ function initDashboard() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 150,
+          max: 30,       // Fælles skala for alle elementer
           ticks: {
-            stepSize: 10
+            stepSize: 2
           }
         }
       }
@@ -241,22 +240,15 @@ function updateDashboard() {
     gameState.development,
     gameState.money,
     gameState.time,
-    Math.min(gameState.tasksCompleted, 150)
+    Math.min(gameState.tasksCompleted, 30)
   ];
   dashboardChart.update();
 }
 
-/* --- Scoreboard (fjernet separat toptekst) --- */
+/* --- Scoreboard --- */
 function updateScoreboard(){
-  calcHospitalSatisfaction();
-  // Opdater ikke længere den gamle scoretekst, da dashboardet viser KPI'erne.
+  // Vi opdaterer ikke længere en separat toptekst, da dashboardet viser alle KPI'er.
   updateDashboard();
-}
-function calcHospitalSatisfaction(){
-  let avg = (gameState.security + gameState.stability + gameState.development) / 3;
-  let penalty = (gameState.money < 0) ? Math.floor(Math.abs(gameState.money) / 100) * 2 : 0;
-  let newVal = avg - penalty;
-  gameState.hospitalSatisfaction = Math.max(0, Math.min(newVal, 150));
 }
 
 /* --- Task Generation --- */
@@ -458,7 +450,7 @@ function applyMoneyCost(m){
   updateScoreboard();
 }
 function applyStatChange(stat, delta){
-  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 150);
+  gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 30);
   updateScoreboard();
   showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
 }
@@ -473,7 +465,7 @@ function finalizeStep(stepIndex){
   if (t.currentStep >= t.steps.length){
     if (t.preRiskReduction > 0){
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
-      showPopup(`Din forvalterhjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
+      showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
     showCABModal();
   }
@@ -527,7 +519,7 @@ function postCABTechnicalCheck(){
 }
 function failTaskCAB(){
   gameState.tasksCompleted++;
-  applyStatChange("hospitalSatisfaction", -10);
+  applyStatChange("hospitalSatisfaction", -10); // Denne værdi kan ignoreres, hvis hospitalstilfredshed ikke bruges
   endActiveTask();
 }
 function completeTaskCAB(){
@@ -548,7 +540,6 @@ function endActiveTask(){
 /* --- Task Summary --- */
 function showTaskSummaryModal(){
   let s = gameState.security,
-      st = gameState.stability,
       d = gameState.development,
       money = gameState.money,
       t = gameState.time;
@@ -581,7 +572,6 @@ function endGame(){
   document.getElementById('steps-list').innerHTML = "<li>Ingen aktiv opgave</li>";
   endModal.style.display = "flex";
   let s = gameState.security,
-      st = gameState.stability,
       d = gameState.development,
       money = gameState.money,
       t = gameState.time;
@@ -634,14 +624,14 @@ function showMoreInfo(infoText){
   moreInfoModal.style.display = "flex";
 }
 
-/* --- Arkitekthjælp (Forvalter) --- */
+/* --- Arkitekthjælp --- */
 function showArchitectModal(){
   let t = gameState.activeTask;
   if (!t) return;
-  let analysis = `<strong>Forvalterens Opgaveanalyse:</strong><br/>
+  let analysis = `<strong>Arkitekthjælp:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som IT-forvalter er du ansvarlig for at sikre, at hospitalets systemer kører stabilt og effektivt. Dine beslutninger påvirker både innovation og drift – og balancen mellem risici og investeringer er altafgørende.
+    Som arkitekthjælp er min rolle at vejlede dig mod de mest kritiske beslutninger i denne opgave. Dine valg påvirker ikke blot den daglige drift, men sætter også kursen for hospitalets fremtid. Vær opmærksom på balancen mellem risici og investeringer, og brug denne hjælp til at træffe velovervejede beslutninger.
   </p>`;
   if (!t.steps || !t.steps.length){
     analysis += "Ingen trin i opgaven?!";
