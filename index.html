@@ -4,30 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT-Tycoon</title>
+  <!-- Inkludér Chart.js fra CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Intro Modal -->
-  <div id="intro-modal" class="modal" style="display:flex;">
+  <div id="intro-modal" class="modal modal-slide-in" style="display:flex;">
     <div class="modal-content intro-content">
-      <!-- Baggrundseffekt (kan være et billede eller CSS-animation) -->
       <div class="intro-background"></div>
-      <!-- Tekstområde med fortælling -->
       <div class="intro-text">
         <h2>Velkommen til IT-Tycoon</h2>
         <p>
-          Du træder ind i rollen som IT-ansvarlig for et stort hospital.  
-          Hospitalet kæmper med forældede systemer, nedbrud og ineffektive processer.  
-          Med kun 100 tidsenheder og 2000 kr. skal du navigere gennem komplekse IT-udfordringer  
+          Du træder ind i rollen som IT-ansvarlig for et stort hospital. 
+          Hospitalet kæmper med forældede systemer, nedbrud og ineffektive processer. 
+          Med kun 100 tidsenheder og 2000 kr. skal du navigere gennem komplekse IT-udfordringer 
           og sikre en digital fremtid. Er du klar til at forvandle kaos til kontrol?
         </p>
       </div>
-      <!-- "Start dit eventyr" knap (skjult i starten) -->
       <button id="intro-start-btn" class="commit-button" style="display:none;">Start dit eventyr</button>
     </div>
   </div>
 
-  <!-- Header, Scoreboard osv. -->
+  <!-- Header med Scoreboard -->
   <header>
     <h1>IT-Tycoon</h1>
     <div id="scoreboard">
@@ -42,6 +41,12 @@
       </div>
     </div>
   </header>
+
+  <!-- Dashboard til Sprint-status og SAFe KPI’er -->
+  <section id="dashboard">
+    <h2>Sprint Dashboard</h2>
+    <canvas id="dashboard-canvas"></canvas>
+  </section>
 
   <div id="main-container">
     <!-- Venstre side: Lokationsbokse med grafik og tooltips -->
@@ -78,7 +83,6 @@
             <li>Ingen aktiv opgave</li>
           </ul>
         </div>
-        <!-- Arkitekthjælp-knap -->
         <button id="architect-help-btn" class="commit-button">Få arkitekthjælp</button>
       </div>
 
@@ -95,7 +99,7 @@
     <p>&copy; 2025 IT Tycoon ApS - Læringsudgave</p>
   </footer>
 
-  <!-- De øvrige modaler (Tutorial, Scenario Intro, Scenario Modal, Arkitekthjælp, CAB, Task Summary, More Info osv.) -->
+  <!-- Modaler -->
   <div id="tutorial-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2 id="tutorial-title"></h2>
@@ -118,7 +122,6 @@
       <h2 id="scenario-title"></h2>
       <p id="scenario-flavor-text"></p>
       <div id="scenario-description"></div>
-      <!-- DigDeeperLinks -->
       <div id="dig-deeper-links" style="display:none; margin-bottom:8px;"></div>
       <div id="scenario-optionA">
         <strong>A: </strong><span id="scenario-a-label"></span><br/>
@@ -176,7 +179,7 @@
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
-  <!-- Indlæs dine task-filer -->
+  <!-- Indlæs task-filer -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
