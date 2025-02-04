@@ -1,5 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (med intro)
+ * main.js – IT-Tycoon (opdateret med spændende tekst)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -132,9 +132,18 @@ document.getElementById('more-info-close-btn').addEventListener('click', () => {
 /* --- Tutorial --- */
 const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
-  { title: "Din rolle", text: "Du forvalter LIMS på et stort hospital. Tid, penge, dokumentation og cybersikkerhed er nøgler." },
-  { title: "CAB & Dokumentation", text: "CAB afviser dine ændringer, hvis risiko er for høj eller dokumentation mangler." },
-  { title: "Målsætning", text: `Opnå Sikkerhed >= ${missionGoals.security} og Udvikling >= ${missionGoals.development} før tiden udløber.` }
+  { 
+    title: "Din Rolle", 
+    text: "Som IT-arkitekt og strateg står du i spidsen for en digital revolution på hospitalet. Du skal omdanne forældede systemer til en banebrydende LIMS-løsning, hvor tid, penge, dokumentation og cybersikkerhed bliver dine vigtigste våben. Din beslutningskraft kan redde liv og sætte nye standarder for fremtidens sundhedsvæsen." 
+  },
+  { 
+    title: "CAB & Dokumentation", 
+    text: "CAB er din skarpeste modstander - de kræver præcis dokumentation og lav risiko. Hver beslutning tæller, og manglende dokumentation kan koste dig dyrt. Tænk strategisk og undgå hurtige løsninger, der kan lede til katastrofale fejl." 
+  },
+  { 
+    title: "Målsætning", 
+    text: `Dit ultimative mål: Opnå mindst ${missionGoals.security} i sikkerhed og ${missionGoals.development} i udvikling, inden tiden løber ud. Din evne til at balancere risiko og investeringer vil afgøre hospitalets fremtid.` 
+  }
 ];
 let tutorialIdx = 0;
 function openTutorialModal(){
@@ -181,7 +190,6 @@ function initGame(){
   for (let i = 0; i < 5; i++){
     generateTask();
   }
-  // Eventuelt kan du opsætte et interval for løbende at tilføje opgaver
 }
 
 /* --- Scoreboard --- */
@@ -588,8 +596,7 @@ function showArchitectModal(){
   let analysis = `<strong>Arkitektens Opgaveanalyse:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som arkitekt ser jeg på sammenhængen mellem trin og mulige tekniske faldgruber.
-    Husk at for meget risiko eller for lidt dokumentation kan give CAB-afvisning.
+    Som arkitekt og strateg ser jeg på sammenhængen mellem dine beslutninger og de tekniske faldgruber, der kan true hospitalets drift. Hver beslutning er en investering – og dine valg skal balancere innovation med sikkerhed.
   </p>`;
   if (!t.steps || !t.steps.length){
     analysis += "Ingen trin i opgaven?!";
