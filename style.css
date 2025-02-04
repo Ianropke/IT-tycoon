@@ -39,6 +39,25 @@ header h1 {
   white-space: nowrap;
 }
 
+/* Dashboard */
+#dashboard {
+  background-color: #34495e;
+  padding: 16px;
+  margin: 8px 20px;
+  border-radius: 8px;
+}
+#dashboard h2 {
+  margin: 0 0 16px 0;
+  text-align: center;
+  font-size: 1.5rem;
+}
+#dashboard-canvas {
+  width: 100% !important;
+  max-width: 800px;
+  height: auto !important;
+  margin: 0 auto;
+}
+
 /* Layout */
 #main-container {
   display: flex;
@@ -206,6 +225,22 @@ footer {
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal Overgange */
+.modal-slide-in {
+  animation: slideIn 0.5s forwards;
+}
+@keyframes slideIn {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal-slide-out {
+  animation: slideOut 0.5s forwards;
+}
+@keyframes slideOut {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-40px); opacity: 0; }
 }
 
 /* Ephemeral Popups */
