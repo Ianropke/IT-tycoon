@@ -1,4 +1,4 @@
-/* style.css – IT-Tycoon */
+/* style.css – IT‑Tycoon */
 
 /* Grundopsætning */
 html, body {
@@ -26,7 +26,7 @@ header h1 {
 /* Main container med to kolonner */
 #main-container {
   display: flex;
-  height: calc(100vh - 200px); /* Øget spilområde: Mindre margin til top og bund */
+  height: calc(100vh - 280px); /* Øget spilområde: Mindre margin fra top og bund */
   margin: 8px 20px;
   gap: 16px;
   box-sizing: border-box;
@@ -46,7 +46,7 @@ header h1 {
   padding: 16px;
   width: 100%;
   max-width: 800px;
-  height: 150px;  /* Dashboardet er reduceret til 150px i højde */
+  height: 150px;  /* Fast højde for dashboardet */
   border-radius: 8px;
   overflow: hidden;
   margin: 0 auto;
@@ -69,7 +69,7 @@ header h1 {
   gap: 4px;  /* Reduceret afstand mellem lokationsbokse */
   justify-content: center;
   align-items: center;
-  height: 150px;  /* Mindre område til lokationsbokse */
+  height: 150px;  /* Fast højde for lokationsområdet */
   overflow-y: auto;
 }
 .location {
@@ -168,7 +168,7 @@ footer {
 .hoverTooltip[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   color: #fff;
   padding: 4px 6px;
   border-radius: 4px;
@@ -187,7 +187,7 @@ footer {
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid transparent;
-  border-top-color: rgba(0,0,0,0.75);
+  border-top-color: rgba(0, 0, 0, 0.75);
   z-index: 99998;
 }
 
@@ -201,7 +201,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 999999;
 }
 .modal-content {
@@ -298,14 +298,13 @@ footer {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('images/hospital-bg.jpg') center center / cover no-repeat;
-  opacity: 0.7;
-  animation: bgFadeIn 3s ease-out forwards;
-  z-index: -1;
+  display: block;
+  opacity: 1;
 }
-@keyframes bgFadeIn {
-  from { opacity: 0; }
-  to { opacity: 0.7; }
+.intro-background svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .intro-text {
   padding: 40px;
