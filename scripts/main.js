@@ -1,7 +1,7 @@
 /************************************************************
- * main.js – IT‑Tycoon (Endelig version)
+ * main.js – IT‑Tycoon (Opdateret version)
  * Fokus: Balancering af sikkerhed og udvikling.
- * Opgaver afsluttes korrekt, så spilleren kan vælge nye opgaver.
+ * Opgaveafslutning håndteres korrekt, og dashboardet viser målsætninger.
  ************************************************************/
 
 // Arrays til tasks – sørg for, at dine task-filer findes og ligger korrekt
@@ -9,7 +9,7 @@ window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Missionmål: Opnå mindst 22 i sikkerhed og 22 i udvikling
+// Missionmål: Opnå mindst 22 i både sikkerhed og udvikling
 const missionGoals = {
   security: 22,
   development: 22
@@ -55,7 +55,7 @@ const scenarioModal    = document.getElementById('scenario-modal');
 const architectModal   = document.getElementById('architect-modal');
 const cabModal         = document.getElementById('cab-modal');
 const cabResultModal   = document.getElementById('cab-result-modal');
-const sprintPlanningModal = document.getElementById('sprint-planning-modal');
+const sprintPlanningModal = document.getElementById('sprint-planning-modal'); // Sprint Planning modal
 const taskSummaryModal = document.getElementById('task-summary-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
@@ -128,7 +128,7 @@ document.getElementById('more-info-close-btn').addEventListener('click', () => {
   moreInfoModal.style.display = 'none';
 });
 
-// Sprint Planning Modal
+// Sprint Planning Modal: Vis sprintmålene før start
 function showSprintPlanning() {
   let modal = sprintPlanningModal;
   modal.querySelector('.modal-content').innerHTML = `
@@ -217,17 +217,28 @@ function initDashboard() {
   dashboardChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Opgaver'],
-      datasets: [{
-        label: 'Nuværende Status',
-        data: [
-          gameState.currentSprint, 
-          gameState.security, 
-          gameState.development, 
-          Math.min(gameState.tasksCompleted, 30)
-        ],
-        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#3498db']
-      }]
+      labels: ['Sprint', 'Sikkerhed', 'Udvikling'],
+      datasets: [
+        {
+          label: 'Nuværende Status',
+          data: [
+            gameState.currentSprint, 
+            gameState.security, 
+            gameState.development
+          ],
+          backgroundColor: ['#2980b9', '#27ae60', '#8e44ad']
+        },
+        {
+          label: 'Målsætning',
+          data: [null, missionGoals.security, missionGoals.development],
+          type: 'line',
+          borderColor: '#f1c40f',
+          borderWidth: 2,
+          fill: false,
+          pointRadius: 0,
+          tension: 0
+        }
+      ]
     },
     options: {
       responsive: true,
@@ -249,8 +260,7 @@ function updateDashboard() {
   dashboardChart.data.datasets[0].data = [
     gameState.currentSprint,
     gameState.security,
-    gameState.development,
-    Math.min(gameState.tasksCompleted, 30)
+    gameState.development
   ];
   dashboardChart.update();
   animateDashboardUpdate();
@@ -470,7 +480,7 @@ function finalizeStep(stepIndex) {
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
       showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
-    // Vis Sprint Review-modal med feedback – hvis den findes, ellers afslut opgaven direkte.
+    // Vis Sprint Review-modal med feedback – hvis den findes
     let sprintModal = document.getElementById('sprint-review-modal');
     if (sprintModal) {
       sprintModal.querySelector('.modal-content').innerHTML = `
