@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT-Tycoon</title>
+  <title>IT‑Tycoon</title>
   <!-- Inkludér Chart.js fra CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="style.css">
@@ -12,12 +12,28 @@
   <!-- Intro Modal -->
   <div id="intro-modal" class="modal modal-slide-in" style="display: flex;">
     <div class="modal-content intro-content">
-      <div class="intro-background"></div>
+      <!-- Inline SVG baggrund -->
+      <div class="intro-background">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="bgGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2c3e50"/>
+              <stop offset="100%" stop-color="#34495e"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="400" fill="url(#bgGradient)"/>
+          <!-- Hospital silhouette -->
+          <path d="M100 300 L100 200 L130 200 L130 150 L160 150 L160 200 L190 200 L190 170 L220 170 L220 200 L250 200 L250 150 L280 150 L280 200 L310 200 L310 300 Z" fill="#ecf0f1" opacity="0.8"/>
+          <!-- Network lines -->
+          <line x1="0" y1="50" x2="800" y2="50" stroke="#3498db" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+          <line x1="0" y1="100" x2="800" y2="100" stroke="#3498db" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+          <line x1="0" y1="150" x2="800" y2="150" stroke="#3498db" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+        </svg>
+      </div>
       <div class="intro-text">
         <h2>Velkommen til IT‑Tycoon</h2>
         <p>
-          Velkommen til IT‑Tycoon! Som IT‑forvalter for et stort hospital er det din opgave at sikre, at systemerne kører både sikkert og effektivt. Her handler det om at balancere sikkerhed, udvikling og drift – og lære af dine beslutninger undervejs. 
-          Er du klar til at tage udfordringen op?
+          Velkommen til IT‑Tycoon! Som IT‑forvalter for et stort hospital er det din opgave at sikre, at systemerne kører både sikkert og effektivt. Her handler det om at balancere sikkerhed og udvikling – nøglen til en stabil drift. Lær af dine beslutninger og se, hvordan små ændringer kan skabe store resultater.
         </p>
       </div>
       <button id="intro-start-btn" class="commit-button" style="display: none;">Start dit eventyr</button>
@@ -89,6 +105,7 @@
   </footer>
 
   <!-- Modaler -->
+
   <!-- Tutorial Modal -->
   <div id="tutorial-modal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -156,10 +173,10 @@
     </div>
   </div>
 
-  <!-- Sprint Review Modal (Feedback-loop) -->
-  <div id="sprint-review-modal" class="modal" style="display: none;">
+  <!-- Sprint Planning Modal -->
+  <div id="sprint-planning-modal" class="modal" style="display: none;">
     <div class="modal-content">
-      <!-- Indholdet opdateres dynamisk -->
+      <!-- Indholdet opdateres dynamisk af showSprintPlanning() -->
     </div>
   </div>
 
@@ -179,16 +196,14 @@
     </div>
   </div>
 
-  <!-- Popup container og flydende tekst -->
+  <!-- Popup Container og Flydende Tekst -->
   <div id="popup-container"></div>
   <div id="floating-text-container"></div>
 
-  <!-- Indlæs task-filer -->
+  <!-- Script Includes -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
-
-  <!-- Hovedlogik -->
   <script src="scripts/main.js"></script>
 </body>
 </html>
