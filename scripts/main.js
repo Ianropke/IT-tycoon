@@ -1,6 +1,5 @@
 /************************************************************
- * main.js – IT-Tycoon (Opdateret med KPI-balancering, 
- * Sprint Review og dynamiske animationer)
+ * main.js – IT‑Tycoon (Opdateret: Drift fjernet, Sprint Planning indført)
  ************************************************************/
 
 // Arrays til tasks – skal være indlæst via dine task-filer.
@@ -8,21 +7,20 @@ window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Missionmål (mål: at opnå 22 i både sikkerhed, udvikling og drift)
+// Missionmål (målet er at opnå 22 i både sikkerhed og udvikling)
 const missionGoals = {
   security: 22,
-  development: 22,
-  drift: 22
+  development: 22
 };
 
-// Global gameState med de centrale KPI’er (alle på skalaen 0–30)
+// Global gameState med de centrale KPI’er (kun sikkerhed og udvikling)
+// Bemærk: Pengesystem og tid er fjernet.
 let gameState = {
   security: 20,
   development: 20,
-  drift: 20,           // Drift repræsenterer systemets stabilitet
   tasksCompleted: 0,
   
-  activeTask: null,    // Den opgave, spilleren har forpligtet sig til
+  activeTask: null,    // Den opgave spilleren har forpligtet sig til
   availableTasks: [],
   usedTasks: new Set(),
   
@@ -32,21 +30,20 @@ let gameState = {
   
   lastFinishedTask: null,
   
-  // Eksempeldata for sprint og SAFe KPI’er
+  // Eksempeldata for sprint (currentSprint) og sprint-mål
   currentSprint: 1,
   sprintGoals: {
     tasksCompleted: 5,
     security: 22,
-    development: 22,
-    drift: 22
+    development: 22
   }
 };
 
 const scenarioFlavorPool = [
-  "Personalet bemærker udfordringer i driften…",
+  "Personalet bemærker udfordringer i systemets drift…",
   "Der opstår tekniske problemer, som kræver en grundig gennemgang…",
   "En ekstern konsulent peger på potentielle forbedringer…",
-  "Ledelsen er nysgerrig efter at se, hvordan systemet kan optimeres…"
+  "Ledelsen vil gerne se, hvordan vi kan optimere systemet yderligere…"
 ];
 
 /* --- HTML References --- */
@@ -61,7 +58,7 @@ const scenarioModal    = document.getElementById('scenario-modal');
 const architectModal   = document.getElementById('architect-modal');
 const cabModal         = document.getElementById('cab-modal');
 const cabResultModal   = document.getElementById('cab-result-modal');
-const sprintReviewModal = document.getElementById('sprint-review-modal'); // Ny modal til Sprint Review
+const sprintPlanningModal = document.getElementById('sprint-planning-modal'); // Ny modal for Sprint Planning
 const taskSummaryModal = document.getElementById('task-summary-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
@@ -131,25 +128,41 @@ document.getElementById('task-summary-ok-btn').addEventListener('click', () => {
 document.getElementById('more-info-close-btn').addEventListener('click', () => {
   moreInfoModal.style.display = 'none';
 });
-// Event listener for Sprint Review modal – eksempelvis en "Luk" knap
-document.getElementById('sprint-review-close-btn')?.addEventListener('click', () => {
-  sprintReviewModal.style.display = 'none';
-});
+
+/* --- Sprint Planning Modal --- */
+function showSprintPlanning() {
+  // Opdater modalindholdet med sprintmål (PI-mål) fra hospitalet
+  let modal = sprintPlanningModal;
+  modal.querySelector('.modal-content').innerHTML = `
+    <h2>Sprint Målsætninger</h2>
+    <p>
+      Hospitalet har fastsat følgende mål for denne sprint:<br/>
+      Sikkerhed: ${missionGoals.security}<br/>
+      Udvikling: ${missionGoals.development}<br/><br/>
+      Er du klar til at starte sprinten?
+    </p>
+    <button id="sprint-planning-ok-btn" class="commit-button">Start Sprint</button>
+  `;
+  modal.style.display = "flex";
+  document.getElementById('sprint-planning-ok-btn').addEventListener('click', () => {
+    modal.style.display = "none";
+  });
+}
 
 /* --- Tutorial --- */
 const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter er det din opgave at sikre, at hospitalets systemer kører både sikkert og effektivt. Du skal balancere sikkerhed, udvikling og stabil drift. Lær af dine beslutninger, og se hvordan selv små ændringer kan forbedre den samlede drift." 
+    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter er det din opgave at sikre, at hospitalets systemer kører både sikkert og effektivt. Du skal balancere sikkerhed og udvikling – det er nøglen til at levere en stabil drift. Lær af dine beslutninger og se, hvordan dine valg løfter systemet."
   },
   { 
     title: "Læringskomponenter", 
-    text: "CAB og andre værktøjer fungerer som læringsressourcer, der hjælper dig med at dokumentere og evaluere dine beslutninger – så du kan se, hvordan dine handlinger påvirker systemets stabilitet og udvikling."
+    text: "Vores CAB og andre værktøjer er læringsressourcer, der hjælper dig med at dokumentere og evaluere dine beslutninger, så du kan se, hvordan de påvirker systemets ydeevne."
   },
   { 
     title: "Målsætning", 
-    text: `Dit mål: Opnå mindst ${missionGoals.security} i sikkerhed, ${missionGoals.development} i udvikling og ${missionGoals.drift} i drift.`
+    text: `Dit sprintmål: Opnå mindst ${missionGoals.security} i sikkerhed og ${missionGoals.development} i udvikling.`
   }
 ];
 let tutorialIdx = 0;
@@ -161,6 +174,8 @@ function showTutorialContent(){
   if (tutorialIdx >= tutorialSteps.length) {
     tutorialModal.style.display = "none";
     initGame();
+    // Efter initGame vises sprint planning, så spilleren får PI-målene
+    showSprintPlanning();
     return;
   }
   tutorialTitleEl.textContent = tutorialSteps[tutorialIdx].title;
@@ -207,17 +222,16 @@ function initDashboard() {
   dashboardChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Drift', 'Opgaver'],
+      labels: ['Sprint', 'Sikkerhed', 'Udvikling', 'Opgaver'],
       datasets: [{
         label: 'Nuværende Status',
         data: [
           gameState.currentSprint, 
           gameState.security, 
           gameState.development, 
-          gameState.drift,
           Math.min(gameState.tasksCompleted, 30)
         ],
-        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#f39c12', '#3498db']
+        backgroundColor: ['#2980b9', '#27ae60', '#8e44ad', '#3498db']
       }]
     },
     options: {
@@ -241,14 +255,13 @@ function updateDashboard() {
     gameState.currentSprint,
     gameState.security,
     gameState.development,
-    gameState.drift,
     Math.min(gameState.tasksCompleted, 30)
   ];
   dashboardChart.update();
   animateDashboardUpdate();
 }
 
-// Dynamisk animation på dashboardet ved KPI-opdatering
+// Dynamisk animation på dashboardopdatering
 function animateDashboardUpdate() {
   dashboardCanvas.classList.add('kpi-update');
   setTimeout(() => dashboardCanvas.classList.remove('kpi-update'), 1000);
@@ -265,9 +278,8 @@ function generateTask(){
   let notUsed = window.backlog.filter(t => !gameState.usedTasks.has(t.title));
   if (!notUsed.length) return;
   let chosen = notUsed[Math.floor(Math.random() * notUsed.length)];
-  // Her kan du f.eks. tilføje en risikoprofil for opgaven
-  if (!chosen.riskProfile) { 
-    // Standard risikoprofil: 1.0 (ingen ændring)
+  // Standard risikoprofil (kan justeres pr. opgave)
+  if (!chosen.riskProfile) {
     chosen.riskProfile = 1.0;
   }
   gameState.usedTasks.add(chosen.title);
@@ -435,23 +447,22 @@ function showScenarioModal(stepIndex){
 }
 
 /* --- Valg-effekter --- */
-// Her ignoreres timeCost og moneyCost, og vi multiplicerer risikoeffekten med taskens riskProfile.
+// Ignorer timeCost og moneyCost (de er fjernet). Brug kun statChange og riskyPlus.
 function applyChoiceEffect(eff){
   if (!eff) return;
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
-      // Juster delta baseret på opgavens risikoprofil
+      // Juster delta med risikoprofilen for opgaven (standard 1.0)
       let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
       applyStatChange(stat, adjustedDelta);
     }
   }
   if (eff.riskyPlus) {
-    // Multiplicer den risikobaserede effekt med riskProfile
     gameState.riskyTotal += eff.riskyPlus * (gameState.activeTask.riskProfile || 1);
   }
 }
 function applyStatChange(stat, delta){
-  if (stat === "security" || stat === "development" || stat === "drift") {
+  if (stat === "security" || stat === "development") {
     gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 30);
   }
   updateScoreboard();
@@ -469,22 +480,19 @@ function finalizeStep(stepIndex){
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
       showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
-    // Vis en Sprint Review modal med feedback
+    // Efter opgaven er færdig, vis en Sprint Review-modal med feedback
     showSprintReview();
   }
 }
 
 /* --- Sprint Review (Feedback-loop) --- */
 function showSprintReview(){
-  // Eksempel: Sammensæt en feedback-rapport
   let report = `
     <strong>Sprint Review</strong><br/>
     Sikkerhed: ${gameState.security} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${gameState.development} (mål: ${missionGoals.development})<br/>
-    Drift: ${gameState.drift} (mål: ${missionGoals.drift})<br/><br/>
-    Tips: Overvej at optimere dine valg for at øge både sikkerhed og drift. Husk, at selv små forbedringer kan gøre en stor forskel i den samlede balance.
+    Udvikling: ${gameState.development} (mål: ${missionGoals.development})<br/><br/>
+    Tips: Overvej at vælge mere balancerede løsninger for at øge begge KPI’er.
   `;
-  // Antag, at der findes en modal med id "sprint-review-modal"
   let modal = document.getElementById('sprint-review-modal');
   if (modal) {
     modal.querySelector('.modal-content').innerHTML = report +
@@ -495,7 +503,6 @@ function showSprintReview(){
       completeTaskCAB();
     });
   } else {
-    // Hvis sprint review-modal ikke findes, brug task summary modal som fallback
     showTaskSummaryModal();
   }
 }
@@ -539,7 +546,7 @@ function postCABTechnicalCheck(){
   if (Math.random() < driftFail){
     showPopup("Implementeringen fejlede i praksis!", "error");
     gameState.tasksCompleted++;
-    applyStatChange("drift", -5);
+    // Her påvirkes kun opgavelisten (drift er fjernet)
     endActiveTask();
   } else {
     showPopup("Drifts-tjek lykkedes!", "success");
@@ -548,7 +555,6 @@ function postCABTechnicalCheck(){
 }
 function failTaskCAB(){
   gameState.tasksCompleted++;
-  applyStatChange("drift", -10);
   endActiveTask();
 }
 function completeTaskCAB(){
@@ -569,16 +575,14 @@ function endActiveTask(){
 /* --- Task Summary --- */
 function showTaskSummaryModal(){
   let s = gameState.security,
-      d = gameState.development,
-      r = gameState.drift;
+      d = gameState.development;
   let summary = `
     <strong>Opgave fuldført!</strong><br/>
     Nuværende status:<br/>
-    Sikkerhed = ${s}, Udvikling = ${d}, Drift = ${r}<br/><br/>
+    Sikkerhed = ${s}, Udvikling = ${d}<br/><br/>
     <strong>Mission Evaluering:</strong><br/>
     Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})<br/>
-    Drift: ${r >= missionGoals.drift ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.drift})
+    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})
   `;
   let lastT = gameState.lastFinishedTask;
   if (lastT && lastT.knowledgeRecap){
@@ -600,18 +604,15 @@ function endGame(){
   document.getElementById('steps-list').innerHTML = "<li>Ingen aktiv opgave</li>";
   endModal.style.display = "flex";
   let s = gameState.security,
-      d = gameState.development,
-      r = gameState.drift;
+      d = gameState.development;
   let sumText = `
     <strong>Slutresultat:</strong><br/>
     Sikkerhed: ${s}<br/>
     Udvikling: ${d}<br/>
-    Drift: ${r}<br/>
     Fuldførte opgaver: ${gameState.tasksCompleted}<br/><br/>
     <strong>Mission Evaluering:</strong><br/>
     Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})<br/>
-    Drift: ${r >= missionGoals.drift ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.drift})
+    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})
   `;
   endGameSummary.innerHTML = sumText;
 }
@@ -637,7 +638,6 @@ function showFloatingText(txt, stat){
   div.style.top = "50%";
   if (stat === "security") div.style.color = "#ff4444";
   else if (stat === "development") div.style.color = "#4444ff";
-  else if (stat === "drift") div.style.color = "#f39c12";
   else div.style.color = "#ffffff";
   div.textContent = txt;
   fc.appendChild(div);
@@ -657,7 +657,7 @@ function showArchitectModal(){
   let analysis = `<strong>Arkitekthjælp:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som IT-forvalter er det din opgave at sikre, at hospitalets systemer kører både sikkert og effektivt. Arkitekthjælpen er her for at vejlede dig mod de kritiske beslutninger, så du kan balancere sikkerhed, udvikling og drift optimalt – og lære af dine beslutninger.
+    Som IT‑forvalter er det din opgave at sikre, at systemerne kører både sikkert og effektivt. Arkitekthjælpen vejleder dig i de kritiske beslutninger, så du kan balancere sikkerhed og udvikling – og lære af dine valg.
   </p>`;
   if (!t.steps || !t.steps.length){
     analysis += "Ingen trin i opgaven?!";
