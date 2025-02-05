@@ -1,17 +1,15 @@
 /************************************************************
  * main.js – IT‑Tycoon (Endelig version)
- * 
- * Fokus: Balancering af KPI’er (sikkerhed & udvikling)
- * Fjernelse af penge og tid, korrekt opgaveafslutning samt
- * visning af feedback (Sprint Review) og arkitekthjælp.
+ * Fokus: Balancering af sikkerhed og udvikling.
+ * Opgaver afsluttes korrekt, så spilleren kan vælge nye opgaver.
  ************************************************************/
 
-// Arrays til tasks – sørg for, at dine task-filer findes og ligger korrekt
+// Arrays til tasks – sørg for at filerne findes og ligger korrekt
 window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Missionmål (målet er at opnå 22 i både sikkerhed og udvikling)
+// Missionmål: Opnå mindst 22 i sikkerhed og 22 i udvikling
 const missionGoals = {
   security: 22,
   development: 22
@@ -33,7 +31,6 @@ let gameState = {
   
   lastFinishedTask: null,
   
-  // Eksempeldata for sprint
   currentSprint: 1,
   sprintGoals: {
     tasksCompleted: 5,
@@ -43,10 +40,10 @@ let gameState = {
 };
 
 const scenarioFlavorPool = [
-  "Personalet bemærker udfordringer i systemets drift…",
-  "Der opstår tekniske problemer, som kræver en grundig gennemgang…",
-  "En ekstern konsulent peger på potentielle forbedringer…",
-  "Ledelsen vil gerne se, hvordan vi kan optimere systemet yderligere…"
+  "Personalet bemærker udfordringer…",
+  "Der opstår tekniske problemer, der kræver gennemgang…",
+  "En ekstern konsulent peger på forbedringsmuligheder…",
+  "Ledelsen ønsker at se, hvordan vi kan optimere systemet…"
 ];
 
 /* --- HTML References --- */
@@ -58,7 +55,7 @@ const scenarioModal    = document.getElementById('scenario-modal');
 const architectModal   = document.getElementById('architect-modal');
 const cabModal         = document.getElementById('cab-modal');
 const cabResultModal   = document.getElementById('cab-result-modal');
-const sprintPlanningModal = document.getElementById('sprint-planning-modal'); // Ny modal
+const sprintPlanningModal = document.getElementById('sprint-planning-modal');
 const taskSummaryModal = document.getElementById('task-summary-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
@@ -87,7 +84,7 @@ const taskSummaryText  = document.getElementById('task-summary-text');
 const architectContent = document.getElementById('architect-content');
 const moreInfoContent  = document.getElementById('more-info-content');
 
-/* --- Knappe Event Listeners --- */
+/* --- Event Listeners --- */
 document.getElementById('intro-start-btn').addEventListener('click', () => {
   introModal.classList.add('modal-slide-out');
   setTimeout(() => {
@@ -131,7 +128,7 @@ document.getElementById('more-info-close-btn').addEventListener('click', () => {
   moreInfoModal.style.display = 'none';
 });
 
-// Sprint Planning Modal – vis sprintmålene før spillet starter sprinten
+// Sprint Planning Modal
 function showSprintPlanning() {
   let modal = sprintPlanningModal;
   modal.querySelector('.modal-content').innerHTML = `
@@ -175,7 +172,6 @@ function showTutorialContent(){
   if (tutorialIdx >= tutorialSteps.length) {
     tutorialModal.style.display = "none";
     initGame();
-    // Vis sprint planning, så spilleren får målene
     showSprintPlanning();
     return;
   }
@@ -203,20 +199,18 @@ Object.entries(locMap).forEach(([k, el]) => {
 /* --- initGame --- */
 function initGame(){
   updateDashboard();
-  // Saml tasks fra de eksterne filer
   window.backlog = [
     ...(window.hospitalTasks || []),
     ...(window.infrastrukturTasks || []),
     ...(window.cybersikkerhedTasks || [])
   ];
-  // Generér 5 startopgaver (hvis der er nok i backlog)
   for (let i = 0; i < 5; i++){
     generateTask();
   }
   updateDashboard();
 }
 
-/* --- Dashboard (med Chart.js) --- */
+/* --- Dashboard (Chart.js) --- */
 let dashboardChart;
 function initDashboard() {
   const ctx = dashboardCanvas.getContext('2d');
@@ -449,7 +443,6 @@ function applyChoiceEffect(eff){
   if (!eff) return;
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
-      // Juster delta med opgavens risikoprofil (standard 1.0)
       let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
       applyStatChange(stat, adjustedDelta);
     }
@@ -477,7 +470,7 @@ function finalizeStep(stepIndex){
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
       showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
-    // Vis Sprint Review-modal med feedback
+    // Vis Sprint Review-modal med feedback, derefter afslut opgaven
     showSprintReview();
   }
 }
@@ -488,7 +481,7 @@ function showSprintReview(){
     <strong>Sprint Review</strong><br/>
     Sikkerhed: ${gameState.security} (mål: ${missionGoals.security})<br/>
     Udvikling: ${gameState.development} (mål: ${missionGoals.development})<br/><br/>
-    Tips: Overvej at vælge mere balancerede løsninger for at øge begge KPI’er.
+    Tips: Overvej at vælge balancerede løsninger for at øge begge KPI’er.
   `;
   let modal = document.getElementById('sprint-review-modal');
   if (modal) {
@@ -539,8 +532,7 @@ function showCABResult(isSuccess){
 }
 function postCABTechnicalCheck(){
   cabResultModal.style.display = "none";
-  let driftFail = gameState.riskyTotal * 0.3;
-  if (Math.random() < driftFail){
+  if (Math.random() < (gameState.riskyTotal * 0.3)){
     showPopup("Implementeringen fejlede i praksis!", "error");
     gameState.tasksCompleted++;
     endActiveTask();
