@@ -1,7 +1,7 @@
 /************************************************************
- * main.js – IT‑Tycoon (Opdateret version)
- * Fokus: Balancering af sikkerhed og udvikling.
- * Opgaveafslutning håndteres korrekt, og dashboardet viser målsætninger.
+ * main.js – IT‑Tycoon (Opdateret med trade‑off mekanisme)
+ * Fokus: Balancering af sikkerhed og udvikling med trade‑off.
+ * Opgaver afsluttes korrekt, og dashboardet viser nu også målsætninger.
  ************************************************************/
 
 // Arrays til tasks – sørg for, at dine task-filer findes og ligger korrekt
@@ -152,11 +152,11 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter er det din opgave at sikre, at hospitalets systemer kører både sikkert og effektivt. Du skal balancere sikkerhed og udvikling – nøglen til en stabil drift. Lær af dine beslutninger og se, hvordan dine valg løfter systemet."
+    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed og udvikling – en afvejning, der kræver strategisk tænkning. Beslutninger skal træffes med omtanke for at opnå de opstillede mål."
   },
   { 
     title: "Læringskomponenter", 
-    text: "Vores CAB og andre værktøjer fungerer som læringsressourcer, der hjælper dig med at dokumentere og evaluere dine beslutninger, så du kan se, hvordan de påvirker systemets ydeevne."
+    text: "Vores CAB og andre værktøjer er her for at guide dig og hjælpe med at dokumentere dine beslutninger, så du kan se, hvordan de påvirker systemets ydeevne."
   },
   { 
     title: "Målsætning", 
@@ -204,6 +204,7 @@ function initGame(){
     ...(window.infrastrukturTasks || []),
     ...(window.cybersikkerhedTasks || [])
   ];
+  // Generér 5 startopgaver, hvis der er nok i backlog
   for (let i = 0; i < 5; i++){
     generateTask();
   }
@@ -448,15 +449,23 @@ function showScenarioModal(stepIndex){
   };
 }
 
-/* --- Valg-effekter --- */
+/* --- Valg-effekter med Trade-Off --- */
 function applyChoiceEffect(eff){
   if (!eff) return;
+  // Anvend positive effekter
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
       let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
       applyStatChange(stat, adjustedDelta);
     }
   }
+  // Anvend tradeOff effekter (for eksempel, hvis et valg øger sikkerheden, men sænker udviklingen)
+  if (eff.tradeOff){
+    for (let [stat, delta] of Object.entries(eff.tradeOff)){
+      applyStatChange(stat, delta);
+    }
+  }
+  // Anvend eventuel ekstra risikoeffekt
   if (eff.riskyPlus) {
     gameState.riskyTotal += eff.riskyPlus * (gameState.activeTask.riskProfile || 1);
   }
@@ -475,12 +484,13 @@ function finalizeStep(stepIndex) {
   if (!t) return;
   t.currentStep++;
   updateStepsList();
+  // Hvis alle trin er fuldførte
   if (t.currentStep >= t.steps.length) {
     if (t.preRiskReduction > 0) {
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
       showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
-    // Vis Sprint Review-modal med feedback – hvis den findes
+    // Vis Sprint Review-modal med feedback – eller afslut opgaven direkte, hvis modal ikke findes
     let sprintModal = document.getElementById('sprint-review-modal');
     if (sprintModal) {
       sprintModal.querySelector('.modal-content').innerHTML = `
@@ -673,7 +683,7 @@ function showArchitectModal(){
   let analysis = `<strong>Arkitekthjælp:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som IT‑forvalter er det din opgave at sikre, at systemerne kører både sikkert og effektivt. Arkitekthjælpen vejleder dig i de kritiske beslutninger, så du kan balancere sikkerhed og udvikling – og lære af dine valg.
+    Som IT‑forvalter skal du balancere sikkerhed og udvikling. Arkitekthjælpen vejleder dig i de kritiske beslutninger, så du kan nå dine mål.
   </p>`;
   if (!t.steps || !t.steps.length) {
     analysis += "Ingen trin i opgaven?!";
