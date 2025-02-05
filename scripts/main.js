@@ -4,7 +4,7 @@
  * Opgaver afsluttes korrekt, så spilleren kan vælge nye opgaver.
  ************************************************************/
 
-// Arrays til tasks – sørg for at filerne findes og ligger korrekt
+// Arrays til tasks – sørg for, at dine task-filer findes og ligger korrekt
 window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
@@ -460,18 +460,35 @@ function applyStatChange(stat, delta){
 }
 
 /* --- Når et trin er færdigt --- */
-function finalizeStep(stepIndex){
+function finalizeStep(stepIndex) {
   let t = gameState.activeTask;
   if (!t) return;
   t.currentStep++;
   updateStepsList();
-  if (t.currentStep >= t.steps.length){
-    if (t.preRiskReduction > 0){
+  if (t.currentStep >= t.steps.length) {
+    if (t.preRiskReduction > 0) {
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
       showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
-    // Vis Sprint Review-modal med feedback, derefter afslut opgaven
-    showSprintReview();
+    // Vis Sprint Review-modal med feedback – hvis den findes, ellers afslut opgaven direkte.
+    let sprintModal = document.getElementById('sprint-review-modal');
+    if (sprintModal) {
+      sprintModal.querySelector('.modal-content').innerHTML = `
+        <strong>Sprint Review</strong><br/>
+        Sikkerhed: ${gameState.security} (mål: ${missionGoals.security})<br/>
+        Udvikling: ${gameState.development} (mål: ${missionGoals.development})<br/><br/>
+        Tips: Overvej at vælge balancerede løsninger for at øge begge KPI’er.
+        <br/><button id="sprint-review-close-btn" class="commit-button">Luk</button>
+      `;
+      sprintModal.style.display = "flex";
+      document.getElementById('sprint-review-close-btn').addEventListener('click', function handler() {
+        sprintModal.style.display = "none";
+        this.removeEventListener('click', handler);
+        completeTaskCAB();
+      });
+    } else {
+      completeTaskCAB();
+    }
   }
 }
 
@@ -488,12 +505,13 @@ function showSprintReview(){
     modal.querySelector('.modal-content').innerHTML = report +
       `<br/><button id="sprint-review-close-btn" class="commit-button">Luk</button>`;
     modal.style.display = "flex";
-    document.getElementById('sprint-review-close-btn').addEventListener('click', () => {
+    document.getElementById('sprint-review-close-btn').addEventListener('click', function handler() {
       modal.style.display = "none";
+      this.removeEventListener('click', handler);
       completeTaskCAB();
     });
   } else {
-    showTaskSummaryModal();
+    completeTaskCAB();
   }
 }
 
@@ -532,7 +550,7 @@ function showCABResult(isSuccess){
 }
 function postCABTechnicalCheck(){
   cabResultModal.style.display = "none";
-  if (Math.random() < (gameState.riskyTotal * 0.3)){
+  if (Math.random() < (gameState.riskyTotal * 0.3)) {
     showPopup("Implementeringen fejlede i praksis!", "error");
     gameState.tasksCompleted++;
     endActiveTask();
@@ -573,10 +591,10 @@ function showTaskSummaryModal(){
     Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})
   `;
   let lastT = gameState.lastFinishedTask;
-  if (lastT && lastT.knowledgeRecap){
+  if (lastT && lastT.knowledgeRecap) {
     summary += `<hr/><strong>Vidensopsummering:</strong><br/>${lastT.knowledgeRecap}`;
   }
-  if (lastT && lastT.learningInfo){
+  if (lastT && lastT.learningInfo) {
     summary += `<hr/><strong>Ekstra læring:</strong><br/>${lastT.learningInfo}`;
   }
   taskSummaryText.innerHTML = summary;
@@ -647,7 +665,7 @@ function showArchitectModal(){
   <p>
     Som IT‑forvalter er det din opgave at sikre, at systemerne kører både sikkert og effektivt. Arkitekthjælpen vejleder dig i de kritiske beslutninger, så du kan balancere sikkerhed og udvikling – og lære af dine valg.
   </p>`;
-  if (!t.steps || !t.steps.length){
+  if (!t.steps || !t.steps.length) {
     analysis += "Ingen trin i opgaven?!";
   } else {
     let recCount = 0;
@@ -655,14 +673,14 @@ function showArchitectModal(){
     t.steps.forEach((step, i) => {
       let loc = step.location || "ukendt";
       analysis += `<br/><strong>Trin ${i+1}:</strong> ${loc}`;
-      if (step.choiceA.recommended || step.choiceB.recommended){
+      if (step.choiceA.recommended || step.choiceB.recommended) {
         recCount++;
         recInfo += `<br/>Trin ${i+1}: `;
         if (step.choiceA.recommended) recInfo += `A: ${step.choiceA.label}. `;
         if (step.choiceB.recommended) recInfo += `B: ${step.choiceB.label}. `;
       }
     });
-    if (recCount > 0){
+    if (recCount > 0) {
       analysis += `<hr/><strong>Kritiske valg:</strong> ${recInfo}`;
     } else {
       analysis += "<hr/>Ingen trin er markeret som anbefalet.";
