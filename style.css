@@ -23,10 +23,10 @@ header h1 {
   font-size: 2rem;
 }
 
-/* Main container med to kolonner – bevarer tidligere breddefordeling */
+/* Main container med to kolonner – bevarer den oprindelige breddefordeling */
 #main-container {
   display: flex;
-  height: calc(100vh - 100px); /* Giver næsten hele viewporten til spilområdet */
+  height: calc(100vh - 100px); /* Næsten hele viewporten til spilområdet */
   margin: 8px 20px;
   gap: 16px;
   box-sizing: border-box;
@@ -34,11 +34,11 @@ header h1 {
 
 /* Venstre kolonne: Dashboard og Lokationsområde */
 #left-column {
-  flex: 1;  /* Ligesom før */
+  flex: 1;  /* Beholder oprindelig bredde */
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 20px; /* Sikrer, at alt indhold ikke skæres af nederst */
+  padding-bottom: 20px; /* Sørger for, at intet indhold skæres af nederst */
 }
 
 /* Dashboard – fastholder tidligere størrelse */
@@ -62,9 +62,9 @@ header h1 {
   height: 100% !important;
 }
 
-/* Lokationsområde – øget fast højde og fjernet eventuel baggrund */
+/* Lokationsområde – fast højde og margin-top for at sikre synlighed */
 #game-area {
-  flex: 0 0 200px;      /* Fastsat til 200px, så der er mere plads til lokationerne */
+  flex: 0 0 200px;      /* Fast højde på 200px */
   margin-top: 20px;      /* Skubber lokationsområdet 20px nedad */
   display: flex;
   flex-wrap: wrap;
@@ -72,7 +72,7 @@ header h1 {
   justify-content: center;
   align-items: center;
   overflow-y: auto;
-  background: transparent;  /* Sørger for, at der ikke er en baggrund, der dækker boksene */
+  background: transparent;  /* Ingen baggrundsfarve, så intet dækker boksene */
 }
 .location {
   width: 130px;         /* Samme bredde som tidligere */
@@ -194,7 +194,7 @@ footer {
   z-index: 99998;
 }
 
-/* Modaler */
+/* Modals */
 .modal {
   position: fixed;
   top: 0;
@@ -222,7 +222,7 @@ footer {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Modal Overgange */
+/* Modal transitions */
 .modal-slide-in {
   animation: slideIn 0.5s forwards;
 }
@@ -238,7 +238,7 @@ footer {
   to { transform: translateY(-40px); opacity: 0; }
 }
 
-/* Ephemeral Popups */
+/* Popups */
 #popup-container {
   position: fixed;
   top: 20px;
@@ -267,7 +267,7 @@ footer {
   100% { opacity: 0; transform: translateY(-20px); }
 }
 
-/* Flydende Tekst */
+/* Floating Text */
 #floating-text-container {
   position: fixed;
   top: 0;
@@ -289,7 +289,7 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
-/* Intro Modal Specifik styling – bruger CSS-baggrund */
+/* Intro Modal */
 .intro-content {
   position: relative;
   overflow: hidden;
@@ -330,7 +330,7 @@ footer {
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Responsivt Design */
+/* Responsive Design */
 @media (max-width: 992px) {
   .location {
     width: 120px;
@@ -357,7 +357,7 @@ footer {
   }
 }
 
-/* Animation til dashboardopdatering */
+/* Dashboard Update Animation */
 .kpi-update {
   animation: pulse 1s ease-out;
 }
