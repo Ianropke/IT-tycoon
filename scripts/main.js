@@ -108,8 +108,10 @@ document.getElementById('cab-result-ok-btn').addEventListener('click', () => {
   postCABTechnicalCheck();
 });
 
+// Opdateret: Når Task Summary lukkes, nulstilles den aktive opgave, så nye opgaver kan vælges.
 document.getElementById('task-summary-ok-btn').addEventListener('click', () => {
   taskSummaryModal.style.display = 'none';
+  endActiveTask();
   renderTasks();
 });
 
@@ -379,14 +381,13 @@ function showScenarioModal(stepIndex){
     ${st.stepDescription || "Standard scenarie..."}
   </p>`;
   
-  // DigDeeperLinks (hvis defineret for opgaven)
+  // DigDeeperLinks (hvis defineret)
   digDeeperLinksDiv.innerHTML = "";
   if (t.digDeeperLinks && t.digDeeperLinks.length) {
     digDeeperLinksDiv.style.display = "block";
     t.digDeeperLinks.forEach(linkObj => {
       let btn = document.createElement('button');
       btn.classList.add('commit-button');
-      // Sørg for, at teksten i linkObj.text er konkret og uddybende
       btn.textContent = "Mere info: " + linkObj.label;
       btn.onclick = () => showMoreInfo(linkObj.text);
       digDeeperLinksDiv.appendChild(btn);
@@ -484,6 +485,7 @@ function finalizeStep(stepIndex) {
   updateStepsList();
   // Hvis alle trin er fuldførte, vis Task Summary-modal
   if (t.currentStep >= t.steps.length) {
+    gameState.lastFinishedTask = t;
     showTaskSummaryModal();
   }
 }
