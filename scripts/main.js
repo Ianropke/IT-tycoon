@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   /************************************************************
-   * main.js – IT‑Tycoon (Endelig udgave med Inspect & Adapt)
+   * main.js – IT‑Tycoon (Endelig udgave med Inspect & Adapt og Chart fix)
    * Funktioner:
    * - Tid som beslutningsfaktor (timeCost) – avancerede valg koster ekstra tid.
    * - Unikke lokationer per opgave (validateTask)
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tutorialTextEl  = document.getElementById('tutorial-text');
   const scenarioIntroTitleEl = document.getElementById('scenario-intro-title');
   const scenarioIntroTextEl  = document.getElementById('scenario-intro-text');
-  const scenarioIntroCloseBtn = document.getElementById('scenario-intro-close-btn');  // Kun én deklaration
+  const scenarioIntroCloseBtn = document.getElementById('scenario-intro-close-btn');
 
   const scenarioTitle       = document.getElementById('scenario-title');
   const scenarioFlavorText  = document.getElementById('scenario-flavor-text');
@@ -229,6 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let dashboardChart;
   function initDashboard() {
     const ctx = dashboardCanvas.getContext('2d');
+    // Hvis der allerede er en instans, destroy den
+    if (dashboardChart) {
+      dashboardChart.destroy();
+    }
     dashboardChart = new Chart(ctx, {
       type: 'bar',
       data: {
