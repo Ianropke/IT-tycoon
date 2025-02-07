@@ -1,23 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
   /************************************************************
-   * main.js – IT‑Tycoon (Endelig udgave med Inspect & Adapt og Chart fix)
+   * main.js – IT‑Tycoon (Endelig udgave med dynamiske lokationer og arkitekthjælp)
    * Funktioner:
    * - Tid som beslutningsfaktor (timeCost) – avancerede valg koster ekstra tid.
    * - Unikke lokationer per opgave (validateTask)
    * - Kontinuerlig opgavegenerering
    * - Inspect & Adapt (SAFe) efter 10 løste opgaver med samlet evaluering.
-   * - Grafen er nu skaleret til 40.
-   * - Lokationsområdet flyttes længere ned.
-   * - "Mere info (trin)" og "dig deeper" funktionalitet
-   * - Arkitekthjælp med konkrete anbefalinger
+   * - Grafen er skaleret til 40.
+   * - Lokationsområdet genereres dynamisk og vises længere ned.
+   * - "Mere info (trin)" og "dig deeper" funktionalitet.
+   * - Arkitekthjælp med konkrete anbefalinger og en dedikeret knap.
    ************************************************************/
 
-  // Sørg for, at dine task-filer (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js) er indlæst
+  // Sørg for, at dine task-filer er indlæst
   window.hospitalTasks = window.hospitalTasks || [];
   window.infrastrukturTasks = window.infrastrukturTasks || [];
   window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-  // Global gameState – tid, sikkerhed og udvikling (alle på skala op til 40)
+  // Global gameState – tid, sikkerhed og udvikling (skala op til 40)
   let gameState = {
     security: 20,
     development: 20,
@@ -83,6 +83,70 @@ document.addEventListener('DOMContentLoaded', () => {
   const architectContent = document.getElementById('architect-content');
   const moreInfoContent  = document.getElementById('more-info-content');
 
+  /* --- Dynamisk generering af lokationsbokse --- */
+  function renderLocations() {
+    const gameArea = document.getElementById('game-area');
+    if (!gameArea) return;
+    // Ryd tidligere indhold
+    gameArea.innerHTML = "";
+    const locations = ["hospital", "dokumentation", "leverandor", "infrastruktur", "it-jura", "cybersikkerhed"];
+    locations.forEach(loc => {
+      let div = document.createElement('div');
+      div.id = loc;
+      div.classList.add('location');
+      let icon = document.createElement('span');
+      icon.classList.add('loc-icon');
+      icon.textContent = getIconForLocation(loc);
+      div.appendChild(icon);
+      let label = document.createElement('span');
+      label.textContent = capitalize(loc);
+      div.appendChild(label);
+      gameArea.appendChild(div);
+    });
+  }
+  function getIconForLocation(loc) {
+    switch(loc) {
+      case "hospital": return "🏥";
+      case "dokumentation": return "📄";
+      case "leverandor": return "📦";
+      case "infrastruktur": return "🔧";
+      case "it-jura": return "⚖️";
+      case "cybersikkerhed": return "💻";
+      default: return "❓";
+    }
+  }
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /* --- Sikring af Arkitekthjælp-knap --- */
+  function ensureArchitectHelpButton() {
+    let btn = document.getElementById('architect-help-btn');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'architect-help-btn';
+      btn.classList.add('commit-button');
+      btn.textContent = "Få arkitekthjælp";
+      // Placer knappen øverst i aktiv opgaveområdet
+      let activeTaskDiv = document.getElementById('active-task');
+      if (activeTaskDiv) {
+        activeTaskDiv.insertBefore(btn, activeTaskDiv.firstChild);
+      }
+      // Tilføj event listener
+      btn.addEventListener('click', () => {
+        if (!gameState.activeTask) {
+          showPopup("Ingen aktiv opgave!", "error");
+          return;
+        }
+        if (gameState.activeTask.architectUsed) {
+          showPopup("Arkitekthjælp allerede brugt!", "error");
+          return;
+        }
+        showArchitectModal();
+      });
+    }
+  }
+
   /* --- Event Listeners --- */
   const introStartBtn = document.getElementById('intro-start-btn');
   if (introStartBtn) {
@@ -98,21 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (scenarioIntroCloseBtn) {
     scenarioIntroCloseBtn.addEventListener('click', () => {
       scenarioIntroModal.style.display = 'none';
-    });
-  }
-
-  const architectHelpBtn = document.getElementById('architect-help-btn');
-  if (architectHelpBtn) {
-    architectHelpBtn.addEventListener('click', () => {
-      if (!gameState.activeTask) {
-        showPopup("Ingen aktiv opgave!", "error");
-        return;
-      }
-      if (gameState.activeTask.architectUsed) {
-        showPopup("Arkitekthjælp allerede brugt!", "error");
-        return;
-      }
-      showArchitectModal();
     });
   }
 
@@ -206,6 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* --- initGame --- */
   function initGame(){
+    renderLocations();         // Sørg for, at lokationerne vises
+    ensureArchitectHelpButton(); // Sørg for, at arkitekthjælp-knappen findes
     updateDashboard();
     window.backlog = [
       ...(window.hospitalTasks || []),
@@ -229,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let dashboardChart;
   function initDashboard() {
     const ctx = dashboardCanvas.getContext('2d');
-    // Hvis der allerede er en instans, destroy den
     if (dashboardChart) {
       dashboardChart.destroy();
     }
@@ -489,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  /* --- Valg-effekter med tid, statChange og tradeOff --- */
+  /* --- Valg-effekter --- */
   function applyChoiceEffect(eff){
     if (!eff) return;
     if (eff.timeCost) {
@@ -676,6 +726,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
   });
 
-  // Initialize dashboard hvis ikke allerede initialiseret
+  // Initialize dashboard
   initDashboard();
+
+  // Dynamisk generér lokationsbokse
+  renderLocations();
+
+  // Sørg for, at arkitekthjælp-knappen findes
+  ensureArchitectHelpButton();
 });
