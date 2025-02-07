@@ -1,10 +1,11 @@
 /************************************************************
- * main.js – IT‑Tycoon (Opdateret med trade‑off mekanisme)
+ * main.js – IT‑Tycoon (Opdateret med trade‑off og "Mere info (trin)")
  * Fokus: Balancering af sikkerhed og udvikling med trade‑off.
- * Opgaver afsluttes korrekt, og dashboardet viser nu også målsætninger.
+ * Opgaveafslutning håndteres korrekt via en Sprint Review-modal.
  ************************************************************/
 
-// Arrays til tasks – sørg for, at dine task-filer findes og ligger korrekt
+// Arrays til tasks – sørg for, at dine task-filer (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js)
+// findes og ligger korrekt
 window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
@@ -156,7 +157,7 @@ let tutorialSteps = [
   },
   { 
     title: "Læringskomponenter", 
-    text: "Vores CAB og andre værktøjer er her for at guide dig og hjælpe med at dokumentere dine beslutninger, så du kan se, hvordan de påvirker systemets ydeevne."
+    text: "Vores CAB og andre værktøjer guider dig, så du kan dokumentere og evaluere dine beslutninger og se, hvordan de påvirker systemets ydeevne."
   },
   { 
     title: "Målsætning", 
@@ -204,7 +205,7 @@ function initGame(){
     ...(window.infrastrukturTasks || []),
     ...(window.cybersikkerhedTasks || [])
   ];
-  // Generér 5 startopgaver, hvis der er nok i backlog
+  // Generér opgaver (f.eks. 5 startopgaver)
   for (let i = 0; i < 5; i++){
     generateTask();
   }
@@ -400,9 +401,9 @@ function showScenarioModal(stepIndex){
     ${st.stepDescription || "Standard scenarie..."}
   </p>`;
   
-  // DigDeeperLinks
+  // DigDeeperLinks for opgaven (hvis til stede)
   digDeeperLinksDiv.innerHTML = "";
-  if (t.digDeeperLinks && t.digDeeperLinks.length){
+  if (t.digDeeperLinks && t.digDeeperLinks.length) {
     digDeeperLinksDiv.style.display = "block";
     t.digDeeperLinks.forEach(linkObj => {
       let btn = document.createElement('button');
@@ -415,7 +416,7 @@ function showScenarioModal(stepIndex){
     digDeeperLinksDiv.style.display = "none";
   }
   
-  // "Mere info (trin)" knap, hvis stepContext findes
+  // "Mere info (trin)" knap – hvis dette trin har ekstra kontekst
   let modalContent = scenarioModal.querySelector('.modal-content');
   let oldContextDiv = modalContent.querySelector('#step-context-div');
   if (oldContextDiv) oldContextDiv.remove();
@@ -431,7 +432,7 @@ function showScenarioModal(stepIndex){
     modalContent.appendChild(stepContextDiv);
   }
   
-  // Valg A/B
+  // Opsætning af valg A og B
   scenarioALabel.textContent = st.choiceA.label;
   scenarioAText.innerHTML = st.choiceA.text + (st.choiceA.recommended ? " <span class='recommended'>(Anbefalet)</span>" : "");
   scenarioBLabel.textContent = st.choiceB.label;
@@ -452,24 +453,26 @@ function showScenarioModal(stepIndex){
 /* --- Valg-effekter med Trade-Off --- */
 function applyChoiceEffect(eff){
   if (!eff) return;
-  // Anvend positive effekter
+  // Anvend positive effekter (statChange)
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
       let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
       applyStatChange(stat, adjustedDelta);
     }
   }
-  // Anvend tradeOff effekter (for eksempel, hvis et valg øger sikkerheden, men sænker udviklingen)
+  // Anvend negative trade-off effekter
   if (eff.tradeOff){
     for (let [stat, delta] of Object.entries(eff.tradeOff)){
       applyStatChange(stat, delta);
     }
   }
-  // Anvend eventuel ekstra risikoeffekt
+  // Anvend ekstra risikoeffekt, hvis defineret
   if (eff.riskyPlus) {
     gameState.riskyTotal += eff.riskyPlus * (gameState.activeTask.riskProfile || 1);
   }
 }
+
+/* --- Statændringer --- */
 function applyStatChange(stat, delta){
   if (stat === "security" || stat === "development") {
     gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 30);
@@ -484,13 +487,12 @@ function finalizeStep(stepIndex) {
   if (!t) return;
   t.currentStep++;
   updateStepsList();
-  // Hvis alle trin er fuldførte
+  // Hvis alle trin i opgaven er gennemført, vis Sprint Review-modal med feedback
   if (t.currentStep >= t.steps.length) {
     if (t.preRiskReduction > 0) {
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
       showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
-    // Vis Sprint Review-modal med feedback – eller afslut opgaven direkte, hvis modal ikke findes
     let sprintModal = document.getElementById('sprint-review-modal');
     if (sprintModal) {
       sprintModal.querySelector('.modal-content').innerHTML = `
