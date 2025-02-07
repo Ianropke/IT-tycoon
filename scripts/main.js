@@ -1,7 +1,7 @@
 /************************************************************
- * main.js – IT‑Tycoon (Endelig udgave)
+ * main.js – IT‑Tycoon (Endelig udgave med tidseffekt på grundige valg)
  * Funktioner:
- * - Tid som beslutningsfaktor (timeCost)
+ * - Tid som beslutningsfaktor (timeCost) – nu med ekstra omkostning for grundige (recommended) valg.
  * - Unikke lokationer per opgave (validateTask)
  * - Trade‑off mekanisme (statChange vs. tradeOff)
  * - Opgaveafslutning med Task Summary (viser sikkerhed, udvikling og tid)
@@ -108,7 +108,7 @@ document.getElementById('cab-result-ok-btn').addEventListener('click', () => {
   postCABTechnicalCheck();
 });
 
-// Opdateret: Når Task Summary lukkes, nulstilles den aktive opgave, så nye opgaver kan vælges.
+// Når Task Summary lukkes, nulstilles den aktive opgave, så nye opgaver kan vælges.
 document.getElementById('task-summary-ok-btn').addEventListener('click', () => {
   taskSummaryModal.style.display = 'none';
   endActiveTask();
@@ -412,19 +412,28 @@ function showScenarioModal(stepIndex){
     modalContent.appendChild(stepContextDiv);
   }
   
-  // Opsæt valg A og B
+  // Opsætning af valg – nu med ekstra tid for grundige (recommended) valg
   scenarioALabel.textContent = st.choiceA.label;
   scenarioAText.innerHTML = st.choiceA.text + (st.choiceA.recommended ? " <span class='recommended'>(Anbefalet)</span>" : "");
   scenarioBLabel.textContent = st.choiceB.label;
   scenarioBText.innerHTML = st.choiceB.text + (st.choiceB.recommended ? " <span class='recommended'>(Anbefalet)</span>" : "");
   
   scenarioAButton.onclick = () => {
-    applyChoiceEffect(st.choiceA.applyEffect);
+    // Klon effekten, og hvis choiceA er recommended, læg ekstra tid til
+    let effect = Object.assign({}, st.choiceA.applyEffect);
+    if (st.choiceA.recommended) {
+      effect.timeCost = (effect.timeCost || 0) + 2;
+    }
+    applyChoiceEffect(effect);
     finalizeStep(stepIndex);
     scenarioModal.style.display = "none";
   };
   scenarioBButton.onclick = () => {
-    applyChoiceEffect(st.choiceB.applyEffect);
+    let effect = Object.assign({}, st.choiceB.applyEffect);
+    if (st.choiceB.recommended) {
+      effect.timeCost = (effect.timeCost || 0) + 2;
+    }
+    applyChoiceEffect(effect);
     finalizeStep(stepIndex);
     scenarioModal.style.display = "none";
   };
