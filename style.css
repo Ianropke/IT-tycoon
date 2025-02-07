@@ -1,6 +1,6 @@
-/* style.css – IT‑Tycoon */
+/* style.css – IT‑Tycoon (Endelig version) */
 
-/* Grundopsætning */
+/* Grundlæggende opsætning */
 html, body {
   margin: 0;
   padding: 0;
@@ -23,10 +23,10 @@ header h1 {
   font-size: 2rem;
 }
 
-/* Main container med to kolonner – bevarer den oprindelige breddefordeling */
+/* Main container */
 #main-container {
   display: flex;
-  height: calc(100vh - 100px); /* Næsten hele viewporten til spilområdet */
+  height: calc(100vh - 100px);
   margin: 8px 20px;
   gap: 16px;
   box-sizing: border-box;
@@ -34,20 +34,18 @@ header h1 {
 
 /* Venstre kolonne: Dashboard og Lokationsområde */
 #left-column {
-  flex: 1;  /* Beholder oprindelig bredde */
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 20px; /* Sørger for, at intet indhold skæres af nederst */
+  padding-bottom: 20px;
 }
-
-/* Dashboard – fastholder tidligere størrelse */
 #dashboard {
   background-color: #34495e;
   padding: 16px;
   width: 100%;
   max-width: 800px;
-  height: 250px;  /* Grafen forbliver i samme størrelse */
+  height: 250px;
   border-radius: 8px;
   overflow: hidden;
   margin: 0 auto;
@@ -62,22 +60,22 @@ header h1 {
   height: 100% !important;
 }
 
-/* Lokationsområde – fast højde og margin-top for at sikre synlighed */
+/* Lokationsområde */
 #game-area {
-  flex: 0 0 200px;      /* Fast højde på 200px */
-  margin-top: 20px;      /* Skubber lokationsområdet 20px nedad */
+  flex: 0 0 200px;
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;             /* Mindre afstand mellem lokationsbokse */
+  gap: 2px;
   justify-content: center;
   align-items: center;
   overflow-y: auto;
-  background: transparent;  /* Ingen baggrundsfarve, så intet dækker boksene */
+  background: transparent;
 }
 .location {
-  width: 130px;         /* Samme bredde som tidligere */
-  height: 60px;         /* Samme højde */
-  margin: 1px;          /* Minimal margin */
+  width: 130px;
+  height: 60px;
+  margin: 1px;
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
@@ -90,7 +88,7 @@ header h1 {
   background-color: #3d5466;
   padding: 2px;
   transition: background-color 0.3s;
-  z-index: 1;           /* Sikrer, at lokationsboksene altid er øverst */
+  z-index: 1;
 }
 .location:hover {
   filter: brightness(1.15);
@@ -102,7 +100,7 @@ header h1 {
 
 /* Højre kolonne: Opgavelister */
 #right-column {
-  flex: 1;  /* Beholder samme bredde som venstre kolonne */
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -171,7 +169,7 @@ footer {
 .hoverTooltip[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0,0,0,0.75);
   color: #fff;
   padding: 4px 6px;
   border-radius: 4px;
@@ -190,11 +188,11 @@ footer {
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.75);
+  border-top-color: rgba(0,0,0,0.75);
   z-index: 99998;
 }
 
-/* Modals */
+/* Modaler */
 .modal {
   position: fixed;
   top: 0;
@@ -204,7 +202,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0,0,0,0.6);
   z-index: 999999;
 }
 .modal-content {
@@ -221,8 +219,6 @@ footer {
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-/* Modal transitions */
 .modal-slide-in {
   animation: slideIn 0.5s forwards;
 }
@@ -255,12 +251,8 @@ footer {
   max-width: 320px;
   animation: fadeOut 4s forwards;
 }
-.popup.error {
-  background-color: #e74c3c;
-}
-.popup.info {
-  background-color: #3498db !important;
-}
+.popup.error { background-color: #e74c3c; }
+.popup.info { background-color: #3498db !important; }
 @keyframes fadeOut {
   0% { opacity: 0.9; transform: translateY(0); }
   80% { opacity: 0.9; transform: translateY(-20px); }
