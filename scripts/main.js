@@ -1,10 +1,11 @@
 /************************************************************
- * main.js – IT‑Tycoon (Endelig udgave med tid på skala 30)
+ * main.js – IT‑Tycoon (Endelig udgave med Inspect & Adapt)
  * Funktioner:
- * - Tid som beslutningsfaktor (timeCost) – med avancerede valg, der koster ekstra tid.
+ * - Tid som beslutningsfaktor (timeCost) – avancerede valg koster ekstra tid.
  * - Unikke lokationer per opgave (validateTask)
- * - Trade‑off mekanisme (statChange vs. tradeOff)
- * - Opgaveafslutning med Task Summary (viser sikkerhed, udvikling og tid)
+ * - Kontinuerlig opgavegenerering
+ * - Inspect & Adapt (SAFe) efter 10 løste opgaver med samlet evaluering.
+ * - Grafen er nu skaleret til 40.
  * - "Mere info (trin)" og "dig deeper" funktionalitet
  * - Arkitekthjælp med konkrete anbefalinger
  ************************************************************/
@@ -14,7 +15,7 @@ window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Global gameState – nu med tid sat til 30, så den ligger på samme skala som sikkerhed og udvikling
+// Global gameState – tid, sikkerhed og udvikling (alle måles på en skala op til 40)
 let gameState = {
   security: 20,
   development: 20,
@@ -27,6 +28,11 @@ let gameState = {
   riskyTotal: 0,
   finalFailChance: 0,
   lastFinishedTask: null
+};
+
+const missionGoals = {
+  security: 22,
+  development: 22
 };
 
 const scenarioFlavorPool = [
@@ -46,6 +52,7 @@ const architectModal   = document.getElementById('architect-modal');
 const cabModal         = document.getElementById('cab-modal');
 const cabResultModal   = document.getElementById('cab-result-modal');
 const taskSummaryModal = document.getElementById('task-summary-modal');
+const inspectModal     = document.getElementById('inspect-modal'); // Ny modal til inspect & adapt
 const moreInfoModal    = document.getElementById('more-info-modal');
 
 const tutorialTitleEl = document.getElementById('tutorial-title');
@@ -70,6 +77,7 @@ const cabSummary       = document.getElementById('cab-summary');
 const cabResultTitle   = document.getElementById('cab-result-title');
 const cabResultText    = document.getElementById('cab-result-text');
 const taskSummaryText  = document.getElementById('task-summary-text');
+const inspectContent   = document.getElementById('inspect-content');
 const architectContent = document.getElementById('architect-content');
 const moreInfoContent  = document.getElementById('more-info-content');
 
@@ -115,6 +123,12 @@ document.getElementById('task-summary-ok-btn').addEventListener('click', () => {
   renderTasks();
 });
 
+// Inspect & Adapt: Når inspect-modalen lukkes, slutter spillet.
+document.getElementById('inspect-close-btn').addEventListener('click', () => {
+  inspectModal.style.display = 'none';
+  endGame();
+});
+
 document.getElementById('more-info-close-btn').addEventListener('click', () => {
   moreInfoModal.style.display = 'none';
 });
@@ -124,11 +138,11 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed, udvikling og tid. Dine beslutninger påvirker driftssikkerheden, og du skal træffe strategiske valg for at optimere systemet. Bemærk: Avancerede (anbefalede) valg koster ekstra tid, så vælg med omtanke!"
+    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed, udvikling og tid. Dine beslutninger påvirker driftssikkerheden, og avancerede (anbefalede) valg koster ekstra tid – vælg med omtanke!"
   },
   { 
     title: "Læringskomponenter", 
-    text: "Brug de indbyggede 'Mere info'-knapper for at få uddybende forklaringer på hvert trin. Arkitekthjælpen viser dig, hvilke valg der er særligt kritiske."
+    text: "Brug de indbyggede 'Mere info'-knapper for at få uddybende forklaringer på hvert trin. Arkitekthjælpen guider dig til de kritiske valg."
   }
 ];
 let tutorialIdx = 0;
@@ -171,7 +185,13 @@ function initGame(){
     ...(window.infrastrukturTasks || []),
     ...(window.cybersikkerhedTasks || [])
   ];
-  // Generér 5 opgaver som start
+  // Generér opgaver kontinuerligt via interval – hvis der er færre end 10 opgaver
+  setInterval(() => {
+    if (gameState.availableTasks.length < 10) {
+      generateTask();
+    }
+  }, 10000);
+  // Start med at generere 5 opgaver
   for (let i = 0; i < 5; i++){
     generateTask();
   }
@@ -198,7 +218,7 @@ function initDashboard() {
         },
         {
           label: 'Målsætning',
-          data: [null, 22, 22],
+          data: [null, missionGoals.security, missionGoals.development],
           type: 'line',
           borderColor: '#f1c40f',
           borderWidth: 2,
@@ -214,8 +234,8 @@ function initDashboard() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 30,
-          ticks: { stepSize: 2 }
+          max: 40,
+          ticks: { stepSize: 5 }
         }
       }
     }
@@ -412,7 +432,7 @@ function showScenarioModal(stepIndex){
     modalContent.appendChild(stepContextDiv);
   }
   
-  // Opsætning af valg – med ekstra tid for grundige (recommended) valg
+  // Opsæt valg – med ekstra tid for anbefalede valg
   scenarioALabel.textContent = st.choiceA.label;
   scenarioAText.innerHTML = st.choiceA.text + (st.choiceA.recommended ? " <span class='recommended'>(Anbefalet, +2 tid)</span>" : "");
   scenarioBLabel.textContent = st.choiceB.label;
@@ -441,24 +461,20 @@ function showScenarioModal(stepIndex){
 /* --- Valg-effekter med tid, statChange og tradeOff --- */
 function applyChoiceEffect(eff){
   if (!eff) return;
-  // Anvend timeCost, hvis defineret
   if (eff.timeCost) {
     applyTimeCost(eff.timeCost);
   }
-  // Positive effekter
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
       let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
       applyStatChange(stat, adjustedDelta);
     }
   }
-  // Negative effekter (tradeOff)
   if (eff.tradeOff){
     for (let [stat, delta] of Object.entries(eff.tradeOff)){
       applyStatChange(stat, delta);
     }
   }
-  // Ekstra risikoeffekt, hvis defineret
   if (eff.riskyPlus) {
     gameState.riskyTotal += eff.riskyPlus * (gameState.activeTask.riskProfile || 1);
   }
@@ -479,7 +495,7 @@ function applyTimeCost(t) {
 /* --- Statændringer --- */
 function applyStatChange(stat, delta){
   if (stat === "security" || stat === "development") {
-    gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 30);
+    gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 40);
   }
   updateScoreboard();
   showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
@@ -493,7 +509,13 @@ function finalizeStep(stepIndex) {
   updateStepsList();
   if (t.currentStep >= t.steps.length) {
     gameState.lastFinishedTask = t;
-    showTaskSummaryModal();
+    gameState.tasksCompleted++;
+    // Hvis 10 eller flere opgaver er løst, vis inspect & adapt
+    if (gameState.tasksCompleted >= 10) {
+      showInspectAndAdapt();
+    } else {
+      showTaskSummaryModal();
+    }
   }
 }
 
@@ -506,7 +528,7 @@ function showTaskSummaryModal(){
     <strong>Opgave fuldført!</strong><br/>
     Status:<br/>
     Sikkerhed: ${s}, Udvikling: ${d}, Tid tilbage: ${timeRemaining}<br/><br/>
-    Tips: Husk, at avancerede valg koster ekstra tid. Vurder derfor dine valg nøje for at optimere både sikkerhed og udvikling.
+    Tips: Husk, at avancerede valg koster ekstra tid. Vurder derfor dine valg nøje.
   `;
   let lastT = gameState.lastFinishedTask;
   if (lastT && lastT.knowledgeRecap) {
@@ -517,6 +539,29 @@ function showTaskSummaryModal(){
   }
   taskSummaryText.innerHTML = summary;
   taskSummaryModal.style.display = "flex";
+}
+
+/* --- Inspect & Adapt Modal (SAFe) --- */
+function showInspectAndAdapt(){
+  let s = gameState.security,
+      d = gameState.development,
+      timeRemaining = gameState.time;
+  let report = `
+    <h2>Inspect & Adapt</h2>
+    <p>Du har løst ${gameState.tasksCompleted} opgaver.</p>
+    <p>
+      Status:<br/>
+      Sikkerhed: ${s} (Mål: ${missionGoals.security})<br/>
+      Udvikling: ${d} (Mål: ${missionGoals.development})<br/>
+      Tid tilbage: ${timeRemaining}
+    </p>
+    <p>
+      Hospitalet evaluerer din indsats – hvis du har nået målene, er du klar til at fortsætte som IT‑forvalter.
+    </p>
+    <button id="inspect-close-btn" class="commit-button">Afslut Spillet</button>
+  `;
+  inspectContent.innerHTML = report;
+  inspectModal.style.display = "flex";
 }
 
 /* --- Afslut aktiv opgave --- */
