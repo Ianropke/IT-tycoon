@@ -23,7 +23,7 @@ header h1 {
   font-size: 2rem;
 }
 
-/* Main container med to kolonner – øget højde */
+/* Main container med to kolonner – øget spilområde */
 #main-container {
   display: flex;
   height: calc(100vh - 100px); /* Mindre fratrukket højde – giver mere plads */
@@ -40,13 +40,13 @@ header h1 {
   gap: 8px;
 }
 
-/* Dashboard */
+/* Dashboard - øget højde til grafen */
 #dashboard {
   background-color: #34495e;
   padding: 16px;
   width: 100%;
   max-width: 800px;
-  height: 150px;  /* Fast højde for dashboardet */
+  height: 250px;  /* Grafen bliver højere */
   border-radius: 8px;
   overflow: hidden;
   margin: 0 auto;
@@ -61,21 +61,20 @@ header h1 {
   height: 100% !important;
 }
 
-/* Lokationsområde */
+/* Lokationsområde - reduceret højde og tættere lokationer */
 #game-area {
-  flex: 1;
+  flex: 0 0 80px;  /* Reduceret højde */
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;  /* Reduceret afstand mellem lokationsbokse */
+  gap: 2px;        /* Mindre afstand mellem lokationsbokse */
   justify-content: center;
   align-items: center;
-  height: 150px;  /* Fast højde for lokationsområdet */
   overflow-y: auto;
 }
 .location {
-  width: 130px;  /* Mindre bredde */
-  height: 70px;  /* Mindre højde */
-  margin: 2px;   /* Minimal margin */
+  width: 130px;    /* Samme bredde */
+  height: 60px;    /* Reduceret højde */
+  margin: 1px;     /* Mindre margin */
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
@@ -286,7 +285,7 @@ footer {
   100% { opacity: 0; transform: translateY(-60px); }
 }
 
-/* Intro Modal Specifik styling (ingen SVG – brug CSS-baggrund) */
+/* Intro Modal Specifik styling – bruger CSS-baggrund */
 .intro-content {
   position: relative;
   overflow: hidden;
