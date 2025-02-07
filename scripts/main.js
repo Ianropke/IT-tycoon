@@ -1,38 +1,32 @@
 /************************************************************
- * main.js – IT‑Tycoon (Opdateret med trade‑off, sprint-opsummering
- * og udvidet arkitekthjælp)
+ * main.js – IT‑Tycoon (Endelig udgave)
+ * Funktioner:
+ * - Tid som beslutningsfaktor (timeCost)
+ * - Unikke lokationer per opgave (validateTask)
+ * - Trade‑off mekanisme (statChange vs. tradeOff)
+ * - Opgaveafslutning med Task Summary (viser sikkerhed, udvikling og tid)
+ * - "Mere info (trin)" og "dig deeper" funktionalitet
+ * - Arkitekthjælp med konkrete anbefalinger
  ************************************************************/
 
-// Indlæs task-filer (sørg for at disse filer findes og indlæses korrekt)
+// Sørg for, at dine task-filer (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js) er indlæst
 window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Missionmål: Opnå mindst 22 i både sikkerhed og udvikling
-const missionGoals = {
-  security: 22,
-  development: 22
-};
-
-// Global gameState – bemærk at vi nu tilføjer totalSprints
+// Global gameState – med tid, sikkerhed og udvikling
 let gameState = {
   security: 20,
   development: 20,
+  time: 100,            // Spilleren starter med 100 tidspoint
   tasksCompleted: 0,
-  activeTask: null,    // Den opgave, spilleren har forpligtet sig til
+  activeTask: null,
   availableTasks: [],
   usedTasks: new Set(),
   docSkipCount: 0,
   riskyTotal: 0,
   finalFailChance: 0,
-  lastFinishedTask: null,
-  currentSprint: 1,
-  totalSprints: 5,     // Spilleren har 5 sprints til at nå målene
-  sprintGoals: {
-    tasksCompleted: 5,
-    security: missionGoals.security,
-    development: missionGoals.development
-  }
+  lastFinishedTask: null
 };
 
 const scenarioFlavorPool = [
@@ -51,8 +45,6 @@ const scenarioModal    = document.getElementById('scenario-modal');
 const architectModal   = document.getElementById('architect-modal');
 const cabModal         = document.getElementById('cab-modal');
 const cabResultModal   = document.getElementById('cab-result-modal');
-const sprintPlanningModal = document.getElementById('sprint-planning-modal');
-const sprintReviewModal   = document.getElementById('sprint-review-modal'); // Sprint Review Modal
 const taskSummaryModal = document.getElementById('task-summary-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
@@ -125,38 +117,17 @@ document.getElementById('more-info-close-btn').addEventListener('click', () => {
   moreInfoModal.style.display = 'none';
 });
 
-// Sprint Planning Modal: Vis sprintmålsætninger og antal sprints
-function showSprintPlanning() {
-  let modal = sprintPlanningModal;
-  modal.querySelector('.modal-content').innerHTML = `
-    <h2>Sprint Målsætninger</h2>
-    <p>
-      Hospitalet har fastsat følgende mål for denne sprint:<br/>
-      Sikkerhed: ${missionGoals.security}<br/>
-      Udvikling: ${missionGoals.development}<br/><br/>
-      Du har ${gameState.totalSprints} sprints i alt. Denne sprint er nummer ${gameState.currentSprint}.<br/><br/>
-      Er du klar til at starte sprinten?
-    </p>
-    <button id="sprint-planning-ok-btn" class="commit-button">Start Sprint</button>
-  `;
-  modal.style.display = "flex";
-  document.getElementById('sprint-planning-ok-btn').addEventListener('click', () => {
-    modal.style.display = "none";
-  });
-}
-
 /* --- Tutorial --- */
 const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed og udvikling for at sikre, at hospitalets systemer kører optimalt. Dine beslutninger har konsekvenser, og du skal træffe strategiske valg for at nå dine mål."
+    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed, udvikling og tid. Dine beslutninger påvirker driftssikkerheden, og du skal træffe strategiske valg for at optimere systemet."
   },
   { 
     title: "Læringskomponenter", 
-    text: "Brug de indbyggede forklaringer og 'Mere info'-knapper for at forstå, hvordan hvert trin påvirker systemet. Vores arkitekthjælp guider dig med konkrete anbefalinger, så du ved, hvor du skal lægge hovedvægten."
+    text: "Brug de indbyggede 'Mere info'-knapper for at få uddybende forklaringer på hvert trin. Arkitekthjælpen viser dig, hvilke valg der er særligt kritiske."
   }
-  // Sprintmålet vises nu kun i sprint planning – gentagelse fjernet
 ];
 let tutorialIdx = 0;
 function openTutorialModal(){
@@ -167,7 +138,6 @@ function showTutorialContent(){
   if (tutorialIdx >= tutorialSteps.length) {
     tutorialModal.style.display = "none";
     initGame();
-    showSprintPlanning();
     return;
   }
   tutorialTitleEl.textContent = tutorialSteps[tutorialIdx].title;
@@ -199,7 +169,7 @@ function initGame(){
     ...(window.infrastrukturTasks || []),
     ...(window.cybersikkerhedTasks || [])
   ];
-  // Generér opgaver – vi starter med 5 opgaver
+  // Generér 5 opgaver som start
   for (let i = 0; i < 5; i++){
     generateTask();
   }
@@ -213,20 +183,20 @@ function initDashboard() {
   dashboardChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Sprint', 'Sikkerhed', 'Udvikling'],
+      labels: ['Tid', 'Sikkerhed', 'Udvikling'],
       datasets: [
         {
           label: 'Nuværende Status',
           data: [
-            gameState.currentSprint, 
-            gameState.security, 
+            gameState.time,
+            gameState.security,
             gameState.development
           ],
-          backgroundColor: ['#2980b9', '#27ae60', '#8e44ad']
+          backgroundColor: ['#f39c12', '#27ae60', '#8e44ad']
         },
         {
           label: 'Målsætning',
-          data: [null, missionGoals.security, missionGoals.development],
+          data: [null, 22, 22],
           type: 'line',
           borderColor: '#f1c40f',
           borderWidth: 2,
@@ -252,7 +222,7 @@ function initDashboard() {
 function updateDashboard() {
   if (!dashboardChart) return;
   dashboardChart.data.datasets[0].data = [
-    gameState.currentSprint,
+    gameState.time,
     gameState.security,
     gameState.development
   ];
@@ -270,11 +240,26 @@ function updateScoreboard(){
 }
 
 /* --- Task Generation --- */
+function validateTask(task) {
+  let locations = new Set();
+  for (let step of task.steps) {
+    if (locations.has(step.location)) {
+      console.error(`Task "${task.title}" har duplikeret lokation: ${step.location}`);
+      return false;
+    }
+    locations.add(step.location);
+  }
+  return true;
+}
 function generateTask(){
   if (gameState.availableTasks.length >= 10) return;
   let notUsed = window.backlog.filter(t => !gameState.usedTasks.has(t.title));
   if (!notUsed.length) return;
   let chosen = notUsed[Math.floor(Math.random() * notUsed.length)];
+  if (!validateTask(chosen)) {
+    console.error(`Task "${chosen.title}" er ugyldig pga. duplikerede lokationer. Skipper opgaven.`);
+    return;
+  }
   if (!chosen.riskProfile) {
     chosen.riskProfile = 1.0;
   }
@@ -380,7 +365,7 @@ function showScenarioModal(stepIndex){
   let st = t.steps[stepIndex];
   let loc = st.location || "ukendt";
   
-  // Vis narrativ fra opgaven, hvis til stede
+  // Vis narrativ hvis defineret
   if (t.narrativeIntro){
     scenarioNarrativeDiv.style.display = "block";
     scenarioNarrativeDiv.innerHTML = t.narrativeIntro;
@@ -394,14 +379,14 @@ function showScenarioModal(stepIndex){
     ${st.stepDescription || "Standard scenarie..."}
   </p>`;
   
-  // DigDeeperLinks for opgaven (hvis defineret)
+  // DigDeeperLinks (hvis defineret for opgaven)
   digDeeperLinksDiv.innerHTML = "";
   if (t.digDeeperLinks && t.digDeeperLinks.length) {
     digDeeperLinksDiv.style.display = "block";
     t.digDeeperLinks.forEach(linkObj => {
       let btn = document.createElement('button');
       btn.classList.add('commit-button');
-      // Her forventes der at være en fyldestgørende forklaring – ret gerne dine tasks, så teksten er konkret.
+      // Sørg for, at teksten i linkObj.text er konkret og uddybende
       btn.textContent = "Mere info: " + linkObj.label;
       btn.onclick = () => showMoreInfo(linkObj.text);
       digDeeperLinksDiv.appendChild(btn);
@@ -410,7 +395,7 @@ function showScenarioModal(stepIndex){
     digDeeperLinksDiv.style.display = "none";
   }
   
-  // "Mere info (trin)" – tilføj knap, hvis stepContext findes
+  // "Mere info (trin)" knap, hvis stepContext findes
   let modalContent = scenarioModal.querySelector('.modal-content');
   let oldContextDiv = modalContent.querySelector('#step-context-div');
   if (oldContextDiv) oldContextDiv.remove();
@@ -444,17 +429,21 @@ function showScenarioModal(stepIndex){
   };
 }
 
-/* --- Valg-effekter med Trade-Off --- */
+/* --- Valg-effekter med tid, statChange og tradeOff --- */
 function applyChoiceEffect(eff){
   if (!eff) return;
-  // Anvend positive effekter
+  // Anvend timeCost, hvis defineret
+  if (eff.timeCost) {
+    applyTimeCost(eff.timeCost);
+  }
+  // Positive effekter
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
       let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
       applyStatChange(stat, adjustedDelta);
     }
   }
-  // Anvend negative trade-off effekter
+  // Negative effekter (tradeOff)
   if (eff.tradeOff){
     for (let [stat, delta] of Object.entries(eff.tradeOff)){
       applyStatChange(stat, delta);
@@ -464,6 +453,18 @@ function applyChoiceEffect(eff){
   if (eff.riskyPlus) {
     gameState.riskyTotal += eff.riskyPlus * (gameState.activeTask.riskProfile || 1);
   }
+}
+
+/* --- Tidshåndtering --- */
+function applyTimeCost(t) {
+  if (gameState.time < t) {
+    showPopup("Ikke nok tid!", "error");
+    endGame();
+    return;
+  }
+  gameState.time -= t;
+  updateScoreboard();
+  showFloatingText(`-${t} tid`, "time");
 }
 
 /* --- Statændringer --- */
@@ -481,127 +482,22 @@ function finalizeStep(stepIndex) {
   if (!t) return;
   t.currentStep++;
   updateStepsList();
-  // Hvis alle trin i opgaven er gennemført, vis sprint review og afslut opgaven
+  // Hvis alle trin er fuldførte, vis Task Summary-modal
   if (t.currentStep >= t.steps.length) {
-    if (t.preRiskReduction > 0) {
-      gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
-      showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
-    }
-    showSprintReview();
+    showTaskSummaryModal();
   }
 }
 
-/* --- Sprint Review (Feedback-loop og sprint-afslutning) --- */
-function showSprintReview(){
-  let report = `
-    <strong>Sprint Review</strong><br/>
-    Sikkerhed: ${gameState.security} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${gameState.development} (mål: ${missionGoals.development})<br/><br/>
-    Tips: Fokuser særligt på de trin, hvor der er markeret anbefalede valg.
-  `;
-  let modal = sprintReviewModal;
-  if (modal) {
-    modal.querySelector('.modal-content').innerHTML = report +
-      `<br/><button id="sprint-review-close-btn" class="commit-button">Luk</button>`;
-    modal.style.display = "flex";
-    document.getElementById('sprint-review-close-btn').addEventListener('click', function handler() {
-      modal.style.display = "none";
-      this.removeEventListener('click', handler);
-      completeTaskCAB();
-      completeSprint();
-    });
-  } else {
-    completeTaskCAB();
-    completeSprint();
-  }
-}
-
-/* --- Sprint Afslutning --- */
-function completeSprint() {
-  // Opdater sprintnummeret
-  gameState.currentSprint++;
-  // Hvis alle sprints er forbrugt, afslut spillet
-  if (gameState.currentSprint > gameState.totalSprints) {
-    endGame();
-  } else {
-    showPopup(`Sprint ${gameState.currentSprint - 1} afsluttet!`, "info", 3000);
-  }
-}
-
-/* --- CAB-gennemgang --- */
-function showCABModal(){
-  let fail = gameState.riskyTotal + (gameState.docSkipCount * 0.05);
-  if (fail > 1) fail = 1;
-  gameState.finalFailChance = fail;
-  cabModal.style.display = "flex";
-  cabSummary.innerHTML = `
-    <strong>CAB-gennemgang</strong><br/>
-    Risiko ved hurtige valg: ${(gameState.riskyTotal * 100).toFixed(0)}%<br/>
-    Dokumentationsspring: ${gameState.docSkipCount} => +${(gameState.docSkipCount * 5)}%<br/>
-    Samlet fejlchance: ${(fail * 100).toFixed(0)}%
-  `;
-}
-function finalizeCABResult(){
-  cabModal.style.display = "none";
-  let r = Math.random();
-  if (r < gameState.finalFailChance){
-    showCABResult(false);
-  } else {
-    showCABResult(true);
-  }
-}
-function showCABResult(isSuccess){
-  cabResultModal.style.display = "flex";
-  if (isSuccess){
-    cabResultTitle.textContent = "CAB: Godkendt!";
-    cabResultText.textContent = "CAB mener, at ændringerne kan gennemføres.";
-  } else {
-    cabResultTitle.textContent = "CAB: Afvist!";
-    cabResultText.textContent = "For stor risiko eller for lidt dokumentation. Opgaven mislykkes.";
-    failTaskCAB();
-  }
-}
-function postCABTechnicalCheck(){
-  cabResultModal.style.display = "none";
-  if (Math.random() < (gameState.riskyTotal * 0.3)) {
-    showPopup("Implementeringen fejlede i praksis!", "error");
-    gameState.tasksCompleted++;
-    endActiveTask();
-  } else {
-    showPopup("Drifts-tjek lykkedes!", "success");
-    completeTaskCAB();
-  }
-}
-function failTaskCAB(){
-  gameState.tasksCompleted++;
-  endActiveTask();
-}
-function completeTaskCAB(){
-  gameState.tasksCompleted++;
-  gameState.lastFinishedTask = gameState.activeTask;
-  endActiveTask();
-}
-function endActiveTask(){
-  if (!gameState.activeTask) return;
-  gameState.activeTask = null;
-  document.getElementById('active-task-headline').textContent = "Ingen aktiv opgave";
-  document.getElementById('active-task-description').textContent = "";
-  document.getElementById('steps-list').innerHTML = "<li>Ingen aktiv opgave</li>";
-  updateScoreboard();
-  showTaskSummaryModal();
-}
-
-/* --- Task Summary --- */
+/* --- Task Summary Modal --- */
 function showTaskSummaryModal(){
   let s = gameState.security,
-      d = gameState.development;
+      d = gameState.development,
+      timeRemaining = gameState.time;
   let summary = `
     <strong>Opgave fuldført!</strong><br/>
-    Nuværende status:<br/>
-    Sikkerhed: ${s}, Udvikling: ${d}<br/><br/>
-    <strong>Mission Evaluering:</strong><br/>
-    Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})
+    Status:<br/>
+    Sikkerhed: ${s}, Udvikling: ${d}, Tid tilbage: ${timeRemaining}<br/><br/>
+    Tips: Vurder dine valg nøje for at optimere både sikkerhed og udvikling, mens du forvalter din tid.
   `;
   let lastT = gameState.lastFinishedTask;
   if (lastT && lastT.knowledgeRecap) {
@@ -614,26 +510,14 @@ function showTaskSummaryModal(){
   taskSummaryModal.style.display = "flex";
 }
 
-/* --- End-of-Time --- */
-function endGame(){
-  showPopup("Tiden er udløbet!", "info", 3000);
+/* --- Afslut aktiv opgave --- */
+function endActiveTask(){
+  if (!gameState.activeTask) return;
   gameState.activeTask = null;
   document.getElementById('active-task-headline').textContent = "Ingen aktiv opgave";
   document.getElementById('active-task-description').textContent = "";
   document.getElementById('steps-list').innerHTML = "<li>Ingen aktiv opgave</li>";
-  endModal.style.display = "flex";
-  let s = gameState.security,
-      d = gameState.development;
-  let sumText = `
-    <strong>Slutresultat:</strong><br/>
-    Sikkerhed: ${s}<br/>
-    Udvikling: ${d}<br/>
-    Fuldførte opgaver: ${gameState.tasksCompleted}<br/><br/>
-    <strong>Mission Evaluering:</strong><br/>
-    Sikkerhed: ${s >= missionGoals.security ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.security})<br/>
-    Udvikling: ${d >= missionGoals.development ? "Opfyldt" : "Ikke opfyldt"} (mål: ${missionGoals.development})
-  `;
-  endGameSummary.innerHTML = sumText;
+  updateScoreboard();
 }
 
 /* --- Ephemeral Popups --- */
@@ -657,6 +541,7 @@ function showFloatingText(txt, stat){
   div.style.top = "50%";
   if (stat === "security") div.style.color = "#ff4444";
   else if (stat === "development") div.style.color = "#4444ff";
+  else if (stat === "time") div.style.color = "#f39c12";
   else div.style.color = "#ffffff";
   div.textContent = txt;
   fc.appendChild(div);
@@ -676,9 +561,8 @@ function showArchitectModal(){
   let analysis = `<strong>Arkitekthjælp:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Efter at have gennemgået opgaven, anbefales du at fokusere især på de trin, hvor der er markeret anbefalede valg:
+    Efter at have gennemgået opgaven anbefales det særligt at fokusere på de trin, hvor der er markeret anbefalede valg:
   </p>`;
-  // Saml alle anbefalede valg med deres trin
   let recommendations = "";
   t.steps.forEach((step, i) => {
     if (step.choiceA.recommended || step.choiceB.recommended) {
@@ -687,18 +571,14 @@ function showArchitectModal(){
       if (step.choiceB.recommended) recommendations += `eller "${step.choiceB.label}" `;
     }
   });
-  if (recommendations) {
-    analysis += recommendations;
-  } else {
-    analysis += "Ingen specifikke anbefalinger fundet i denne opgave.";
-  }
+  analysis += (recommendations ? recommendations : "Ingen specifikke anbefalinger fundet.");
   architectContent.innerHTML = analysis;
   architectModal.style.display = "flex";
   t.architectUsed = true;
 }
 
 /* --- Intro-funktionalitet --- */
-function startIntro() {
+function startIntro(){
   const introModal = document.getElementById('intro-modal');
   introModal.style.display = 'flex';
   setTimeout(() => {
