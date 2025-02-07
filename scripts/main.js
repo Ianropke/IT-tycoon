@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   /************************************************************
-   * main.js – IT‑Tycoon (Endelig udgave med DOMContentLoaded)
+   * main.js – IT‑Tycoon (Endelig udgave med Inspect & Adapt)
    * Funktioner:
    * - Tid som beslutningsfaktor (timeCost) – avancerede valg koster ekstra tid.
    * - Unikke lokationer per opgave (validateTask)
-   * - Trade‑off mekanisme (statChange vs. tradeOff)
    * - Kontinuerlig opgavegenerering
    * - Inspect & Adapt (SAFe) efter 10 løste opgaver med samlet evaluering.
    * - Grafen er nu skaleret til 40.
@@ -18,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.infrastrukturTasks = window.infrastrukturTasks || [];
   window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-  // Global gameState – tid, sikkerhed og udvikling (alle måles på en skala op til 40)
+  // Global gameState – tid, sikkerhed og udvikling (alle på skala op til 40)
   let gameState = {
     security: 20,
     development: 20,
@@ -62,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tutorialTextEl  = document.getElementById('tutorial-text');
   const scenarioIntroTitleEl = document.getElementById('scenario-intro-title');
   const scenarioIntroTextEl  = document.getElementById('scenario-intro-text');
-  const scenarioIntroCloseBtn = document.getElementById('scenario-intro-close-btn');
+  const scenarioIntroCloseBtn = document.getElementById('scenario-intro-close-btn');  // Kun én deklaration
 
   const scenarioTitle       = document.getElementById('scenario-title');
   const scenarioFlavorText  = document.getElementById('scenario-flavor-text');
@@ -96,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const scenarioIntroCloseBtn = document.getElementById('scenario-intro-close-btn');
   if (scenarioIntroCloseBtn) {
     scenarioIntroCloseBtn.addEventListener('click', () => {
       scenarioIntroModal.style.display = 'none';
@@ -674,6 +672,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
   });
 
-  // Initialize dashboard if not already initialized
+  // Initialize dashboard hvis ikke allerede initialiseret
   initDashboard();
 });
