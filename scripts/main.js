@@ -1,7 +1,7 @@
 /************************************************************
- * main.js – IT‑Tycoon (Endelig udgave med tidseffekt på grundige valg)
+ * main.js – IT‑Tycoon (Endelig udgave med tid på skala 30)
  * Funktioner:
- * - Tid som beslutningsfaktor (timeCost) – nu med ekstra omkostning for grundige (recommended) valg.
+ * - Tid som beslutningsfaktor (timeCost) – med avancerede valg, der koster ekstra tid.
  * - Unikke lokationer per opgave (validateTask)
  * - Trade‑off mekanisme (statChange vs. tradeOff)
  * - Opgaveafslutning med Task Summary (viser sikkerhed, udvikling og tid)
@@ -14,11 +14,11 @@ window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-// Global gameState – med tid, sikkerhed og udvikling
+// Global gameState – nu med tid sat til 30, så den ligger på samme skala som sikkerhed og udvikling
 let gameState = {
   security: 20,
   development: 20,
-  time: 100,            // Spilleren starter med 100 tidspoint
+  time: 30,            // Spilleren starter med 30 tidspoint
   tasksCompleted: 0,
   activeTask: null,
   availableTasks: [],
@@ -124,7 +124,7 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed, udvikling og tid. Dine beslutninger påvirker driftssikkerheden, og du skal træffe strategiske valg for at optimere systemet."
+    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed, udvikling og tid. Dine beslutninger påvirker driftssikkerheden, og du skal træffe strategiske valg for at optimere systemet. Bemærk: Avancerede (anbefalede) valg koster ekstra tid, så vælg med omtanke!"
   },
   { 
     title: "Læringskomponenter", 
@@ -412,14 +412,13 @@ function showScenarioModal(stepIndex){
     modalContent.appendChild(stepContextDiv);
   }
   
-  // Opsætning af valg – nu med ekstra tid for grundige (recommended) valg
+  // Opsætning af valg – med ekstra tid for grundige (recommended) valg
   scenarioALabel.textContent = st.choiceA.label;
-  scenarioAText.innerHTML = st.choiceA.text + (st.choiceA.recommended ? " <span class='recommended'>(Anbefalet)</span>" : "");
+  scenarioAText.innerHTML = st.choiceA.text + (st.choiceA.recommended ? " <span class='recommended'>(Anbefalet, +2 tid)</span>" : "");
   scenarioBLabel.textContent = st.choiceB.label;
-  scenarioBText.innerHTML = st.choiceB.text + (st.choiceB.recommended ? " <span class='recommended'>(Anbefalet)</span>" : "");
+  scenarioBText.innerHTML = st.choiceB.text + (st.choiceB.recommended ? " <span class='recommended'>(Anbefalet, +2 tid)</span>" : "");
   
   scenarioAButton.onclick = () => {
-    // Klon effekten, og hvis choiceA er recommended, læg ekstra tid til
     let effect = Object.assign({}, st.choiceA.applyEffect);
     if (st.choiceA.recommended) {
       effect.timeCost = (effect.timeCost || 0) + 2;
@@ -492,7 +491,6 @@ function finalizeStep(stepIndex) {
   if (!t) return;
   t.currentStep++;
   updateStepsList();
-  // Hvis alle trin er fuldførte, vis Task Summary-modal
   if (t.currentStep >= t.steps.length) {
     gameState.lastFinishedTask = t;
     showTaskSummaryModal();
@@ -508,7 +506,7 @@ function showTaskSummaryModal(){
     <strong>Opgave fuldført!</strong><br/>
     Status:<br/>
     Sikkerhed: ${s}, Udvikling: ${d}, Tid tilbage: ${timeRemaining}<br/><br/>
-    Tips: Vurder dine valg nøje for at optimere både sikkerhed og udvikling, mens du forvalter din tid.
+    Tips: Husk, at avancerede valg koster ekstra tid. Vurder derfor dine valg nøje for at optimere både sikkerhed og udvikling.
   `;
   let lastT = gameState.lastFinishedTask;
   if (lastT && lastT.knowledgeRecap) {
@@ -572,7 +570,7 @@ function showArchitectModal(){
   let analysis = `<strong>Arkitekthjælp:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Efter at have gennemgået opgaven anbefales det særligt at fokusere på de trin, hvor der er markeret anbefalede valg:
+    Efter at have gennemgået opgaven anbefales det særligt at fokusere på de trin, hvor der er markeret anbefalede valg.
   </p>`;
   let recommendations = "";
   t.steps.forEach((step, i) => {
