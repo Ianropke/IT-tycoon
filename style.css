@@ -1,6 +1,6 @@
 /* style.css – IT‑Tycoon (Opdateret version) */
 
-/* Grundopsætning */
+/* Grundlæggende opsætning */
 html, body {
   margin: 0;
   padding: 0;
@@ -41,7 +41,7 @@ header h1 {
   padding-bottom: 20px;
 }
 
-/* Dashboard – fastholder tidligere størrelse */
+/* Dashboard – fastholder størrelse */
 #dashboard {
   background-color: #34495e;
   padding: 16px;
@@ -62,17 +62,18 @@ header h1 {
   height: 100% !important;
 }
 
-/* Lokationsområde – lokationsboksene flyttes længere ned, så de ikke dækker grafen */
+/* Lokationsområde – justeret for at vise lokationsbokse tydeligt */
 #game-area {
   flex: 0 0 auto;
-  margin-top: 60px; /* Øget margin-top for at flytte lokationsbokse længere ned */
+  margin-top: 60px;  /* Sørger for, at den ikke overlapper dashboard */
+  background-color: #34495e;  /* Tilføjet baggrund for synlighed */
+  padding: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;       /* Reduceret afstand mellem boksene */
+  gap: 4px;  /* Reduceret afstand mellem boksene */
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   overflow-y: auto;
-  background: transparent;
 }
 .location {
   width: 130px;
@@ -90,7 +91,7 @@ header h1 {
   background-color: #3d5466;
   padding: 2px;
   transition: background-color 0.3s;
-  z-index: 1;  /* Sikrer, at lokationsboksene altid er øverst */
+  z-index: 1;
 }
 .location:hover {
   filter: brightness(1.15);
@@ -194,7 +195,7 @@ footer {
   z-index: 99998;
 }
 
-/* Modals */
+/* Modaler */
 .modal {
   position: fixed;
   top: 0;
