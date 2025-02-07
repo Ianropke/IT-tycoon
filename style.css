@@ -1,6 +1,6 @@
-/* style.css – IT‑Tycoon (Endelig version) */
+/* style.css – IT‑Tycoon (Opdateret version) */
 
-/* Grundlæggende opsætning */
+/* Grundopsætning */
 html, body {
   margin: 0;
   padding: 0;
@@ -23,10 +23,10 @@ header h1 {
   font-size: 2rem;
 }
 
-/* Main container */
+/* Main container med to kolonner */
 #main-container {
   display: flex;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 100px); /* Næsten hele viewporten */
   margin: 8px 20px;
   gap: 16px;
   box-sizing: border-box;
@@ -40,12 +40,14 @@ header h1 {
   gap: 8px;
   padding-bottom: 20px;
 }
+
+/* Dashboard – fastholder tidligere størrelse */
 #dashboard {
   background-color: #34495e;
   padding: 16px;
   width: 100%;
   max-width: 800px;
-  height: 250px;
+  height: 250px;  /* Fast størrelse for grafen */
   border-radius: 8px;
   overflow: hidden;
   margin: 0 auto;
@@ -60,13 +62,13 @@ header h1 {
   height: 100% !important;
 }
 
-/* Lokationsområde */
+/* Lokationsområde – lokationsboksene flyttes længere ned, så de ikke dækker grafen */
 #game-area {
-  flex: 0 0 200px;
-  margin-top: 20px;
+  flex: 0 0 auto;
+  margin-top: 60px; /* Øget margin-top for at flytte lokationsbokse længere ned */
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
+  gap: 4px;       /* Reduceret afstand mellem boksene */
   justify-content: center;
   align-items: center;
   overflow-y: auto;
@@ -75,7 +77,7 @@ header h1 {
 .location {
   width: 130px;
   height: 60px;
-  margin: 1px;
+  margin: 2px;
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
@@ -88,7 +90,7 @@ header h1 {
   background-color: #3d5466;
   padding: 2px;
   transition: background-color 0.3s;
-  z-index: 1;
+  z-index: 1;  /* Sikrer, at lokationsboksene altid er øverst */
 }
 .location:hover {
   filter: brightness(1.15);
@@ -169,7 +171,7 @@ footer {
 .hoverTooltip[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   color: #fff;
   padding: 4px 6px;
   border-radius: 4px;
@@ -188,11 +190,11 @@ footer {
   left: 50%;
   transform: translateX(-50%);
   border: 4px solid transparent;
-  border-top-color: rgba(0,0,0,0.75);
+  border-top-color: rgba(0, 0, 0, 0.75);
   z-index: 99998;
 }
 
-/* Modaler */
+/* Modals */
 .modal {
   position: fixed;
   top: 0;
@@ -202,7 +204,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 999999;
 }
 .modal-content {
@@ -251,8 +253,12 @@ footer {
   max-width: 320px;
   animation: fadeOut 4s forwards;
 }
-.popup.error { background-color: #e74c3c; }
-.popup.info { background-color: #3498db !important; }
+.popup.error {
+  background-color: #e74c3c;
+}
+.popup.info {
+  background-color: #3498db !important;
+}
 @keyframes fadeOut {
   0% { opacity: 0.9; transform: translateY(0); }
   80% { opacity: 0.9; transform: translateY(-20px); }
@@ -320,6 +326,30 @@ footer {
 @keyframes buttonFadeIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* Inspect & Adapt Modal */
+#inspect-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 999999;
+}
+#inspect-modal .modal-content {
+  background-color: #2c3e50;
+  border: 2px solid #bdc3c7;
+  border-radius: 8px;
+  padding: 16px;
+  width: 60%;
+  max-width: 850px;
+  text-align: left;
+  animation: fadeInUp 0.5s;
 }
 
 /* Responsive Design */
