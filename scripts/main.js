@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   /************************************************************
-   * main.js – IT‑Tycoon (Endelig udgave med dynamiske lokationer og arkitekthjælp)
+   * main.js – IT‑Tycoon (Endelig udgave med Inspect & Adapt og dynamiske lokationer)
    * Funktioner:
    * - Tid som beslutningsfaktor (timeCost) – avancerede valg koster ekstra tid.
    * - Unikke lokationer per opgave (validateTask)
    * - Kontinuerlig opgavegenerering
    * - Inspect & Adapt (SAFe) efter 10 løste opgaver med samlet evaluering.
-   * - Grafen er skaleret til 40.
-   * - Lokationsområdet genereres dynamisk og vises længere ned.
+   * - Grafen er nu skaleret til 40.
+   * - Lokationsområdet genereres dynamisk med tilknyttede eventlisteners.
    * - "Mere info (trin)" og "dig deeper" funktionalitet.
-   * - Arkitekthjælp med konkrete anbefalinger og en dedikeret knap.
+   * - Arkitekthjælp med konkrete anbefalinger.
    ************************************************************/
 
   // Sørg for, at dine task-filer er indlæst
@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.infrastrukturTasks = window.infrastrukturTasks || [];
   window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-  // Global gameState – tid, sikkerhed og udvikling (skala op til 40)
+  // Global gameState – tid, sikkerhed og udvikling (alle på skala op til 40)
   let gameState = {
     security: 20,
     development: 20,
-    time: 30,            // Spilleren starter med 30 tidspoint
+    time: 30, // Spilleren starter med 30 tidspoint
     tasksCompleted: 0,
     activeTask: null,
     availableTasks: [],
@@ -46,48 +46,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* --- HTML References --- */
   const dashboardCanvas = document.getElementById('dashboard-canvas');
-  const introModal       = document.getElementById('intro-modal');
-  const tutorialModal    = document.getElementById('tutorial-modal');
+  const introModal = document.getElementById('intro-modal');
+  const tutorialModal = document.getElementById('tutorial-modal');
   const scenarioIntroModal = document.getElementById('scenario-intro-modal');
-  const scenarioModal    = document.getElementById('scenario-modal');
-  const architectModal   = document.getElementById('architect-modal');
-  const cabModal         = document.getElementById('cab-modal');
-  const cabResultModal   = document.getElementById('cab-result-modal');
+  const scenarioModal = document.getElementById('scenario-modal');
+  const architectModal = document.getElementById('architect-modal');
+  const cabModal = document.getElementById('cab-modal');
+  const cabResultModal = document.getElementById('cab-result-modal');
   const taskSummaryModal = document.getElementById('task-summary-modal');
-  const inspectModal     = document.getElementById('inspect-modal'); // Inspect & Adapt modal
-  const moreInfoModal    = document.getElementById('more-info-modal');
+  const inspectModal = document.getElementById('inspect-modal'); // Inspect & Adapt modal
+  const moreInfoModal = document.getElementById('more-info-modal');
 
   const tutorialTitleEl = document.getElementById('tutorial-title');
-  const tutorialTextEl  = document.getElementById('tutorial-text');
+  const tutorialTextEl = document.getElementById('tutorial-text');
   const scenarioIntroTitleEl = document.getElementById('scenario-intro-title');
-  const scenarioIntroTextEl  = document.getElementById('scenario-intro-text');
+  const scenarioIntroTextEl = document.getElementById('scenario-intro-text');
   const scenarioIntroCloseBtn = document.getElementById('scenario-intro-close-btn');
 
-  const scenarioTitle       = document.getElementById('scenario-title');
-  const scenarioFlavorText  = document.getElementById('scenario-flavor-text');
+  const scenarioTitle = document.getElementById('scenario-title');
+  const scenarioFlavorText = document.getElementById('scenario-flavor-text');
   const scenarioDescription = document.getElementById('scenario-description');
-  const scenarioAButton     = document.getElementById('scenario-a-btn');
-  const scenarioBButton     = document.getElementById('scenario-b-btn');
-  const scenarioALabel      = document.getElementById('scenario-a-label');
-  const scenarioAText       = document.getElementById('scenario-a-text');
-  const scenarioBLabel      = document.getElementById('scenario-b-label');
-  const scenarioBText       = document.getElementById('scenario-b-text');
+  const scenarioAButton = document.getElementById('scenario-a-btn');
+  const scenarioBButton = document.getElementById('scenario-b-btn');
+  const scenarioALabel = document.getElementById('scenario-a-label');
+  const scenarioAText = document.getElementById('scenario-a-text');
+  const scenarioBLabel = document.getElementById('scenario-b-label');
+  const scenarioBText = document.getElementById('scenario-b-text');
   const scenarioNarrativeDiv = document.getElementById('scenario-narrative');
-  const digDeeperLinksDiv   = document.getElementById('dig-deeper-links');
+  const digDeeperLinksDiv = document.getElementById('dig-deeper-links');
 
-  const cabSummary       = document.getElementById('cab-summary');
-  const cabResultTitle   = document.getElementById('cab-result-title');
-  const cabResultText    = document.getElementById('cab-result-text');
-  const taskSummaryText  = document.getElementById('task-summary-text');
-  const inspectContent   = document.getElementById('inspect-content');
+  const cabSummary = document.getElementById('cab-summary');
+  const cabResultTitle = document.getElementById('cab-result-title');
+  const cabResultText = document.getElementById('cab-result-text');
+  const taskSummaryText = document.getElementById('task-summary-text');
+  const inspectContent = document.getElementById('inspect-content');
   const architectContent = document.getElementById('architect-content');
-  const moreInfoContent  = document.getElementById('more-info-content');
+  const moreInfoContent = document.getElementById('more-info-content');
 
   /* --- Dynamisk generering af lokationsbokse --- */
   function renderLocations() {
     const gameArea = document.getElementById('game-area');
     if (!gameArea) return;
-    // Ryd tidligere indhold
     gameArea.innerHTML = "";
     const locations = ["hospital", "dokumentation", "leverandor", "infrastruktur", "it-jura", "cybersikkerhed"];
     locations.forEach(loc => {
@@ -101,11 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
       let label = document.createElement('span');
       label.textContent = capitalize(loc);
       div.appendChild(label);
+      // Tilføj eventlistener direkte her:
+      div.addEventListener('click', () => handleLocationClick(loc));
       gameArea.appendChild(div);
     });
   }
   function getIconForLocation(loc) {
-    switch(loc) {
+    switch (loc) {
       case "hospital": return "🏥";
       case "dokumentation": return "📄";
       case "leverandor": return "📦";
@@ -127,12 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.id = 'architect-help-btn';
       btn.classList.add('commit-button');
       btn.textContent = "Få arkitekthjælp";
-      // Placer knappen øverst i aktiv opgaveområdet
       let activeTaskDiv = document.getElementById('active-task');
       if (activeTaskDiv) {
         activeTaskDiv.insertBefore(btn, activeTaskDiv.firstChild);
       }
-      // Tilføj event listener
       btn.addEventListener('click', () => {
         if (!gameState.activeTask) {
           showPopup("Ingen aktiv opgave!", "error");
@@ -148,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --- Event Listeners --- */
-  const introStartBtn = document.getElementById('intro-start-btn');
   if (introStartBtn) {
     introStartBtn.addEventListener('click', () => {
       introModal.classList.add('modal-slide-out');
@@ -158,30 +156,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 500);
     });
   }
-
   if (scenarioIntroCloseBtn) {
     scenarioIntroCloseBtn.addEventListener('click', () => {
       scenarioIntroModal.style.display = 'none';
     });
   }
-
-  const cabOkBtn = document.getElementById('cab-ok-btn');
   if (cabOkBtn) {
     cabOkBtn.addEventListener('click', () => {
       cabModal.style.display = 'none';
       finalizeCABResult();
     });
   }
-
-  const cabResultOkBtn = document.getElementById('cab-result-ok-btn');
   if (cabResultOkBtn) {
     cabResultOkBtn.addEventListener('click', () => {
       cabResultModal.style.display = 'none';
       postCABTechnicalCheck();
     });
   }
-
-  const taskSummaryOkBtn = document.getElementById('task-summary-ok-btn');
   if (taskSummaryOkBtn) {
     taskSummaryOkBtn.addEventListener('click', () => {
       taskSummaryModal.style.display = 'none';
@@ -189,16 +180,15 @@ document.addEventListener('DOMContentLoaded', () => {
       renderTasks();
     });
   }
-
-  const inspectCloseBtn = document.getElementById('inspect-close-btn');
-  if (inspectCloseBtn) {
-    inspectCloseBtn.addEventListener('click', () => {
-      inspectModal.style.display = 'none';
-      endGame();
-    });
+  if (inspectModal) {
+    const inspectCloseBtn = document.getElementById('inspect-close-btn');
+    if (inspectCloseBtn) {
+      inspectCloseBtn.addEventListener('click', () => {
+        inspectModal.style.display = 'none';
+        endGame();
+      });
+    }
   }
-
-  const moreInfoCloseBtn = document.getElementById('more-info-close-btn');
   if (moreInfoCloseBtn) {
     moreInfoCloseBtn.addEventListener('click', () => {
       moreInfoModal.style.display = 'none';
@@ -229,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     tutorialTitleEl.textContent = tutorialSteps[tutorialIdx].title;
-    tutorialTextEl.textContent  = tutorialSteps[tutorialIdx].text;
+    tutorialTextEl.textContent = tutorialSteps[tutorialIdx].text;
   }
   if (tutorialNextBtn) {
     tutorialNextBtn.addEventListener('click', () => {
@@ -239,23 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --- Lokationsklik --- */
-  const locMap = {
-    hospital: document.getElementById('hospital'),
-    dokumentation: document.getElementById('dokumentation'),
-    leverandor: document.getElementById('leverandor'),
-    infrastruktur: document.getElementById('infrastruktur'),
-    "it-jura": document.getElementById('it-jura'),
-    cybersikkerhed: document.getElementById('cybersikkerhed')
-  };
-  Object.entries(locMap).forEach(([k, el]) => {
-    if (el) {
-      el.addEventListener('click', () => handleLocationClick(k));
-    }
-  });
-
+  // (EventListeners for lokationer er nu tilføjet i renderLocations)
+  
   /* --- initGame --- */
   function initGame(){
-    renderLocations();         // Sørg for, at lokationerne vises
+    renderLocations();         // Generer lokationsbokse med eventlisteners
     ensureArchitectHelpButton(); // Sørg for, at arkitekthjælp-knappen findes
     updateDashboard();
     window.backlog = [
