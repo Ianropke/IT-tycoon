@@ -1,11 +1,9 @@
 /************************************************************
- * main.js – IT‑Tycoon (Opdateret med trade‑off og "Mere info (trin)")
- * Fokus: Balancering af sikkerhed og udvikling med trade‑off.
- * Opgaveafslutning håndteres korrekt via en Sprint Review-modal.
+ * main.js – IT‑Tycoon (Opdateret med trade‑off, sprint-opsummering
+ * og udvidet arkitekthjælp)
  ************************************************************/
 
-// Arrays til tasks – sørg for, at dine task-filer (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js)
-// findes og ligger korrekt
+// Indlæs task-filer (sørg for at disse filer findes og indlæses korrekt)
 window.hospitalTasks = window.hospitalTasks || [];
 window.infrastrukturTasks = window.infrastrukturTasks || [];
 window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
@@ -16,27 +14,24 @@ const missionGoals = {
   development: 22
 };
 
-// Global gameState med de centrale KPI’er (sikkerhed og udvikling)
+// Global gameState – bemærk at vi nu tilføjer totalSprints
 let gameState = {
   security: 20,
   development: 20,
   tasksCompleted: 0,
-  
   activeTask: null,    // Den opgave, spilleren har forpligtet sig til
   availableTasks: [],
   usedTasks: new Set(),
-  
   docSkipCount: 0,
   riskyTotal: 0,
   finalFailChance: 0,
-  
   lastFinishedTask: null,
-  
   currentSprint: 1,
+  totalSprints: 5,     // Spilleren har 5 sprints til at nå målene
   sprintGoals: {
     tasksCompleted: 5,
-    security: 22,
-    development: 22
+    security: missionGoals.security,
+    development: missionGoals.development
   }
 };
 
@@ -56,7 +51,8 @@ const scenarioModal    = document.getElementById('scenario-modal');
 const architectModal   = document.getElementById('architect-modal');
 const cabModal         = document.getElementById('cab-modal');
 const cabResultModal   = document.getElementById('cab-result-modal');
-const sprintPlanningModal = document.getElementById('sprint-planning-modal'); // Sprint Planning modal
+const sprintPlanningModal = document.getElementById('sprint-planning-modal');
+const sprintReviewModal   = document.getElementById('sprint-review-modal'); // Sprint Review Modal
 const taskSummaryModal = document.getElementById('task-summary-modal');
 const moreInfoModal    = document.getElementById('more-info-modal');
 
@@ -129,7 +125,7 @@ document.getElementById('more-info-close-btn').addEventListener('click', () => {
   moreInfoModal.style.display = 'none';
 });
 
-// Sprint Planning Modal: Vis sprintmålene før start
+// Sprint Planning Modal: Vis sprintmålsætninger og antal sprints
 function showSprintPlanning() {
   let modal = sprintPlanningModal;
   modal.querySelector('.modal-content').innerHTML = `
@@ -138,6 +134,7 @@ function showSprintPlanning() {
       Hospitalet har fastsat følgende mål for denne sprint:<br/>
       Sikkerhed: ${missionGoals.security}<br/>
       Udvikling: ${missionGoals.development}<br/><br/>
+      Du har ${gameState.totalSprints} sprints i alt. Denne sprint er nummer ${gameState.currentSprint}.<br/><br/>
       Er du klar til at starte sprinten?
     </p>
     <button id="sprint-planning-ok-btn" class="commit-button">Start Sprint</button>
@@ -153,16 +150,13 @@ const tutorialNextBtn = document.getElementById('tutorial-next-btn');
 let tutorialSteps = [
   { 
     title: "Din Rolle", 
-    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed og udvikling – en afvejning, der kræver strategisk tænkning. Beslutninger skal træffes med omtanke for at opnå de opstillede mål."
+    text: "Velkommen til IT‑Tycoon! Som IT‑forvalter skal du balancere sikkerhed og udvikling for at sikre, at hospitalets systemer kører optimalt. Dine beslutninger har konsekvenser, og du skal træffe strategiske valg for at nå dine mål."
   },
   { 
     title: "Læringskomponenter", 
-    text: "Vores CAB og andre værktøjer guider dig, så du kan dokumentere og evaluere dine beslutninger og se, hvordan de påvirker systemets ydeevne."
-  },
-  { 
-    title: "Målsætning", 
-    text: `Dit sprintmål: Opnå mindst ${missionGoals.security} i sikkerhed og ${missionGoals.development} i udvikling.`
+    text: "Brug de indbyggede forklaringer og 'Mere info'-knapper for at forstå, hvordan hvert trin påvirker systemet. Vores arkitekthjælp guider dig med konkrete anbefalinger, så du ved, hvor du skal lægge hovedvægten."
   }
+  // Sprintmålet vises nu kun i sprint planning – gentagelse fjernet
 ];
 let tutorialIdx = 0;
 function openTutorialModal(){
@@ -205,7 +199,7 @@ function initGame(){
     ...(window.infrastrukturTasks || []),
     ...(window.cybersikkerhedTasks || [])
   ];
-  // Generér opgaver (f.eks. 5 startopgaver)
+  // Generér opgaver – vi starter med 5 opgaver
   for (let i = 0; i < 5; i++){
     generateTask();
   }
@@ -249,9 +243,7 @@ function initDashboard() {
         y: {
           beginAtZero: true,
           max: 30,
-          ticks: {
-            stepSize: 2
-          }
+          ticks: { stepSize: 2 }
         }
       }
     }
@@ -388,6 +380,7 @@ function showScenarioModal(stepIndex){
   let st = t.steps[stepIndex];
   let loc = st.location || "ukendt";
   
+  // Vis narrativ fra opgaven, hvis til stede
   if (t.narrativeIntro){
     scenarioNarrativeDiv.style.display = "block";
     scenarioNarrativeDiv.innerHTML = t.narrativeIntro;
@@ -401,13 +394,14 @@ function showScenarioModal(stepIndex){
     ${st.stepDescription || "Standard scenarie..."}
   </p>`;
   
-  // DigDeeperLinks for opgaven (hvis til stede)
+  // DigDeeperLinks for opgaven (hvis defineret)
   digDeeperLinksDiv.innerHTML = "";
   if (t.digDeeperLinks && t.digDeeperLinks.length) {
     digDeeperLinksDiv.style.display = "block";
     t.digDeeperLinks.forEach(linkObj => {
       let btn = document.createElement('button');
       btn.classList.add('commit-button');
+      // Her forventes der at være en fyldestgørende forklaring – ret gerne dine tasks, så teksten er konkret.
       btn.textContent = "Mere info: " + linkObj.label;
       btn.onclick = () => showMoreInfo(linkObj.text);
       digDeeperLinksDiv.appendChild(btn);
@@ -416,7 +410,7 @@ function showScenarioModal(stepIndex){
     digDeeperLinksDiv.style.display = "none";
   }
   
-  // "Mere info (trin)" knap – hvis dette trin har ekstra kontekst
+  // "Mere info (trin)" – tilføj knap, hvis stepContext findes
   let modalContent = scenarioModal.querySelector('.modal-content');
   let oldContextDiv = modalContent.querySelector('#step-context-div');
   if (oldContextDiv) oldContextDiv.remove();
@@ -432,7 +426,7 @@ function showScenarioModal(stepIndex){
     modalContent.appendChild(stepContextDiv);
   }
   
-  // Opsætning af valg A og B
+  // Opsæt valg A og B
   scenarioALabel.textContent = st.choiceA.label;
   scenarioAText.innerHTML = st.choiceA.text + (st.choiceA.recommended ? " <span class='recommended'>(Anbefalet)</span>" : "");
   scenarioBLabel.textContent = st.choiceB.label;
@@ -453,7 +447,7 @@ function showScenarioModal(stepIndex){
 /* --- Valg-effekter med Trade-Off --- */
 function applyChoiceEffect(eff){
   if (!eff) return;
-  // Anvend positive effekter (statChange)
+  // Anvend positive effekter
   if (eff.statChange){
     for (let [stat, delta] of Object.entries(eff.statChange)){
       let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
@@ -466,7 +460,7 @@ function applyChoiceEffect(eff){
       applyStatChange(stat, delta);
     }
   }
-  // Anvend ekstra risikoeffekt, hvis defineret
+  // Ekstra risikoeffekt, hvis defineret
   if (eff.riskyPlus) {
     gameState.riskyTotal += eff.riskyPlus * (gameState.activeTask.riskProfile || 1);
   }
@@ -487,42 +481,25 @@ function finalizeStep(stepIndex) {
   if (!t) return;
   t.currentStep++;
   updateStepsList();
-  // Hvis alle trin i opgaven er gennemført, vis Sprint Review-modal med feedback
+  // Hvis alle trin i opgaven er gennemført, vis sprint review og afslut opgaven
   if (t.currentStep >= t.steps.length) {
     if (t.preRiskReduction > 0) {
       gameState.riskyTotal = Math.max(gameState.riskyTotal - t.preRiskReduction, 0);
       showPopup(`Din arkitekthjælp gav -${(t.preRiskReduction * 100).toFixed(0)}% risiko!`, "info", 4000);
     }
-    let sprintModal = document.getElementById('sprint-review-modal');
-    if (sprintModal) {
-      sprintModal.querySelector('.modal-content').innerHTML = `
-        <strong>Sprint Review</strong><br/>
-        Sikkerhed: ${gameState.security} (mål: ${missionGoals.security})<br/>
-        Udvikling: ${gameState.development} (mål: ${missionGoals.development})<br/><br/>
-        Tips: Overvej at vælge balancerede løsninger for at øge begge KPI’er.
-        <br/><button id="sprint-review-close-btn" class="commit-button">Luk</button>
-      `;
-      sprintModal.style.display = "flex";
-      document.getElementById('sprint-review-close-btn').addEventListener('click', function handler() {
-        sprintModal.style.display = "none";
-        this.removeEventListener('click', handler);
-        completeTaskCAB();
-      });
-    } else {
-      completeTaskCAB();
-    }
+    showSprintReview();
   }
 }
 
-/* --- Sprint Review (Feedback-loop) --- */
+/* --- Sprint Review (Feedback-loop og sprint-afslutning) --- */
 function showSprintReview(){
   let report = `
     <strong>Sprint Review</strong><br/>
     Sikkerhed: ${gameState.security} (mål: ${missionGoals.security})<br/>
     Udvikling: ${gameState.development} (mål: ${missionGoals.development})<br/><br/>
-    Tips: Overvej at vælge balancerede løsninger for at øge begge KPI’er.
+    Tips: Fokuser særligt på de trin, hvor der er markeret anbefalede valg.
   `;
-  let modal = document.getElementById('sprint-review-modal');
+  let modal = sprintReviewModal;
   if (modal) {
     modal.querySelector('.modal-content').innerHTML = report +
       `<br/><button id="sprint-review-close-btn" class="commit-button">Luk</button>`;
@@ -531,9 +508,23 @@ function showSprintReview(){
       modal.style.display = "none";
       this.removeEventListener('click', handler);
       completeTaskCAB();
+      completeSprint();
     });
   } else {
     completeTaskCAB();
+    completeSprint();
+  }
+}
+
+/* --- Sprint Afslutning --- */
+function completeSprint() {
+  // Opdater sprintnummeret
+  gameState.currentSprint++;
+  // Hvis alle sprints er forbrugt, afslut spillet
+  if (gameState.currentSprint > gameState.totalSprints) {
+    endGame();
+  } else {
+    showPopup(`Sprint ${gameState.currentSprint - 1} afsluttet!`, "info", 3000);
   }
 }
 
@@ -685,28 +676,21 @@ function showArchitectModal(){
   let analysis = `<strong>Arkitekthjælp:</strong><br/>
   <em>${t.title}</em><br/><br/>
   <p>
-    Som IT‑forvalter skal du balancere sikkerhed og udvikling. Arkitekthjælpen vejleder dig i de kritiske beslutninger, så du kan nå dine mål.
+    Efter at have gennemgået opgaven, anbefales du at fokusere især på de trin, hvor der er markeret anbefalede valg:
   </p>`;
-  if (!t.steps || !t.steps.length) {
-    analysis += "Ingen trin i opgaven?!";
-  } else {
-    let recCount = 0;
-    let recInfo = "";
-    t.steps.forEach((step, i) => {
-      let loc = step.location || "ukendt";
-      analysis += `<br/><strong>Trin ${i+1}:</strong> ${loc}`;
-      if (step.choiceA.recommended || step.choiceB.recommended) {
-        recCount++;
-        recInfo += `<br/>Trin ${i+1}: `;
-        if (step.choiceA.recommended) recInfo += `A: ${step.choiceA.label}. `;
-        if (step.choiceB.recommended) recInfo += `B: ${step.choiceB.label}. `;
-      }
-    });
-    if (recCount > 0) {
-      analysis += `<hr/><strong>Kritiske valg:</strong> ${recInfo}`;
-    } else {
-      analysis += "<hr/>Ingen trin er markeret som anbefalet.";
+  // Saml alle anbefalede valg med deres trin
+  let recommendations = "";
+  t.steps.forEach((step, i) => {
+    if (step.choiceA.recommended || step.choiceB.recommended) {
+      recommendations += `<br/>Trin ${i+1}: `;
+      if (step.choiceA.recommended) recommendations += `Vælg "${step.choiceA.label}" `;
+      if (step.choiceB.recommended) recommendations += `eller "${step.choiceB.label}" `;
     }
+  });
+  if (recommendations) {
+    analysis += recommendations;
+  } else {
+    analysis += "Ingen specifikke anbefalinger fundet i denne opgave.";
   }
   architectContent.innerHTML = analysis;
   architectModal.style.display = "flex";
