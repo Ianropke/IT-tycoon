@@ -40,7 +40,7 @@ header h1 {
   gap: 8px;
 }
 
-/* Dashboard - øget højde til grafen */
+/* Dashboard – øget højde til grafen */
 #dashboard {
   background-color: #34495e;
   padding: 16px;
@@ -61,20 +61,21 @@ header h1 {
   height: 100% !important;
 }
 
-/* Lokationsområde - reduceret højde og tættere lokationer */
+/* Lokationsområde – reduceret højde, tættere lokationer og skubbet ned */
 #game-area {
-  flex: 0 0 80px;  /* Reduceret højde */
+  flex: 0 0 100px;      /* Øger den faste højde fra 80px til 100px */
+  margin-top: 20px;      /* Skubber lokationsområdet 20px nedad */
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;        /* Mindre afstand mellem lokationsbokse */
+  gap: 2px;             /* Reduceret afstand mellem lokationsbokse */
   justify-content: center;
   align-items: center;
   overflow-y: auto;
 }
 .location {
-  width: 130px;    /* Samme bredde */
-  height: 60px;    /* Reduceret højde */
-  margin: 1px;     /* Mindre margin */
+  width: 130px;         /* Samme bredde */
+  height: 60px;         /* Reduceret højde */
+  margin: 1px;          /* Mindre margin */
   border: 2px solid #bdc3c7;
   border-radius: 5px;
   text-align: center;
