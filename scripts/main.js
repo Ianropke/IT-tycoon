@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }});
   }
 
-  // Event listener for Få hjælp-knappen i headeren
+  // Event listener for Få hjælp-knappen (placeret i headeren)
   document.getElementById('helpButton').addEventListener('click', function() {
     showHelp();
   });
@@ -75,16 +75,30 @@ document.addEventListener("DOMContentLoaded", function() {
   function showHelp() {
     const helpContent = `
       <h2>Få Hjælp</h2>
-      <p>Velkommen til IT Tycoon! I dette spil agerer du IT-forvalter, og dit mål er at balancere tre centrale KPI’er: Tid, Sikkerhed og Udvikling.</p>
-      <p><strong>Spillets funktioner:</strong></p>
+      <p><strong>Din Rolle som IT-forvalter</strong><br>
+      Velkommen til IT Tycoon! I dette spil agerer du som IT-forvalter i en moderne organisation. Din primære opgave er at balancere tre centrale nøglepræstationsindikatorer (KPI’er): <em>Tid, Sikkerhed</em> og <em>Udvikling</em>. Du skal træffe strategiske beslutninger, der både styrker din organisations it-sikkerhed og udviklingskapacitet, mens du holder øje med den tilgængelige tid.</p>
+      
+      <p><strong>Spillets Struktur og Valgmuligheder</strong><br>
+      Spillet er inddelt i opgaver, der hver består af flere trin. Hvert trin præsenterer dig for to muligheder:
       <ul>
-        <li><strong>Opgaver:</strong> Vælg en opgave fra listen, og forpligt dig til den for at starte processen.</li>
-        <li><strong>Trin:</strong> Hver opgave består af flere trin, hvor du træffer valg, der påvirker dine KPI’er og den tilgængelige tid.</li>
-        <li><strong>Arkitekthjælp:</strong> Brug denne funktion for at få vejledning, når du er i tvivl om, hvilket valg der er bedst.</li>
-        <li><strong>CAB:</strong> Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework.</li>
-        <li><strong>Inspect & Adapt:</strong> Efter et antal opgaver får du en samlet evaluering af din præstation i sprintet.</li>
+        <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (typisk −2 tid). Dette valg er ideelt, når du har tid til overs og ønsker at styrke enten sikkerhed eller udvikling.</li>
+        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus. Dette valg er nyttigt, når du skal spare tid, selvom det måske betyder en lavere effekt på KPI’erne.</li>
       </ul>
-      <p>Målet er at nå de fastsatte sprintmål for sikkerhed og udvikling, mens du håndterer din tid effektivt. Held og lykke!</p>
+      Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
+      
+      <p><strong>Vigtige Funktioner</strong><br>
+      <em>Opgaver:</em> Vælg en opgave fra listen, forpligt dig til den og gennemfør hvert trin for at påvirke dine KPI’er.<br>
+      <em>Arkitekthjælp:</em> Brug denne funktion, hvis du er usikker på, hvilket valg der er bedst. Den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
+      <em>CAB (Change Advisory Board):</em> Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.<br>
+      <em>Inspect & Adapt:</em> Efter et sprint får du en samlet evaluering af dine resultater, hvilket hjælper dig med at justere din strategi.</p>
+      
+      <p><strong>Mulige Udfordringer</strong><br>
+      - <em>Tidsstyring:</em> Forkerte valg kan få dig til at løbe tør for tid. Overvej altid omkostningen i tid ved valg af den komplette løsning.<br>
+      - <em>Forkerte Beslutninger:</em> Fejlagtige valg kan påvirke dine KPI’er negativt, hvilket kan føre til, at CAB afviser dine ændringer og du skal udføre rework.<br>
+      - <em>Afvejning af Risiko og Belønning:</em> Det er en balancegang at vælge mellem hurtige løsninger og de mere omkostningstunge, men fordelagtige, løsninger. Brug arkitekthjælp med omtanke.<br>
+      - <em>Overblik:</em> Hold nøje øje med dine KPI’er og den tilgængelige tid, så du kan træffe informerede beslutninger.</p>
+      
+      <p>Din succes afhænger af, hvor godt du kan balancere dine ressourcer og træffe de rigtige beslutninger i pressede situationer. Brug denne hjælp som en vejledning til at forstå spillets mekanikker og forberede dig på de udfordringer, der måtte opstå.</p>
     `;
     openModal(helpContent, `<button id="closeHelp">Luk</button>`);
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
@@ -273,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceA);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
       applyChoice(modifiedChoice);
-      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceA.label} (${choiceAText})`);
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex + 1}: ${step.choiceA.label} (${choiceAText})`);
       closeModal(() => {
         if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
           cabApproval();
@@ -286,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceB);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceB.applyEffect, { timeCost: 0 });
       applyChoice(modifiedChoice);
-      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceB.label} (${choiceBText})`);
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex + 1}: ${step.choiceB.label} (${choiceBText})`);
       closeModal(() => {
         if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
           cabApproval();
