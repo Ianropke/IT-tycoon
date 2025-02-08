@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", function() {
     tasksCompleted: 0,
     missionGoals: { security: 22, development: 22 },
     architectHelpUsed: false,
-    tasks: []               // Kombinerede opgaver fra eksterne filer
+    tasks: [],              // Kombinerede opgaver fra eksterne filer
+    choiceHistory: []       // Historik for de valg spilleren har lavet
   };
 
   // Kombiner tasks fra de eksterne task-filer
-  // Her antages det, at hospitalTasks f.eks. har fokus på "udvikling"
-  // og de øvrige opgaver har fokus på "sikkerhed"
+  // Antag at hospitalTasks har fokus "udvikling" og de øvrige opgaver "sikkerhed"
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function showFeedback(message) {
     const feedbackDiv = document.createElement('div');
     feedbackDiv.className = 'feedback';
-    feedbackDiv.textContent = message;
+    feedbackDiv.innerHTML = message;
     document.body.appendChild(feedbackDiv);
     setTimeout(() => {
       feedbackDiv.classList.add('fade-out');
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
     locationsList.forEach(loc => {
       const btn = document.createElement('button');
       btn.className = 'location-button';
-      btn.textContent = loc + " " + getIcon(loc);
+      btn.innerHTML = loc + " " + getIcon(loc);
       btn.addEventListener('click', function() {
         handleLocationClick(loc);
       });
@@ -114,7 +114,8 @@ document.addEventListener("DOMContentLoaded", function() {
       <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på −2 tid (dette vises tydeligt), mens den hurtige løsning trækker 0 tid. Derudover vises både positive og negative effekter for sikkerhed og udvikling, som angivet i opgavedataene.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på <span style="color:red;">−2 tid</span>, mens den hurtige løsning trækker 0 tid.<br>
+      Derudover vises de positive effekter for enten udvikling (for hospitalopgaver) eller sikkerhed (for de øvrige opgaver). Du kan se, hvad du får, ud fra opgavens titel og beskrivelse.</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -145,9 +146,9 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>UI-Layout:</strong><br>
          - Venstre side: Viser din KPI-graf med sprintmål og en statisk liste med lokationer.<br>
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
-         Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven – opgavens titel og beskrivelse angiver, om den primært handler om udvikling (f.eks. hospitalopgaver) eller sikkerhed (f.eks. infrastruktur- og cybersikkerhedsopgaver).</p>
+         Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven – opgavens titel og beskrivelse angiver, om den primært handler om udvikling (hospitalopgaver) eller sikkerhed (infrastruktur- og cybersikkerhedsopgaver).</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven er forpligtet, skal du i hvert trin vælge den korrekte lokation (venstre side) svarende til det næste trin. Ved valg af den komplette løsning trækkes fast −2 tid, mens den hurtige løsning trækker 0 tid. Effekterne på sikkerhed og udvikling (kun positive tal) vises som angivet i opgavedataene.</p>
+         Når opgaven er forpligtet, skal du i hvert trin vælge den korrekte lokation (venstre side). Ved valg af den komplette løsning trækkes fast <span style="color:red;">−2 tid</span>, mens den hurtige løsning trækker 0 tid. Derudover vises kun den positive bonus for den relevante KPI.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
          Vær opmærksom på din tid – hvert valg påvirker dine KPI’er. Målet er at balancere ressourcerne og nå sprintmålet.</p>
       <button id="endTutorial">Næste</button>
@@ -167,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
       
-      // Oplysning om opgaven – opgavens titel/tekst angiver fokus (udvikling eller sikkerhed)
+      // Oplysning om opgaven – opgavens titel/tekst angiver fokus (f.eks. "nyt LIMS" for udvikling eller "ny infrastruktur" for sikkerhed)
       const infoDiv = document.createElement('div');
       infoDiv.className = 'task-info';
       infoDiv.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
@@ -184,12 +185,18 @@ document.addEventListener("DOMContentLoaded", function() {
         startTask(task);
       });
       
-      // "Arkitekthjælp"-knap – åbner en modal med arkitekthjælp
+      // "Arkitekthjælp"-knap – giver et hint om, om opgaven understøtter Udvikling eller Sikkerhed
       const helpBtn = document.createElement('button');
       helpBtn.textContent = 'Arkitekthjælp';
       helpBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        openModal(`<h2>Arkitekthjælp</h2><p>${task.narrativeIntro || "Ingen arkitekthjælp tilgængelig for denne opgave."}</p>`);
+        let hint = "";
+        if (task.focus) {
+          hint = task.focus === "udvikling" ? "Denne opgave understøtter Udvikling." : "Denne opgave understøtter Sikkerhed.";
+        } else {
+          hint = "Opgavens fokus er ikke defineret.";
+        }
+        openModal(`<h2>Arkitekthjælp</h2><p>${hint}</p><p>${task.narrativeIntro || ""}</p>`);
       });
       
       taskItem.appendChild(infoDiv);
@@ -204,13 +211,14 @@ document.addEventListener("DOMContentLoaded", function() {
     gameState.currentTask = task;
     gameState.currentStepIndex = 0;
     gameState.architectHelpUsed = false;
+    gameState.choiceHistory = [];  // Nulstil historik for denne opgave
     renderActiveTask(task);
   }
 
   // Render den aktive opgave med en liste over alle opgavens lokationer og markerede (gennemførte) trin
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
-    // Fjern "Fokus: ukendt" – vi viser ikke fokus her længere
+    // Fjern "Fokus: ukendt" – vi viser ikke denne tekst længere
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
     if (task.steps && task.steps.length > 0) {
       const locationsListElem = document.createElement('ul');
@@ -249,15 +257,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Vis modal med valgmuligheder for det aktuelle trin – inkl. "Mere info (trin)"
   function showStepChoices(step) {
-    // Fjern evt. minus for sikkerhed og udvikling – vis kun plusværdier
-    let choiceAText = step.choiceA.text
-      .replace(/-?\d+\s*tid/, "−2 tid")
-      .replace(/-([\d]+\s*udvikling)/gi, "+$1")
-      .replace(/-([\d]+\s*sikkerhed)/gi, "+$1");
-    let choiceBText = step.choiceB.text
-      .replace(/-?\d+\s*tid/, "0 tid")
-      .replace(/-([\d]+\s*udvikling)/gi, "+$1")
-      .replace(/-([\d]+\s*sikkerhed)/gi, "+$1");
+    // Juster tekstene: Fjern de irrelevante bonusser (kun den positive bonus for den relevante KPI skal vises)
+    let choiceAText = step.choiceA.text.replace(/-?\d+\s*tid/, "<span style='color:red;'>−2 tid</span>");
+    let choiceBText = step.choiceB.text.replace(/-?\d+\s*tid/, "<span style='color:green;'>0 tid</span>");
+    if (gameState.currentTask.focus === "udvikling") {
+      // Fjern alt, der relaterer til sikkerhed
+      choiceAText = choiceAText.replace(/[\+\-]?\d+\s*sikkerhed/gi, "").trim();
+      choiceBText = choiceBText.replace(/[\+\-]?\d+\s*sikkerhed/gi, "").trim();
+    } else if (gameState.currentTask.focus === "sikkerhed") {
+      // Fjern alt, der relaterer til udvikling
+      choiceAText = choiceAText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
+      choiceBText = choiceBText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
+    }
       
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
@@ -273,6 +284,8 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceA);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
       applyChoice(modifiedChoice);
+      // Registrer valget i historikken
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceA.label} (${choiceAText})`);
       closeModal();
       if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
         cabApproval();
@@ -285,6 +298,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceB);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceB.applyEffect, { timeCost: 0 });
       applyChoice(modifiedChoice);
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceB.label} (${choiceBText})`);
       closeModal();
       if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
         cabApproval();
@@ -295,7 +309,9 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('architectHelp').addEventListener('click', function() {
       if (!gameState.architectHelpUsed) {
         gameState.architectHelpUsed = true;
-        openModal(`<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p>`);
+        // Hint om opgavens fokus
+        let hint = gameState.currentTask.focus === "udvikling" ? "Denne opgave understøtter Udvikling." : "Denne opgave understøtter Sikkerhed.";
+        openModal(`<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p><p>${hint}</p>`);
       }
     });
     document.getElementById('moreInfo').addEventListener('click', function() {
@@ -328,8 +344,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Beregn CAB-godkendelseschance med bonus for lavere risiko (bonus på 10)
     let chance = (gameState.security + 10) / (gameState.missionGoals.security + 10);
     if (Math.random() < chance) {
-      openModal("<p>Opgaven er godkendt af CAB og udrullet!</p>");
-      finishTask();
+      // Før CAB-godkendelsen vises en opsummering af valgene
+      showTaskSummary();
     } else {
       // Elegant rework-modal med "Fortsæt rework"-knap
       openModal(`
@@ -347,6 +363,20 @@ document.addEventListener("DOMContentLoaded", function() {
         setTimeout(() => cabApproval(), 1000);
       });
     }
+  }
+
+  // Vis en opsummering af de valg, spilleren har lavet i opgaven
+  function showTaskSummary() {
+    let summaryHTML = "<h2>Opsummering af dine valg</h2><ul>";
+    gameState.choiceHistory.forEach(item => {
+      summaryHTML += `<li>${item}</li>`;
+    });
+    summaryHTML += "</ul><button id='continueAfterSummary'>Fortsæt</button>";
+    openModal(summaryHTML);
+    document.getElementById('continueAfterSummary').addEventListener('click', function() {
+      closeModal();
+      finishTask();
+    });
   }
 
   function proceedToNextStep() {
