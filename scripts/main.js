@@ -1,17 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
   /************************************************************
    * main.js – IT‑Tycoon (Endelig udgave med PI-mål, Inspect & Adapt,
-   * balancering af KPI’er, dynamiske lokationer og en spændende introduktion)
+   * balancering af KPI’er, dynamiske lokationer, arkitekthjælp og
+   * korrekt tidshåndtering)
    *
-   * Ændringer:
-   * 1. Sprintmålsætningen vises som en fuld modal ("sprint-goal-modal") med en detaljeret beskrivelse.
-   * 2. Introduktionsteksten er udvidet og spændende.
-   * 3. Inspect & Adapt vises efter 10 opgaver, og spillet afsluttes.
-   * 4. "Leverandør" er rettet.
-   * 5. Statændringer balanceres med multiplikatorer:
-   *    - Sikkerhed: *0.75 (gør det sværere at opnå store stigninger)
-   *    - Udvikling: *1.25 (gør det lettere at opnå udvikling)
+   * Ændringer inkluderer:
+   * 1. Sprintmålsætning vises som en modal ("sprint-goal-modal") med en detaljeret, spændende beskrivelse.
+   * 2. Intro-modalen er udvidet med en mere engagerende tekst.
+   * 3. Inspect & Adapt-modal vises efter 10 løste opgaver, og spillet afsluttes.
+   * 4. "Leverandør" vises med korrekt stavning.
+   * 5. KPI‑balancering: Sikkerhed ændres med en faktor på 0.75, udvikling med 1.25.
    * 6. Hvis der ikke er nok tid, vises en popup, og spillet afsluttes.
+   * 7. Dashboardet opdateres med Chart.js, og den gamle instans destrueres, hvis den findes.
+   * 8. Lokationsbokse genereres dynamisk med tilknyttede click‑eventlisteners.
+   * 9. Arkitekthjælp-knappen oprettes dynamisk, hvis den ikke allerede findes.
    ************************************************************/
 
   // Sørg for, at dine task-filer (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js) er indlæst
@@ -19,11 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.infrastrukturTasks = window.infrastrukturTasks || [];
   window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-  // Global gameState – alle værdier måles på en skala op til 40
+  // Global gameState – værdierne måles på en skala op til 40
   let gameState = {
     security: 20,
     development: 20,
-    time: 30, // Starter med 30 tidspoint
+    time: 30, // Spilleren starter med 30 tidspoint
     tasksCompleted: 0,
     activeTask: null,
     availableTasks: [],
@@ -34,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lastFinishedTask: null
   };
 
-  // Sprintmålsætningen (PI-mål)
+  // Sprintmålsætning (PI-mål)
   const missionGoals = {
     security: 22,
     development: 22
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cabModal = document.getElementById('cab-modal');
   const cabResultModal = document.getElementById('cab-result-modal');
   const taskSummaryModal = document.getElementById('task-summary-modal');
-  const inspectModal = document.getElementById('inspect-modal'); // Inspect & Adapt modal
+  const inspectModal = document.getElementById('inspect-modal');
   const moreInfoModal = document.getElementById('more-info-modal');
 
   const tutorialTitleEl = document.getElementById('tutorial-title');
@@ -104,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let label = document.createElement('span');
       label.textContent = capitalize(loc);
       div.appendChild(label);
+      // Tilføj click-eventlistener til lokationen
       div.addEventListener('click', () => handleLocationClick(loc));
       gameArea.appendChild(div);
     });
@@ -268,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --- Dashboard (Chart.js) --- */
-  let dashboardChart; // Kun én deklaration
+  let dashboardChart; // Deklareres ÉN gang
   function initDashboard() {
     const ctx = dashboardCanvas.getContext('2d');
     if (dashboardChart) { dashboardChart.destroy(); }
@@ -484,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (eff.timeCost) { applyTimeCost(eff.timeCost); }
     if (eff.statChange){
       for (let [stat, delta] of Object.entries(eff.statChange)){
-        // Balancér: sikkerhed *0.75, udvikling *1.25
+        // Balancér: sikkerhed multipliceres med 0.75, udvikling med 1.25
         let multiplier = (stat === "security") ? 0.75 : (stat === "development") ? 1.25 : 1;
         let adjustedDelta = delta * multiplier * (gameState.activeTask.riskProfile || 1);
         applyStatChange(stat, adjustedDelta);
@@ -524,8 +527,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (t.currentStep >= t.steps.length) {
       gameState.lastFinishedTask = t;
       gameState.tasksCompleted++;
-      if (gameState.tasksCompleted >= 10) { showInspectAndAdapt(); }
-      else { showTaskSummaryModal(); }
+      if (gameState.tasksCompleted >= 10) {
+        showInspectAndAdapt();
+      } else {
+        showTaskSummaryModal();
+      }
     }
   }
   function showTaskSummaryModal(){
@@ -627,6 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function endGame(){
     showPopup("Spillet er slut. Tiden er opbrugt, eller du har gennemført PI'en.", "error", 5000);
     gameState.activeTask = null;
+    // Her kan du udvide med en genstart eller anden afslutning
   }
 
   window.addEventListener('load', () => {
@@ -638,7 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ensureArchitectHelpButton();
 
   /* --- Dashboard (Chart.js) --- */
-  let dashboardChart; // Deklareret én gang her
+  let dashboardChart; // Deklareret ÉN gang
   function initDashboard() {
     const ctx = dashboardCanvas.getContext('2d');
     if (dashboardChart) { dashboardChart.destroy(); }
