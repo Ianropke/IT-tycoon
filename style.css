@@ -1,6 +1,6 @@
 /* style.css */
 
-/* Global styling */
+/* Grundlæggende baggrund og typografi */
 body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
@@ -29,7 +29,7 @@ header {
   margin-right: 0.5rem;
 }
 
-/* "Få hjælp"-knap placeret i øverste højre hjørne */
+/* "Få hjælp"-knap i øverste højre hjørne */
 .help-btn {
   position: absolute;
   top: 10px;
@@ -70,7 +70,7 @@ header {
   gap: 0.5rem;
 }
 
-/* Lokationsknapper med uppercase tekst */
+/* Lokationsknapper */
 .location-button {
   padding: 1rem 1.5rem;
   font-size: 1.2rem;
@@ -161,26 +161,32 @@ button:hover {
   width: 60vw;
   height: 40vh;
   display: grid;
-  grid-template-rows: 1fr;  /* Kun én række, modal-footer fjernes */
+  grid-template-rows: 1fr auto;  /* Modal-body og modal-footer */
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
   color: #333;
   margin: 0 20px;
 }
 
-/* Modal-body med ekstra sidepadding og centreret tekst */
+/* Modal-body med ekstra side-padding og centreret tekst */
 .modal-body {
   padding: 30px 100px;
   overflow-y: auto;
   text-align: center;
 }
 
-/* Fjern modal-footer helt */
+/* Modal-footer - den vises nu (ikke skjult) og viser knapperne */
 .modal-footer {
-  display: none;
+  padding: 10px 60px;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  height: 60px;
 }
 
-/* Luk-knap til modal */
+/* Luk-knap */
 .close {
   position: absolute;
   top: 10px;
@@ -190,7 +196,7 @@ button:hover {
   color: #333;
 }
 
-/* Horisontale valgknapper */
+/* Horisontale valgknapper (til trin-pop-ups) */
 .choice-buttons {
   display: flex;
   gap: 10px;
@@ -205,7 +211,7 @@ button:hover {
   margin-left: 0.5rem;
 }
 
-/* Skjulte elementer fanger ikke pointer-events */
+/* Skjulte elementer må ikke fange pointer-events */
 .hidden {
   display: none;
   pointer-events: none;
