@@ -82,7 +82,7 @@ header {
 }
 #potentialTasks {
   margin-top: 1rem;
-  height: calc(100vh - 220px); /* Fast højde for scrollbart område */
+  height: calc(100vh - 220px); /* Fast højde for potentielle opgaver (scrollbart) */
   overflow-y: auto;
   position: relative;
 }
@@ -121,9 +121,9 @@ button:hover {
   transform: scale(1.02);
 }
 
-/* Modal-styling med absolut placeret footer */
+/* Modal-styling med CSS Grid for ensartet opdeling */
 
-/* Modal overlay */
+/* Modal-overlay */
 .modal {
   position: fixed;
   top: 0;
@@ -137,42 +137,39 @@ button:hover {
   z-index: 1000;
 }
 
-/* Modal container med fast størrelse */
+/* Modal-content med fast størrelse: 80vw bredde og 60vh højde */
 .modal-content {
-  position: relative;           /* Gør det muligt at placere footer absolut */
   background-color: #fff;
   border-radius: 8px;
-  width: 80vw;                  /* 80% af viewportens bredde */
-  height: 60vh;                 /* 60% af viewportens højde */
+  width: 80vw;
+  height: 60vh;
+  display: grid;
+  grid-template-rows: 1fr auto;  /* Modal-body optager 1fr, modal-footer auto (kan justeres til fx 80%/20% hvis ønsket) */
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   color: #333;
   margin: 0 20px;
 }
 
-/* Modal-body med ekstra bund-padding for at give plads til footer */
+/* Modal-body med rig padding, så teksten ikke sidder for tæt på venstre kant */
 .modal-body {
   padding: 30px 60px;
-  padding-bottom: 90px;  /* Ekstra bund-padding, så teksten ikke overlapper med footer */
   overflow-y: auto;
   text-align: left;
 }
 
-/* Modal-footer placeret fast i nederste højre hjørne med absolut positionering */
+/* Modal-footer – placer knapperne fast i nederste højre hjørne */
 .modal-footer {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;  /* Hvis du ønsker at fordele knapperne på tværs af bredden, men justeret til højre, kan du også fjerne left */
-  height: 60px;   /* Fast højde */
   padding: 10px 60px;
   background-color: #f5f5f5;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Knapperne placeres i nederste højre hjørne */
+  justify-content: flex-end; /* Knapperne placeres nederst til højre */
+  flex-shrink: 0;
+  height: 60px;  /* Fast højde for footer */
 }
 
-/* Luk-knap */
+/* Luk-knap for modal */
 .close {
   position: absolute;
   top: 10px;
@@ -182,7 +179,7 @@ button:hover {
   color: #333;
 }
 
-/* Gennemførte trin */
+/* Gennemførte trin markeret med et check */
 .done {
   color: #4caf50;
   font-weight: bold;
