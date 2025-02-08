@@ -1,188 +1,51 @@
 <!DOCTYPE html>
 <html lang="da">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IT‑Tycoon</title>
-    <link rel="stylesheet" href="style.css" />
-    <!-- Inkluder Chart.js via CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <header>
-      <h1>IT‑Tycoon</h1>
-    </header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT‑Tycoon</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Inkludér Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>IT‑Tycoon</h1>
+  </header>
 
-    <div id="main-container">
-      <!-- Venstre kolonne: Dashboard og Lokationsområde -->
-      <div id="left-column">
-        <!-- Dashboard -->
-        <div id="dashboard">
-          <h2>Dashboard</h2>
-          <canvas id="dashboard-canvas"></canvas>
-        </div>
-        <!-- Lokationsområde (lokationsbokse genereres dynamisk af main.js) -->
-        <div id="game-area"></div>
-      </div>
-      <!-- Højre kolonne: Aktiv opgave og Mulige opgaver -->
-      <div id="right-column">
-        <!-- Aktiv opgave -->
-        <div id="active-task">
-          <h2>Aktiv opgave</h2>
-          <!-- Arkitekthjælp-knap indsættes dynamisk, hvis den ikke allerede findes -->
-          <h3 id="active-task-headline">Ingen aktiv opgave</h3>
-          <p id="active-task-description"></p>
-          <ul id="steps-list">
-            <li>Ingen aktiv opgave</li>
-          </ul>
-        </div>
-        <!-- Mulige opgaver -->
-        <div id="available-tasks">
-          <h2>Mulige opgaver</h2>
-          <ul id="tasks-list">
-            <li>Ingen opgaver tilgængelige</li>
-          </ul>
-        </div>
+  <div class="container">
+    <!-- Venstre kolonne: Dashboard og Lokationsområde -->
+    <div class="left-column">
+      <canvas id="kpiChart"></canvas>
+      <div id="locations">
+        <!-- Dynamisk genererede lokationsbokse vil blive placeret her -->
       </div>
     </div>
-
-    <!-- Modaler -->
-
-    <!-- Intro Modal -->
-    <div id="intro-modal" class="modal">
-      <div class="modal-content">
-        <div class="intro-content">
-          <div class="intro-text">
-            <h2>Velkommen til IT‑Tycoon</h2>
-            <p>
-              Som IT‑forvalter skal du navigere i en verden af komplekse IT-systemer – du skal balancere
-              sikkerhed, udvikling og tid. Dine beslutninger påvirker driftssikkerheden, og avancerede
-              (anbefalede) valg koster ekstra tid – vælg med omtanke! Forvent en lærerig rejse med udfordringer
-              og praktiske tips undervejs.
-            </p>
-            <button id="intro-start-btn" class="commit-button">Start Spillet</button>
-          </div>
-        </div>
+    <!-- Højre kolonne: Aktiv opgave og Opgaveliste -->
+    <div class="right-column">
+      <div id="activeTask">
+        <!-- Her vises den aktive opgave med titel, beskrivelse og trin -->
+      </div>
+      <div id="taskList">
+        <!-- Liste over tilgængelige opgaver -->
       </div>
     </div>
+  </div>
 
-    <!-- Sprint Goal Modal -->
-    <div id="sprint-goal-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h2>Dit Sprintmål</h2>
-        <p>
-          I denne PI skal du opnå mindst <strong>22 i sikkerhed</strong> og <strong>22 i udvikling</strong>.
-          Dine beslutninger påvirker både de tekniske parametre og driftssikkerheden. Avancerede valg koster ekstra tid –
-          brug din tid fornuftigt, og opnå samtidig maksimal læring.
-        </p>
-        <button id="sprint-goal-close-btn" class="commit-button">Fortsæt</button>
+  <!-- Fælles Modal-vindue -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="modalClose" class="close">&times;</span>
+      <div id="modalBody">
+        <!-- Modalens dynamiske indhold -->
       </div>
     </div>
+  </div>
 
-    <!-- Tutorial Modal -->
-    <div id="tutorial-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h2 id="tutorial-title"></h2>
-        <p id="tutorial-text"></p>
-        <button id="tutorial-next-btn" class="commit-button">Næste</button>
-      </div>
-    </div>
-
-    <!-- Scenario Intro Modal -->
-    <div id="scenario-intro-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h2 id="scenario-intro-title"></h2>
-        <p id="scenario-intro-text"></p>
-        <button id="scenario-intro-close-btn" class="commit-button">Fortsæt</button>
-      </div>
-    </div>
-
-    <!-- Scenario Modal -->
-    <div id="scenario-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h2 id="scenario-title"></h2>
-        <p id="scenario-flavor-text"></p>
-        <div id="scenario-narrative"></div>
-        <p id="scenario-description"></p>
-        <div id="dig-deeper-links" style="display: none;"></div>
-        <div id="scenario-options">
-          <div id="scenario-optionA">
-            <strong id="scenario-a-label"></strong>
-            <p id="scenario-a-text"></p>
-          </div>
-          <div id="scenario-optionB">
-            <strong id="scenario-b-label"></strong>
-            <p id="scenario-b-text"></p>
-          </div>
-        </div>
-        <div id="scenario-buttons">
-          <button id="scenario-a-btn" class="commit-button">Vælg A</button>
-          <button id="scenario-b-btn" class="commit-button">Vælg B</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Architect Modal -->
-    <div id="architect-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <div id="architect-content"></div>
-        <button id="architect-close-btn" class="commit-button">Luk</button>
-      </div>
-    </div>
-
-    <!-- CAB Modal -->
-    <div id="cab-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h2>CAB-gennemgang</h2>
-        <div id="cab-summary"></div>
-        <button id="cab-ok-btn" class="commit-button">OK</button>
-      </div>
-    </div>
-
-    <!-- CAB Result Modal -->
-    <div id="cab-result-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h2 id="cab-result-title"></h2>
-        <div id="cab-result-text"></div>
-        <button id="cab-result-ok-btn" class="commit-button">OK</button>
-      </div>
-    </div>
-
-    <!-- Task Summary Modal -->
-    <div id="task-summary-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <div id="task-summary-text"></div>
-        <button id="task-summary-ok-btn" class="commit-button">OK</button>
-      </div>
-    </div>
-
-    <!-- Inspect & Adapt Modal -->
-    <div id="inspect-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <div id="inspect-content"></div>
-        <button id="inspect-close-btn" class="commit-button">Afslut Spillet</button>
-      </div>
-    </div>
-
-    <!-- More Info Modal -->
-    <div id="more-info-modal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <div id="more-info-content"></div>
-        <button id="more-info-close-btn" class="commit-button">Luk</button>
-      </div>
-    </div>
-
-    <!-- Popup Container -->
-    <div id="popup-container"></div>
-    <!-- Floating Text Container -->
-    <div id="floating-text-container"></div>
-
-    <!-- Script Tags -->
-    <!-- Inkluder dine task-filer -->
-    <script src="scripts/tasks/hospitalTasks.js"></script>
-    <script src="scripts/tasks/infrastrukturTasks.js"></script>
-    <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
-    <!-- Inkluder main.js (kun én gang!) -->
-    <script src="scripts/main.js"></script>
-  </body>
+  <!-- Inkludér script-filer -->
+  <script src="scripts/main.js"></script>
+  <script src="scripts/tasks/hospitalTasks.js"></script>
+  <script src="scripts/tasks/infrastrukturTasks.js"></script>
+  <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
+</body>
 </html>
