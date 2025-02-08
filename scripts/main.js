@@ -6,18 +6,20 @@ document.addEventListener('DOMContentLoaded', () => {
    * Ændringer:
    * 1. Sprintmålsætningen vises som en fuld modal ("sprint-goal-modal") med en detaljeret beskrivelse.
    * 2. Introduktionsteksten er udvidet og spændende.
-   * 3. Inspect & Adapt vises efter 10 opgaver.
+   * 3. Inspect & Adapt vises efter 10 opgaver, og spillet afsluttes.
    * 4. "Leverandør" er rettet.
-   * 5. Balancering af KPI’er (sikkerhed: *0.75, udvikling: *1.25) og håndtering af tid.
-   * 6. Håndtering af, når der ikke er nok tid.
+   * 5. Statændringer balanceres med multiplikatorer:
+   *    - Sikkerhed: *0.75 (gør det sværere at opnå store stigninger)
+   *    - Udvikling: *1.25 (gør det lettere at opnå udvikling)
+   * 6. Hvis der ikke er nok tid, vises en popup, og spillet afsluttes.
    ************************************************************/
 
-  // Sørg for, at dine task-filer er indlæst
+  // Sørg for, at dine task-filer (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js) er indlæst
   window.hospitalTasks = window.hospitalTasks || [];
   window.infrastrukturTasks = window.infrastrukturTasks || [];
   window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-  // Global gameState – måles på en skala op til 40
+  // Global gameState – alle værdier måles på en skala op til 40
   let gameState = {
     security: 20,
     development: 20,
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lastFinishedTask: null
   };
 
-  // Sprintmålsætning (PI-mål)
+  // Sprintmålsætningen (PI-mål)
   const missionGoals = {
     security: 22,
     development: 22
@@ -56,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cabModal = document.getElementById('cab-modal');
   const cabResultModal = document.getElementById('cab-result-modal');
   const taskSummaryModal = document.getElementById('task-summary-modal');
-  const inspectModal = document.getElementById('inspect-modal');
+  const inspectModal = document.getElementById('inspect-modal'); // Inspect & Adapt modal
   const moreInfoModal = document.getElementById('more-info-modal');
 
   const tutorialTitleEl = document.getElementById('tutorial-title');
@@ -241,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* --- Sprint Goal Modal --- */
   function showSprintGoalModal(){
-    // Vis sprintmålet som en fuld modal med en spændende forklaring
     sprintGoalModal.style.display = "flex";
   }
 
@@ -267,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --- Dashboard (Chart.js) --- */
-  let dashboardChart;
+  let dashboardChart; // Kun én deklaration
   function initDashboard() {
     const ctx = dashboardCanvas.getContext('2d');
     if (dashboardChart) { dashboardChart.destroy(); }
@@ -483,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (eff.timeCost) { applyTimeCost(eff.timeCost); }
     if (eff.statChange){
       for (let [stat, delta] of Object.entries(eff.statChange)){
-        // Balancér: Sikkerhed multipliceres med 0.75, udvikling med 1.25
+        // Balancér: sikkerhed *0.75, udvikling *1.25
         let multiplier = (stat === "security") ? 0.75 : (stat === "development") ? 1.25 : 1;
         let adjustedDelta = delta * multiplier * (gameState.activeTask.riskProfile || 1);
         applyStatChange(stat, adjustedDelta);
@@ -523,11 +524,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (t.currentStep >= t.steps.length) {
       gameState.lastFinishedTask = t;
       gameState.tasksCompleted++;
-      if (gameState.tasksCompleted >= 10) {
-        showInspectAndAdapt();
-      } else {
-        showTaskSummaryModal();
-      }
+      if (gameState.tasksCompleted >= 10) { showInspectAndAdapt(); }
+      else { showTaskSummaryModal(); }
     }
   }
   function showTaskSummaryModal(){
@@ -640,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ensureArchitectHelpButton();
 
   /* --- Dashboard (Chart.js) --- */
-  let dashboardChart;
+  let dashboardChart; // Deklareret én gang her
   function initDashboard() {
     const ctx = dashboardCanvas.getContext('2d');
     if (dashboardChart) { dashboardChart.destroy(); }
