@@ -5,62 +5,52 @@ body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
   padding: 0;
-  /* Let gradient baggrund, der ikke er for mørk */
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   color: #333;
 }
 
-/* Header med flot gradient og moderne typografi */
+/* Header med moderne typografi og ikon */
 header {
   background: linear-gradient(90deg, #2193b0, #6dd5ed);
   color: #fff;
   padding: 1rem 2rem;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
-
 .header-content {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .header-content .logo {
-  font-size: 2rem;
+  font-size: 3rem;  /* Større ikon */
   margin-right: 0.5rem;
 }
 
-/* Container opdelt i to lige store kolonner */
+/* Container opdelt i to kolonner */
 .container {
   display: flex;
   min-height: calc(100vh - 80px);
 }
 
-.left-column,
-.right-column {
+/* Venstre side: KPI-graf og lokationer */
+.left-column {
   width: 50%;
   padding: 1rem;
-  box-sizing: border-box;
-}
-
-/* Venstre side: KPI og lokationer */
-.left-column {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.85);
   display: flex;
   flex-direction: column;
 }
-
 #locationsContainer {
   margin-top: 1rem;
 }
-
 #locations {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-/* Lokationsknapper med høj kontrast */
+/* Lokationsknapper med store bogstaver og høj kontrast */
 .location-button {
   display: inline-block;
   padding: 1rem 1.5rem;
@@ -68,11 +58,11 @@ header {
   border: 2px solid #4caf50;
   background-color: #4caf50;
   color: #fff;
+  text-transform: uppercase;  /* Lokationsnavne med store bogstaver */
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
   border-radius: 4px;
 }
-
 .location-button:hover {
   background-color: #43a047;
   transform: scale(1.02);
@@ -80,20 +70,20 @@ header {
 
 /* Højre side: Opgaver */
 .right-column {
-  background-color: rgba(255, 255, 255, 0.9);
+  width: 50%;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.95);
   display: flex;
   flex-direction: column;
 }
-
 #activeTask {
   border-bottom: 1px solid #ddd;
   padding-bottom: 1rem;
 }
-
 #potentialTasks {
   margin-top: 1rem;
   overflow-y: auto;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px); /* Scrollbart vindue for potentielle opgaver */
 }
 
 /* Potentielle opgaveelementer */
@@ -108,13 +98,12 @@ header {
   background-color: #fff;
   color: #333;
 }
-
 .task-item .task-info {
   flex: 1;
   margin-right: 1rem;
 }
 
-/* Knapper – generel stil (bruges også i modaler) */
+/* Generel knapstil */
 button {
   padding: 1rem 1.5rem;
   margin: 0.5rem;
@@ -126,13 +115,12 @@ button {
   color: #fff;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
-
 button:hover {
   background-color: #025aa5;
   transform: scale(1.02);
 }
 
-/* Modal-styling */
+/* Modal-styling med fast opdeling af body og footer */
 .modal {
   position: fixed;
   top: 0;
@@ -144,24 +132,32 @@ button:hover {
   justify-content: center;
   align-items: center;
 }
-
 .modal-content {
   background-color: #fff;
-  padding: 20px;
   border-radius: 8px;
-  max-width: 90%;
-  max-height: 90%;
-  overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   color: #333;
 }
-
-.hidden {
-  display: none;
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
 }
-
+.modal-footer {
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  text-align: right;
+  flex-shrink: 0;
+}
 .close {
-  float: right;
+  position: absolute;
+  top: 10px;
+  right: 10px;
   font-size: 1.5rem;
   cursor: pointer;
   color: #333;
