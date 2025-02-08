@@ -16,6 +16,19 @@ document.addEventListener("DOMContentLoaded", function() {
   // Load opgave-filerne
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
+  // Definér getIcon()-funktionen, som returnerer et ikon baseret på lokationsnavnet
+  function getIcon(location) {
+    const icons = {
+      'hospital': '🏥',
+      'dokumentation': '📄',
+      'leverandør': '📦',
+      'infrastruktur': '🔧',
+      'it‑jura': '⚖️',
+      'cybersikkerhed': '💻'
+    };
+    return icons[location.toLowerCase()] || '';
+  }
+
   // Initialiser Chart.js-dashboardet
   const ctx = document.getElementById('kpiChart').getContext('2d');
   const kpiChart = new Chart(ctx, {
@@ -90,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (−2 tid).</li>
         <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus.</li>
       </ul>
-      Dine valg påvirker dine KPI’er, så det er vigtigt at afveje risiko og belønning nøje.</p>
+      Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
       <p><strong>Vigtige Funktioner</strong><br>
       - Opgaver: Vælg en opgave og gennemfør hvert trin for at påvirke dine KPI’er.<br>
       - Arkitekthjælp: Brug denne funktion, hvis du er usikker – den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
@@ -106,6 +119,23 @@ document.addEventListener("DOMContentLoaded", function() {
     openModal(helpContent, `<button id="closeHelp">Luk</button>`);
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
   }
+
+  // Render lokationer i venstre side (hvis det ønskes)
+  const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
+  function renderLocations() {
+    const locationsDiv = document.getElementById('locations');
+    locationsDiv.innerHTML = "";
+    locationsList.forEach(loc => {
+      const btn = document.createElement('button');
+      btn.className = 'location-button';
+      btn.innerHTML = loc.toUpperCase() + " " + getIcon(loc);
+      btn.addEventListener('click', function() {
+        handleLocationClick(loc);
+      });
+      locationsDiv.appendChild(btn);
+    });
+  }
+  renderLocations();
 
   // Introduktion – Velkomstpop‑up
   function showIntro() {
@@ -210,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
     if (task.steps && task.steps.length > 0) {
-      // Opret en ul-liste for trin
+      // Opret en liste til at vise trin
       const locationsListElem = document.createElement('ul');
       locationsListElem.id = 'taskLocations';
       task.steps.forEach((step, idx) => {
@@ -223,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function() {
         locationsListElem.appendChild(li);
       });
       activeTaskDiv.appendChild(locationsListElem);
-      // Vis instruktion for det aktuelle trin
+      // Vis instruktionen for det aktuelle trin
       const currentStep = task.steps[gameState.currentStepIndex];
       const instruction = document.createElement('p');
       instruction.innerHTML = `<strong>Vælg lokation:</strong> ${currentStep.location.toUpperCase()} ${getIcon(currentStep.location)}`;
