@@ -104,7 +104,7 @@ button {
   cursor: pointer;
 }
 
-/* Lokationsknapper – dobbelt så store */
+/* Lokationsknapper – nu dobbelt så store */
 .location-button {
   display: inline-block;
   margin: 0.5rem;
@@ -130,9 +130,28 @@ button {
   margin-right: 1rem;
 }
 
-/* I den aktive opgave skal gennemførte trin vises med et checkmark */
+/* I den aktive opgave vises gennemførte trin med et checkmark */
 .done {
   color: green;
   font-weight: bold;
   margin-left: 0.5rem;
+}
+
+/* Feedback (toast) for tidsforbrug */
+.feedback {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  opacity: 1;
+  transition: opacity 1s ease;
+  z-index: 1000;
+}
+
+.fade-out {
+  opacity: 0;
 }
