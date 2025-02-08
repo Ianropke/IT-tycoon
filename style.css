@@ -107,13 +107,14 @@ header {
   height: calc(100vh - 220px);
   overflow-y: auto;
   position: relative;
+  overscroll-behavior: contain; /* Forhindrer overscroll/bounce-effekt */
 }
 
 /* Opgaveelementer */
 .task-item {
   border: 1px solid #ddd;
   padding: 0.75rem;
-  margin-bottom: 0.4rem;  /* Reduceret fra 0.5rem til 0.4rem (ca. 20% mindre) */
+  margin-bottom: 0.4rem;  /* 20% mindre plads mellem opgaverne */
   display: flex;
   justify-content: space-between;
   align-items: center;
