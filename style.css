@@ -15,7 +15,7 @@ header {
   color: #fff;
   padding: 1rem 2rem;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 .header-content {
   display: flex;
@@ -23,7 +23,7 @@ header {
   justify-content: center;
 }
 .header-content .logo {
-  font-size: 3rem;  /* Større ikon */
+  font-size: 3rem;
   margin-right: 0.5rem;
 }
 
@@ -82,7 +82,7 @@ header {
 }
 #potentialTasks {
   margin-top: 1rem;
-  height: calc(100vh - 220px); /* Fast højde for potentielle opgaver (scrollbart) */
+  height: calc(100vh - 220px);
   overflow-y: auto;
   position: relative;
 }
@@ -128,44 +128,53 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
+/* Modal-content tilpasser sig indholdet, men har faste maks-dimensioner */
 .modal-content {
   background-color: #fff;
-  border-radius: 8px;
-  width: 80vw;   /* 80 % af viewportens bredde */
-  height: 60vh;  /* 60 % af viewportens højde */
-  display: grid;
-  grid-template-rows: 1fr auto; /* Modal-body og modal-footer */
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;      /* Maksimal bredde */
+  height: auto;           /* Højden tilpasses indholdet */
+  max-height: 70vh;       /* Maksimal højde */
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
   color: #333;
-  margin: 0 20px;
+  position: relative;
 }
 
-/* Modal-body med øget side-padding og centreret indhold for bredere margener */
+/* Modal-body med ekstra padding for bredere margen og centreret indhold */
 .modal-body {
-  padding: 30px 100px;  /* Øget padding til venstre og højre */
+  flex: 1;
+  padding: 30px 100px;    /* Øget side-padding for mere luft */
   overflow-y: auto;
-  text-align: center;   /* Centrerer teksten, så den fremstår i midten */
+  text-align: center;
 }
 
-/* Modal-footer placeret fast nederst med knapper i nederste højre hjørne */
+/* Modal-footer – knapperne placeres fast i nederste højre hjørne */
 .modal-footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   padding: 10px 60px;
   background-color: #f5f5f5;
   display: flex;
   align-items: center;
-  justify-content: flex-end;  /* Knapperne vises nederst til højre */
-  flex-shrink: 0;
-  height: 60px;  /* Fast højde for footer */
+  justify-content: flex-end;
+  height: 60px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* Luk-knap til modal */
 .close {
   position: absolute;
   top: 10px;
