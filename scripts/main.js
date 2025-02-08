@@ -9,10 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
     tasksCompleted: 0,
     missionGoals: { security: 22, development: 22 },
     architectHelpUsed: false,
-    tasks: [] // Samlet liste over opgaver
+    tasks: [],          // Kombinerede opgaver fra de eksterne filer
+    selectedTask: null  // Valgt opgave før forpligtelse
   };
 
-  // Kombinér tasks fra de eksterne task-filer
+  // Kombiner tasks fra de eksterne task-filer
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -77,9 +78,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
       <p>Du agerer IT‑forvalter med ansvar for at balancere tre KPI’er: Tid, Sikkerhed og Udvikling.</p>
-      <p>Venstre side viser din KPI-graf med sprintmålet og en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
-      <p>Når en opgave er aktiv, skal du klikke på den korrekte lokation på venstre side for at udføre næste trin.</p>
-      <p>Planlæg dine valg omhyggeligt, da avancerede valg giver bedre resultater, men koster ekstra tid. Brug arkitekthjælp, hvis du er i tvivl (én gang per opgave).</p>
+      <p>Venstre side viser din KPI-graf med sprintmålet og en liste med lokationer. Højre side viser aktiv opgave og potentielle opgaver.</p>
+      <p>Når du vælger en opgave, skal du først vælge den og trykke på "Forpligt opgave" for at starte opgaven.</p>
+      <p>Når opgaven er forpligtet, vises en liste med alle de lokationer, du skal besøge i opgaven.</p>
+      <p>Planlæg dine valg omhyggeligt – avancerede valg giver bedre resultater, men koster ekstra tid. Du kan bruge arkitekthjælp (én gang per opgave), hvis du er i tvivl.</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -109,11 +111,12 @@ document.addEventListener("DOMContentLoaded", function() {
          Du navigerer komplekse IT-systemer og balancerer KPI’erne: Tid, Sikkerhed og Udvikling. Dit mål er at nå sprintmålsætningen, som du kan følge i grafen.</p>
       <p><strong>UI-Layout:</strong><br>
          - Venstre side: Viser KPI-graf med sprintmål og en statisk liste med lokationer.<br>
-         - Højre side: Viser aktiv opgave øverst og potentielle opgaver nedenunder.</p>
+         - Højre side: Viser den aktive opgave og potentielle opgaver.<br>
+         Når du vælger en opgave, skal du trykke på "Forpligt opgave" for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når en opgave er aktiv, vises den i højre side. Du skal klikke på den korrekte lokation på venstre side (sammenlignet med opgavens næste trin) for at få vist valgmulighederne.</p>
+         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
-         Vær opmærksom på din tid. Hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålet.</p>
+         Vær opmærksom på din tid – hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålsætningen.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
@@ -125,17 +128,48 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function renderPotentialTasks() {
     const potentialTasksDiv = document.getElementById('potentialTasks');
-    if (!potentialTasksDiv) return;
     potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
-    gameState.tasks.forEach((task) => {
+    // Kun vis potentielle opgaver, hvis der ikke allerede er forpligtet en opgave
+    if (gameState.currentTask !== null) return;
+    gameState.tasks.forEach((task, index) => {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
       taskItem.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
       taskItem.addEventListener('click', function() {
-        startTask(task);
+        // Marker denne opgave som valgt
+        gameState.selectedTask = task;
+        highlightSelectedTask(index);
+        renderCommitButton();
       });
       potentialTasksDiv.appendChild(taskItem);
     });
+  }
+
+  function highlightSelectedTask(selectedIndex) {
+    const taskItems = document.querySelectorAll('.task-item');
+    taskItems.forEach((item, index) => {
+      item.style.backgroundColor = (index === selectedIndex) ? '#d3d3d3' : '';
+    });
+  }
+
+  function renderCommitButton() {
+    // Fjern eksisterende forpligt-knap, hvis den findes
+    let commitBtn = document.getElementById('commitButton');
+    if (commitBtn) {
+      commitBtn.remove();
+    }
+    commitBtn = document.createElement('button');
+    commitBtn.id = 'commitButton';
+    commitBtn.textContent = 'Forpligt opgave';
+    commitBtn.addEventListener('click', function() {
+      if (gameState.selectedTask) {
+        startTask(gameState.selectedTask);
+        // Når opgaven er forpligtet, fjernes listen over potentielle opgaver
+        document.getElementById('potentialTasks').innerHTML = '';
+      }
+    });
+    const potentialTasksDiv = document.getElementById('potentialTasks');
+    potentialTasksDiv.appendChild(commitBtn);
   }
 
   function startTask(task) {
@@ -148,10 +182,20 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
+    // Vis en liste med alle lokationer for denne opgave
     if (task.steps && task.steps.length > 0) {
+      const locationsListElem = document.createElement('ul');
+      locationsListElem.id = 'taskLocations';
+      task.steps.forEach((step, idx) => {
+        const li = document.createElement('li');
+        li.textContent = `${idx + 1}. ${step.location} ${getIcon(step.location)}`;
+        locationsListElem.appendChild(li);
+      });
+      activeTaskDiv.appendChild(locationsListElem);
+      // Vis instruktion for det nuværende trin:
       const currentStep = task.steps[gameState.currentStepIndex];
       const instruction = document.createElement('p');
-      instruction.innerHTML = `<strong>Vent på at vælge lokation:</strong> ${currentStep.location} ${getIcon(currentStep.location)}`;
+      instruction.innerHTML = `<strong>Vælg lokation:</strong> ${currentStep.location} ${getIcon(currentStep.location)}`;
       activeTaskDiv.appendChild(instruction);
     }
   }
@@ -168,10 +212,10 @@ document.addEventListener("DOMContentLoaded", function() {
     return icons[location] || '';
   }
 
-  // Når en lokation klikkes på venstre side:
+  // Håndter klik på en lokationsknap (venstre side)
   function handleLocationClick(clickedLocation) {
     if (!gameState.currentTask) {
-      alert("Vælg en opgave først!");
+      alert("Vælg en opgave og forpligt dig først!");
       return;
     }
     const currentStep = gameState.currentTask.steps[gameState.currentStepIndex];
@@ -230,17 +274,15 @@ document.addEventListener("DOMContentLoaded", function() {
     if (gameState.currentStepIndex < task.steps.length - 1) {
       gameState.currentStepIndex++;
       renderActiveTask(task);
-      alert(`Gå til næste trin (${gameState.currentStepIndex + 1} af ${task.steps.length})`);
+      // Ingen pop-up for næste trin – blot opdateres instruktionen
     } else {
       gameState.tasksCompleted++;
       alert("Opgaven er fuldført!");
       document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
       gameState.currentTask = null;
       gameState.currentStepIndex = 0;
+      // Tillad nu valg af ny opgave
       renderPotentialTasks();
-      if (gameState.tasksCompleted % 10 === 0) {
-        showInspectAndAdapt();
-      }
     }
   }
 
