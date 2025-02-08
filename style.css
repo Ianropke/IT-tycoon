@@ -13,7 +13,7 @@ header {
   text-align: center;
 }
 
-/* Container opdelt i to lige store kolonner (50 % hver) */
+/* Container opdelt i to lige store kolonner (50% hver) */
 .container {
   display: flex;
   min-height: calc(100vh - 60px);
@@ -70,7 +70,6 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* GSAP vil håndtere animation, så ingen CSS transition */
 }
 
 .modal-content {
