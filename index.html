@@ -17,15 +17,17 @@
     <div class="header-content">
       <span class="logo">🚀</span>
       <h1>IT Tycoon</h1>
-      <!-- "Få hjælp"-knap -->
+      <!-- Få hjælp-knap -->
       <button id="helpButton" class="help-btn">Få hjælp</button>
     </div>
   </header>
   <div class="container">
     <!-- Venstre side: KPI-graf og lokationer -->
     <div class="left-column">
-      <div id="graphContainer">
+      <div id="graphContainer" style="position: relative;">
         <canvas id="kpiChart"></canvas>
+        <!-- Dashboard progress overlay -->
+        <div id="taskProgress" class="task-progress">Opgave 0/10</div>
       </div>
       <div id="locationsContainer">
         <h2>Lokationer</h2>
@@ -53,7 +55,7 @@
         <!-- Modal-indhold indsættes her -->
       </div>
       <div class="modal-footer" id="modalFooter">
-        <!-- Modal-footer til eventuelle knapper -->
+        <!-- Eventuel footer-indhold, fx knapper til fejl/pop-up -->
       </div>
       <span id="modalClose" class="close">&times;</span>
     </div>
