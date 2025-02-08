@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", function() {
     time: 100,
     security: 0,
     development: 0,
-    currentTask: null,
+    currentTask: null,      // Den opgave, der er forpligtet
     currentStepIndex: 0,
     tasksCompleted: 0,
     missionGoals: { security: 22, development: 22 },
     architectHelpUsed: false,
-    tasks: [],          // Kombinerede opgaver fra de eksterne filer
-    selectedTask: null  // Valgt opgave før forpligtelse
+    tasks: [],              // Kombinerede opgaver fra eksterne filer
+    selectedTask: null      // Den opgave, som brugeren har markeret (før forpligtelse)
   };
 
   // Kombiner tasks fra de eksterne task-filer
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
     modal.classList.add('hidden');
   }
 
-  // Render statiske lokationer i venstre side
+  // Render statiske lokationer (venstre side)
   const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
   function renderLocations() {
     const locationsDiv = document.getElementById('locations');
@@ -78,9 +78,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
       <p>Du agerer IT‑forvalter med ansvar for at balancere tre KPI’er: Tid, Sikkerhed og Udvikling.</p>
-      <p>Venstre side viser din KPI-graf med sprintmålet og en liste med lokationer. Højre side viser aktiv opgave og potentielle opgaver.</p>
-      <p>Når du vælger en opgave, skal du først vælge den og trykke på "Forpligt opgave" for at starte opgaven.</p>
-      <p>Når opgaven er forpligtet, vises en liste med alle de lokationer, du skal besøge i opgaven.</p>
+      <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
+      <p>Når du vælger en opgave, skal du først markere den og trykke på "Forpligt opgave" for at starte opgaven. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p>Planlæg dine valg omhyggeligt – avancerede valg giver bedre resultater, men koster ekstra tid. Du kan bruge arkitekthjælp (én gang per opgave), hvis du er i tvivl.</p>
       <button id="startGame">Start Spillet</button>
     `;
@@ -111,12 +110,12 @@ document.addEventListener("DOMContentLoaded", function() {
          Du navigerer komplekse IT-systemer og balancerer KPI’erne: Tid, Sikkerhed og Udvikling. Dit mål er at nå sprintmålsætningen, som du kan følge i grafen.</p>
       <p><strong>UI-Layout:</strong><br>
          - Venstre side: Viser KPI-graf med sprintmål og en statisk liste med lokationer.<br>
-         - Højre side: Viser den aktive opgave og potentielle opgaver.<br>
+         - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
          Når du vælger en opgave, skal du trykke på "Forpligt opgave" for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p><strong>Spillets Mekanik:</strong><br>
          Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
-         Vær opmærksom på din tid – hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålsætningen.</p>
+         Vær opmærksom på din tid – hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålet.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
@@ -126,10 +125,11 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
+  // Render listen over potentielle opgaver med mulighed for at vælge og forpligte sig
   function renderPotentialTasks() {
     const potentialTasksDiv = document.getElementById('potentialTasks');
     potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
-    // Kun vis potentielle opgaver, hvis der ikke allerede er forpligtet en opgave
+    // Kun vis opgaveelementer, hvis der ikke allerede er forpligtet en opgave
     if (gameState.currentTask !== null) return;
     gameState.tasks.forEach((task, index) => {
       const taskItem = document.createElement('div');
@@ -152,8 +152,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
+  // Render "Forpligt opgave"-knappen, som vises efter man har markeret en opgave
   function renderCommitButton() {
-    // Fjern eksisterende forpligt-knap, hvis den findes
+    // Fjern en eksisterende forpligt-knap, hvis der er en
     let commitBtn = document.getElementById('commitButton');
     if (commitBtn) {
       commitBtn.remove();
@@ -172,6 +173,7 @@ document.addEventListener("DOMContentLoaded", function() {
     potentialTasksDiv.appendChild(commitBtn);
   }
 
+  // Starter den forpligtede opgave
   function startTask(task) {
     gameState.currentTask = task;
     gameState.currentStepIndex = 0;
@@ -179,10 +181,10 @@ document.addEventListener("DOMContentLoaded", function() {
     renderActiveTask(task);
   }
 
+  // Render den aktive opgave, inklusiv en liste med alle opgavens lokationer
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
-    // Vis en liste med alle lokationer for denne opgave
     if (task.steps && task.steps.length > 0) {
       const locationsListElem = document.createElement('ul');
       locationsListElem.id = 'taskLocations';
@@ -274,14 +276,13 @@ document.addEventListener("DOMContentLoaded", function() {
     if (gameState.currentStepIndex < task.steps.length - 1) {
       gameState.currentStepIndex++;
       renderActiveTask(task);
-      // Ingen pop-up for næste trin – blot opdateres instruktionen
     } else {
       gameState.tasksCompleted++;
       alert("Opgaven er fuldført!");
       document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
       gameState.currentTask = null;
       gameState.currentStepIndex = 0;
-      // Tillad nu valg af ny opgave
+      // Nu kan brugeren vælge en ny opgave
       renderPotentialTasks();
     }
   }
