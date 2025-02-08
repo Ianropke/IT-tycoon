@@ -100,11 +100,12 @@ document.addEventListener("DOMContentLoaded", function() {
       
       <p>Brug denne hjælp som en vejledning til at forstå spillets mekanikker og forberede dig på de udfordringer, der måtte opstå. Held og lykke!</p>
     `;
+    // Her sender vi footerContent med en "Luk"-knap
     openModal(helpContent, `<button id="closeHelp">Luk</button>`);
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
   }
 
-  // Introduktion – Velkommen til IT‑Tycoon pop-up med en "Start Spillet"-knap
+  // Introduktion – Velkomstpop‑up med en "Start Spillet"-knap i footer
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
