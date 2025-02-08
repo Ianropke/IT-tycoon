@@ -212,7 +212,11 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
           hint = "Denne opgave understøtter Sikkerhed.";
         }
-        openModal(`<h2>Arkitekthjælp</h2><p>${hint}</p><p>${task.narrativeIntro || ""}</p>`);
+        openModal(
+          `<h2>Arkitekthjælp</h2><p>${hint}</p><p>${task.narrativeIntro || ""}</p>`,
+          `<button id="closeArchitectHelp">Luk</button>`
+        );
+        document.getElementById('closeArchitectHelp').addEventListener('click', () => closeModal());
       });
       taskItem.appendChild(infoDiv);
       taskItem.appendChild(commitBtn);
@@ -254,7 +258,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function handleLocationClick(clickedLocation) {
     if (!gameState.currentTask) {
-      openModal("<h2>Advarsel</h2><p>Vælg en opgave og forpligt dig først!</p>", `<button id="alertOk">OK</button>`);
+      openModal(
+        "<h2>Advarsel</h2><p>Vælg en opgave og forpligt dig først!</p>",
+        `<button id="alertOk">OK</button>`
+      );
       document.getElementById('alertOk').addEventListener('click', () => closeModal());
       return;
     }
@@ -262,7 +269,10 @@ document.addEventListener("DOMContentLoaded", function() {
     if (clickedLocation.toLowerCase() === currentStep.location.toLowerCase()) {
       showStepChoices(currentStep);
     } else {
-      openModal("<h2>Fejl</h2><p>Forkert lokation. Prøv igen.</p>", `<button id="errorOk">OK</button>`);
+      openModal(
+        "<h2>Fejl</h2><p>Forkert lokation. Prøv igen.</p>",
+        `<button id="errorOk">OK</button>`
+      );
       document.getElementById('errorOk').addEventListener('click', () => closeModal());
     }
   }
@@ -274,13 +284,15 @@ document.addEventListener("DOMContentLoaded", function() {
       choiceAText = choiceAText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
       choiceBText = choiceBText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
     }
+    // Wrap knapperne i en container med horizontal flexbox:
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
       ${step.stepContext ? `<p>${step.stepContext}</p>` : ""}
-      <button id="choiceA">${step.choiceA.label} (${choiceAText})</button>
-      <button id="choiceB">${step.choiceB.label} (${choiceBText})</button>
-      <br><br>
-      <button id="architectHelp">${gameState.architectHelpUsed ? 'Arkitekthjælp brugt' : 'Brug Arkitekthjælp'}</button>
+      <div class="choice-buttons">
+        <button id="choiceA">${step.choiceA.label} (${choiceAText})</button>
+        <button id="choiceB">${step.choiceB.label} (${choiceBText})</button>
+        <button id="architectHelp">${gameState.architectHelpUsed ? 'Arkitekthjælp brugt' : 'Brug Arkitekthjælp'}</button>
+      </div>
     `;
     openModal(choiceContent);
     document.getElementById('choiceA').addEventListener('click', function() {
@@ -313,7 +325,11 @@ document.addEventListener("DOMContentLoaded", function() {
       if (!gameState.architectHelpUsed) {
         gameState.architectHelpUsed = true;
         let hint = "Denne opgave understøtter Sikkerhed.";
-        openModal(`<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p><p>${hint}</p>`);
+        openModal(
+          `<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p><p>${hint}</p>`,
+          `<button id="closeArchitectHelp">Luk</button>`
+        );
+        document.getElementById('closeArchitectHelp').addEventListener('click', () => closeModal());
       }
     });
   }
