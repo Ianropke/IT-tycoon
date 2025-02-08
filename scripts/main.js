@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på −2 tid (dette vises tydeligt), mens den hurtige løsning ikke trækker tid.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på −2 tid (dette vises tydeligt), mens den hurtige løsning trækker 0 tid.</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -261,7 +261,6 @@ document.addEventListener("DOMContentLoaded", function() {
       modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
       applyChoice(modifiedChoice);
       closeModal();
-      // Hvis dette var det sidste trin, send opgaven til CAB-godkendelse
       if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
         cabApproval();
       } else {
@@ -310,25 +309,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Når det sidste trin er løst, sendes ændringen automatisk til CAB
+  // Når det sidste trin er løst, sendes ændringen til CAB for automatisk vurdering
   function cabApproval() {
     closeModal();
-    // Beregn CAB-godkendelseschance baseret på sikkerheden
-    let chance = gameState.security / gameState.missionGoals.security;
+    // Beregn godkendelseschance med en bonus for at sænke risikoen:
+    let chance = (gameState.security + 5) / (gameState.missionGoals.security + 5);
     if (Math.random() < chance) {
       openModal("<p>Opgaven er godkendt af CAB og udrullet!</p>");
       finishTask();
     } else {
-      // Hvis CAB afviser, pålægges en rework-tidsstraf
-      const penalty = 3; // For eksempel 3 tidspoint straf for rework
-      gameState.time -= penalty;
-      if (gameState.time < 0) gameState.time = 0;
-      updateDashboard();
-      showFeedback(`−${penalty} tid (rework)`);
-      openModal("<p>CAB afviste opgaven. Rework er påkrævet, og du mister 3 tidspoint. Prøv igen.</p>");
-      setTimeout(() => {
-        cabApproval();
-      }, 1500);
+      // Vis en elegant modal med rework-information
+      openModal(`
+        <h2>CAB Afvisning</h2>
+        <p>CAB afviste opgaven. Rework er påkrævet, og du mister 3 tidspoint.</p>
+        <button id="continueRework">Fortsæt rework</button>
+      `);
+      document.getElementById('continueRework').addEventListener('click', function() {
+        // Træk rework-straf
+        const penalty = 3;
+        gameState.time -= penalty;
+        if (gameState.time < 0) gameState.time = 0;
+        updateDashboard();
+        showFeedback(`−${penalty} tid (rework)`);
+        closeModal();
+        // Efter rework, genkald CAB-vurderingen
+        setTimeout(() => cabApproval(), 1000);
+      });
     }
   }
 
@@ -338,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function() {
       gameState.currentStepIndex++;
       renderActiveTask(task);
     } else {
-      // Hvis alle trin er løst, send opgaven til CAB-godkendelse
+      // Hvis alle trin er gennemført, send opgaven til CAB-vurdering
       cabApproval();
     }
   }
