@@ -5,44 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT‑Tycoon</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Inkludér Chart.js via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
     <h1>IT‑Tycoon</h1>
   </header>
-
   <div class="container">
-    <!-- Venstre kolonne: Dashboard og Lokationsområde -->
+    <!-- Venstre side: Graf og lokationer -->
     <div class="left-column">
-      <canvas id="kpiChart"></canvas>
-      <div id="locations">
-        <!-- Dynamisk genererede lokationsbokse vil blive placeret her -->
+      <div id="graphContainer">
+        <canvas id="kpiChart"></canvas>
+      </div>
+      <div id="locationsContainer">
+        <h2>Vælg Lokation</h2>
+        <div id="locations">
+          <!-- Lokationer indsættes dynamisk -->
+        </div>
       </div>
     </div>
-    <!-- Højre kolonne: Aktiv opgave og Opgaveliste -->
+    <!-- Højre side: Aktiv opgave og potentielle opgaver -->
     <div class="right-column">
       <div id="activeTask">
-        <!-- Her vises den aktive opgave med titel, beskrivelse og trin -->
+        <h2>Aktiv Opgave</h2>
+        <!-- Den aktive opgave vises her -->
       </div>
-      <div id="taskList">
-        <!-- Liste over tilgængelige opgaver -->
+      <div id="potentialTasks">
+        <h2>Potentielle Opgaver</h2>
+        <!-- Liste over potentielle opgaver indsættes her -->
       </div>
     </div>
   </div>
-
-  <!-- Fælles Modal-vindue -->
+  <!-- Modal-vindue -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="modalClose" class="close">&times;</span>
       <div id="modalBody">
-        <!-- Modalens dynamiske indhold -->
+        <!-- Modalens indhold -->
       </div>
     </div>
   </div>
-
-  <!-- Inkludér script-filer -->
   <script src="scripts/main.js"></script>
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
