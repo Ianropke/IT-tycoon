@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // Kombiner tasks fra de eksterne task-filer
+  // Her antages det, at hospitalTasks har fx fokus "udvikling" og de øvrige opgaver "sikkerhed"
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -111,8 +112,8 @@ document.addEventListener("DOMContentLoaded", function() {
       <h2>Velkommen til IT‑Tycoon</h2>
       <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
-      <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven. Herefter vises en modal, hvor du skal vælge fokus: <strong>Udvikling</strong> eller <strong>Sikkerhed</strong>.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på −2 tid (dette vises tydeligt), mens den hurtige løsning trækker 0 tid. Afvejningen sker mellem den positive effekt på din valgte KPI (udvikling eller sikkerhed) og tidsforbruget.</p>
+      <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på −2 tid (dette vises tydeligt), mens den hurtige løsning trækker 0 tid.</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -143,9 +144,9 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>UI-Layout:</strong><br>
          - Venstre side: Viser din KPI-graf med sprintmål og en statisk liste med lokationer.<br>
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
-         Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven, hvorefter du vælger mellem fokus på <strong>Udvikling</strong> eller <strong>Sikkerhed</strong> for opgaven.</p>
+         Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven. Bemærk at opgavernes titel og beskrivelse angiver, om opgaven fokuserer på udvikling eller sikkerhed.</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven er forpligtet, skal du i hvert trin vælge den korrekte lokation (venstre side). Ved valg af den komplette løsning trækkes fast −2 tid, mens den hurtige løsning trækker 0 tid. Afvejningen sker mellem den positive effekt (på din valgte KPI) og tidsforbruget.</p>
+         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven. Ved valg af den komplette løsning trækkes fast −2 tid, mens den hurtige løsning trækker 0 tid.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
          Vær opmærksom på din tid – hvert valg påvirker dine KPI’er. Målet er at balancere ressourcerne og nå sprintmålet.</p>
       <button id="endTutorial">Næste</button>
@@ -158,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Render listen over potentielle opgaver – hver med "Forpligt opgave" og "Arkitekthjælp"-knapper
+  // Opgaven bærer allerede en type (fx "udvikling" for hospitalopgaver og "sikkerhed" for infrastrukturopgaver)
   function renderPotentialTasks() {
     const potentialTasksDiv = document.getElementById('potentialTasks');
     potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
@@ -165,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
       
-      // Oplysning om opgaven
+      // Oplysning om opgaven – opgavens titel/tekst angiver fokus (udvikling eller sikkerhed)
       const infoDiv = document.createElement('div');
       infoDiv.className = 'task-info';
       infoDiv.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
@@ -179,23 +181,8 @@ document.addEventListener("DOMContentLoaded", function() {
           openModal("<p>Du har allerede forpligtet dig til en opgave!</p>");
           return;
         }
-        // Før opgaven startes, skal spilleren vælge fokus: Udvikling eller Sikkerhed.
-        openModal(`
-          <h2>Vælg Fokus</h2>
-          <p>For denne opgave skal du vælge, om du vil fokusere på <strong>Udvikling</strong> eller <strong>Sikkerhed</strong>.</p>
-          <button id="focusDev">Udvikling</button>
-          <button id="focusSec">Sikkerhed</button>
-        `);
-        document.getElementById('focusDev').addEventListener('click', function() {
-          task.focus = "udvikling";
-          closeModal();
-          startTask(task);
-        });
-        document.getElementById('focusSec').addEventListener('click', function() {
-          task.focus = "sikkerhed";
-          closeModal();
-          startTask(task);
-        });
+        // Direkte start opgaven uden at spørge om fokus – opgavens type er allerede defineret
+        startTask(task);
       });
       
       // "Arkitekthjælp"-knap – åbner en modal med arkitekthjælp
@@ -213,8 +200,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Starter den forpligtede opgave (efter fokusvalg)
+  // Starter den forpligtede opgave
   function startTask(task) {
+    // Her antages det, at task.focus allerede er defineret i opgavedataene (f.eks. "udvikling" eller "sikkerhed")
     gameState.currentTask = task;
     gameState.currentStepIndex = 0;
     gameState.architectHelpUsed = false;
@@ -224,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Render den aktive opgave med en liste over alle opgavens lokationer og markerede (gennemførte) trin
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
-    activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p><p><em>Fokus: ${task.focus === "udvikling" ? "Udvikling" : "Sikkerhed"}</em></p>`;
+    activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p><p><em>Fokus: ${task.focus || "ukendt"}</em></p>`;
     if (task.steps && task.steps.length > 0) {
       const locationsListElem = document.createElement('ul');
       locationsListElem.id = 'taskLocations';
@@ -262,19 +250,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Vis modal med valgmuligheder for det aktuelle trin – inkl. "Mere info (trin)"
   function showStepChoices(step) {
-    // Fjern evt. negative stattekster for sikkerhed/udvikling
+    // Fjern evt. negative stattekster for sikkerhed/udvikling (nu vises kun positive bonusser og tidsomkostning)
     let choiceAText = step.choiceA.text
-      .replace(/-?\d+\s*tid/, "−2 tid")
-      .replace(/-\d+\s*sikkerhed/g, "")
-      .replace(/-\d+\s*udvikling/g, "");
+      .replace(/-?\d+\s*tid/, "−2 tid");
     let choiceBText = step.choiceB.text
-      .replace(/-?\d+\s*tid/, "0 tid")
-      .replace(/-\d+\s*sikkerhed/g, "")
-      .replace(/-\d+\s*udvikling/g, "");
+      .replace(/-?\d+\s*tid/, "0 tid");
       
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
-      <p><em>Fokus: ${gameState.currentTask.focus === "udvikling" ? "Udvikling" : "Sikkerhed"}</em></p>
+      <p><em>Fokus: ${gameState.currentTask.focus}</em></p>
       <button id="choiceA">${step.choiceA.label} (${choiceAText})</button>
       <button id="choiceB">${step.choiceB.label} (${choiceBText})</button>
       <br><br>
@@ -336,17 +320,16 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Når det sidste trin er løst, sendes ændringen automatisk til CAB for vurdering
+  // Når det sidste trin er løst, sendes ændringen til CAB for automatisk vurdering
   function cabApproval() {
     closeModal();
-    // Beregn godkendelseschance med reduceret risiko: bonus på 10
+    // Beregn godkendelseschance med bonus for lavere risiko (bonus på 10)
     let chance = (gameState.security + 10) / (gameState.missionGoals.security + 10);
-    // For at øge chancen for godkendelse, kan vi evt. begrænse afvisningsraten yderligere
     if (Math.random() < chance) {
       openModal("<p>Opgaven er godkendt af CAB og udrullet!</p>");
       finishTask();
     } else {
-      // Elegant visning af rework: én modal med en "Fortsæt rework"-knap
+      // Elegant rework-modal med "Fortsæt rework"
       openModal(`
         <h2>CAB Afvisning</h2>
         <p>CAB afviste opgaven. Rework er påkrævet, og du mister 3 tidspoint.</p>
@@ -359,7 +342,6 @@ document.addEventListener("DOMContentLoaded", function() {
         updateDashboard();
         showFeedback(`−${penalty} tid (rework)`);
         closeModal();
-        // Efter en kort pause gentages CAB-vurderingen
         setTimeout(() => cabApproval(), 1000);
       });
     }
@@ -371,7 +353,6 @@ document.addEventListener("DOMContentLoaded", function() {
       gameState.currentStepIndex++;
       renderActiveTask(task);
     } else {
-      // Når alle trin er gennemført, send opgaven til CAB-vurdering
       cabApproval();
     }
   }
