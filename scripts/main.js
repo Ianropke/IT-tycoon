@@ -5,16 +5,17 @@ document.addEventListener("DOMContentLoaded", function() {
     security: 0,
     development: 0,
     currentTask: null,
+    currentStepIndex: 0,
     tasksCompleted: 0,
     missionGoals: { security: 22, development: 22 },
     architectHelpUsed: false,
-    tasks: [] // Samlet liste over alle opgaver
+    tasks: [] // Samlet liste over opgaver
   };
 
-  // Kombiner tasks fra de tre task-filer
+  // Kombinér tasks fra de eksterne task-filer
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
-  // Initialiser Chart.js
+  // Initialiser Chart.js-dashboardet
   const ctx = document.getElementById('kpiChart').getContext('2d');
   const kpiChart = new Chart(ctx, {
     type: 'bar',
@@ -51,19 +52,34 @@ document.addEventListener("DOMContentLoaded", function() {
     modalBody.innerHTML = content;
     modal.classList.remove('hidden');
   }
-
   function closeModal() {
     modal.classList.add('hidden');
   }
 
+  // Render statiske lokationer i venstre side
+  const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
+  function renderLocations() {
+    const locationsDiv = document.getElementById('locations');
+    locationsDiv.innerHTML = "";
+    locationsList.forEach(loc => {
+      const btn = document.createElement('button');
+      btn.className = 'location-button';
+      btn.textContent = loc + " " + getIcon(loc);
+      btn.addEventListener('click', function() {
+        handleLocationClick(loc);
+      });
+      locationsDiv.appendChild(btn);
+    });
+  }
+  renderLocations();
+
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
-      <p>Du agerer IT‑forvalter med ansvar for at balancere tre centrale KPI’er: Tid, Sikkerhed og Udvikling.</p>
-      <p>På venstre side ser du en graf, der viser dine nuværende KPI‑værdier med en rød linje, der markerer sprintmålet.</p>
-      <p>Under grafen finder du en række lokationer – hver repræsenterer et trin i en opgave. Klik på en lokation for at udføre handlingen.</p>
-      <p>På højre side vises din aktive opgave øverst, mens en liste med potentielle opgaver vises nedenunder.</p>
-      <p>Planlæg dine valg omhyggeligt: Avancerede valg giver bedre resultater, men koster mere tid. Du kan bruge arkitekthjælp én gang per opgave til at få anbefalinger.</p>
+      <p>Du agerer IT‑forvalter med ansvar for at balancere tre KPI’er: Tid, Sikkerhed og Udvikling.</p>
+      <p>Venstre side viser din KPI-graf med sprintmålet og en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
+      <p>Når en opgave er aktiv, skal du klikke på den korrekte lokation på venstre side for at udføre næste trin.</p>
+      <p>Planlæg dine valg omhyggeligt, da avancerede valg giver bedre resultater, men koster ekstra tid. Brug arkitekthjælp, hvis du er i tvivl (én gang per opgave).</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -90,14 +106,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const tutorialContent = `
       <h2>Tutorial</h2>
       <p><strong>Spillets Koncept:</strong><br>
-         Du navigerer komplekse IT-systemer og balancerer KPI’erne: Tid, Sikkerhed og Udvikling. Dit mål er at opnå sprintmålsætningen, som du altid kan følge i grafen.</p>
+         Du navigerer komplekse IT-systemer og balancerer KPI’erne: Tid, Sikkerhed og Udvikling. Dit mål er at nå sprintmålsætningen, som du kan følge i grafen.</p>
       <p><strong>UI-Layout:</strong><br>
-         - Venstre side: En graf med dine KPI-værdier og en rød linje for sprintmålet. Under grafen er lokationer, der repræsenterer opgavens trin.<br>
-         - Højre side: Den aktive opgave vises øverst med detaljer om det aktuelle trin, mens en liste med potentielle opgaver vises nedenunder.</p>
+         - Venstre side: Viser KPI-graf med sprintmål og en statisk liste med lokationer.<br>
+         - Højre side: Viser aktiv opgave øverst og potentielle opgaver nedenunder.</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Ved hvert trin vælger du mellem to muligheder (Choice A og Choice B). Avancerede valg giver bedre effekter, men koster ekstra tid. Brug arkitekthjælp, hvis du er i tvivl (én gang per opgave).</p>
+         Når en opgave er aktiv, vises den i højre side. Du skal klikke på den korrekte lokation på venstre side (sammenlignet med opgavens næste trin) for at få vist valgmulighederne.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
-         Hold øje med din tid. Hvert valg påvirker dine KPI’er. Målet er at balancere dine ressourcer og nå sprintmålsætningen, før tiden løber ud.</p>
+         Vær opmærksom på din tid. Hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålet.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
@@ -109,8 +125,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function renderPotentialTasks() {
     const potentialTasksDiv = document.getElementById('potentialTasks');
+    if (!potentialTasksDiv) return;
     potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
-    gameState.tasks.forEach((task, index) => {
+    gameState.tasks.forEach((task) => {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
       taskItem.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
@@ -123,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function startTask(task) {
     gameState.currentTask = task;
+    gameState.currentStepIndex = 0;
     gameState.architectHelpUsed = false;
     renderActiveTask(task);
   }
@@ -130,18 +148,12 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
-    const stepsDiv = document.createElement('div');
-    stepsDiv.id = 'taskSteps';
-    task.steps.forEach((step, stepIndex) => {
-      const btn = document.createElement('button');
-      btn.className = 'location-button';
-      btn.textContent = step.location + ' ' + getIcon(step.location);
-      btn.addEventListener('click', function() {
-        handleStep(step, stepIndex);
-      });
-      stepsDiv.appendChild(btn);
-    });
-    activeTaskDiv.appendChild(stepsDiv);
+    if (task.steps && task.steps.length > 0) {
+      const currentStep = task.steps[gameState.currentStepIndex];
+      const instruction = document.createElement('p');
+      instruction.innerHTML = `<strong>Vent på at vælge lokation:</strong> ${currentStep.location} ${getIcon(currentStep.location)}`;
+      activeTaskDiv.appendChild(instruction);
+    }
   }
 
   function getIcon(location) {
@@ -156,7 +168,21 @@ document.addEventListener("DOMContentLoaded", function() {
     return icons[location] || '';
   }
 
-  function handleStep(step, stepIndex) {
+  // Når en lokation klikkes på venstre side:
+  function handleLocationClick(clickedLocation) {
+    if (!gameState.currentTask) {
+      alert("Vælg en opgave først!");
+      return;
+    }
+    const currentStep = gameState.currentTask.steps[gameState.currentStepIndex];
+    if (clickedLocation === currentStep.location) {
+      showStepChoices(currentStep);
+    } else {
+      alert("Forkert lokation. Prøv igen.");
+    }
+  }
+
+  function showStepChoices(step) {
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
       ${step.stepContext ? `<p>${step.stepContext}</p>` : ''}
@@ -166,16 +192,15 @@ document.addEventListener("DOMContentLoaded", function() {
       <button id="architectHelp">${gameState.architectHelpUsed ? 'Arkitekthjælp brugt' : 'Brug Arkitekthjælp'}</button>
     `;
     openModal(choiceContent);
-    
     document.getElementById('choiceA').addEventListener('click', function() {
       applyChoice(step.choiceA);
       closeModal();
-      proceedToNextStep(step, stepIndex);
+      proceedToNextStep();
     });
     document.getElementById('choiceB').addEventListener('click', function() {
       applyChoice(step.choiceB);
       closeModal();
-      proceedToNextStep(step, stepIndex);
+      proceedToNextStep();
     });
     document.getElementById('architectHelp').addEventListener('click', function() {
       if (!gameState.architectHelpUsed) {
@@ -200,15 +225,19 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  function proceedToNextStep(step, currentStepIndex) {
+  function proceedToNextStep() {
     const task = gameState.currentTask;
-    if (currentStepIndex < task.steps.length - 1) {
-      alert(`Gå til næste trin (${currentStepIndex + 2} af ${task.steps.length})`);
+    if (gameState.currentStepIndex < task.steps.length - 1) {
+      gameState.currentStepIndex++;
+      renderActiveTask(task);
+      alert(`Gå til næste trin (${gameState.currentStepIndex + 1} af ${task.steps.length})`);
     } else {
       gameState.tasksCompleted++;
       alert("Opgaven er fuldført!");
-      renderPotentialTasks();
       document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
+      gameState.currentTask = null;
+      gameState.currentStepIndex = 0;
+      renderPotentialTasks();
       if (gameState.tasksCompleted % 10 === 0) {
         showInspectAndAdapt();
       }
