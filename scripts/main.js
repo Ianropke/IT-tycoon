@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Load opgave-filerne
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
-  // Definér getIcon()-funktionen, som returnerer et ikon baseret på lokationsnavnet
+  // Definér getIcon()-funktionen
   function getIcon(location) {
     const icons = {
       'hospital': '🏥',
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   updateTaskProgress();
 
-  // Modalhåndtering med GSAP
+  // MODALHÅNDTERING
   const modal = document.getElementById('modal');
   const modalBodyContainer = document.getElementById('modalBody');
   const modalFooterContainer = document.getElementById('modalFooter');
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }});
   }
 
-  // "Få hjælp"-knap i headeren
+  // "Få hjælp"-knap
   document.getElementById('helpButton').addEventListener('click', function() {
     showHelp();
   });
@@ -120,24 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
   }
 
-  // Render lokationer i venstre side (hvis det ønskes)
-  const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
-  function renderLocations() {
-    const locationsDiv = document.getElementById('locations');
-    locationsDiv.innerHTML = "";
-    locationsList.forEach(loc => {
-      const btn = document.createElement('button');
-      btn.className = 'location-button';
-      btn.innerHTML = loc.toUpperCase() + " " + getIcon(loc);
-      btn.addEventListener('click', function() {
-        handleLocationClick(loc);
-      });
-      locationsDiv.appendChild(btn);
-    });
-  }
-  renderLocations();
-
-  // Introduktion – Velkomstpop‑up
+  // Introduktion – Velkomstpop-up
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
@@ -253,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function() {
         locationsListElem.appendChild(li);
       });
       activeTaskDiv.appendChild(locationsListElem);
-      // Vis instruktionen for det aktuelle trin
+      // Vis instruktion for det aktuelle trin
       const currentStep = task.steps[gameState.currentStepIndex];
       const instruction = document.createElement('p');
       instruction.innerHTML = `<strong>Vælg lokation:</strong> ${currentStep.location.toUpperCase()} ${getIcon(currentStep.location)}`;
@@ -348,10 +331,36 @@ document.addEventListener("DOMContentLoaded", function() {
       gameState.development += choice.applyEffect.statChange.development;
     }
     updateDashboard();
-    if (gameState.time === 0) {
-      openModal("<h2>Fejl</h2><p>Ikke nok tid! Spillet slutter.</p>");
-      setTimeout(() => location.reload(), 2000);
+    // I stedet for den simple fejlbesked, tjek om tiden er opbrugt og giv en detaljeret fejlbesked:
+    if (gameState.time <= 0) {
+      checkGameOverCondition();
+      return;
     }
+  }
+
+  // Ny funktion: Tjek om tiden er opbrugt og giv specifik fejlmeddelelse
+  function checkGameOverCondition() {
+    // Case A: For få opgaver gennemført (selvom KPI’er var på niveau)
+    if (gameState.tasksCompleted < 10 &&
+       (gameState.security >= gameState.missionGoals.security && gameState.development >= gameState.missionGoals.development)) {
+      openModal("<h2>Din tid er opbrugt!</h2><p>Selvom dine KPI’er var på rette niveau, har du ikke gennemført de 10 nødvendige opgaver. Du skal fuldføre alle opgaver for at nå sprintets mål.</p>");
+    }
+    // Case B: KPI’er ikke opnået (10 opgaver gennemført, men KPI’er under målet)
+    else if (gameState.tasksCompleted >= 10 &&
+       (gameState.security < gameState.missionGoals.security || gameState.development < gameState.missionGoals.development)) {
+      openModal("<h2>Din tid er opbrugt!</h2><p>Du har gennemført 10 opgaver, men dine KPI’er (Sikkerhed og Udvikling) nåede ikke sprintmålet. Vurder dine beslutninger og forsøg igen.</p>");
+    }
+    // Case C: Hverken nok opgaver eller KPI’er opnået
+    else if (gameState.tasksCompleted < 10 &&
+       (gameState.security < gameState.missionGoals.security || gameState.development < gameState.missionGoals.development)) {
+      openModal("<h2>Din tid er opbrugt!</h2><p>Du har hverken gennemført de krævede 10 opgaver eller opnået de fastsatte KPI-mål for Sikkerhed og Udvikling. Genovervej dine strategier og prøv igen.</p>");
+    }
+    else {
+      // Hvis ingen af ovenstående, brug en generisk fejlbesked.
+      openModal("<h2>Din tid er opbrugt!</h2><p>Spillet slutter, fordi du løb tør for tid.</p>");
+    }
+    // Når fejlbeskeden vises, kan vi evt. give en mulighed for at genstarte spillet
+    setTimeout(() => location.reload(), 4000);
   }
 
   function cabApproval() {
@@ -417,14 +426,34 @@ document.addEventListener("DOMContentLoaded", function() {
       <h2>Inspect & Adapt</h2>
       <p>Sikkerhed: ${gameState.security} (mål: ${gameState.missionGoals.security})</p>
       <p>Udvikling: ${gameState.development} (mål: ${gameState.missionGoals.development})</p>
-      <button id="endGame">Afslut Spillet</button>
+      <p>Din sprint er afsluttet. Nye, mere ambitiøse mål er nu sat: 24 for Sikkerhed og 24 for Udvikling. Din tid nulstilles til 30.</p>
+      <button id="continueGame">Fortsæt</button>
     `;
     openModal(inspectContent);
-    document.getElementById('endGame').addEventListener('click', function() {
+    document.getElementById('continueGame').addEventListener('click', function() {
       closeModal(() => {
-        openModal("<h2>Tak for spillet!</h2><p>Vi ses næste gang.</p>");
-        setTimeout(() => location.reload(), 2000);
+        // Opdater sprintmål og nulstil tiden
+        gameState.time = 30;
+        gameState.missionGoals = { security: 24, development: 24 };
+        // Nulstil opgave-tælleren for sprintet
+        gameState.tasksCompleted = 0;
+        updateTaskProgress();
+        updateDashboard();
+        // Start en ny sprint med PI Planning
+        showSprintGoal();
       });
+    });
+  }
+
+  function showTaskSummary() {
+    let summaryHTML = "<h2>Opsummering af dine valg</h2><ul>";
+    gameState.choiceHistory.forEach(item => {
+      summaryHTML += `<li>${item}</li>`;
+    });
+    summaryHTML += "</ul>";
+    openModal(summaryHTML, `<button id="continueAfterSummary">Fortsæt</button>`);
+    document.getElementById('continueAfterSummary').addEventListener('click', function() {
+      closeModal(() => finishTask());
     });
   }
 
