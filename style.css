@@ -13,7 +13,7 @@ header {
   text-align: center;
 }
 
-/* Container opdelt i to lige store kolonner (50% hver) */
+/* Container opdelt i to lige store kolonner (50 % hver) */
 .container {
   display: flex;
   min-height: calc(100vh - 60px);
@@ -142,7 +142,7 @@ button:hover {
   margin-right: 1rem;
 }
 
-/* I den aktive opgave vises gennemførte trin med et checkmark */
+/* Gennemførte trin */
 .done {
   color: green;
   font-weight: bold;
