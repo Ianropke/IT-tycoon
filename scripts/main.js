@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     choiceHistory: []
   };
 
-  // Load task-filerne
+  // Load opgave-filerne
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -45,6 +45,13 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
     kpiChart.update();
   }
+
+  // Funktion til at opdatere opgaveprogress i dashboard
+  function updateTaskProgress() {
+    const progressElement = document.getElementById('taskProgress');
+    progressElement.textContent = `Opgave ${gameState.tasksCompleted} / 10`;
+  }
+  updateTaskProgress();
 
   // Modalhåndtering med GSAP
   const modal = document.getElementById('modal');
@@ -83,12 +90,12 @@ document.addEventListener("DOMContentLoaded", function() {
         <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (−2 tid).</li>
         <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus.</li>
       </ul>
-      Dine valg påvirker dine KPI’er, så det er vigtigt at afveje risiko og belønning nøje.</p>
+      Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
       <p><strong>Vigtige Funktioner</strong><br>
-      - Opgaver: Vælg en opgave, forpligt dig til den og gennemfør hvert trin for at påvirke dine KPI’er.<br>
+      - Opgaver: Vælg en opgave og gennemfør hvert trin for at påvirke dine KPI’er.<br>
       - Arkitekthjælp: Brug denne funktion, hvis du er usikker – den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
       - CAB: Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.<br>
-      - Inspect & Adapt: Efter et sprint får du en samlet evaluering af dine resultater.</p>
+      - Inspect & Adapt: Efter 10 opgaver får du en samlet evaluering af dine resultater.</p>
       <p><strong>Mulige Udfordringer</strong><br>
       - Tidsstyring: Forkerte valg kan få dig til at løbe tør for tid.<br>
       - Forkerte beslutninger: Fejlagtige valg kan påvirke dine KPI’er negativt.<br>
@@ -100,36 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
   }
 
-  // Render lokationer
-  const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
-  function renderLocations() {
-    const locationsDiv = document.getElementById('locations');
-    locationsDiv.innerHTML = "";
-    locationsList.forEach(loc => {
-      const btn = document.createElement('button');
-      btn.className = 'location-button';
-      btn.innerHTML = loc.toUpperCase() + " " + getIcon(loc);
-      btn.addEventListener('click', function() {
-        handleLocationClick(loc);
-      });
-      locationsDiv.appendChild(btn);
-    });
-  }
-  renderLocations();
-
-  function getIcon(location) {
-    const icons = {
-      'hospital': '🏥',
-      'dokumentation': '📄',
-      'leverandør': '📦',
-      'infrastruktur': '🔧',
-      'it‑jura': '⚖️',
-      'cybersikkerhed': '💻'
-    };
-    return icons[location] || '';
-  }
-
-  // Introduktion og PI Planning
+  // Introduktion – Velkomstpop‑up
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
@@ -231,7 +209,6 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
-    // Sørg for, at der er nok plads til at vise trinene
     if (task.steps && task.steps.length > 0) {
       const locationsListElem = document.createElement('ul');
       locationsListElem.id = 'taskLocations';
@@ -390,6 +367,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function finishTask() {
     gameState.tasksCompleted++;
+    updateTaskProgress();
     openModal("<h2>Info</h2><p>Opgaven er fuldført!</p>", `<button id="continueAfterFinish">Fortsæt</button>`);
     document.getElementById('continueAfterFinish').addEventListener('click', function() {
       closeModal(() => {
