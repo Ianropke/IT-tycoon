@@ -156,7 +156,10 @@ document.addEventListener("DOMContentLoaded", function() {
       commitBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         if (gameState.currentTask !== null) {
-          openModal("<h2>Advarsel</h2><p>Du har allerede forpligtet dig til en opgave!</p>", `<button id="okButton">OK</button>`);
+          openModal(
+            "<h2>Advarsel</h2><p>Du har allerede forpligtet dig til en opgave!</p>",
+            `<button id="okButton">OK</button>`
+          );
           document.getElementById('okButton').addEventListener('click', () => closeModal());
           return;
         }
@@ -214,14 +217,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function handleLocationClick(clickedLocation) {
     if (!gameState.currentTask) {
-      openModal("<h2>Advarsel</h2><p>Vælg en opgave og forpligt dig først!</p>");
+      openModal("<h2>Advarsel</h2><p>Vælg en opgave og forpligt dig først!</p>", `<button id="alertOk">OK</button>`);
+      document.getElementById('alertOk').addEventListener('click', () => closeModal());
       return;
     }
     const currentStep = gameState.currentTask.steps[gameState.currentStepIndex];
     if (clickedLocation.toLowerCase() === currentStep.location.toLowerCase()) {
       showStepChoices(currentStep);
     } else {
-      openModal("<h2>Fejl</h2><p>Forkert lokation. Prøv igen.</p>");
+      openModal("<h2>Fejl</h2><p>Forkert lokation. Prøv igen.</p>", `<button id="errorOk">OK</button>`);
+      document.getElementById('errorOk').addEventListener('click', () => closeModal());
     }
   }
 
@@ -335,13 +340,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Ændret finishTask: Efter opgaven er fuldført, fjernes den fra de potentielle opgaver
   function finishTask() {
     gameState.tasksCompleted++;
     openModal("<h2>Info</h2><p>Opgaven er fuldført!</p>", `<button id="continueAfterFinish">Fortsæt</button>`);
     document.getElementById('continueAfterFinish').addEventListener('click', function() {
       closeModal(() => {
-        // Fjern den fuldførte opgave fra tasks-array'et
+        // Fjern den fuldførte opgave fra gameState.tasks
         gameState.tasks = gameState.tasks.filter(task => task !== gameState.currentTask);
         document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
         gameState.currentTask = null;
