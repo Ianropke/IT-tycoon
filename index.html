@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT‑Tycoon</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Chart.js via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -12,23 +13,23 @@
     <h1>IT‑Tycoon</h1>
   </header>
   <div class="container">
-    <!-- Venstre side: KPI-graf og lokationer -->
+    <!-- Venstre side: Graf og lokationer (50% af skærmen) -->
     <div class="left-column">
       <div id="graphContainer">
         <canvas id="kpiChart"></canvas>
       </div>
       <div id="locationsContainer">
-        <h2>Vælg Lokation</h2>
+        <h2>Lokationer</h2>
         <div id="locations">
-          <!-- Statisk liste med lokationer indsættes her -->
+          <!-- Lokationerne indsættes dynamisk -->
         </div>
       </div>
     </div>
-    <!-- Højre side: Aktiv opgave og potentielle opgaver -->
+    <!-- Højre side: Aktiv opgave og potentielle opgaver (50% af skærmen) -->
     <div class="right-column">
       <div id="activeTask">
         <h2>Aktiv Opgave</h2>
-        <!-- Den aktive opgave vises her -->
+        <!-- Den aktive opgave og listen over alle lokationer vises her -->
       </div>
       <div id="potentialTasks">
         <h2>Potentielle Opgaver</h2>
