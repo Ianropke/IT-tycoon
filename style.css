@@ -82,8 +82,7 @@ header {
 }
 #potentialTasks {
   margin-top: 1rem;
-  /* Fast højde, så området er scrollbart, hvis der er meget tekst */
-  height: calc(100vh - 220px);
+  height: calc(100vh - 220px); /* Fast højde for scrollbart område */
   overflow-y: auto;
   position: relative;
 }
@@ -122,7 +121,9 @@ button:hover {
   transform: scale(1.02);
 }
 
-/* Modal-styling med faste dimensioner og opdeling i modal-body og modal-footer */
+/* Modal-styling med absolut placeret footer */
+
+/* Modal overlay */
 .modal {
   position: fixed;
   top: 0;
@@ -136,41 +137,42 @@ button:hover {
   z-index: 1000;
 }
 
+/* Modal container med fast størrelse */
 .modal-content {
+  position: relative;           /* Gør det muligt at placere footer absolut */
   background-color: #fff;
   border-radius: 8px;
-  /* Fast størrelse: 80% af viewportens bredde og 60% af viewportens højde */
-  width: 80vw;
-  height: 60vh;
-  display: flex;
-  flex-direction: column;
+  width: 80vw;                  /* 80% af viewportens bredde */
+  height: 60vh;                 /* 60% af viewportens højde */
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   color: #333;
   margin: 0 20px;
 }
 
-/* Modal-body optager 80% af modalens højde med rig padding */
+/* Modal-body med ekstra bund-padding for at give plads til footer */
 .modal-body {
-  flex: 0 0 80%;
   padding: 30px 60px;
+  padding-bottom: 90px;  /* Ekstra bund-padding, så teksten ikke overlapper med footer */
   overflow-y: auto;
   text-align: left;
 }
 
-/* Modal-footer optager de resterende 20% af modalens højde og placerer knapperne nederst til højre */
+/* Modal-footer placeret fast i nederste højre hjørne med absolut positionering */
 .modal-footer {
-  flex: 0 0 20%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;  /* Hvis du ønsker at fordele knapperne på tværs af bredden, men justeret til højre, kan du også fjerne left */
+  height: 60px;   /* Fast højde */
   padding: 10px 60px;
   background-color: #f5f5f5;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  flex-shrink: 0;
-  /* Hvis du vil have en fast højde, kan du også sætte height: 60px; */
-  height: 60px;
+  justify-content: flex-end; /* Knapperne placeres i nederste højre hjørne */
 }
 
+/* Luk-knap */
 .close {
   position: absolute;
   top: 10px;
