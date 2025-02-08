@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     choiceHistory: []
   };
 
-  // Sørg for, at task-filerne er loadet før main.js
+  // Load task-filerne
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }});
   }
 
-  // Event listener for "Få hjælp"-knappen
+  // "Få hjælp"-knap
   document.getElementById('helpButton').addEventListener('click', function() {
     showHelp();
   });
@@ -76,43 +76,67 @@ document.addEventListener("DOMContentLoaded", function() {
     const helpContent = `
       <h2>Få Hjælp</h2>
       <p><strong>Din Rolle som IT-forvalter</strong><br>
-      Velkommen til IT Tycoon! I dette spil agerer du som IT-forvalter i en moderne organisation. Din primære opgave er at balancere tre centrale nøglepræstationsindikatorer (KPI’er): <em>Tid, Sikkerhed</em> og <em>Udvikling</em>. Du skal træffe strategiske beslutninger, der både styrker din organisations it-sikkerhed og udviklingskapacitet, mens du holder øje med den tilgængelige tid.</p>
-      
+      Velkommen til IT Tycoon! I dette spil agerer du som IT-forvalter i en moderne organisation. Din primære opgave er at balancere tre centrale KPI’er: <em>Tid, Sikkerhed</em> og <em>Udvikling</em>. Du skal træffe strategiske beslutninger, der både styrker din organisations it-sikkerhed og udviklingskapacitet, mens du holder øje med den tilgængelige tid.</p>
       <p><strong>Spillets Struktur og Valgmuligheder</strong><br>
-      Spillet er inddelt i opgaver, der hver består af flere trin. Hvert trin præsenterer dig for to muligheder:
+      Spillet er inddelt i opgaver, som hver består af flere trin. Hvert trin præsenterer dig for to muligheder:
       <ul>
-        <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (typisk −2 tid). Ideelt, når du har tid til overs og ønsker et kraftigt løft i enten sikkerhed eller udvikling.</li>
-        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus – nyttig, når du skal spare tid.</li>
+        <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (−2 tid).</li>
+        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus.</li>
       </ul>
-      Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
-      
+      Dine valg påvirker dine KPI’er, så det er vigtigt at afveje risiko og belønning nøje.</p>
       <p><strong>Vigtige Funktioner</strong><br>
-      <em>Opgaver:</em> Vælg en opgave fra listen, forpligt dig til den og gennemfør hvert trin for at påvirke dine KPI’er.<br>
-      <em>Arkitekthjælp:</em> Brug denne funktion, hvis du er usikker på, hvilket valg der er bedst – den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
-      <em>CAB (Change Advisory Board):</em> Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.<br>
-      <em>Inspect & Adapt:</em> Efter et sprint får du en samlet evaluering af dine resultater, så du kan justere din strategi.</p>
-      
+      - Opgaver: Vælg en opgave, forpligt dig til den og gennemfør hvert trin for at påvirke dine KPI’er.<br>
+      - Arkitekthjælp: Brug denne funktion, hvis du er usikker – den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
+      - CAB: Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.<br>
+      - Inspect & Adapt: Efter et sprint får du en samlet evaluering af dine resultater.</p>
       <p><strong>Mulige Udfordringer</strong><br>
-      - <em>Tidsstyring:</em> Forkerte valg kan få dig til at løbe tør for tid – overvej altid, hvilken løsning der er bedst i den givne situation.<br>
-      - <em>Forkerte Beslutninger:</em> Fejlagtige valg kan påvirke dine KPI’er negativt, hvilket kan resultere i, at CAB afviser dine ændringer, og du skal udføre rework.<br>
-      - <em>Afvejning af Risiko og Belønning:</em> Det er en balancegang at vælge mellem hurtige løsninger og de mere omfattende, men fordelagtige, løsninger.<br>
-      - <em>Overblik:</em> Hold nøje øje med dine KPI’er og den tilgængelige tid, så du altid træffer informerede beslutninger.</p>
-      
-      <p>Brug denne hjælp som en vejledning til at forstå spillets mekanikker og forberede dig på de udfordringer, der måtte opstå. Held og lykke!</p>
+      - Tidsstyring: Forkerte valg kan få dig til at løbe tør for tid.<br>
+      - Forkerte beslutninger: Fejlagtige valg kan påvirke dine KPI’er negativt.<br>
+      - Risiko vs. Belønning: Det er en balancegang at vælge mellem hurtige og mere omfattende løsninger.<br>
+      - Overblik: Hold styr på dine KPI’er og den tilgængelige tid.</p>
+      <p>Held og lykke!</p>
     `;
-    // Her sender vi footerContent med en "Luk"-knap
     openModal(helpContent, `<button id="closeHelp">Luk</button>`);
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
   }
 
-  // Introduktion – Velkomstpop‑up med en "Start Spillet"-knap i footer
+  // Render lokationer
+  const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
+  function renderLocations() {
+    const locationsDiv = document.getElementById('locations');
+    locationsDiv.innerHTML = "";
+    locationsList.forEach(loc => {
+      const btn = document.createElement('button');
+      btn.className = 'location-button';
+      btn.innerHTML = loc.toUpperCase() + " " + getIcon(loc);
+      btn.addEventListener('click', function() {
+        handleLocationClick(loc);
+      });
+      locationsDiv.appendChild(btn);
+    });
+  }
+  renderLocations();
+
+  function getIcon(location) {
+    const icons = {
+      'hospital': '🏥',
+      'dokumentation': '📄',
+      'leverandør': '📦',
+      'infrastruktur': '🔧',
+      'it‑jura': '⚖️',
+      'cybersikkerhed': '💻'
+    };
+    return icons[location] || '';
+  }
+
+  // Introduktion og PI Planning
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
       <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf og en liste med lokationer; højre side viser aktive og potentielle opgaver.</p>
-      <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på <span style="color:#800000;">−2 tid</span> og en større bonus, mens den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus. Bonusserne vises direkte i pop‑up’en.</p>
+      <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" for at starte den.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver <span style="color:#800000;">−2 tid</span> og en større bonus, mens den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus.</p>
     `;
     openModal(introContent, `<button id="startGame">Start Spillet</button>`);
     document.getElementById('startGame').addEventListener('click', function() {
@@ -138,12 +162,11 @@ document.addEventListener("DOMContentLoaded", function() {
       Du navigerer komplekse IT-systemer og balancerer dine KPI’er: Tid, Sikkerhed og Udvikling. Dit mål er at nå sprintmålsætningen, som du kan følge i grafen.</p>
       <p><strong>UI-Layout:</strong><br>
       Venstre side: KPI-graf og lokationer<br>
-      Højre side: Aktiv opgave og potentielle opgaver<br>
-      Opgavens titel og beskrivelse fortæller, om den understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur-/cybersikkerhedsopgaver).</p>
+      Højre side: Aktiv opgave og potentielle opgaver</p>
       <p><strong>Spillets Mekanik:</strong><br>
-      Når opgaven forpligtes, udfører du hvert trin ved at vælge den korrekte lokation. Ved valg af den komplette løsning trækkes <span style="color:#800000;">−2 tid</span> og du opnår en større bonus; den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus. Effekterne vises direkte i pop‑up’en.</p>
-      <p><strong>Efter de normale trin:</strong><br>
-      Når alle trin er gennemført, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB – og herefter skal du trykke på "Evaluér nu" for at starte evalueringen. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
+      Når du forpligter en opgave, gennemfører du hvert trin ved at vælge den korrekte lokation. Valgene påvirker dine KPI’er; den komplette løsning giver <span style="color:#800000;">−2 tid</span> og en større bonus, mens den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus.</p>
+      <p><strong>Efter alle trin:</strong><br>
+      Din ændring sendes til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.</p>
     `;
     openModal(tutorialContent, `<button id="endTutorial">Næste</button>`);
     document.getElementById('endTutorial').addEventListener('click', function() {
@@ -208,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
+    // Sørg for, at der er nok plads til at vise trinene
     if (task.steps && task.steps.length > 0) {
       const locationsListElem = document.createElement('ul');
       locationsListElem.id = 'taskLocations';
@@ -369,7 +393,6 @@ document.addEventListener("DOMContentLoaded", function() {
     openModal("<h2>Info</h2><p>Opgaven er fuldført!</p>", `<button id="continueAfterFinish">Fortsæt</button>`);
     document.getElementById('continueAfterFinish').addEventListener('click', function() {
       closeModal(() => {
-        // Fjern den fuldførte opgave fra gameState.tasks
         gameState.tasks = gameState.tasks.filter(task => task !== gameState.currentTask);
         document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
         gameState.currentTask = null;
