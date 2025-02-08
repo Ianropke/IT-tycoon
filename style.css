@@ -98,7 +98,7 @@ header {
 #activeTask {
   border-bottom: 1px solid #ddd;
   padding: 1rem;
-  min-height: 243px;  /* Reduceret med ca. 10% */
+  min-height: 243px;  /* 10% mindre end tidligere */
   overflow-y: auto;
   background-color: #fff;
 }
