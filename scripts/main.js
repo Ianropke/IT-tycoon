@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     choiceHistory: []
   };
 
-  // Sørg for at task-filerne er loadet før main.js
+  // Sørg for, at task-filerne er loadet før main.js
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }});
   }
 
-  // Event listener for Få hjælp-knappen (placeret i headeren)
+  // Event listener for "Få hjælp"-knappen i headeren
   document.getElementById('helpButton').addEventListener('click', function() {
     showHelp();
   });
@@ -81,24 +81,24 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>Spillets Struktur og Valgmuligheder</strong><br>
       Spillet er inddelt i opgaver, der hver består af flere trin. Hvert trin præsenterer dig for to muligheder:
       <ul>
-        <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (typisk −2 tid). Dette valg er ideelt, når du har tid til overs og ønsker at styrke enten sikkerhed eller udvikling.</li>
-        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus. Dette valg er nyttigt, når du skal spare tid, selvom det måske betyder en lavere effekt på KPI’erne.</li>
+        <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (typisk −2 tid). Ideelt, når du har tid til overs og ønsker et kraftigt løft i enten sikkerhed eller udvikling.</li>
+        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus – nyttig, når du skal spare tid, selvom det betyder en mindre effekt.</li>
       </ul>
       Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
       
       <p><strong>Vigtige Funktioner</strong><br>
       <em>Opgaver:</em> Vælg en opgave fra listen, forpligt dig til den og gennemfør hvert trin for at påvirke dine KPI’er.<br>
-      <em>Arkitekthjælp:</em> Brug denne funktion, hvis du er usikker på, hvilket valg der er bedst. Den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
+      <em>Arkitekthjælp:</em> Brug denne funktion, hvis du er usikker på, hvilket valg der er bedst – den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
       <em>CAB (Change Advisory Board):</em> Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.<br>
-      <em>Inspect & Adapt:</em> Efter et sprint får du en samlet evaluering af dine resultater, hvilket hjælper dig med at justere din strategi.</p>
+      <em>Inspect & Adapt:</em> Efter et sprint får du en samlet evaluering af dine resultater, så du kan justere din strategi.</p>
       
       <p><strong>Mulige Udfordringer</strong><br>
-      - <em>Tidsstyring:</em> Forkerte valg kan få dig til at løbe tør for tid. Overvej altid omkostningen i tid ved valg af den komplette løsning.<br>
-      - <em>Forkerte Beslutninger:</em> Fejlagtige valg kan påvirke dine KPI’er negativt, hvilket kan føre til, at CAB afviser dine ændringer og du skal udføre rework.<br>
-      - <em>Afvejning af Risiko og Belønning:</em> Det er en balancegang at vælge mellem hurtige løsninger og de mere omkostningstunge, men fordelagtige, løsninger. Brug arkitekthjælp med omtanke.<br>
-      - <em>Overblik:</em> Hold nøje øje med dine KPI’er og den tilgængelige tid, så du kan træffe informerede beslutninger.</p>
+      - <em>Tidsstyring:</em> Forkerte valg kan få dig til at løbe tør for tid – overvej altid, hvilken løsning der er bedst i den givne situation.<br>
+      - <em>Forkerte Beslutninger:</em> Fejlagtige valg kan påvirke dine KPI’er negativt, hvilket kan resultere i, at CAB afviser dine ændringer og du skal udføre rework.<br>
+      - <em>Afvejning af Risiko og Belønning:</em> Det er en balancegang at vælge mellem hurtige løsninger og de mere omfattende, men fordelagtige, løsninger.<br>
+      - <em>Overblik:</em> Hold nøje øje med dine KPI’er og den tilgængelige tid, så du altid træffer informerede beslutninger.</p>
       
-      <p>Din succes afhænger af, hvor godt du kan balancere dine ressourcer og træffe de rigtige beslutninger i pressede situationer. Brug denne hjælp som en vejledning til at forstå spillets mekanikker og forberede dig på de udfordringer, der måtte opstå.</p>
+      <p>Brug denne hjælp som en vejledning til at forstå spillets mekanikker og forberede dig på de udfordringer, der måtte opstå. Held og lykke!</p>
     `;
     openModal(helpContent, `<button id="closeHelp">Luk</button>`);
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf og en liste med lokationer; højre side viser aktive og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på <span style="color:red;">−2 tid</span> og en større bonus, mens den hurtige løsning giver 0 tid og en mindre bonus. Bonusserne vises direkte i modalvinduet.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på <span style="color:#800000;">−2 tid</span> og en større bonus, mens den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus. Bonusserne vises direkte i pop‑up’en.</p>
     `;
     openModal(introContent, `<button id="startGame">Start Spillet</button>`);
     document.getElementById('startGame').addEventListener('click', function() {
@@ -169,9 +169,9 @@ document.addEventListener("DOMContentLoaded", function() {
       Højre side: Aktiv opgave og potentielle opgaver<br>
       Opgavens titel og beskrivelse fortæller, om den understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur-/cybersikkerhedsopgaver).</p>
       <p><strong>Spillets Mekanik:</strong><br>
-      Når opgaven forpligtes, udfører du hvert trin ved at vælge den korrekte lokation. Ved valg af den komplette løsning trækkes <span style="color:red;">−2 tid</span> og du opnår en større bonus; den hurtige løsning giver 0 tid og en mindre bonus. Effekterne vises direkte i modalvinduet.</p>
+      Når opgaven forpligtes, udfører du hvert trin ved at vælge den korrekte lokation. Ved valg af den komplette løsning trækkes <span style="color:#800000;">−2 tid</span> og du opnår en større bonus; den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus. Effekterne vises direkte i pop‑up’en.</p>
       <p><strong>Efter de normale trin:</strong><br>
-      Når alle trin er gennemført, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB – og herefter skal du aktivt trykke på "Evaluér nu" for at starte evalueringen. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
+      Når alle trin er gennemført, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB – og herefter skal du trykke på "Evaluér nu" for at starte evalueringen. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
     `;
     openModal(tutorialContent, `<button id="endTutorial">Næste</button>`);
     document.getElementById('endTutorial').addEventListener('click', function() {
@@ -278,13 +278,12 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function showStepChoices(step) {
-    let choiceAText = step.choiceA.text.replace(/-?\d+\s*tid/, "<span style='color:red;'>−2 tid</span>");
-    let choiceBText = step.choiceB.text.replace(/-?\d+\s*tid/, "<span style='color:green;'>0 tid</span>");
+    let choiceAText = step.choiceA.text.replace(/-?\d+\s*tid/, "<span style='color:#800000;'>−2 tid</span>");
+    let choiceBText = step.choiceB.text.replace(/-?\d+\s*tid/, "<span style='color:#006400;'>0 tid</span>");
     if (gameState.currentTask.focus === "sikkerhed") {
       choiceAText = choiceAText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
       choiceBText = choiceBText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
     }
-    // Wrap knapperne i en container med horizontal flexbox:
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
       ${step.stepContext ? `<p>${step.stepContext}</p>` : ""}
