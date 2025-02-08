@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Load opgave-filerne
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
-  // Definér getIcon()-funktionen
+  // Definér getIcon()-funktionen for at returnere et ikon baseret på lokation
   function getIcon(location) {
     const icons = {
       'hospital': '🏥',
@@ -66,7 +66,24 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   updateTaskProgress();
 
-  // MODALHÅNDTERING
+  // Render lokationer i venstre side
+  const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
+  function renderLocations() {
+    const locationsDiv = document.getElementById('locations');
+    locationsDiv.innerHTML = "";
+    locationsList.forEach(loc => {
+      const btn = document.createElement('button');
+      btn.className = 'location-button';
+      btn.innerHTML = loc.toUpperCase() + " " + getIcon(loc);
+      btn.addEventListener('click', function() {
+        handleLocationClick(loc);
+      });
+      locationsDiv.appendChild(btn);
+    });
+  }
+  renderLocations();
+
+  // Modalhåndtering med GSAP
   const modal = document.getElementById('modal');
   const modalBodyContainer = document.getElementById('modalBody');
   const modalFooterContainer = document.getElementById('modalFooter');
@@ -96,24 +113,19 @@ document.addEventListener("DOMContentLoaded", function() {
     const helpContent = `
       <h2>Få Hjælp</h2>
       <p><strong>Din Rolle som IT-forvalter</strong><br>
-      Velkommen til IT Tycoon! I dette spil agerer du som IT-forvalter i en moderne organisation. Din primære opgave er at balancere tre centrale KPI’er: <em>Tid, Sikkerhed</em> og <em>Udvikling</em>. Du skal træffe strategiske beslutninger, der både styrker din organisations it-sikkerhed og udviklingskapacitet, mens du holder øje med den tilgængelige tid.</p>
+      Velkommen til IT Tycoon! Du skal balancere tre KPI’er: <em>Tid, Sikkerhed</em> og <em>Udvikling</em>. Træf strategiske beslutninger for at styrke it-sikkerheden og udviklingen, mens du holder øje med den tilgængelige tid.</p>
       <p><strong>Spillets Struktur og Valgmuligheder</strong><br>
-      Spillet er inddelt i opgaver, som hver består af flere trin. Hvert trin præsenterer dig for to muligheder:
-      <ul>
-        <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (−2 tid).</li>
-        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus.</li>
-      </ul>
-      Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
+      Hver opgave består af flere trin, hvor du vælger mellem to løsninger:<br>
+      - <em>Komplet løsning</em>: Større bonus, men koster 2 tidspoint.<br>
+      - <em>Hurtig løsning</em>: Mindre bonus, men koster 0 tidspoint.<br>
+      Dine valg påvirker dine KPI’er og den samlede tid.</p>
       <p><strong>Vigtige Funktioner</strong><br>
-      - Opgaver: Vælg en opgave og gennemfør hvert trin for at påvirke dine KPI’er.<br>
-      - Arkitekthjælp: Brug denne funktion, hvis du er usikker – den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
-      - CAB: Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.<br>
-      - Inspect & Adapt: Efter 10 opgaver får du en samlet evaluering af dine resultater.</p>
+      - Opgaver: Gennemfør opgaverne for at nå sprintets mål.<br>
+      - Arkitekthjælp: Få anbefalinger, hvis du er usikker.<br>
+      - CAB: Ændringer sendes til CAB; hvis afvist, skal du udføre rework (tidsomkostning).<br>
+      - Inspect & Adapt: Efter 10 opgaver evalueres dine resultater.</p>
       <p><strong>Mulige Udfordringer</strong><br>
-      - Tidsstyring: Forkerte valg kan få dig til at løbe tør for tid.<br>
-      - Forkerte beslutninger: Fejlagtige valg kan påvirke dine KPI’er negativt.<br>
-      - Risiko vs. Belønning: Det er en balancegang at vælge mellem hurtige og mere omfattende løsninger.<br>
-      - Overblik: Hold styr på dine KPI’er og den tilgængelige tid.</p>
+      - Tiden kan løbe ud, hvis du ikke gennemfører 10 opgaver, hvis dine KPI’er ikke er på niveau, eller begge dele.</p>
       <p>Held og lykke!</p>
     `;
     openModal(helpContent, `<button id="closeHelp">Luk</button>`);
@@ -127,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf og en liste med lokationer; højre side viser aktive og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" for at starte den.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver <span style="color:#800000;">−2 tid</span> og en større bonus, mens den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning koster 2 tidspoint (−2 tid) og giver en større bonus, mens den hurtige løsning koster 0 tidspoint og giver en mindre bonus.</p>
     `;
     openModal(introContent, `<button id="startGame">Start Spillet</button>`);
     document.getElementById('startGame').addEventListener('click', function() {
@@ -155,9 +167,9 @@ document.addEventListener("DOMContentLoaded", function() {
       Venstre side: KPI-graf og lokationer<br>
       Højre side: Aktiv opgave og potentielle opgaver</p>
       <p><strong>Spillets Mekanik:</strong><br>
-      Når du forpligter en opgave, gennemfører du hvert trin ved at vælge den korrekte lokation. Valgene påvirker dine KPI’er; den komplette løsning giver <span style="color:#800000;">−2 tid</span> og en større bonus, mens den hurtige løsning giver <span style="color:#006400;">0 tid</span> og en mindre bonus.</p>
+      Når du forpligter en opgave, gennemfører du hvert trin ved at vælge den korrekte lokation. Den komplette løsning koster 2 tidspoint og giver en større bonus, mens den hurtige løsning koster 0 tidspoint og giver en mindre bonus.</p>
       <p><strong>Efter alle trin:</strong><br>
-      Din ændring sendes til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.</p>
+      Dine ændringer sendes til CAB for evaluering. Hvis CAB afviser, skal du udføre rework, hvilket koster ekstra tid.</p>
     `;
     openModal(tutorialContent, `<button id="endTutorial">Næste</button>`);
     document.getElementById('endTutorial').addEventListener('click', function() {
@@ -223,7 +235,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
     if (task.steps && task.steps.length > 0) {
-      // Opret en liste til at vise trin
       const locationsListElem = document.createElement('ul');
       locationsListElem.id = 'taskLocations';
       task.steps.forEach((step, idx) => {
@@ -236,7 +247,6 @@ document.addEventListener("DOMContentLoaded", function() {
         locationsListElem.appendChild(li);
       });
       activeTaskDiv.appendChild(locationsListElem);
-      // Vis instruktion for det aktuelle trin
       const currentStep = task.steps[gameState.currentStepIndex];
       const instruction = document.createElement('p');
       instruction.innerHTML = `<strong>Vælg lokation:</strong> ${currentStep.location.toUpperCase()} ${getIcon(currentStep.location)}`;
@@ -331,21 +341,21 @@ document.addEventListener("DOMContentLoaded", function() {
       gameState.development += choice.applyEffect.statChange.development;
     }
     updateDashboard();
-    // I stedet for den simple fejlbesked, tjek om tiden er opbrugt og giv en detaljeret fejlbesked:
+    // Tjek om tiden er opbrugt, og vis en specifik fejlbesked
     if (gameState.time <= 0) {
       checkGameOverCondition();
       return;
     }
   }
 
-  // Ny funktion: Tjek om tiden er opbrugt og giv specifik fejlmeddelelse
+  // Funktion til at tjekke, om spillet skal slutte pga. tid
   function checkGameOverCondition() {
-    // Case A: For få opgaver gennemført (selvom KPI’er var på niveau)
+    // Case A: For få opgaver gennemført (KPI'er var på niveau)
     if (gameState.tasksCompleted < 10 &&
        (gameState.security >= gameState.missionGoals.security && gameState.development >= gameState.missionGoals.development)) {
       openModal("<h2>Din tid er opbrugt!</h2><p>Selvom dine KPI’er var på rette niveau, har du ikke gennemført de 10 nødvendige opgaver. Du skal fuldføre alle opgaver for at nå sprintets mål.</p>");
     }
-    // Case B: KPI’er ikke opnået (10 opgaver gennemført, men KPI’er under målet)
+    // Case B: KPI'er ikke opnået (10 opgaver gennemført, men KPI’er under målet)
     else if (gameState.tasksCompleted >= 10 &&
        (gameState.security < gameState.missionGoals.security || gameState.development < gameState.missionGoals.development)) {
       openModal("<h2>Din tid er opbrugt!</h2><p>Du har gennemført 10 opgaver, men dine KPI’er (Sikkerhed og Udvikling) nåede ikke sprintmålet. Vurder dine beslutninger og forsøg igen.</p>");
@@ -356,10 +366,8 @@ document.addEventListener("DOMContentLoaded", function() {
       openModal("<h2>Din tid er opbrugt!</h2><p>Du har hverken gennemført de krævede 10 opgaver eller opnået de fastsatte KPI-mål for Sikkerhed og Udvikling. Genovervej dine strategier og prøv igen.</p>");
     }
     else {
-      // Hvis ingen af ovenstående, brug en generisk fejlbesked.
       openModal("<h2>Din tid er opbrugt!</h2><p>Spillet slutter, fordi du løb tør for tid.</p>");
     }
-    // Når fejlbeskeden vises, kan vi evt. give en mulighed for at genstarte spillet
     setTimeout(() => location.reload(), 4000);
   }
 
@@ -432,30 +440,16 @@ document.addEventListener("DOMContentLoaded", function() {
     openModal(inspectContent);
     document.getElementById('continueGame').addEventListener('click', function() {
       closeModal(() => {
-        // Opdater sprintmål og nulstil tiden
         gameState.time = 30;
         gameState.missionGoals = { security: 24, development: 24 };
-        // Nulstil opgave-tælleren for sprintet
         gameState.tasksCompleted = 0;
         updateTaskProgress();
         updateDashboard();
-        // Start en ny sprint med PI Planning
         showSprintGoal();
       });
     });
   }
 
-  function showTaskSummary() {
-    let summaryHTML = "<h2>Opsummering af dine valg</h2><ul>";
-    gameState.choiceHistory.forEach(item => {
-      summaryHTML += `<li>${item}</li>`;
-    });
-    summaryHTML += "</ul>";
-    openModal(summaryHTML, `<button id="continueAfterSummary">Fortsæt</button>`);
-    document.getElementById('continueAfterSummary').addEventListener('click', function() {
-      closeModal(() => finishTask());
-    });
-  }
-
+  // Start med introduktion
   showIntro();
 });
