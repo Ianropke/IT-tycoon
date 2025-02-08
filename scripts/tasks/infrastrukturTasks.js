@@ -1,786 +1,811 @@
-window.infrastrukturTasks = [
+// infrastrukturTasks.js
+
+const infrastrukturTasks = [
+  // Opgave 1: Installation af Nyt Routerudstyr (3 trin)
   {
-    title: "Opgradering af Netværkskerne",
-    shortDesc: "Det centrale netværksudstyr er forældet og skaber flaskehalse.",
-    narrativeIntro: `
-      Hospitalets netværkskerne er overbelastet, hvilket medfører langsom trafik og nedsat driftssikkerhed. En opgradering er nødvendig for at forbedre ydeevnen.
-    `,
-    glossaryTerms: ["Netværkskerne", "Switches", "Routere", "Load Balancer"],
-    digDeeperLinks: [
-      { 
-        label: "Netværksopgradering", 
-        text: "Moderne netværkskerner sikrer hurtig databehandling og øger driftssikkerheden ved at anvende high‑performance komponenter." 
-      }
-    ],
+    title: "Installation af Nyt Routerudstyr",
+    shortDesc: "Installer nyt routerudstyr for at forbedre netværkets stabilitet og sikkerhed.",
+    narrativeIntro: "En opgradering af routerudstyret er nødvendig for at sikre et robust og sikkert netværk.",
+    focus: "sikkerhed",
+    riskProfile: 4,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Analyser den nuværende netværkskapacitet for at identificere flaskehalse.",
-        stepContext: "En detaljeret kapacitetsanalyse kan afdække, hvor netværket bliver flaskehalset, og hvilke komponenter der skal opgraderes.",
+        stepDescription: "Vurder det nuværende netværksudstyr og identificer behov for opgradering.",
+        stepContext: "En grundig evaluering af routerens ydeevne og kapacitet er nødvendig.",
         choiceA: {
-          label: "Detaljeret analyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Grundig vurdering",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Overfladisk vurdering",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Indhent tilbud på high-performance netværksudstyr.",
-        stepContext: "Valget af nyt udstyr kan optimere kapaciteten og sikre en stabil drift, men kræver investering og planlægning.",
+        location: "leverandør",
+        stepDescription: "Forhandl med en ekstern leverandør om det nye routerudstyr.",
+        stepContext: "Få de bedste priser og en klar implementeringsplan, da vi er afhængige af eksterne partnere.",
         choiceA: {
-          label: "Avanceret udstyr",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
         },
         choiceB: {
-          label: "Basisudstyr",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Hurtig forhandling",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater netværksdiagrammer og udarbejd en ny driftsmanual.",
-        stepContext: "Grundig dokumentation sikrer, at alle ændringer i netværket forstås og vedligeholdes korrekt af IT-personalet.",
+        stepDescription: "Udarbejd en detaljeret dokumentation af installationen.",
+        stepContext: "Dokumentationen skal sikre, at fremtidige vedligeholdelser kan udføres effektivt.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
           label: "Kort dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       }
     ]
   },
+
+  // Opgave 2: Opdatering af Firewall-system (3 trin)
   {
-    title: "Virtualisering af Servermiljø",
-    shortDesc: "Fysiske servere begrænser effektiviteten – virtualisering optimerer ressourcerne.",
-    narrativeIntro: `
-      Hospitalets fysiske servere fylder for meget og er ineffektive. Ved at virtualisere kan flere systemer køre på færre maskiner, hvilket sparer plads og omkostninger.
-    `,
-    glossaryTerms: ["Virtualisering", "Hypervisor", "Resource Management"],
-    digDeeperLinks: [
-      { 
-        label: "Virtualiseringsfordele", 
-        text: "Virtualisering øger udnyttelsen af hardware, reducerer energiforbruget og giver fleksibilitet i systemadministrationen." 
-      }
-    ],
+    title: "Opdatering af Firewall-system",
+    shortDesc: "Forbedr firewall-konfigurationen for at beskytte netværket mod trusler.",
+    narrativeIntro: "En opdatering af firewall-systemet er kritisk for at sikre mod uautoriseret adgang og cyberangreb.",
+    focus: "sikkerhed",
+    riskProfile: 5,
     steps: [
       {
-        location: "infrastruktur",
-        stepDescription: "Evaluer hvilke servere, der er egnede til virtualisering.",
-        stepContext: "En grundig evaluering kan identificere servere med lav udnyttelse, som kan virtualiseres for at spare ressourcer.",
+        location: "cybersikkerhed",
+        stepDescription: "Evaluer den nuværende firewall-konfiguration og identificer sårbarheder.",
+        stepContext: "Identificer de primære risikoområder i firewallens beskyttelse.",
         choiceA: {
-          label: "Detaljeret evaluering",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Omfattende evaluering",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Overfladisk evaluering",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Vælg virtualiseringssoftware og hardware, der understøtter konsolidering.",
-        stepContext: "Det rigtige virtualiseringsværktøj kan samle flere servere på færre fysiske maskiner og øge driftsikkerheden.",
+        location: "it‑jura",
+        stepDescription: "Gennemgå de it‑juridiske krav for firewall-systemet.",
+        stepContext: "Sikre at systemet overholder de seneste lovkrav og standarder.",
         choiceA: {
-          label: "Avanceret løsning",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Detaljeret juridisk review",
+          text: "+2 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Basis juridisk review",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater driftsmanualer og dokumentation for virtualiseringsmiljøet.",
-        stepContext: "God dokumentation sikrer, at den nye løsning bliver korrekt implementeret og vedligeholdt.",
+        stepDescription: "Dokumentér opdateringerne af firewall-systemet.",
+        stepContext: "En klar dokumentation er nødvendig for fremtidig support og revision.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Minimal dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       }
     ]
   },
+
+  // Opgave 3: Implementering af Backup-løsninger (3 trin)
   {
-    title: "Implementering af Cloud-Løsninger",
-    shortDesc: "Flytning af visse systemer til skyen for øget skalerbarhed.",
-    narrativeIntro: `
-      Hospitalet ønsker at migrere udvalgte systemer til skyen for bedre fleksibilitet og skalerbarhed. En hybrid cloud-løsning kan reducere omkostninger og forbedre tilgængeligheden.
-    `,
-    glossaryTerms: ["Cloud", "Hybrid Cloud", "SaaS", "IaaS"],
-    digDeeperLinks: [
-      { 
-        label: "Cloud Integration", 
-        text: "Cloud-løsninger tilbyder høj tilgængelighed og skalerbarhed, hvilket kan reducere behovet for fysisk infrastruktur." 
-      }
-    ],
+    title: "Implementering af Backup-løsninger",
+    shortDesc: "Sikre kontinuiteten ved at implementere robuste backup-løsninger.",
+    narrativeIntro: "For at beskytte data mod tab og nedbrud skal der implementeres backup-løsninger, der understøtter sikkerheden i systemet.",
+    focus: "sikkerhed",
+    riskProfile: 4,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Identificér systemer, der egner sig til sky-migration.",
-        stepContext: "En detaljeret analyse af systemkrav er afgørende for at afgøre, hvilke systemer der bedst kan køre i skyen.",
+        stepDescription: "Kortlæg de nuværende backup-procedurer og identificer mangler.",
+        stepContext: "Fokusér på kritiske systemer og databeskyttelse.",
         choiceA: {
-          label: "Detaljeret analyse",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Grundig analyse",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Overfladisk analyse",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Vælg en cloud-udbyder og planlæg en sikker migration.",
-        stepContext: "Valget af den rigtige udbyder er centralt for at sikre stabil drift og datafortrolighed.",
+        location: "leverandør",
+        stepDescription: "Forhandl med en leverandør om backup-løsninger.",
+        stepContext: "Samarbejde med en ekstern part er nødvendigt for en effektiv løsning.",
         choiceA: {
-          label: "Omfattende plan",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
         },
         choiceB: {
-          label: "Grundlæggende plan",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Hurtig beslutning",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Udarbejd en detaljeret cloud-migrationsplan og opdater driftsprocedurer.",
-        stepContext: "En klar plan sikrer, at systemer migreres uden afbrydelse, og at de nye processer kan vedligeholdes.",
+        stepDescription: "Udarbejd en dokumentation af backup-løsningen.",
+        stepContext: "Dokumentationen skal sikre, at løsningen kan vedligeholdes og testes regelmæssigt.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Minimal dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       }
     ]
   },
+
+  // Opgave 4: Modernisering af Serverrum (4 trin)
   {
-    title: "Opgradering af Kommunikationsinfrastruktur",
-    shortDesc: "Forældede kommunikationssystemer skaber ineffektivitet i dataudvekslingen.",
-    narrativeIntro: `
-      Hospitalets interne og eksterne kommunikation lider under forældet udstyr. En opgradering er nødvendig for at sikre hurtig og pålidelig dataoverførsel.
-    `,
-    glossaryTerms: ["VoIP", "Kommunikationssystemer", "Netværk"],
-    digDeeperLinks: [
-      { 
-        label: "Kommunikationsinfrastruktur", 
-        text: "Opdaterede kommunikationssystemer benytter digitale protokoller og VoIP for hurtig dataudveksling og bedre driftssikkerhed." 
-      }
-    ],
+    title: "Modernisering af Serverrum",
+    shortDesc: "Opgrader og moderniser serverrummet for bedre ydeevne og sikkerhed.",
+    narrativeIntro: "En modernisering af serverrummet vil forbedre driftssikkerheden og sikre et mere effektivt miljø.",
+    focus: "sikkerhed",
+    riskProfile: 4,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Evaluer den nuværende kommunikationsinfrastruktur for flaskehalse.",
-        stepContext: "En detaljeret evaluering kan afdække ineffektive systemer, som hindrer hurtig kommunikation.",
+        stepDescription: "Evaluer det nuværende serverrum og identificer de primære forbedringsområder.",
+        stepContext: "Vurder serverrummets fysiske tilstand og kølesystem.",
         choiceA: {
-          label: "Detaljeret evaluering",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Omfattende evaluering",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Overfladisk evaluering",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Indhent tilbud på nye kommunikationsløsninger med VoIP-teknologi.",
-        stepContext: "Moderne VoIP-løsninger kan øge hastigheden og pålideligheden i kommunikationsnetværket.",
+        location: "leverandør",
+        stepDescription: "Forhandl med eksterne leverandører om opgraderingen af serverrummet.",
+        stepContext: "Samarbejde med eksterne specialister er afgørende for et optimalt resultat.",
         choiceA: {
-          label: "Avanceret løsning",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
         },
         choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Hurtig forhandling",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Gennemgå it‑juridiske krav for opgraderingen af serverrummet.",
+        stepContext: "Sikre overholdelse af alle relevante sikkerheds- og lovkrav.",
+        choiceA: {
+          label: "Omfattende juridisk gennemgang",
+          text: "+2 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Basis juridisk gennemgang",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater dokumentationen for de nye kommunikationssystemer.",
-        stepContext: "Grundig dokumentation sikrer, at implementeringen af de nye systemer følges op og kan vedligeholdes.",
+        stepDescription: "Dokumentér alle opgraderinger i serverrummet.",
+        stepContext: "Udarbejd en detaljeret rapport, der kan bruges til fremtidig vedligeholdelse.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       }
     ]
   },
+
+  // Opgave 5: Netværksovervågningssystem (4 trin)
   {
-    title: "Modernisering af Data Center",
-    shortDesc: "Flere spredte datacentre skaber ineffektiv drift.",
-    narrativeIntro: `
-      Ved at centralisere og modernisere datacentrene kan hospitalet opnå bedre ressourcestyring og driftssikkerhed.
-    `,
-    glossaryTerms: ["Data Center", "Centralisering", "Effektivitet"],
-    digDeeperLinks: [
-      { 
-        label: "Data Center Konsolidering", 
-        text: "Centralisering af datacentre reducerer redundans og øger effektiviteten, idet ressourcerne optimeres." 
-      }
-    ],
+    title: "Netværksovervågningssystem",
+    shortDesc: "Implementér et system til at overvåge netværkets drift og sikkerhed.",
+    narrativeIntro: "Et effektivt overvågningssystem er essentielt for at opdage og reagere på netværksproblemer og sikkerhedstrusler.",
+    focus: "sikkerhed",
+    riskProfile: 4,
     steps: [
       {
-        location: "infrastruktur",
-        stepDescription: "Kortlæg placeringen og kapaciteten af de nuværende datacentre.",
-        stepContext: "En detaljeret analyse kan identificere ineffektive og overlappende systemer, som bør centraliseres.",
+        location: "cybersikkerhed",
+        stepDescription: "Analyser det nuværende netværksovervågningssystem for svagheder.",
+        stepContext: "Identificer de mest kritiske overvågningsmangler og potentielle trusler.",
         choiceA: {
-          label: "Detaljeret analyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 5,
+          label: "Grundig analyse",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 3,
+          label: "Overfladisk analyse",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Planlæg en konsolideringsstrategi og indhent tilbud på centraliseringsløsninger.",
-        stepContext: "En klar strategi kan minimere nedetid og optimere ressourcerne ved at samle datacentrene.",
+        location: "infrastruktur",
+        stepDescription: "Udarbejd en plan for et nyt overvågningssystem.",
+        stepContext: "Planlæg systemets opsætning for at sikre optimal dækning af netværket.",
         choiceA: {
-          label: "Omfattende plan",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Detaljeret plan",
+          text: "+4 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
         },
         choiceB: {
-          label: "Basisplan",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Kort plan",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Gennemgå lovkrav for netværksovervågning.",
+        stepContext: "Sikre, at den nye løsning overholder alle relevante standarder.",
+        choiceA: {
+          label: "Omfattende juridisk gennemgang",
+          text: "+2 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Basis juridisk gennemgang",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater dokumentationen og beredskabsplanerne for det centraliserede datacenter.",
-        stepContext: "Grundig dokumentation sikrer en glidende overgang og muliggør effektiv vedligeholdelse.",
+        stepDescription: "Dokumentér det nye overvågningssystem.",
+        stepContext: "Udarbejd en klar dokumentation, så systemets drift kan understøttes i fremtiden.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       }
     ]
   },
+
+  // Opgave 6: Opgradering af IT-Sikkerhedssystemer (4 trin)
   {
-    title: "Forbedring af WiFi-Dækning",
-    shortDesc: "Ustabil WiFi-dækning påvirker både intern kommunikation og patientoplevelse.",
-    narrativeIntro: `
-      Hospitalet oplever dårligt signal og døde zoner, hvilket forringer den trådløse kommunikation. En opgradering af WiFi-infrastrukturen er nødvendig for at sikre stabil dækning.
-    `,
-    glossaryTerms: ["WiFi", "Mesh Network", "Signalstyrke"],
-    digDeeperLinks: [
-      { 
-        label: "WiFi Forbedringer", 
-        text: "Moderne mesh-netværk kan give en mere ensartet dækning og højere hastigheder end traditionelle WiFi-løsninger." 
-      }
-    ],
+    title: "Opgradering af IT-Sikkerhedssystemer",
+    shortDesc: "Forbedr de eksisterende sikkerhedssystemer for at beskytte netværket.",
+    narrativeIntro: "Denne opgave sigter mod at styrke IT-sikkerheden ved at opgradere firewall, antivirus og overvågningsløsninger.",
+    focus: "sikkerhed",
+    riskProfile: 5,
     steps: [
       {
-        location: "infrastruktur",
-        stepDescription: "Mål signalstyrken og identificer døde zoner i det nuværende WiFi-netværk.",
-        stepContext: "En detaljeret måling kan afsløre, hvor netværket skal opgraderes for at sikre bedre dækning.",
+        location: "cybersikkerhed",
+        stepDescription: "Analyser de nuværende sikkerhedssystemer og identificer potentielle svagheder.",
+        stepContext: "Identificer, hvor systemet kan forbedres for bedre beskyttelse.",
         choiceA: {
-          label: "Detaljeret måling",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 4,
+          label: "Omfattende analyse",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig test",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 2,
+          label: "Overfladisk analyse",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Indhent tilbud på nye WiFi-adgangspunkter og implementér et mesh-netværk.",
-        stepContext: "Det rigtige udstyr og en veludført implementering kan sikre en stabil og hurtig trådløs dækning.",
+        location: "it‑jura",
+        stepDescription: "Gennemgå it‑juridiske krav for de opgraderede sikkerhedssystemer.",
+        stepContext: "Sikre, at de nye systemer overholder alle lovkrav.",
         choiceA: {
-          label: "Omfattende løsning",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Detaljeret juridisk gennemgang",
+          text: "+2 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
         },
         choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Basis juridisk gennemgang",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "leverandør",
+        stepDescription: "Forhandl med en leverandør om opgraderinger af sikkerhedssystemerne.",
+        stepContext: "Få en aftale om den nødvendige hardware og softwareopgradering.",
+        choiceA: {
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
+        },
+        choiceB: {
+          label: "Hurtig forhandling",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater dokumentationen for den nye WiFi-konfiguration og vedligeholdelsesrutiner.",
-        stepContext: "Grundig dokumentation sikrer, at den nye løsning bliver vedligeholdt korrekt og problemer hurtigt kan lokaliseres.",
+        stepDescription: "Dokumentér opgraderingen af sikkerhedssystemerne.",
+        stepContext: "Udarbejd en rapport, der beskriver ændringerne og den nye sikkerhedstilstand.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       }
     ]
   },
+
+  // Opgave 7: Installation af Redundant Strømforsyning (4 trin)
   {
-    title: "Netværkssegmentering",
-    shortDesc: "Manglende segmentering øger risikoen for spredning af angreb.",
-    narrativeIntro: `
-      Ved at opdele netværket i segmenter kan man isolere kritiske systemer og begrænse spredningen af et angreb. En omhyggelig VLAN-strategi er nødvendig.
-    `,
-    glossaryTerms: ["Segmentering", "VLAN", "Sikkerhedszone"],
-    digDeeperLinks: [
-      { 
-        label: "Segmentering", 
-        text: "Opdeling af netværket i isolerede zoner reducerer risikoen for, at et angreb spreder sig, hvis en del af netværket kompromitteres." 
-      }
-    ],
+    title: "Installation af Redundant Strømforsyning",
+    shortDesc: "Sikr netværkets drift med en redundant strømforsyning.",
+    narrativeIntro: "En redundant strømforsyning er kritisk for at undgå nedbrud og sikre, at systemerne forbliver online under strømsvigt.",
+    focus: "sikkerhed",
+    riskProfile: 4,
     steps: [
       {
         location: "infrastruktur",
-        stepDescription: "Kortlæg den nuværende netværksarkitektur for at identificere muligheder for segmentering.",
-        stepContext: "En detaljeret kortlægning kan afsløre, hvor netværket kan opdeles for at forbedre sikkerheden.",
+        stepDescription: "Vurder behovet for en redundant strømforsyning i netværket.",
+        stepContext: "Analyser nuværende strømforsyning og identificer sårbarheder.",
         choiceA: {
-          label: "Detaljeret kortlægning",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Omfattende vurdering",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Hurtig vurdering",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
-        location: "leverandor",
-        stepDescription: "Planlæg og implementer VLAN for at opdele netværket i sikkerhedszoner.",
-        stepContext: "En korrekt implementeret VLAN-struktur kan isolere følsomme systemer og begrænse skader ved angreb.",
+        location: "leverandør",
+        stepDescription: "Forhandl med en leverandør om installation af den redundante strømforsyning.",
+        stepContext: "Få de bedste vilkår og en klar implementeringsplan.",
+        choiceA: {
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
+        },
+        choiceB: {
+          label: "Hurtig forhandling",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Sikre, at installationen overholder lovkrav.",
+        stepContext: "Gennemgå juridiske retningslinjer for installation af kritisk infrastruktur.",
+        choiceA: {
+          label: "Omfattende juridisk gennemgang",
+          text: "+2 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Basis juridisk gennemgang",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér installationen af den redundante strømforsyning.",
+        stepContext: "Udarbejd en detaljeret rapport, så installationen kan efterprøves og vedligeholdes.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      }
+    ]
+  },
+
+  // Opgave 8: Opgradering af Kabelføring (5 trin)
+  {
+    title: "Opgradering af Kabelføring",
+    shortDesc: "Moderniser den eksisterende kabelføring for at sikre en stabil infrastruktur.",
+    narrativeIntro: "En opgradering af kabelføringen reducerer nedbrud og forbedrer netværkets samlede sikkerhed.",
+    focus: "sikkerhed",
+    riskProfile: 5,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Kortlæg den nuværende kabelføring og identificer kritiske svagheder.",
+        stepContext: "Analysér kabler og forbindelser for slid og ineffektivitet.",
+        choiceA: {
+          label: "Omfattende kortlægning",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Overfladisk kortlægning",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Udarbejd en rapport om den nuværende kabelføring.",
+        stepContext: "Dokumentér de identificerede svagheder og mulige forbedringer.",
+        choiceA: {
+          label: "Detaljeret rapport",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Kort rapport",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "leverandør",
+        stepDescription: "Forhandl med leverandører om opgradering af kabelføringen.",
+        stepContext: "Få en løsning, der forbedrer både hastighed og sikkerhed.",
+        choiceA: {
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
+        },
+        choiceB: {
+          label: "Hurtig forhandling",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Evaluer, om den nye kabelføring understøtter netværkssikkerheden.",
+        stepContext: "Sikre, at opgraderingen øger beskyttelsen mod cyberangreb.",
+        choiceA: {
+          label: "Detaljeret sikkerhedsvurdering",
+          text: "+2 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Basis sikkerhedsvurdering",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér opgraderingen af kabelføringen.",
+        stepContext: "Lav en komplet dokumentation, så fremtidige vedligeholdelser kan udføres nemt.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      }
+    ]
+  },
+
+  // Opgave 9: Opgradering af Netværksinfrastruktur (5 trin)
+  {
+    title: "Opgradering af Netværksinfrastruktur",
+    shortDesc: "Moderniser netværkets infrastruktur for at øge robustheden og sikkerheden.",
+    narrativeIntro: "En opgradering af netværksinfrastrukturen er nødvendig for at imødekomme fremtidens krav og minimere driftsforstyrrelser.",
+    focus: "sikkerhed",
+    riskProfile: 5,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Analyser den nuværende netværksinfrastruktur for svagheder.",
+        stepContext: "Kortlæg flaskehalse og ældre komponenter, der skal udskiftes.",
+        choiceA: {
+          label: "Omfattende analyse",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Hurtig analyse",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "leverandør",
+        stepDescription: "Forhandl med leverandører om opgradering af netværkskomponenter.",
+        stepContext: "Samarbejde med eksterne partnere er nødvendigt for en effektiv opgradering.",
+        choiceA: {
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
+        },
+        choiceB: {
+          label: "Hurtig forhandling",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Gennemgå juridiske krav og kontrakter for opgraderingen.",
+        stepContext: "Sikre, at opgraderingen lever op til alle lovkrav.",
+        choiceA: {
+          label: "Omfattende juridisk gennemgang",
+          text: "+2 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Basis gennemgang",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Evaluer sikkerheden i den opgraderede infrastruktur.",
+        stepContext: "Test systemets modstandsdygtighed mod cybertrusler.",
+        choiceA: {
+          label: "Detaljeret sikkerhedsevaluering",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Hurtig evaluering",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "dokumentation",
+        stepDescription: "Dokumentér opgraderingen af netværksinfrastrukturen.",
+        stepContext: "Udarbejd en komplet dokumentation, der beskriver alle ændringer.",
+        choiceA: {
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      }
+    ]
+  },
+
+  // Opgave 10: Total Digital Transformation af Infrastruktur (6 trin)
+  {
+    title: "Total Digital Transformation af Infrastruktur",
+    shortDesc: "Gennemfør en omfattende digital omstilling af hospitalets infrastruktur.",
+    narrativeIntro: "Denne opgave involverer en total omstilling, der integrerer nye teknologier, eksterne samarbejder og omfattende opgraderinger på tværs af systemer.",
+    focus: "sikkerhed",
+    riskProfile: 6,
+    steps: [
+      {
+        location: "infrastruktur",
+        stepDescription: "Foretag en overordnet evaluering af hele netværksinfrastrukturen.",
+        stepContext: "Identificer kritiske svagheder og behov for modernisering.",
+        choiceA: {
+          label: "Omfattende evaluering",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Overfladisk evaluering",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "leverandør",
+        stepDescription: "Indgå samarbejde med eksterne eksperter for design af den nye infrastruktur.",
+        stepContext: "For at implementere de nyeste teknologier er et eksternt samarbejde nødvendigt.",
+        choiceA: {
+          label: "Detaljeret forhandling",
+          text: "+4 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 4 } }
+        },
+        choiceB: {
+          label: "Hurtig beslutning",
+          text: "+2 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 2 } }
+        }
+      },
+      {
+        location: "infrastruktur",
+        stepDescription: "Planlæg og implementer omfattende tekniske opgraderinger på tværs af systemerne.",
+        stepContext: "Sørg for en fuldstændig integration af nye teknologier i den eksisterende infrastruktur.",
         choiceA: {
           label: "Omfattende implementering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Basisimplementering",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Basis implementering",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Gennemgå alle juridiske krav for transformationen.",
+        stepContext: "Sikre at alle nye systemer overholder gældende lovgivning og standarder.",
+        choiceA: {
+          label: "Omfattende juridisk review",
+          text: "+2 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 2 } }
+        },
+        choiceB: {
+          label: "Basis review",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
+        }
+      },
+      {
+        location: "cybersikkerhed",
+        stepDescription: "Evaluer og opgrader de eksisterende sikkerhedssystemer.",
+        stepContext: "For at beskytte mod cybertrusler skal systemerne moderniseres.",
+        choiceA: {
+          label: "Detaljeret sikkerhedsopgradering",
+          text: "+3 sikkerhed, −2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
+        },
+        choiceB: {
+          label: "Basis sikkerhedsopgradering",
+          text: "+1 sikkerhed, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér den nye segmenteringsplan og opdater netværksdiagrammer.",
-        stepContext: "Grundig dokumentation sikrer, at segmenteringen implementeres korrekt og kan vedligeholdes i fremtiden.",
+        stepDescription: "Udarbejd en omfattende dokumentation af hele transformationen.",
+        stepContext: "Dokumentationen skal dække alle aspekter – teknisk, juridisk og operationel.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret dokumentation",
+          text: "+3 sikkerhed, −2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { security: 3 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort dokumentation",
+          text: "+1 sikkerhed, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      }
-    ]
-  },
-  {
-    title: "Installation af Fiberoptisk Forbindelse",
-    shortDesc: "Fiberoptik øger båndbredden og stabiliteten i netværket.",
-    narrativeIntro: `
-      Hospitalet ønsker at opgradere til fiberoptisk netværk for at opnå højere hastigheder og en mere pålidelig forbindelse.
-    `,
-    glossaryTerms: ["Fiberoptik", "Båndbredde", "Højhastighedsnetværk"],
-    digDeeperLinks: [
-      { 
-        label: "Fiberoptik", 
-        text: "Fiberoptiske kabler tilbyder langt højere båndbredde og lavere latens end traditionelle kobberkabler, hvilket resulterer i en mere stabil og hurtig netværksforbindelse." 
-      }
-    ],
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Evaluer de nuværende netværksforbindelser og identificer flaskehalse.",
-        stepContext: "En detaljeret evaluering kan afsløre, hvor netværket skal opgraderes for at opnå bedre ydeevne.",
-        choiceA: {
-          label: "Detaljeret evaluering",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Hurtig test",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Indhent tilbud på fiberoptiske løsninger og planlæg implementeringen.",
-        stepContext: "Det rigtige fiberudstyr kan øge netværkets hastighed og stabilitet betydeligt, men kræver en velovervejet implementeringsplan.",
-        choiceA: {
-          label: "Omfattende plan",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisplan",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater netværksdokumentationen med den nye fiberoptiske konfiguration.",
-        stepContext: "Grundig dokumentation sikrer, at den nye infrastruktur kan vedligeholdes og fejl rettes hurtigt.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      }
-    ]
-  },
-  {
-    title: "Implementering af Load Balancer",
-    shortDesc: "Load balancing fordeler trafikken og forhindrer overbelastning af enkelte servere.",
-    narrativeIntro: `
-      Under spidsbelastninger kan en enkelt server blive overbelastet. En load balancer sikrer, at trafikken fordeles jævnt, hvilket øger driftssikkerheden.
-    `,
-    glossaryTerms: ["Load Balancer", "Horizontal Scaling", "Trafikfordeling"],
-    digDeeperLinks: [
-      { 
-        label: "Load Balancing", 
-        text: "En korrekt implementeret load balancer fordeler netværkstrafikken, hvilket forhindrer overbelastning og øger den samlede driftssikkerhed." 
-      }
-    ],
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Vælg en passende load balancing-løsning baseret på netværkets trafikbehov.",
-        stepContext: "En detaljeret analyse af netværkstrafikken kan hjælpe med at bestemme den optimale løsning.",
-        choiceA: {
-          label: "Avanceret løsning",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basis løsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater netværksdiagrammerne med den nye load balancing-konfiguration.",
-        stepContext: "God dokumentation sikrer, at systemet kan vedligeholdes og fejl identificeres hurtigt.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      }
-    ]
-  },
-  {
-    title: "Installation af Fiberoptisk Forbindelse",
-    shortDesc: "Fiberoptik øger hastigheden og stabiliteten i netværket.",
-    narrativeIntro: `
-      Hospitalet ønsker at opgradere til fiberoptiske forbindelser for at opnå højere hastigheder og en mere stabil netværksinfrastruktur.
-    `,
-    glossaryTerms: ["Fiberoptik", "Båndbredde", "Højhastighedsnetværk"],
-    digDeeperLinks: [
-      { 
-        label: "Fiberoptiske Forbindelser", 
-        text: "Fiberoptik tilbyder langt højere båndbredde og en mere pålidelig forbindelse end traditionelle kabler." 
-      }
-    ],
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Evaluer de nuværende netværksforbindelser for at identificere flaskehalse.",
-        stepContext: "En detaljeret evaluering kan afsløre, hvor netværket skal opgraderes for at øge hastigheden.",
-        choiceA: {
-          label: "Detaljeret evaluering",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Indhent tilbud på fiberoptiske løsninger og planlæg implementeringen.",
-        stepContext: "Det rigtige udstyr og en veludført implementering kan markant øge netværkets ydeevne.",
-        choiceA: {
-          label: "Omfattende plan",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisplan",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater netværksdokumentationen med den nye fiberoptiske konfiguration.",
-        stepContext: "Grundig dokumentation sikrer, at opgraderingen kan vedligeholdes og at eventuelle fejl hurtigt kan rettes.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      }
-    ]
-  },
-  {
-    title: "Optimering af IT-Driftscenter",
-    shortDesc: "Modernisering af driftscentret kan forbedre systemets ydeevne og reaktionsevne.",
-    narrativeIntro: `
-      Det nuværende IT-driftscenter er forældet og ineffektivt. Ved at implementere moderne overvågnings- og styringsværktøjer kan driftssikkerheden og responsen forbedres markant.
-    `,
-    glossaryTerms: ["Driftscenter", "Monitoring", "IT Operations"],
-    digDeeperLinks: [
-      { 
-        label: "IT-Driftscenter", 
-        text: "Et moderne driftscenter benytter avancerede overvågningsværktøjer og automatiserede processer for at optimere systemdriften." 
-      }
-    ],
-    steps: [
-      {
-        location: "infrastruktur",
-        stepDescription: "Evaluér det nuværende driftscenter for flaskehalse og ineffektiviteter.",
-        stepContext: "En detaljeret evaluering kan afsløre, hvor systemet halter, og hvor forbedringer kan implementeres.",
-        choiceA: {
-          label: "Detaljeret evaluering",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Planlæg og implementer opgraderinger med nye overvågningsværktøjer.",
-        stepContext: "Moderne overvågningsværktøjer kan forbedre responstiden og driftssikkerheden, men kræver en velplanlagt integration.",
-        choiceA: {
-          label: "Omfattende opgradering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisopgradering",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Opdater driftsmanualer og dokumentation for de nye systemer.",
-        stepContext: "Grundig dokumentation sikrer, at de nye processer følges og kan vedligeholdes korrekt.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { security: 1 } }
         }
       }
     ]
   }
 ];
+
