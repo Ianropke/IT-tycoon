@@ -1,7 +1,8 @@
 /* main.js */
 document.addEventListener("DOMContentLoaded", function() {
+  // Start tid er nu 30
   const gameState = {
-    time: 100,
+    time: 30,
     security: 0,
     development: 0,
     currentTask: null,      // Den forpligtede opgave
@@ -43,11 +44,23 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Sørg for, at tiden aldrig bliver negativ
+  // Opdater dashboard – sørg for, at tid ikke bliver negativ
   function updateDashboard() {
     if (gameState.time < 0) gameState.time = 0;
     kpiChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
     kpiChart.update();
+  }
+
+  // Vis en kort feedback (toast) for tidsforbrug
+  function showFeedback(message) {
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = 'feedback';
+    feedbackDiv.textContent = message;
+    document.body.appendChild(feedbackDiv);
+    setTimeout(() => {
+      feedbackDiv.classList.add('fade-out');
+      setTimeout(() => feedbackDiv.remove(), 1000);
+    }, 1500);
   }
 
   const modal = document.getElementById('modal');
@@ -98,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p>Du agerer IT‑forvalter med ansvar for at balancere tre KPI’er: Tid, Sikkerhed og Udvikling.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
-      <p>Planlæg dine valg omhyggeligt – avancerede valg giver bedre resultater, men koster ekstra tid. Du kan bruge arkitekthjælp (én gang per opgave), hvis du er i tvivl.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning (timeCost) – de mere omfattende valg koster mere tid, så planlæg dine valg omhyggeligt.</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -131,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
          Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven.</p>
+         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven – hvert valg trækker et antal tidspoint fra din samlede tid.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
          Vær opmærksom på din tid – hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålet.</p>
       <button id="endTutorial">Næste</button>
@@ -168,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
         startTask(task);
       });
       
-      // "Arkitekthjælp"-knap for den potentielle opgave – vises som en modal
+      // "Arkitekthjælp"-knap for den potentielle opgave – åbner en modal
       const helpBtn = document.createElement('button');
       helpBtn.textContent = 'Arkitekthjælp';
       helpBtn.addEventListener('click', function(e) {
@@ -200,7 +213,6 @@ document.addEventListener("DOMContentLoaded", function() {
       locationsListElem.id = 'taskLocations';
       task.steps.forEach((step, idx) => {
         const li = document.createElement('li');
-        // Hvis trinnet er gennemført (idx < currentStepIndex) vises et checkmark
         if (idx < gameState.currentStepIndex) {
           li.innerHTML = `${idx + 1}. ${step.location} ${getIcon(step.location)} <span class="done">✔</span>`;
         } else {
@@ -264,9 +276,11 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function applyChoice(choice) {
-    // Beregn ny tid og sørg for, at den ikke bliver negativ
+    // Træk tid og sørg for, at den ikke bliver negativ
     gameState.time -= choice.applyEffect.timeCost;
     if (gameState.time < 0) gameState.time = 0;
+    // Vis visuel feedback for tidsforbruget
+    showFeedback(`−${choice.applyEffect.timeCost} tid`);
     if (choice.applyEffect.statChange.security) {
       gameState.security += choice.applyEffect.statChange.security;
     }
@@ -276,7 +290,6 @@ document.addEventListener("DOMContentLoaded", function() {
     updateDashboard();
     if (gameState.time === 0) {
       openModal("<p>Ikke nok tid! Spillet slutter.</p>");
-      // Genindlæs siden efter 2 sekunder, så spilleren kan se den endelige tilstand
       setTimeout(() => location.reload(), 2000);
     }
   }
@@ -297,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Eksempel på en Inspect & Adapt-modal (vises efter hver 10. opgave, evt. udvidet efter behov)
+  // Eksempel på Inspect & Adapt – kan udvides efter behov
   function showInspectAndAdapt() {
     const inspectContent = `
       <h2>Inspect & Adapt</h2>
