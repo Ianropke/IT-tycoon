@@ -82,7 +82,7 @@ header {
 }
 #potentialTasks {
   margin-top: 1rem;
-  /* Fast højde for potentielle opgaver, så området er scrollbart, hvis der er meget tekst */
+  /* Fast højde så vinduet er scrollbart, hvis der er meget tekst */
   height: calc(100vh - 220px);
   overflow-y: auto;
   position: relative;
@@ -122,7 +122,7 @@ button:hover {
   transform: scale(1.02);
 }
 
-/* Modal-styling med faste dimensioner, fast modal-body og fast modal-footer */
+/* Modal-styling med faste dimensioner og opdeling i body og footer */
 .modal {
   position: fixed;
   top: 0;
@@ -151,19 +151,19 @@ button:hover {
 }
 
 .modal-body {
-  padding: 30px 60px;   /* Øget padding for mere luft på siderne */
+  flex: 0 0 80%;       /* Modal-body optager 80 % af modalens højde */
+  padding: 30px 60px;   /* Øget padding, især på siderne */
   overflow-y: auto;
-  flex: 1;
   text-align: left;
 }
 
 .modal-footer {
+  flex: 0 0 20%;       /* Modal-footer optager de resterende 20 % af modalens højde */
   padding: 10px 60px;
   background-color: #f5f5f5;
-  /* Knapperne placeres i nederste højre hjørne */
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-end;  /* Knapperne placeres nederst til højre */
   flex-shrink: 0;
   height: 60px;
 }
