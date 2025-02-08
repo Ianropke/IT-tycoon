@@ -1,6 +1,6 @@
 /* main.js */
 document.addEventListener("DOMContentLoaded", function() {
-  // Starttid sættes til 30
+  // Spillet starter med 30 tidspoint
   const gameState = {
     time: 30,
     security: 0,
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Opdater dashboard – sørg for, at tid ikke bliver negativ
+  // Sørg for, at tid ikke bliver negativ
   function updateDashboard() {
     if (gameState.time < 0) gameState.time = 0;
     kpiChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
@@ -105,10 +105,11 @@ document.addEventListener("DOMContentLoaded", function() {
     return icons[location] || '';
   }
 
+  // Ændret intro, så den nævner SAFe/PI Planning
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
-      <p>Du agerer IT‑forvalter med ansvar for at balancere tre KPI’er: Tid, Sikkerhed og Udvikling.</p>
+      <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på −2 tid, mens den hurtige løsning ikke trækker tid.</p>
@@ -123,8 +124,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function showSprintGoal() {
     const sprintContent = `
-      <h2>Sprintmålsætning</h2>
-      <p>Mål: Opnå mindst ${gameState.missionGoals.security} i sikkerhed og ${gameState.missionGoals.development} i udvikling, inden tiden løber ud.</p>
+      <h2>PI Planning</h2>
+      <p>Målsætning: Opnå mindst ${gameState.missionGoals.security} i sikkerhed og ${gameState.missionGoals.development} i udvikling inden for sprintet.</p>
       <button id="continueTutorial">Fortsæt til Tutorial</button>
     `;
     openModal(sprintContent);
@@ -144,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
          Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven – ved det komplette valg trækkes 2 tidspoint, mens det hurtige valg ikke trækker tid.</p>
+         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven. Ved valg af den komplette løsning trækkes 2 tidspoint (vises som "−2 tid") – den hurtige løsning trækker ingen tid.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
          Vær opmærksom på din tid – hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålet.</p>
       <button id="endTutorial">Næste</button>
@@ -256,12 +257,12 @@ document.addEventListener("DOMContentLoaded", function() {
     openModal(choiceContent);
     // For Choice A: komplet løsning – fast −2 tid
     document.getElementById('choiceA').addEventListener('click', function() {
-      // Lav en kopi af Choice A med tidCost sat til 2
       let modifiedChoice = Object.assign({}, step.choiceA);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
       applyChoice(modifiedChoice);
       closeModal();
-      proceedToNextStep();
+      // I stedet for at afslutte opgaven straks, kaldes CABApproval
+      cabApproval();
     });
     // For Choice B: hurtig løsning – 0 tid
     document.getElementById('choiceB').addEventListener('click', function() {
@@ -269,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function() {
       modifiedChoice.applyEffect = Object.assign({}, step.choiceB.applyEffect, { timeCost: 0 });
       applyChoice(modifiedChoice);
       closeModal();
-      proceedToNextStep();
+      cabApproval();
     });
     document.getElementById('architectHelp').addEventListener('click', function() {
       if (!gameState.architectHelpUsed) {
@@ -283,7 +284,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function applyChoice(choice) {
-    // Træk tid og sørg for, at tiden ikke bliver negativ
     gameState.time -= choice.applyEffect.timeCost;
     if (gameState.time < 0) gameState.time = 0;
     if (choice.applyEffect.timeCost > 0) {
@@ -302,20 +302,48 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  function proceedToNextStep() {
-    const task = gameState.currentTask;
-    if (gameState.currentStepIndex < task.steps.length - 1) {
+  // Når et trin er gennemført, skal CABApproval kaldes i stedet for at afslutte opgaven med det samme
+  function cabApproval() {
+    // Hvis der stadig er trin tilbage (dvs. flere trin end CAB-trinet), gå til næste trin
+    if (gameState.currentStepIndex < gameState.currentTask.steps.length - 1) {
       gameState.currentStepIndex++;
-      renderActiveTask(task);
-    } else {
-      gameState.tasksCompleted++;
-      openModal("<p>Opgaven er fuldført!</p>");
-      document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
-      gameState.currentTask = null;
-      gameState.currentStepIndex = 0;
-      // Potentielle opgaver forbliver synlige
-      renderPotentialTasks();
+      renderActiveTask(gameState.currentTask);
+      return;
     }
+    // CABApproval: Vis modal med CAB-godkendelse
+    const cabContent = `
+      <h2>CAB Godkendelse</h2>
+      <p>Er opgaven godkendt af CAB?</p>
+      <button id="cabApprove">Godkend</button>
+      <button id="cabReject">Afvis</button>
+    `;
+    openModal(cabContent);
+    document.getElementById('cabApprove').addEventListener('click', function() {
+      closeModal();
+      // Beregn godkendelseschance baseret på sikkerheden: chancen = gameState.security / missionGoals.security
+      let chance = gameState.security / gameState.missionGoals.security;
+      if (Math.random() < chance) {
+        openModal("<p>Opgaven er godkendt af CAB!</p>");
+        finishTask();
+      } else {
+        openModal("<p>Opgaven blev IKKE godkendt af CAB. Du fejlede opgaven.</p>");
+        setTimeout(() => location.reload(), 2000);
+      }
+    });
+    document.getElementById('cabReject').addEventListener('click', function() {
+      closeModal();
+      openModal("<p>Opgaven blev afvist af CAB. Du fejlede opgaven.</p>");
+      setTimeout(() => location.reload(), 2000);
+    });
+  }
+
+  function finishTask() {
+    gameState.tasksCompleted++;
+    openModal("<p>Opgaven er fuldført!</p>");
+    document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
+    gameState.currentTask = null;
+    gameState.currentStepIndex = 0;
+    renderPotentialTasks();
   }
 
   // Eksempel på Inspect & Adapt – kan udvides efter behov
