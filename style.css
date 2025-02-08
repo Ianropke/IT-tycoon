@@ -82,7 +82,7 @@ header {
 }
 #potentialTasks {
   margin-top: 1rem;
-  /* Fast højde for scrollbar */
+  /* Fast højde for potentielle opgaver, så området er scrollbart, hvis der er meget tekst */
   height: calc(100vh - 220px);
   overflow-y: auto;
   position: relative;
@@ -139,7 +139,7 @@ button:hover {
   background-color: #fff;
   border-radius: 8px;
   width: 90%;
-  max-width: 800px;      /* Øget maksimal bredde */
+  max-width: 800px;      /* Øget maksimal bredde – pop-upen bliver bredere */
   min-height: 300px;     /* Ensartet minimumshøjde */
   max-height: 80vh;      /* Ensartet maksimal højde */
   display: flex;
@@ -150,7 +150,7 @@ button:hover {
   margin: 0 20px;
 }
 .modal-body {
-  padding: 30px 60px;   /* Øget padding på siderne */
+  padding: 30px 60px;   /* Øget padding på siderne så teksten ikke sidder for tæt */
   overflow-y: auto;
   flex: 1;
   text-align: left;
@@ -158,12 +158,12 @@ button:hover {
 .modal-footer {
   padding: 10px 60px;
   background-color: #f5f5f5;
-  text-align: center;
-  flex-shrink: 0;
-  height: 60px;              /* Fast højde */
+  /* Placer knapperne i nederste højre hjørne */
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  height: 60px;
 }
 .close {
   position: absolute;
@@ -181,7 +181,7 @@ button:hover {
   margin-left: 0.5rem;
 }
 
-/* Skjulte elementer må ikke fange klik */
+/* Skjulte elementer må ikke fange pointer-events */
 .hidden {
   display: none;
   pointer-events: none;
