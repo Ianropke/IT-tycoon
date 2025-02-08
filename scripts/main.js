@@ -334,13 +334,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // Opdateret finishTask med en footer-knap til at fortsætte
   function finishTask() {
     gameState.tasksCompleted++;
-    openModal("<h2>Info</h2><p>Opgaven er fuldført!</p>");
-    document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
-    gameState.currentTask = null;
-    gameState.currentStepIndex = 0;
-    renderPotentialTasks();
+    openModal("<h2>Info</h2><p>Opgaven er fuldført!</p>", `<button id="continueAfterFinish">Fortsæt</button>`);
+    document.getElementById('continueAfterFinish').addEventListener('click', function() {
+      closeModal(() => {
+        document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
+        gameState.currentTask = null;
+        gameState.currentStepIndex = 0;
+        renderPotentialTasks();
+      });
+    });
   }
 
   function showInspectAndAdapt() {
@@ -361,4 +366,3 @@ document.addEventListener("DOMContentLoaded", function() {
 
   showIntro();
 });
- 
