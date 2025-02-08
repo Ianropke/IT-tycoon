@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // Kombiner tasks fra de eksterne task-filer
-  // Antag at hospitalTasks primært understøtter "udvikling", og de øvrige "sikkerhed".
+  // Det antages, at hospitalTasks understøtter "udvikling"
+  // og infrastrukturTasks og cybersikkerhedTasks understøtter "sikkerhed".
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -53,8 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Fjernet toast-feedback – effekten vises nu i modalvinduet
-  // (Funktionen showFeedback er fjernet)
+  // Fjernet toast-feedback; effekterne vises nu direkte i modalvinduet
 
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modalBody');
@@ -105,7 +105,8 @@ document.addEventListener("DOMContentLoaded", function() {
       <p>Du agerer IT‑forvalter under SAFe og starter med PI Planning, hvor målsætningen for udvikling og sikkerhed fastsættes.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på <span style="color:red;">−2 tid</span> og den hurtige løsning trækker 0 tid. Derudover vises kun positive bonusser for den relevante KPI (Udvikling for hospitalopgaver eller Sikkerhed for øvrige opgaver), som angivet i opgavedataene.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på <span style="color:red;">−2 tid</span>, mens den hurtige løsning trækker 0 tid.<br>
+         Derudover vises kun de positive bonusser for den relevante KPI, alt efter opgavens type (Udvikling for hospitalopgaver, Sikkerhed for øvrige opgaver).</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -136,11 +137,11 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>UI-Layout:</strong><br>
          - Venstre side: Viser din KPI-graf med sprintmål og en statisk liste med lokationer.<br>
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
-         Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven – opgavens titel og beskrivelse angiver, om den primært understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur- og cybersikkerhedsopgaver).</p>
+         Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven – opgavens titel og beskrivelse angiver, om den primært understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur-/cybersikkerhedsopgaver).</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven er forpligtet, skal du i hvert trin vælge den korrekte lokation (venstre side) svarende til det næste trin. Ved valg af den komplette løsning trækkes fast <span style="color:red;">−2 tid</span>, mens den hurtige løsning trækker 0 tid. Derudover vises kun positive bonusser for den relevante KPI.</p>
-      <p><strong>Planlægning og Strategi:</strong><br>
-         Vær opmærksom på din tid – hvert valg påvirker dine KPI’er. Målet er at balancere ressourcerne og nå sprintmålet.</p>
+         Når opgaven er forpligtet, skal du i hvert trin vælge den korrekte lokation (venstre side) svarende til det næste trin. Ved valg af den komplette løsning trækkes fast <span style="color:red;">−2 tid</span> og den viser de positive bonusser (fx "+3 Udvikling" eller "+3 Sikkerhed"), mens den hurtige løsning trækker 0 tid og giver en mindre bonus.</p>
+      <p><strong>Efter de normale trin:</strong><br>
+         Når du har gennemført alle trin, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB, og herefter beregnes en godkendelseschance med bonus, så risikoen for afvisning er reduceret. Hvis CAB afviser, mister du 3 tidspoint for rework – og CAB-evalueringen gentages, indtil opgaven bliver godkendt.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
@@ -158,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
       
-      // Oplysning om opgaven – titlen og beskrivelsen angiver, om opgaven primært giver bonus til Udvikling eller Sikkerhed.
+      // Oplysning om opgaven – titlen og beskrivelsen angiver, om den understøtter Udvikling eller Sikkerhed
       const infoDiv = document.createElement('div');
       infoDiv.className = 'task-info';
       infoDiv.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
@@ -175,13 +176,12 @@ document.addEventListener("DOMContentLoaded", function() {
         startTask(task);
       });
       
-      // "Arkitekthjælp"-knap – åbner en modal med et hint om, om opgaven understøtter Udvikling eller Sikkerhed
+      // "Arkitekthjælp"-knap – viser et hint om, om opgaven understøtter Udvikling eller Sikkerhed
       const helpBtn = document.createElement('button');
       helpBtn.textContent = 'Arkitekthjælp';
       helpBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         let hint = "";
-        // Bestem hint ud fra en heuristik: Hvis titlen indeholder "hospital" eller "LIMS", antages opgaven at understøtte Udvikling; ellers Sikkerhed.
         if (task.title.toLowerCase().includes("hospital") || task.title.toLowerCase().includes("lims")) {
           hint = "Denne opgave understøtter Udvikling.";
         } else {
@@ -247,15 +247,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Vis modal med valgmuligheder for det aktuelle trin – inkl. "Mere info (trin)"
   function showStepChoices(step) {
-    // Juster tekster: Fjern minus-tegn, så kun positive bonusser vises; tidsomkostningen vises som "−2 tid" for Choice A og "0 tid" for Choice B.
     let choiceAText = step.choiceA.text.replace(/-?\d+\s*tid/, "<span style='color:red;'>−2 tid</span>");
     let choiceBText = step.choiceB.text.replace(/-?\d+\s*tid/, "<span style='color:green;'>0 tid</span>");
+    // Hvis opgaven understøtter enten Udvikling eller Sikkerhed, fjern referencer til den anden KPI
     if (gameState.currentTask.focus === "udvikling") {
-      // For opgaver med fokus på udvikling fjernes eventuelle referencer til sikkerhed
       choiceAText = choiceAText.replace(/[\+\-]?\d+\s*sikkerhed/gi, "").trim();
       choiceBText = choiceBText.replace(/[\+\-]?\d+\s*sikkerhed/gi, "").trim();
     } else if (gameState.currentTask.focus === "sikkerhed") {
-      // For opgaver med fokus på sikkerhed fjernes referencer til udvikling
       choiceAText = choiceAText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
       choiceBText = choiceBText.replace(/[\+\-]?\d+\s*udvikling/gi, "").trim();
     }
@@ -298,16 +296,12 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('architectHelp').addEventListener('click', function() {
       if (!gameState.architectHelpUsed) {
         gameState.architectHelpUsed = true;
-        // Giv et hint baseret på en heuristik for opgavens fokus
         let hint = "";
-        if (gameState.currentTask.focus) {
-          hint = gameState.currentTask.focus === "udvikling" ? "Denne opgave understøtter Udvikling." : "Denne opgave understøtter Sikkerhed.";
+        // Brug en heuristik baseret på titlen for at give hint
+        if (gameState.currentTask.title.toLowerCase().includes("hospital") || gameState.currentTask.title.toLowerCase().includes("lims")) {
+          hint = "Denne opgave understøtter Udvikling.";
         } else {
-          if (gameState.currentTask.title.toLowerCase().includes("hospital") || gameState.currentTask.title.toLowerCase().includes("lims")) {
-            hint = "Denne opgave understøtter Udvikling.";
-          } else {
-            hint = "Denne opgave understøtter Sikkerhed.";
-          }
+          hint = "Denne opgave understøtter Sikkerhed.";
         }
         openModal(`<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p><p>${hint}</p>`);
       }
@@ -320,7 +314,6 @@ document.addEventListener("DOMContentLoaded", function() {
   function applyChoice(choice) {
     gameState.time -= choice.applyEffect.timeCost;
     if (gameState.time < 0) gameState.time = 0;
-    // Tidsstraffen er nu vist i modalvinduet, så vi fjerner toast-feedback
     if (choice.applyEffect.statChange.security) {
       gameState.security += choice.applyEffect.statChange.security;
     }
@@ -337,29 +330,32 @@ document.addEventListener("DOMContentLoaded", function() {
   // Når det sidste trin er løst, sendes opgaven til CAB for automatisk vurdering
   function cabApproval() {
     closeModal();
-    // Reducer risikoen for afvisning med bonus på 20 i stedet for 10
-    let chance = (gameState.security + 20) / (gameState.missionGoals.security + 20);
-    if (Math.random() < chance) {
-      showTaskSummary();
-    } else {
-      // Elegant rework-modal med "Fortsæt rework"-knap
-      openModal(`
-        <h2>CAB Afvisning</h2>
-        <p>CAB afviste opgaven. Rework er påkrævet, og du mister 3 tidspoint.</p>
-        <button id="continueRework">Fortsæt rework</button>
-      `);
-      document.getElementById('continueRework').addEventListener('click', function() {
-        const penalty = 3;
-        gameState.time -= penalty;
-        if (gameState.time < 0) gameState.time = 0;
-        updateDashboard();
-        closeModal();
-        setTimeout(() => cabApproval(), 1000);
-      });
-    }
+    // Informer spilleren om, at ændringen sendes til CAB for evaluering
+    openModal("<h2>Til CAB</h2><p>Din ændring sendes nu til CAB for evaluering…</p>");
+    setTimeout(() => {
+      // Beregn CAB-godkendelseschance med bonus for lavere risiko (bonus på 20)
+      let chance = (gameState.security + 20) / (gameState.missionGoals.security + 20);
+      if (Math.random() < chance) {
+        showTaskSummary();
+      } else {
+        openModal(`
+          <h2>CAB Afvisning</h2>
+          <p>CAB afviste opgaven. Rework er påkrævet, og du mister 3 tidspoint.</p>
+          <button id="continueRework">Fortsæt rework</button>
+        `);
+        document.getElementById('continueRework').addEventListener('click', function() {
+          const penalty = 3;
+          gameState.time -= penalty;
+          if (gameState.time < 0) gameState.time = 0;
+          updateDashboard();
+          closeModal();
+          setTimeout(() => cabApproval(), 1000);
+        });
+      }
+    }, 1500);
   }
 
-  // Vis en opsummering af de valg, spilleren har truffet i opgaven
+  // Vis en opsummering af de valg, du har truffet i opgaven
   function showTaskSummary() {
     let summaryHTML = "<h2>Opsummering af dine valg</h2><ul>";
     gameState.choiceHistory.forEach(item => {
