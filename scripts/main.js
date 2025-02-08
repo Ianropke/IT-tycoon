@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Modal-håndtering med GSAP til fade in/out
+  // Modalhåndtering med GSAP til fade in/out
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modalBody');
   const modalClose = document.getElementById('modalClose');
@@ -135,11 +135,11 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>UI-Layout:</strong><br>
          Venstre side: KPI-graf og lokationer<br>
          Højre side: Aktiv opgave og potentielle opgaver<br>
-         Opgavens titel og beskrivelse fortæller, om den understøtter Udvikling (hospital) eller Sikkerhed (infrastruktur/cybersikkerhed).</p>
+         Opgavens titel og beskrivelse fortæller, om den understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur/cybersikkerhed).</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven forpligtes, udfører du hvert trin ved at vælge den korrekte lokation. Ved valg af den komplette løsning trækkes <span style="color:red;">−2 tid</span> og du opnår en større bonus, mens den hurtige løsning giver 0 tid og en mindre bonus. Effekterne vises direkte i modalvinduet.</p>
+         Når opgaven forpligtes, udfører du hvert trin ved at vælge den korrekte lokation. Ved valg af den komplette løsning trækkes <span style="color:red;">−2 tid</span> og du opnår en større bonus; den hurtige løsning giver 0 tid og en mindre bonus. Effekterne vises direkte i modalvinduet.</p>
       <p><strong>Efter de normale trin:</strong><br>
-         Når alle trin er gennemført, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring nu sendes til CAB – og herefter beregnes godkendelseschancen med en bonus for at reducere risikoen for afvisning. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
+         Når alle trin er gennemført, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB – og herefter skal du aktivt klikke på en knap for at starte evalueringen. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderActiveTask(task);
   }
 
-  // Render den aktive opgave
+  // Render aktiv opgave
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
@@ -301,11 +301,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // CAB-vurdering: Informer spilleren om, at ændringen sendes til CAB, beregn godkendelseschancen, og håndter rework.
+  // CAB-vurdering: Brugeren skal aktivt trykke på "Evaluér nu" for at starte evalueringen.
   function cabApproval() {
     closeModal();
-    openModal("<h2>Til CAB</h2><p>Din ændring sendes nu til CAB for evaluering…</p>");
-    setTimeout(() => {
+    openModal("<h2>Til CAB</h2><p>Din ændring sendes nu til CAB for evaluering…</p><button id='evaluateCAB'>Evaluér nu</button>");
+    document.getElementById('evaluateCAB').addEventListener('click', function() {
       let chance = (gameState.security + 20) / (gameState.missionGoals.security + 20);
       if (Math.random() < chance) {
         showTaskSummary();
@@ -321,10 +321,10 @@ document.addEventListener("DOMContentLoaded", function() {
           if (gameState.time < 0) gameState.time = 0;
           updateDashboard();
           closeModal();
-          setTimeout(() => cabApproval(), 1000);
+          cabApproval();
         });
       }
-    }, 1500);
+    });
   }
 
   function showTaskSummary() {
