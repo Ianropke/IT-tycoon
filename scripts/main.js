@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     choiceHistory: []
   };
 
-  // Sørg for, at task-filerne er loadet før main.js
+  // Sørg for at task-filerne er loadet før main.js
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Modalhåndtering med GSAP – med fast opdeling af body og footer
+  // Modalhåndtering med GSAP
   const modal = document.getElementById('modal');
   const modalBodyContainer = document.getElementById('modalBody');
   const modalFooterContainer = document.getElementById('modalFooter');
