@@ -139,16 +139,18 @@ button:hover {
   background-color: #fff;
   border-radius: 8px;
   width: 90%;
-  max-height: 80vh;
+  max-width: 600px;      /* Ensartet maksimal bredde */
+  min-height: 300px;     /* Minimumshøjde for ens modalstørrelse */
+  max-height: 80vh;      /* Maksimal højde */
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   color: #333;
+  margin: 0 20px;
 }
-/* Øget padding til modalbody for at give mere margen til venstre */
 .modal-body {
-  padding: 30px 40px;
+  padding: 30px 40px;   /* Øget padding så teksten ikke sidder for tæt */
   overflow-y: auto;
   flex: 1;
   text-align: left;
@@ -175,7 +177,7 @@ button:hover {
   margin-left: 0.5rem;
 }
 
-/* Vigtigt: skjulte elementer skal ikke fange pointer-events */
+/* Skjulte elementer må ikke fange klik */
 .hidden {
   display: none;
   pointer-events: none;
