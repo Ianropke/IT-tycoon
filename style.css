@@ -12,7 +12,7 @@ header {
   text-align: center;
 }
 
-/* Container opdelt i to lige store kolonner */
+/* Container opdelt i to lige store kolonner (50% hver) */
 .container {
   display: flex;
   min-height: calc(100vh - 60px);
@@ -95,7 +95,7 @@ header {
   to { opacity: 1; }
 }
 
-/* Generel knap-styling (gør knapperne større) */
+/* Knap-styling – forstørrede knapper */
 button {
   padding: 1rem 1.5rem;
   margin: 0.5rem;
@@ -111,5 +111,13 @@ button {
   font-size: 1.2rem;
   border: 2px solid #ccc;
   background-color: #eee;
+  cursor: pointer;
+}
+
+/* Stil til potentielle opgaveelementer */
+.task-item {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
 }
