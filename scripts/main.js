@@ -43,6 +43,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
+  // Opdater dashboard – sørg for at "tid" aldrig bliver negativ
+  function updateDashboard() {
+    if (gameState.time < 0) gameState.time = 0;
+    kpiChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
+    kpiChart.update();
+  }
+
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modalBody');
   const modalClose = document.getElementById('modalClose');
@@ -72,6 +79,18 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
   renderLocations();
+
+  function getIcon(location) {
+    const icons = {
+      'hospital': '🏥',
+      'dokumentation': '📄',
+      'leverandør': '📦',
+      'infrastruktur': '🔧',
+      'it‑jura': '⚖️',
+      'cybersikkerhed': '💻'
+    };
+    return icons[location] || '';
+  }
 
   function showIntro() {
     const introContent = `
@@ -124,12 +143,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Render listen over potentielle opgaver – Hver opgave har en "Forpligt opgave"‑knap ved siden af
+  // Render listen over potentielle opgaver – hver med to knapper: "Forpligt opgave" og "Arkitekthjælp"
   function renderPotentialTasks() {
     const potentialTasksDiv = document.getElementById('potentialTasks');
     potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
-    // Kun vis opgaver, hvis der ikke allerede er forpligtet en opgave
-    if (gameState.currentTask !== null) return;
     gameState.tasks.forEach((task, index) => {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
@@ -139,16 +156,30 @@ document.addEventListener("DOMContentLoaded", function() {
       infoDiv.className = 'task-info';
       infoDiv.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
       
-      // Forpligt-knap for denne opgave
+      // "Forpligt opgave"-knap
       const commitBtn = document.createElement('button');
       commitBtn.textContent = 'Forpligt opgave';
-      commitBtn.addEventListener('click', function() {
+      commitBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (gameState.currentTask !== null) {
+          alert("Du har allerede forpligtet dig til en opgave!");
+          return;
+        }
         startTask(task);
-        potentialTasksDiv.innerHTML = ''; // Fjern listen over potentielle opgaver
+        // BEHOVER IKKE at fjerne hele listen – den forbliver synlig
+      });
+      
+      // "Arkitekthjælp"-knap for den potentielle opgave
+      const helpBtn = document.createElement('button');
+      helpBtn.textContent = 'Arkitekthjælp';
+      helpBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        alert(task.narrativeIntro || "Ingen arkitekthjælp tilgængelig for denne opgave.");
       });
       
       taskItem.appendChild(infoDiv);
       taskItem.appendChild(commitBtn);
+      taskItem.appendChild(helpBtn);
       potentialTasksDiv.appendChild(taskItem);
     });
   }
@@ -182,18 +213,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  function getIcon(location) {
-    const icons = {
-      'hospital': '🏥',
-      'dokumentation': '📄',
-      'leverandør': '📦',
-      'infrastruktur': '🔧',
-      'it‑jura': '⚖️',
-      'cybersikkerhed': '💻'
-    };
-    return icons[location] || '';
-  }
-
   // Håndter klik på en lokationsknap (venstre side)
   function handleLocationClick(clickedLocation) {
     if (!gameState.currentTask) {
@@ -208,14 +227,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // Vis modal med valgmuligheder for det aktuelle trin – inkluderer også "Mere info (trin)"
   function showStepChoices(step) {
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
-      ${step.stepContext ? `<p>${step.stepContext}</p>` : ''}
       <button id="choiceA">${step.choiceA.label} (${step.choiceA.text})</button>
       <button id="choiceB">${step.choiceB.label} (${step.choiceB.text})</button>
       <br><br>
       <button id="architectHelp">${gameState.architectHelpUsed ? 'Arkitekthjælp brugt' : 'Brug Arkitekthjælp'}</button>
+      <button id="moreInfo">Mere info (trin)</button>
     `;
     openModal(choiceContent);
     document.getElementById('choiceA').addEventListener('click', function() {
@@ -233,6 +253,9 @@ document.addEventListener("DOMContentLoaded", function() {
         gameState.architectHelpUsed = true;
         alert('Anbefalet valg: ' + step.choiceA.label);
       }
+    });
+    document.getElementById('moreInfo').addEventListener('click', function() {
+      alert(step.stepContext || "Ingen yderligere information tilgængelig.");
     });
   }
 
@@ -262,14 +285,9 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
       gameState.currentTask = null;
       gameState.currentStepIndex = 0;
-      // Nu kan brugeren vælge en ny opgave
+      // Potentielle opgaver forbliver synlige – men commit-knapperne afviser et nyt valg, hvis en opgave er forpligtet
       renderPotentialTasks();
     }
-  }
-
-  function updateDashboard() {
-    kpiChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
-    kpiChart.update();
   }
 
   function showInspectAndAdapt() {
