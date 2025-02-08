@@ -1,6 +1,6 @@
 /* style.css */
 
-/* Grundlæggende baggrund og typografi */
+/* Global styling */
 body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
@@ -29,7 +29,7 @@ header {
   margin-right: 0.5rem;
 }
 
-/* "Få hjælp"-knap i øverste højre hjørne */
+/* "Få hjælp"-knap placeret i øverste højre hjørne */
 .help-btn {
   position: absolute;
   top: 10px;
@@ -70,7 +70,7 @@ header {
   gap: 0.5rem;
 }
 
-/* Lokationsknapper */
+/* Lokationsknapper med uppercase tekst */
 .location-button {
   padding: 1rem 1.5rem;
   font-size: 1.2rem;
@@ -95,10 +95,16 @@ header {
   display: flex;
   flex-direction: column;
 }
+
+/* Aktiv opgave – givet mere plads til at vise trinene */
 #activeTask {
   border-bottom: 1px solid #ddd;
   padding-bottom: 1rem;
+  min-height: 300px;   /* Giver aktiv opgave tilstrækkelig højde */
+  overflow-y: auto;    /* Gør indholdet scrollbart, hvis nødvendigt */
 }
+
+/* Potentielle opgaver */
 #potentialTasks {
   margin-top: 1rem;
   height: calc(100vh - 220px);
@@ -161,7 +167,7 @@ button:hover {
   width: 60vw;
   height: 40vh;
   display: grid;
-  grid-template-rows: 1fr auto;  /* Modal-body og modal-footer */
+  grid-template-rows: 1fr auto;  /* Opdel i modal-body og modal-footer */
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
   color: #333;
@@ -175,7 +181,7 @@ button:hover {
   text-align: center;
 }
 
-/* Modal-footer - den vises nu (ikke skjult) og viser knapperne */
+/* Modal-footer – hvis du ønsker at bruge den, kan du fjerne display: none; */
 .modal-footer {
   padding: 10px 60px;
   background-color: #f5f5f5;
@@ -186,7 +192,15 @@ button:hover {
   height: 60px;
 }
 
-/* Luk-knap */
+/* Horisontale valgknapper (til trin-pop-ups) */
+.choice-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Luk-knap til modal */
 .close {
   position: absolute;
   top: 10px;
@@ -196,14 +210,6 @@ button:hover {
   color: #333;
 }
 
-/* Horisontale valgknapper (til trin-pop-ups) */
-.choice-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-}
-
 /* Markerede trin */
 .done {
   color: #4caf50;
@@ -211,7 +217,7 @@ button:hover {
   margin-left: 0.5rem;
 }
 
-/* Skjulte elementer må ikke fange pointer-events */
+/* Skjulte elementer fanger ikke pointer-events */
 .hidden {
   display: none;
   pointer-events: none;
