@@ -1,6 +1,6 @@
 /* main.js */
 document.addEventListener("DOMContentLoaded", function() {
-  // Start tid er nu 30
+  // Starttid sættes til 30
   const gameState = {
     time: 30,
     security: 0,
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Vis en kort feedback (toast) for tidsforbrug
+  // Vis en kort feedback (toast) for tidsforbruget
   function showFeedback(message) {
     const feedbackDiv = document.createElement('div');
     feedbackDiv.className = 'feedback';
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p>Du agerer IT‑forvalter med ansvar for at balancere tre KPI’er: Tid, Sikkerhed og Udvikling.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
       <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
-      <p>Hvert valg i et trin viser sin tidsomkostning (timeCost) – de mere omfattende valg koster mere tid, så planlæg dine valg omhyggeligt.</p>
+      <p>Hvert valg i et trin viser sin tidsomkostning – den komplette løsning giver en straf på −2 tid, mens den hurtige løsning ikke trækker tid.</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
          Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven – hvert valg trækker et antal tidspoint fra din samlede tid.</p>
+         Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven – ved det komplette valg trækkes 2 tidspoint, mens det hurtige valg ikke trækker tid.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
          Vær opmærksom på din tid – hvert valg påvirker KPI’erne. Målet er at balancere ressourcerne og nå sprintmålet.</p>
       <button id="endTutorial">Næste</button>
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
         startTask(task);
       });
       
-      // "Arkitekthjælp"-knap for den potentielle opgave – åbner en modal
+      // "Arkitekthjælp"-knap for den potentielle opgave – åbner en modal med arkitekthjælp
       const helpBtn = document.createElement('button');
       helpBtn.textContent = 'Arkitekthjælp';
       helpBtn.addEventListener('click', function(e) {
@@ -247,20 +247,27 @@ document.addEventListener("DOMContentLoaded", function() {
   function showStepChoices(step) {
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
-      <button id="choiceA">${step.choiceA.label} (${step.choiceA.text})</button>
-      <button id="choiceB">${step.choiceB.label} (${step.choiceB.text})</button>
+      <button id="choiceA">${step.choiceA.label} (${step.choiceA.text.replace(/-?\d+\s*tid/, "−2 tid")})</button>
+      <button id="choiceB">${step.choiceB.label} (${step.choiceB.text.replace(/-?\d+\s*tid/, "0 tid")})</button>
       <br><br>
       <button id="architectHelp">${gameState.architectHelpUsed ? 'Arkitekthjælp brugt' : 'Brug Arkitekthjælp'}</button>
       <button id="moreInfo">Mere info (trin)</button>
     `;
     openModal(choiceContent);
+    // For Choice A: komplet løsning – fast −2 tid
     document.getElementById('choiceA').addEventListener('click', function() {
-      applyChoice(step.choiceA);
+      // Lav en kopi af Choice A med tidCost sat til 2
+      let modifiedChoice = Object.assign({}, step.choiceA);
+      modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
+      applyChoice(modifiedChoice);
       closeModal();
       proceedToNextStep();
     });
+    // For Choice B: hurtig løsning – 0 tid
     document.getElementById('choiceB').addEventListener('click', function() {
-      applyChoice(step.choiceB);
+      let modifiedChoice = Object.assign({}, step.choiceB);
+      modifiedChoice.applyEffect = Object.assign({}, step.choiceB.applyEffect, { timeCost: 0 });
+      applyChoice(modifiedChoice);
       closeModal();
       proceedToNextStep();
     });
@@ -276,11 +283,12 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function applyChoice(choice) {
-    // Træk tid og sørg for, at den ikke bliver negativ
+    // Træk tid og sørg for, at tiden ikke bliver negativ
     gameState.time -= choice.applyEffect.timeCost;
     if (gameState.time < 0) gameState.time = 0;
-    // Vis visuel feedback for tidsforbruget
-    showFeedback(`−${choice.applyEffect.timeCost} tid`);
+    if (choice.applyEffect.timeCost > 0) {
+      showFeedback(`−${choice.applyEffect.timeCost} tid`);
+    }
     if (choice.applyEffect.statChange.security) {
       gameState.security += choice.applyEffect.statChange.security;
     }
