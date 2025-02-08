@@ -1,873 +1,485 @@
-window.hospitalTasks = [
+// hospitalTasks.js
+
+const hospitalTasks = [
   {
-    title: "Opgradering af Patientjournal System",
-    shortDesc: "Nuværende patientjournal er langsom og ineffektiv.",
-    narrativeIntro: `
-      Hospitalet kæmper med en forældet EPJ, der ofte fejler ved spidsbelastning. En modernisering er nødvendig for at forbedre patientbehandlingen og informationsflowet.
-    `,
-    glossaryTerms: ["Patientjournal", "EPJ", "Integration"],
-    digDeeperLinks: [
-      { label: "EPJ Best Practices", text: "Moderne EPJ-løsninger sikrer hurtig adgang til patientdata og optimerer arbejdsgange." }
-    ],
+    title: "Nyt LIMS",
+    shortDesc: "Implementer et nyt Laboratorie Informations Management System for at forbedre workflowet.",
+    narrativeIntro: "Opdatering af LIMS vil optimere dataflow og reducere fejl i patientjournaler.",
+    focus: "udvikling",
+    riskProfile: 5,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Analyser den nuværende patientjournal for ineffektivitet og fejl.",
-        stepContext: "En dybdegående analyse kan afsløre flaskehalse og forældede processer, der hindrer effektiv behandling.",
+        stepDescription: "Analyser eksisterende system og patientjournaler for ineffektivitet.",
+        stepContext: "Gennemgå patientdata for at identificere de vigtigste flaskehalse og datakvalitetsproblemer.",
         choiceA: {
-          label: "Detaljeret systemgennemgang",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Grundig analyse",
+          text: "+3 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Overfladisk analyse",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opgrader servere og netværk for at forbedre systemets ydeevne.",
-        stepContext: "Opgradering af infrastrukturen sikrer, at systemet kan køre hurtigere og mere stabilt under belastning.",
-        choiceA: {
-          label: "Omfattende opgradering",
-          text: "+2 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 2 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Minimal opgradering",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Opdater dokumentationen og brugervejledninger for det nye system.",
-        stepContext: "Grundig dokumentation sikrer, at personalet hurtigt kan sætte sig ind i de nye processer og systemer.",
+        stepDescription: "Udarbejd en detaljeret kravspecifikation for det nye system.",
+        stepContext: "Beskriv de nødvendige funktioner og integration med eksisterende systemer.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret kravspecifikation",
+          text: "+4 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
         },
         choiceB: {
-          label: "Kort dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort kravspecifikation",
+          text: "+2 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Gennemgå it-juridiske krav og kontrakter for systemimplementeringen.",
+        stepContext: "Sikre overholdelse af lovgivning og interne retningslinjer.",
+        choiceA: {
+          label: "Omfattende juridisk gennemgang",
+          text: "+2 udvikling, -2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Basis juridisk gennemgang",
+          text: "+1 udvikling, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       }
     ]
   },
   {
-    title: "Integration af LIMS og Patientdata",
-    shortDesc: "Lab-systemet og patientjournalen er adskilte.",
-    narrativeIntro: `
-      Fejl i dataoverførslen mellem laboratoriet og patientjournalen fører til forkerte testresultater. Integration kan sikre korrekt og rettidig dataudveksling.
-    `,
-    glossaryTerms: ["LIMS", "EPJ", "Integration", "Kliniske data"],
-    digDeeperLinks: [
-      { label: "Integrationseksempler", text: "Se, hvordan en tæt integration mellem LIMS og EPJ kan reducere fejl i patientdata." }
-    ],
+    title: "Opgradering af Patientdata System",
+    shortDesc: "Forbedr dataintegration og brugergrænseflade for patientdata.",
+    narrativeIntro: "En opgradering vil forbedre datakvaliteten og gøre systemet mere intuitivt for brugerne.",
+    focus: "udvikling",
+    riskProfile: 4,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg de nuværende datamodeller for at identificere uoverensstemmelser.",
-        stepContext: "En detaljeret kortlægning kan afsløre uensartede datafelter, der forårsager fejl i overførslen.",
+        stepDescription: "Kortlæg de nuværende dataflows og identificer de primære svagheder.",
+        stepContext: "Fokusér på brugergrænsefladen og dataintegrationen.",
         choiceA: {
-          label: "Detaljeret kortlægning",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Omfattende kortlægning",
+          text: "+3 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Hurtig analyse",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Sikre at den nye integrationsløsning overholder GDPR og patientlovgivning.",
-        stepContext: "Compliance er afgørende for at beskytte patientdata og undgå juridiske problemer.",
-        choiceA: {
-          label: "Fuld compliance-gennemgang",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Overfladisk check",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Udarbejd en detaljeret integrationsplan med dataflow-diagrammer.",
-        stepContext: "En klar plan sikrer, at integrationen implementeres korrekt og effektivt.",
+        stepDescription: "Udarbejd en detaljeret rapport med anbefalinger til opgraderingen.",
+        stepContext: "Identificer nøgleområder for forbedringer og integration.",
         choiceA: {
-          label: "Omfattende plan",
-          text: "+2 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Detaljeret rapport",
+          text: "+4 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 2 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
         },
         choiceB: {
-          label: "Grundlæggende plan",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Kort rapport",
+          text: "+2 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
+        }
+      },
+      {
+        location: "leverandør",
+        stepDescription: "Forhandle med leverandører om opgraderingsløsninger.",
+        stepContext: "Sikre, at nye systemer kan implementeres inden for budget og tidsramme.",
+        choiceA: {
+          label: "Omfattende forhandling",
+          text: "+2 udvikling, -2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig forhandling",
+          text: "+1 udvikling, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       }
     ]
   },
   {
-    title: "Digital Booking for Akutmodtagelsen",
-    shortDesc: "Papirbaseret booking skaber forvirring og forsinkelser.",
-    narrativeIntro: `
-      Akutmodtagelsen oplever lange ventetider på grund af manuelle bookingprocesser. Digitalisering kan automatisere og optimere processen.
-    `,
-    glossaryTerms: ["Booking", "Triage", "Digitalisering"],
-    digDeeperLinks: [
-      { label: "Digital Booking", text: "Digitalisering af bookingprocesser kan reducere ventetider og forbedre patientflowet." }
-    ],
+    title: "Implementering af Elektroniske Journaler",
+    shortDesc: "Overfør papirbaserede journaler til et digitalt system.",
+    narrativeIntro: "Digitalisering af journaler vil modernisere hospitalets drift og forbedre datakvaliteten.",
+    focus: "udvikling",
+    riskProfile: 5,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Analyser den manuelle bookingproces for at identificere flaskehalse.",
-        stepContext: "En detaljeret analyse kan afsløre, hvilke dele af processen der forårsager de længste ventetider.",
+        stepDescription: "Analyser de eksisterende papirjournaler og identificer dataoverførselsbehov.",
+        stepContext: "Fokuser på kritiske patientdata og informationsflow.",
         choiceA: {
-          label: "Grundig procesanalyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Grundig analyse",
+          text: "+3 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Hurtig analyse",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementer et digitalt bookingsystem med automatisering.",
-        stepContext: "Et digitalt system kan automatisere bookingprocessen og reducere fejl, men kræver en robust infrastruktur.",
-        choiceA: {
-          label: "Omfattende implementering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Sikre, at det digitale bookingsystem er beskyttet mod uautoriseret adgang.",
-        stepContext: "En stærk sikkerhed forhindrer datalæk og misbrug af systemet.",
-        choiceA: {
-          label: "Avanceret sikkerhed",
-          text: "+2 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 2 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen særlig sikring",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Tjek, at bookingsystemet overholder GDPR og patientdata-regler.",
-        stepContext: "Compliance sikrer, at patientdata behandles korrekt og sikkert i det nye system.",
-        choiceA: {
-          label: "Fuld compliance-check",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Overfladisk check",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      }
-    ]
-  },
-  {
-    title: "Telemedicin til Kroniske Patienter",
-    shortDesc: "Fjernmonitorering kan reducere antallet af unødvendige besøg.",
-    narrativeIntro: `
-      Telemedicin giver mulighed for fjernopfølgning, men kræver sikre kommunikationskanaler og klare procedurer.
-    `,
-    glossaryTerms: ["Telemedicin", "Remote Monitoring", "Compliance"],
-    digDeeperLinks: [
-      { label: "Telemedicin Løsninger", text: "Moderne telemedicin-systemer kombinerer sikker kommunikation med effektiv patientopfølgning." }
-    ],
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Identificér de patienter, der er egnede til telemedicin.",
-        stepContext: "En grundig patientanalyse sikrer, at kun de mest egnede patienter vælges til fjernmonitorering.",
-        choiceA: {
-          label: "Grundig patientanalyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Implementer en sikker telemedicinsk platform med kryptering.",
-        stepContext: "En robust platform med kryptering beskytter patientdata under fjernmonitorering.",
-        choiceA: {
-          label: "Avanceret platform",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Standard platform",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opsæt den nødvendige serverkapacitet til at håndtere telemedicinsk data.",
-        stepContext: "En opgradering af infrastrukturen sikrer, at data behandles effektivt uden forsinkelser.",
-        choiceA: {
-          label: "Omfattende opsætning",
-          text: "+2 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 2 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Faseopdelt opsætning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér retningslinjer og procedurer for telemedicin.",
-        stepContext: "Grundig dokumentation sikrer, at den nye løsning anvendes korrekt og effektivt.",
+        stepDescription: "Udarbejd en plan for digitalisering af journaler.",
+        stepContext: "Planlæg hvordan data skal overføres og integreres.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret plan",
+          text: "+4 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Overfladisk plan",
+          text: "+2 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Gennemgå lovkrav og it-juridiske forhold for digitalisering.",
+        stepContext: "Sikre at systemet overholder gældende lovgivning.",
+        choiceA: {
+          label: "Omfattende juridisk gennemgang",
+          text: "+2 udvikling, -2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Kort juridisk gennemgang",
+          text: "+1 udvikling, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       }
     ]
   },
   {
-    title: "Elektronisk Lægemiddelordination",
-    shortDesc: "Manuelle ordinationer fører til fejl i medicindosering.",
-    narrativeIntro: `
-      Papirordinationer kan skabe forvirring og føre til alvorlige fejl i medicindoseringen. En digital løsning kan øge nøjagtigheden.
-    `,
-    glossaryTerms: ["Ordination", "Digitalisering", "Patientdata"],
-    digDeeperLinks: [
-      { label: "Digital Ordination", text: "Se, hvordan en digital ordinationsløsning kan eliminere fejl og forbedre patientbehandlingen." }
-    ],
+    title: "Opdatering af Laboratorie Software",
+    shortDesc: "Forbedr funktionaliteten af det eksisterende laboratorie software.",
+    narrativeIntro: "Opgraderingen skal gøre softwaren mere intuitiv og brugervenlig for laboratoriepersonalet.",
+    focus: "udvikling",
+    riskProfile: 4,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Analyser den nuværende ordinationsproces for at identificere fejl og flaskehalse.",
-        stepContext: "En detaljeret analyse kan afdække, hvor den manuelle proces fejler, og hvad der skal digitaliseres.",
+        stepDescription: "Analyser den nuværende software for fejl og mangler.",
+        stepContext: "Identificer hovedproblemer og områder med potentiale for forbedring.",
         choiceA: {
           label: "Detaljeret analyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          text: "+3 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Hurtig analyse",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementer et digitalt ordinationssystem med automatiske kontroller.",
-        stepContext: "En robust digital løsning kan eliminere fejl, men kræver en vis integration med eksisterende systemer.",
-        choiceA: {
-          label: "Omfattende implementering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Udarbejd procedurer for den nye digitale ordination og træn personalet.",
-        stepContext: "Grundig dokumentation og oplæring sikrer en glidende overgang og minimal fejlrate.",
+        stepDescription: "Udarbejd et forslag til softwareforbedringer.",
+        stepContext: "Fokuser på brugergrænseflade og funktionalitet.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Omfattende forslag",
+          text: "+4 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort forslag",
+          text: "+2 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
         }
       },
       {
-        location: "it-jura",
-        stepDescription: "Sikre at systemet overholder GDPR og andre lovkrav for patientdata.",
-        stepContext: "Compliance er afgørende for at beskytte patientdata og undgå juridiske problemer.",
+        location: "leverandør",
+        stepDescription: "Koordinér med softwareleverandøren om opdateringerne.",
+        stepContext: "Sikre, at opgraderingen kan implementeres effektivt og til en rimelig pris.",
         choiceA: {
-          label: "Fuld compliance-gennemgang",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret koordinering",
+          text: "+2 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk check",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Hurtig koordinering",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       }
     ]
   },
   {
-    title: "Effektivisering af Administrative IT-processer",
-    shortDesc: "Manuelle processer skaber fejl og spild af tid i administrationen.",
-    narrativeIntro: `
-      Administrationen er ineffektiv og rodet, hvilket fører til fejl og spild af ressourcer. Digitalisering kan optimere processerne, men kræver en klar plan og dokumentation.
-    `,
-    glossaryTerms: ["Administration", "Digitalisering", "Workflow"],
-    digDeeperLinks: [
-      { label: "Effektive Processer", text: "Moderne digitale systemer kan strømline administrative opgaver og reducere fejl." }
-    ],
+    title: "Udvikling af Patientportal",
+    shortDesc: "Design og implementer en ny patientportal til bedre kommunikation.",
+    narrativeIntro: "En ny portal vil forbedre adgangen til information og øge patienttilfredsheden.",
+    focus: "udvikling",
+    riskProfile: 5,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg de mest tidskrævende manuelle processer i administrationen.",
-        stepContext: "En detaljeret analyse kan identificere ineffektive arbejdsgange, der bremser processen.",
-        choiceA: {
-          label: "Grundig procesanalyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "leverandor",
-        stepDescription: "Implementer et digitalt sagsbehandlingssystem for at automatisere processerne.",
-        stepContext: "Et effektivt system kan spare tid og reducere fejl, men skal tilpasses hospitalets workflow.",
-        choiceA: {
-          label: "Omfattende system",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Sikre, at systemet overholder alle relevante love og regler.",
-        stepContext: "Compliance-check er nødvendig for at undgå juridiske problemer, men kan tage ekstra tid.",
-        choiceA: {
-          label: "Grundigt compliance-check",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Overfladisk tjek",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér de nye processer og uddan admin-personalet i systemet.",
-        stepContext: "Omfattende dokumentation sikrer en glidende overgang og korrekt anvendelse af det nye system.",
-        choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      }
-    ]
-  },
-  {
-    title: "Forbedring af IT-support for Kliniske Afdelinger",
-    shortDesc: "Utilstrækkelig IT-support øger ventetider og forringer patientbehandlingen.",
-    narrativeIntro: `
-      Kliniske afdelinger oplever lang ventetid og ineffektiv support, hvilket påvirker patientflowet negativt. En ny IT-support strategi kan øge effektiviteten.
-    `,
-    glossaryTerms: ["IT-support", "Service Level Agreement", "Brugeroplevelse"],
-    digDeeperLinks: [
-      { label: "Support Strategier", text: "Moderne IT-supportsystemer kan reducere ventetider og forbedre den samlede drift." }
-    ],
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Mål nuværende responstid og evaluér kvaliteten af IT-support.",
-        stepContext: "En grundig evaluering kan identificere, hvor supporten svigter, og hvilke forbedringer der er nødvendige.",
-        choiceA: {
-          label: "Detaljeret evaluering",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementer et digitalt supportsystem med automatisering og realtidsmonitorering.",
-        stepContext: "Et effektivt supportsystem kan reducere responstiden og forbedre systemdriften, men kræver integration med eksisterende IT.",
-        choiceA: {
-          label: "Omfattende implementering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Minimal implementering",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Sikre, at supportsystemet har robust adgangskontrol til beskyttelse af følsomme data.",
-        stepContext: "En sikker adgangskontrol mindsker risikoen for datalæk og sikrer, at kun autoriserede personer får adgang.",
-        choiceA: {
-          label: "Avanceret adgangskontrol",
-          text: "+2 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 2 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Standard adgangskontrol",
-          text: "+0 sikkerhed, -1 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Tjek at supportsystemet overholder GDPR og interne politikker.",
-        stepContext: "Compliance er afgørende for at sikre, at supporten håndterer data korrekt og undgår juridiske problemer.",
-        choiceA: {
-          label: "Omhyggeligt lovtjek",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen tjek",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      },
-      {
-        location: "dokumentation",
-        stepDescription: "Dokumentér de nye supportsystemer og uddan personalet i deres anvendelse.",
-        stepContext: "Grundig dokumentation sikrer, at supportsystemet anvendes korrekt og effektivt, hvilket reducerer fejl og ventetider.",
-        choiceA: {
-          label: "Detaljeret dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
-        }
-      }
-    ]
-  },
-  {
-    title: "Modernisering af Klinisk IT-infrastruktur",
-    shortDesc: "Forældet hardware og netværk hæmmer den kliniske drift.",
-    narrativeIntro: `
-      Kliniske systemer lider under langsom ydeevne og hyppige nedetider. En modernisering af infrastrukturen er nødvendig for at sikre en stabil drift.
-    `,
-    glossaryTerms: ["Klinisk IT", "Hardware", "Netværk"],
-    digDeeperLinks: [
-      { label: "Moderne Infrastruktur", text: "Opdateret hardware og netværk kan reducere nedetid og øge systemets ydeevne." }
-    ],
-    steps: [
-      {
-        location: "hospital",
-        stepDescription: "Identificér de største flaskehalse i de kliniske systemer.",
-        stepContext: "En detaljeret analyse kan afsløre, hvor systemerne halter, og hvilke opgraderinger der er nødvendige.",
+        stepDescription: "Kortlæg nuværende kommunikationsflow mellem patienter og hospitalet.",
+        stepContext: "Identificer flaskehalse og muligheder for digitalisering.",
         choiceA: {
           label: "Omfattende analyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          text: "+3 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Overfladisk analyse",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Opgrader netværksudstyr og servere til moderne standarder.",
-        stepContext: "En opgradering af infrastrukturen kan øge systemets kapacitet og driftssikkerhed, men kræver investering og omhyggelig planlægning.",
-        choiceA: {
-          label: "Omfattende opgradering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisopgradering",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "cybersikkerhed",
-        stepDescription: "Implementer opdaterede sikkerhedsforanstaltninger for at beskytte de nye systemer.",
-        stepContext: "Sikkerhedsforanstaltninger som opdaterede firewalls og IDS skal følge med infrastrukturændringerne for maksimal beskyttelse.",
-        choiceA: {
-          label: "Avancerede sikkerhedsforanstaltninger",
-          text: "+2 sikkerhed, -1 udvikling",
-          timeCost: 4,
-          recommended: true,
-          applyEffect: { statChange: { security: 2 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Standard sikkerhed",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 2,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Dokumentér de nye systemer og opdater driftsmanualer.",
-        stepContext: "Grundig dokumentation sikrer, at de nye systemer vedligeholdes korrekt og kan fejlfinding udføres effektivt.",
+        stepDescription: "Udarbejd et design for den nye patientportal.",
+        stepContext: "Inkluder funktioner som booking, journalvisning og kommunikationsværktøjer.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Detaljeret design",
+          text: "+4 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Simpelt design",
+          text: "+2 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
+        }
+      },
+      {
+        location: "it‑jura",
+        stepDescription: "Sikre overholdelse af databeskyttelseslovgivning i patientportalen.",
+        stepContext: "Gennemgå GDPR og andre relevante regler.",
+        choiceA: {
+          label: "Omfattende juridisk vurdering",
+          text: "+2 udvikling, -2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Basis juridisk vurdering",
+          text: "+1 udvikling, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       }
     ]
   },
   {
-    title: "Administrativ Forbedring af Patientindlæggelser",
-    shortDesc: "Manuelle processer skaber unødvendige forsinkelser ved patientindlæggelser.",
-    narrativeIntro: `
-      Patientindlæggelser er ineffektive pga. manuelle procedurer. Digitalisering kan optimere processerne og reducere ventetiden.
-    `,
-    glossaryTerms: ["Indlæggelse", "Digitalisering", "Workflow"],
-    digDeeperLinks: [
-      { label: "Digital Indlæggelse", text: "Digitalisering af indlæggelsesprocessen kan reducere ventetider og forbedre patientflowet." }
-    ],
+    title: "Integration af EHR System",
+    shortDesc: "Integrer et nyt Electronic Health Record system med eksisterende løsninger.",
+    narrativeIntro: "Effektiv integration af EHR-systemet vil sikre bedre dataudveksling og klinisk beslutningstagning.",
+    focus: "udvikling",
+    riskProfile: 4,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Kortlæg den nuværende indlæggelsesprocedure for at identificere flaskehalse.",
-        stepContext: "En detaljeret gennemgang kan afsløre, hvor ineffektiviteten opstår, og hvilke processer der skal automatiseres.",
+        stepDescription: "Kortlæg de nuværende EHR-løsninger og identificer integrationsbehov.",
+        stepContext: "Sørg for at inkludere både kliniske og administrative data.",
         choiceA: {
-          label: "Detaljeret kortlægning",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          label: "Omfattende analyse",
+          text: "+3 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Hurtig analyse",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       },
       {
-        location: "infrastruktur",
-        stepDescription: "Implementer et digitalt system for automatisering af patientindlæggelser.",
-        stepContext: "Et digitalt system kan strømligne processen og reducere fejl, men kræver integration med eksisterende systemer.",
+        location: "dokumentation",
+        stepDescription: "Udarbejd en integrationsplan for EHR systemet.",
+        stepContext: "Fokusér på dataintegration og workflowoptimering.",
         choiceA: {
-          label: "Omfattende implementering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
+          label: "Detaljeret plan",
+          text: "+4 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
         },
         choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Kort plan",
+          text: "+2 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
         }
       },
       {
-        location: "cybersikkerhed",
-        stepDescription: "Sikre at det digitale system beskytter patientdata mod uautoriseret adgang.",
-        stepContext: "Et sikkert system er nødvendigt for at beskytte følsomme patientdata, især ved digital indlæggelse.",
+        location: "leverandør",
+        stepDescription: "Koordinér med leverandøren for at sikre en fejlfri integration.",
+        stepContext: "Sikre at alle tekniske krav og standarder opfyldes.",
         choiceA: {
-          label: "Avanceret sikkerhed",
-          text: "+2 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Omfattende koordinering",
+          text: "+2 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 2 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Standard sikkerhed",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 2,
+          label: "Hurtig koordinering",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        }
-      },
-      {
-        location: "it-jura",
-        stepDescription: "Tjek at den digitale løsning overholder GDPR og andre patientdata-regler.",
-        stepContext: "Compliance er kritisk for at undgå juridiske problemer og sikre, at patientdata håndteres korrekt.",
-        choiceA: {
-          label: "Fuld compliance-gennemgang",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
-        },
-        choiceB: {
-          label: "Overfladisk check",
-          text: "Ingen ændring",
-          timeCost: 1,
-          recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       }
     ]
   },
   {
-    title: "Elektronisk Lægemiddelordination",
-    shortDesc: "Manuelle ordinationer fører til fejl i medicindosering.",
-    narrativeIntro: `
-      Papirordinationer fører ofte til forvirring og alvorlige fejl i medicindosering. Digitalisering kan øge nøjagtigheden og sikkerheden.
-    `,
-    glossaryTerms: ["Ordination", "Digitalisering", "Patientdata"],
-    digDeeperLinks: [
-      { label: "Digital Ordination", text: "En digital løsning eliminerer fejl og sikrer, at medicinen ordineres korrekt." }
-    ],
+    title: "Opgradering af IT-Systemer",
+    shortDesc: "Moderniser de eksisterende IT-systemer på hospitalet for bedre ydeevne.",
+    narrativeIntro: "Opgraderinger vil øge systemernes effektivitet og bidrage til en mere moderne drift.",
+    focus: "udvikling",
+    riskProfile: 3,
     steps: [
       {
         location: "hospital",
-        stepDescription: "Analyser den nuværende ordinationsproces for at identificere fejl og ineffektivitet.",
-        stepContext: "En detaljeret analyse kan afdække, hvor fejl opstår, og hvilke processer der skal digitaliseres.",
+        stepDescription: "Analyser de nuværende IT-systemer for at identificere forbedringsmuligheder.",
+        stepContext: "Fokuser på brugeroplevelse og dataintegration.",
         choiceA: {
           label: "Detaljeret analyse",
-          text: "+3 sikkerhed, -1 udvikling",
-          timeCost: 4,
+          text: "+3 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
         },
         choiceB: {
-          label: "Hurtig evaluering",
-          text: "+1 sikkerhed, -2 udvikling",
-          timeCost: 2,
+          label: "Overfladisk analyse",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -2 } }
-        }
-      },
-      {
-        location: "infrastruktur",
-        stepDescription: "Implementer et digitalt ordinationssystem med automatiske kontroller.",
-        stepContext: "En robust digital løsning kan reducere fejl, men kræver integration med eksisterende systemer.",
-        choiceA: {
-          label: "Omfattende implementering",
-          text: "+3 sikkerhed, -2 udvikling",
-          timeCost: 5,
-          recommended: true,
-          applyEffect: { statChange: { security: 3 }, tradeOff: { development: -2 } }
-        },
-        choiceB: {
-          label: "Basisløsning",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
-          recommended: false,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       },
       {
         location: "dokumentation",
-        stepDescription: "Udarbejd procedurer for den nye digitale ordination og træn personalet.",
-        stepContext: "Grundig dokumentation sikrer en glidende overgang og minimal fejlrate i ordinationsprocessen.",
+        stepDescription: "Udarbejd en opgraderingsplan for IT-systemerne.",
+        stepContext: "Planlæg hvilke systemer der skal opgraderes, og hvordan integrationen skal foregå.",
         choiceA: {
-          label: "Omfattende dokumentation",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Omfattende plan",
+          text: "+4 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
         },
         choiceB: {
-          label: "Ingen dokumentation",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Kort plan",
+          text: "+2 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
         }
       },
       {
-        location: "it-jura",
-        stepDescription: "Sikre at den digitale ordinationsløsning overholder GDPR og andre relevante regler.",
-        stepContext: "Compliance-check er afgørende for at beskytte patientdata og undgå juridiske problemer.",
+        location: "it‑jura",
+        stepDescription: "Sikre, at systemopgraderingerne overholder juridiske krav.",
+        stepContext: "Gennemgå kontrakter og lovgivning for at minimere risici.",
         choiceA: {
-          label: "Fuld compliance-gennemgang",
-          text: "+1 sikkerhed, -1 udvikling",
-          timeCost: 3,
+          label: "Omfattende juridisk vurdering",
+          text: "+2 udvikling, -2 tid",
           recommended: true,
-          applyEffect: { statChange: { security: 1 }, tradeOff: { development: -1 } }
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
         },
         choiceB: {
-          label: "Overfladisk check",
-          text: "Ingen ændring",
-          timeCost: 1,
+          label: "Basis juridisk vurdering",
+          text: "+1 udvikling, 0 tid",
           recommended: false,
-          applyEffect: { statChange: { security: 0 } }
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
+        }
+      }
+    ]
+  },
+  {
+    title: "Digitalisering af Administrationssystem",
+    shortDesc: "Moderniser administrationssystemet for bedre effektivitet og databehandling.",
+    narrativeIntro: "Digitalisering vil automatisere manuelle processer og reducere fejl i administrationen.",
+    focus: "udvikling",
+    riskProfile: 4,
+    steps: [
+      {
+        location: "dokumentation",
+        stepDescription: "Analyser de nuværende administrative processer.",
+        stepContext: "Identificer ineffektive procedurer og manuelle flaskehalse.",
+        choiceA: {
+          label: "Omfattende analyse",
+          text: "+3 udvikling, -2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { development: 3 } }
+        },
+        choiceB: {
+          label: "Hurtig analyse",
+          text: "+1 udvikling, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
+        }
+      },
+      {
+        location: "hospital",
+        stepDescription: "Udarbejd en detaljeret digitaliseringsplan.",
+        stepContext: "Fokuser på automatisering af manuelle processer og dataudveksling.",
+        choiceA: {
+          label: "Detaljeret plan",
+          text: "+4 udvikling, -2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { development: 4 } }
+        },
+        choiceB: {
+          label: "Kort plan",
+          text: "+2 udvikling, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { development: 2 } }
+        }
+      },
+      {
+        location: "leverandør",
+        stepDescription: "Forhandle med leverandører om de nye løsninger.",
+        stepContext: "Sikre gode vilkår for implementering af de digitaliserede processer.",
+        choiceA: {
+          label: "Detaljeret forhandling",
+          text: "+2 udvikling, -2 tid",
+          recommended: true,
+          applyEffect: { timeCost: 2, statChange: { development: 2 } }
+        },
+        choiceB: {
+          label: "Hurtig forhandling",
+          text: "+1 udvikling, 0 tid",
+          recommended: false,
+          applyEffect: { timeCost: 0, statChange: { development: 1 } }
         }
       }
     ]
   }
 ];
+
