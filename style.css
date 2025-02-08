@@ -1,19 +1,24 @@
 /* style.css */
+
+/* Grundlæggende typografi og baggrund */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #fafafa;
+  background-color: #1e1e1e; /* Mørk baggrund for høj kontrast */
+  color: #e0e0e0;  /* Lys tekstfarve */
 }
 
+/* Header */
 header {
-  background-color: #333;
-  color: #fff;
+  background-color: #121212; /* Endnu mørkere header */
+  color: #ffffff;
   padding: 1rem;
   text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Container opdelt i to lige store kolonner (50 % hver) */
+/* Container opdelt i to lige store kolonner (50% hver) */
 .container {
   display: flex;
   min-height: calc(100vh - 60px);
@@ -26,37 +31,98 @@ header {
   box-sizing: border-box;
 }
 
+/* Venstre side (KPI-graf og lokationer) */
 .left-column {
-  background-color: #f4f4f4;
+  background-color: #2c2c2c;
   display: flex;
   flex-direction: column;
 }
 
+/* Højre side (aktive og potentielle opgaver) */
 .right-column {
-  background-color: #fff;
+  background-color: #1e1e1e;
   display: flex;
   flex-direction: column;
 }
 
+/* KPI-graf container */
 #graphContainer {
   flex: 0 0 auto;
 }
 
+/* Lokationer */
 #locationsContainer {
   margin-top: 1rem;
 }
 
+#locations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Lokationsknapper – opdateret med høj kontrast */
+.location-button {
+  display: inline-block;
+  padding: 1rem 1.5rem;
+  font-size: 1.2rem;
+  border: 2px solid #4caf50; /* Grøn kant */
+  background-color: #4caf50; /* Grøn baggrund */
+  color: #ffffff; /* Hvid tekst */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border-radius: 4px;
+}
+
+.location-button:hover {
+  background-color: #43a047; /* Mørkere grøn ved hover */
+  transform: scale(1.02);
+}
+
+/* Aktiv opgave og potentielle opgaver */
+#activeTask, #potentialTasks {
+  margin-bottom: 1rem;
+}
+
 #activeTask {
-  flex: 0 0 auto;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #444;
   padding-bottom: 1rem;
 }
 
-#potentialTasks {
-  flex: 1 1 auto;
-  margin-top: 1rem;
-  overflow-y: auto;
-  max-height: calc(100vh - 200px);
+/* Potentielle opgaveelementer */
+.task-item {
+  border: 1px solid #444;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+}
+
+.task-item .task-info {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+/* Knapper – generel stil */
+button {
+  padding: 1rem 1.5rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #0275d8;
+  color: #fff;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #025aa5;
+  transform: scale(1.02);
 }
 
 /* Modal-styling */
@@ -66,20 +132,21 @@ header {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7); /* Lettere gennemskinnelig mørk baggrund */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .modal-content {
-  background-color: #fff;
+  background-color: #2c2c2c;
   padding: 20px;
   border-radius: 8px;
   max-width: 90%;
   max-height: 90%;
   overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: #e0e0e0;
 }
 
 .hidden {
@@ -90,61 +157,12 @@ header {
   float: right;
   font-size: 1.5rem;
   cursor: pointer;
-}
-
-/* Forstørrede knapper */
-button {
-  padding: 1rem 1.5rem;
-  margin: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  background-color: #0275d8;
-  color: #fff;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #025aa5;
-}
-
-/* Lokationsknapper – dobbelt så store */
-.location-button {
-  display: inline-block;
-  margin: 0.5rem;
-  padding: 1rem 1.5rem;
-  font-size: 1.2rem;
-  border: 2px solid #ccc;
-  background-color: #eee;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.location-button:hover {
-  background-color: #ddd;
-}
-
-/* Stil til potentielle opgaveelementer */
-.task-item {
-  border: 1px solid #ccc;
-  padding: 0.75rem;
-  margin-bottom: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.task-item .task-info {
-  flex: 1;
-  margin-right: 1rem;
+  color: #e0e0e0;
 }
 
 /* Gennemførte trin */
 .done {
-  color: green;
+  color: #4caf50;
   font-weight: bold;
   margin-left: 0.5rem;
 }
