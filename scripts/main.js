@@ -37,9 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
         pointRadius: 0
       }]
     },
-    options: {
-      scales: { y: { beginAtZero: true } }
-    }
+    options: { scales: { y: { beginAtZero: true } } }
   });
 
   function updateDashboard() {
@@ -63,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function closeModal(callback) {
-    gsap.to(modal, { opacity: 0, duration: 0.5, onComplete: function() {
+    gsap.to(modal, { opacity: 0, duration: 0.5, onComplete: () => {
       modal.classList.add('hidden');
       if (callback) callback();
     }});
@@ -98,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
     return icons[location] || '';
   }
 
-  // Introduktion
+  // Introduktion og PI Planning
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
