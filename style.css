@@ -98,7 +98,7 @@ header {
 #activeTask {
   border-bottom: 1px solid #ddd;
   padding: 1rem;
-  min-height: 243px;  /* 10% mindre end før */
+  min-height: 243px;  /* Reduceret med ca. 10% */
   overflow-y: auto;
   background-color: #fff;
 }
@@ -169,7 +169,7 @@ button:hover {
   z-index: 1000;
 }
 
-/* Modal-content med fast størrelse: 60vw x 40vh */
+/* Modal-content med fast størrelse: 60vw x 40vh (for introduktion vil vi ændre højden til 48vh via JS) */
 .modal-content {
   background-color: #fff;
   border-radius: 12px;
@@ -190,7 +190,7 @@ button:hover {
   text-align: center;
 }
 
-/* Modal-footer – til fejl/pop-ups */
+/* Modal-footer – til pop-ups med knapper */
 .modal-footer {
   padding: 10px 60px;
   background-color: #f5f5f5;
@@ -201,7 +201,7 @@ button:hover {
   height: 60px;
 }
 
-/* Horisontale valgknapper til trin-pop-ups */
+/* Horisontale valgknapper (til trin-pop-ups) */
 .choice-buttons {
   display: flex;
   gap: 10px;
