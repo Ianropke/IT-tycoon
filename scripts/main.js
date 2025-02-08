@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Modalhåndtering med GSAP
+  // Modalhåndtering med GSAP – med fast opdeling af body og footer
   const modal = document.getElementById('modal');
   const modalBodyContainer = document.getElementById('modalBody');
   const modalFooterContainer = document.getElementById('modalFooter');
@@ -335,11 +335,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // Ændret finishTask: Efter opgaven er fuldført, fjernes den fra de potentielle opgaver
   function finishTask() {
     gameState.tasksCompleted++;
     openModal("<h2>Info</h2><p>Opgaven er fuldført!</p>", `<button id="continueAfterFinish">Fortsæt</button>`);
     document.getElementById('continueAfterFinish').addEventListener('click', function() {
       closeModal(() => {
+        // Fjern den fuldførte opgave fra tasks-array'et
+        gameState.tasks = gameState.tasks.filter(task => task !== gameState.currentTask);
         document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
         gameState.currentTask = null;
         gameState.currentStepIndex = 0;
