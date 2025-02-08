@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
     choiceHistory: []
   };
 
-  // Kombiner task-filer – sørg for at de indlæses før main.js
+  // Sørg for at task-filerne er loadet før main.js
   gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
   // Initialiser Chart.js-dashboardet
@@ -37,7 +37,9 @@ document.addEventListener("DOMContentLoaded", function() {
         pointRadius: 0
       }]
     },
-    options: { scales: { y: { beginAtZero: true } } }
+    options: {
+      scales: { y: { beginAtZero: true } }
+    }
   });
 
   function updateDashboard() {
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Opdateret modalfunktion – bruger nu en fast modal-body og modal-footer
+  // Modalhåndtering med GSAP
   const modal = document.getElementById('modal');
   const modalBodyContainer = document.getElementById('modalBody');
   const modalFooterContainer = document.getElementById('modalFooter');
@@ -54,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
   modalClose.addEventListener('click', () => closeModal());
 
   function openModal(bodyContent, footerContent = "") {
-    modalBodyContainer.innerHTML = `<div class="modal-body">${bodyContent}</div>`;
+    modalBodyContainer.innerHTML = bodyContent;
     modalFooterContainer.innerHTML = footerContent;
     modal.classList.remove('hidden');
     gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.5 });
@@ -107,9 +109,7 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
     openModal(introContent, `<button id="startGame">Start Spillet</button>`);
     document.getElementById('startGame').addEventListener('click', function() {
-      closeModal(() => {
-        showSprintGoal();
-      });
+      closeModal(() => showSprintGoal());
     });
   }
 
