@@ -9,8 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     tasksCompleted: 0,
     missionGoals: { security: 22, development: 22 },
     architectHelpUsed: false,
-    tasks: [],              // Kombinerede opgaver fra eksterne filer
-    selectedTask: null      // Den opgave, som brugeren har markeret (før forpligtelse)
+    tasks: []               // Kombinerede opgaver fra eksterne filer
   };
 
   // Kombiner tasks fra de eksterne task-filer
@@ -79,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <h2>Velkommen til IT‑Tycoon</h2>
       <p>Du agerer IT‑forvalter med ansvar for at balancere tre KPI’er: Tid, Sikkerhed og Udvikling.</p>
       <p>Venstre side viser din KPI-graf med sprintmålet samt en liste med lokationer. Højre side viser den aktive opgave og potentielle opgaver.</p>
-      <p>Når du vælger en opgave, skal du først markere den og trykke på "Forpligt opgave" for at starte opgaven. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
+      <p>Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p>Planlæg dine valg omhyggeligt – avancerede valg giver bedre resultater, men koster ekstra tid. Du kan bruge arkitekthjælp (én gang per opgave), hvis du er i tvivl.</p>
       <button id="startGame">Start Spillet</button>
     `;
@@ -111,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>UI-Layout:</strong><br>
          - Venstre side: Viser KPI-graf med sprintmål og en statisk liste med lokationer.<br>
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
-         Når du vælger en opgave, skal du trykke på "Forpligt opgave" for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
+         Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven for at starte den. Herefter vises en liste med alle de lokationer, du skal besøge.</p>
       <p><strong>Spillets Mekanik:</strong><br>
          Når opgaven er forpligtet, skal du klikke på den korrekte lokation (venstre side) svarende til det næste trin i opgaven.</p>
       <p><strong>Planlægning og Strategi:</strong><br>
@@ -125,52 +124,33 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Render listen over potentielle opgaver med mulighed for at vælge og forpligte sig
+  // Render listen over potentielle opgaver – Hver opgave har en "Forpligt opgave"‑knap ved siden af
   function renderPotentialTasks() {
     const potentialTasksDiv = document.getElementById('potentialTasks');
     potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
-    // Kun vis opgaveelementer, hvis der ikke allerede er forpligtet en opgave
+    // Kun vis opgaver, hvis der ikke allerede er forpligtet en opgave
     if (gameState.currentTask !== null) return;
     gameState.tasks.forEach((task, index) => {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
-      taskItem.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
-      taskItem.addEventListener('click', function() {
-        // Marker denne opgave som valgt
-        gameState.selectedTask = task;
-        highlightSelectedTask(index);
-        renderCommitButton();
+      
+      // Oplysning om opgaven
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'task-info';
+      infoDiv.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
+      
+      // Forpligt-knap for denne opgave
+      const commitBtn = document.createElement('button');
+      commitBtn.textContent = 'Forpligt opgave';
+      commitBtn.addEventListener('click', function() {
+        startTask(task);
+        potentialTasksDiv.innerHTML = ''; // Fjern listen over potentielle opgaver
       });
+      
+      taskItem.appendChild(infoDiv);
+      taskItem.appendChild(commitBtn);
       potentialTasksDiv.appendChild(taskItem);
     });
-  }
-
-  function highlightSelectedTask(selectedIndex) {
-    const taskItems = document.querySelectorAll('.task-item');
-    taskItems.forEach((item, index) => {
-      item.style.backgroundColor = (index === selectedIndex) ? '#d3d3d3' : '';
-    });
-  }
-
-  // Render "Forpligt opgave"-knappen, som vises efter man har markeret en opgave
-  function renderCommitButton() {
-    // Fjern en eksisterende forpligt-knap, hvis der er en
-    let commitBtn = document.getElementById('commitButton');
-    if (commitBtn) {
-      commitBtn.remove();
-    }
-    commitBtn = document.createElement('button');
-    commitBtn.id = 'commitButton';
-    commitBtn.textContent = 'Forpligt opgave';
-    commitBtn.addEventListener('click', function() {
-      if (gameState.selectedTask) {
-        startTask(gameState.selectedTask);
-        // Når opgaven er forpligtet, fjernes listen over potentielle opgaver
-        document.getElementById('potentialTasks').innerHTML = '';
-      }
-    });
-    const potentialTasksDiv = document.getElementById('potentialTasks');
-    potentialTasksDiv.appendChild(commitBtn);
   }
 
   // Starter den forpligtede opgave
@@ -181,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderActiveTask(task);
   }
 
-  // Render den aktive opgave, inklusiv en liste med alle opgavens lokationer
+  // Render den aktive opgave med en liste over alle opgavens lokationer og instruktion for det næste trin
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
@@ -194,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function() {
         locationsListElem.appendChild(li);
       });
       activeTaskDiv.appendChild(locationsListElem);
-      // Vis instruktion for det nuværende trin:
+      // Instruktion for det nuværende trin:
       const currentStep = task.steps[gameState.currentStepIndex];
       const instruction = document.createElement('p');
       instruction.innerHTML = `<strong>Vælg lokation:</strong> ${currentStep.location} ${getIcon(currentStep.location)}`;
