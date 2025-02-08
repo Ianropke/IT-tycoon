@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Funktion til at opdatere opgaveprogress i dashboard
+  // Opdater opgaveprogress i dashboardet
   function updateTaskProgress() {
     const progressElement = document.getElementById('taskProgress');
     progressElement.textContent = `Opgave ${gameState.tasksCompleted} / 10`;
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }});
   }
 
-  // "Få hjælp"-knap
+  // "Få hjælp"-knap i headeren
   document.getElementById('helpButton').addEventListener('click', function() {
     showHelp();
   });
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (−2 tid).</li>
         <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus.</li>
       </ul>
-      Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
+      Dine valg påvirker dine KPI’er, så det er vigtigt at afveje risiko og belønning nøje.</p>
       <p><strong>Vigtige Funktioner</strong><br>
       - Opgaver: Vælg en opgave og gennemfør hvert trin for at påvirke dine KPI’er.<br>
       - Arkitekthjælp: Brug denne funktion, hvis du er usikker – den giver anbefalinger, men husk at lære af dine egne beslutninger.<br>
@@ -210,6 +210,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
     if (task.steps && task.steps.length > 0) {
+      // Opret en ul-liste for trin
       const locationsListElem = document.createElement('ul');
       locationsListElem.id = 'taskLocations';
       task.steps.forEach((step, idx) => {
@@ -222,6 +223,7 @@ document.addEventListener("DOMContentLoaded", function() {
         locationsListElem.appendChild(li);
       });
       activeTaskDiv.appendChild(locationsListElem);
+      // Vis instruktion for det aktuelle trin
       const currentStep = task.steps[gameState.currentStepIndex];
       const instruction = document.createElement('p');
       instruction.innerHTML = `<strong>Vælg lokation:</strong> ${currentStep.location.toUpperCase()} ${getIcon(currentStep.location)}`;
@@ -271,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceA);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
       applyChoice(modifiedChoice);
-      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceA.label} (${choiceAText})`);
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex + 1}: ${step.choiceA.label} (${choiceAText})`);
       closeModal(() => {
         if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
           cabApproval();
@@ -284,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceB);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceB.applyEffect, { timeCost: 0 });
       applyChoice(modifiedChoice);
-      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceB.label} (${choiceBText})`);
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex + 1}: ${step.choiceB.label} (${choiceBText})`);
       closeModal(() => {
         if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
           cabApproval();
