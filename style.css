@@ -121,9 +121,7 @@ button:hover {
   transform: scale(1.02);
 }
 
-/* Modal-styling med CSS Grid for ensartet opdeling */
-
-/* Modal-overlay */
+/* Modal-styling med CSS Grid til en fast opdeling af modal-body og modal-footer */
 .modal {
   position: fixed;
   top: 0;
@@ -137,39 +135,37 @@ button:hover {
   z-index: 1000;
 }
 
-/* Modal-content med fast størrelse: 80vw bredde og 60vh højde */
 .modal-content {
   background-color: #fff;
   border-radius: 8px;
-  width: 80vw;
-  height: 60vh;
+  width: 80vw;   /* 80 % af viewportens bredde */
+  height: 60vh;  /* 60 % af viewportens højde */
   display: grid;
-  grid-template-rows: 1fr auto;  /* Modal-body optager 1fr, modal-footer auto (kan justeres til fx 80%/20% hvis ønsket) */
+  grid-template-rows: 1fr auto; /* Modal-body og modal-footer */
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   color: #333;
   margin: 0 20px;
 }
 
-/* Modal-body med rig padding, så teksten ikke sidder for tæt på venstre kant */
+/* Modal-body med øget side-padding og centreret indhold for bredere margener */
 .modal-body {
-  padding: 30px 60px;
+  padding: 30px 100px;  /* Øget padding til venstre og højre */
   overflow-y: auto;
-  text-align: left;
+  text-align: center;   /* Centrerer teksten, så den fremstår i midten */
 }
 
-/* Modal-footer – placer knapperne fast i nederste højre hjørne */
+/* Modal-footer placeret fast nederst med knapper i nederste højre hjørne */
 .modal-footer {
   padding: 10px 60px;
   background-color: #f5f5f5;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* Knapperne placeres nederst til højre */
+  justify-content: flex-end;  /* Knapperne vises nederst til højre */
   flex-shrink: 0;
   height: 60px;  /* Fast højde for footer */
 }
 
-/* Luk-knap for modal */
 .close {
   position: absolute;
   top: 10px;
@@ -179,7 +175,7 @@ button:hover {
   color: #333;
 }
 
-/* Gennemførte trin markeret med et check */
+/* Gennemførte trin */
 .done {
   color: #4caf50;
   font-weight: bold;
