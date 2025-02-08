@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Fjernet toast-feedback; effekterne vises nu direkte i modalvinduet
+  // Toast-feedback er nu fjernet, da alle effekter vises direkte i modalvinduet
 
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modalBody');
@@ -139,9 +139,9 @@ document.addEventListener("DOMContentLoaded", function() {
          - Højre side: Viser den aktive opgave samt potentielle opgaver.<br>
          Når du vælger en opgave, skal du trykke på "Forpligt opgave" ved siden af opgaven – opgavens titel og beskrivelse angiver, om den primært understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur-/cybersikkerhedsopgaver).</p>
       <p><strong>Spillets Mekanik:</strong><br>
-         Når opgaven er forpligtet, skal du i hvert trin vælge den korrekte lokation (venstre side) svarende til det næste trin. Ved valg af den komplette løsning trækkes fast <span style="color:red;">−2 tid</span> og den viser de positive bonusser (fx "+3 Udvikling" eller "+3 Sikkerhed"), mens den hurtige løsning trækker 0 tid og giver en mindre bonus.</p>
+         Når opgaven er forpligtet, skal du i hvert trin vælge den korrekte lokation (venstre side) svarende til det næste trin. Ved valg af den komplette løsning trækkes fast <span style="color:red;">−2 tid</span> og der gives en større bonus, mens den hurtige løsning trækker 0 tid og giver en mindre bonus. Alle bonusser vises kun som positive værdier.</p>
       <p><strong>Efter de normale trin:</strong><br>
-         Når du har gennemført alle trin, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB, og herefter beregnes en godkendelseschance med bonus, så risikoen for afvisning er reduceret. Hvis CAB afviser, mister du 3 tidspoint for rework – og CAB-evalueringen gentages, indtil opgaven bliver godkendt.</p>
+         Når du har gennemført alle trin, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring nu sendes til CAB, og herefter beregnes en godkendelseschance med en bonus, så risikoen for afvisning reduceres. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
@@ -245,11 +245,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Vis modal med valgmuligheder for det aktuelle trin – inkl. "Mere info (trin)"
+  // Vis modal med valgmuligheder for det aktuelle trin.
+  // Vi har fjernet "Mere info"-knappen og inkluderer nu trinbeskrivelsen direkte.
   function showStepChoices(step) {
     let choiceAText = step.choiceA.text.replace(/-?\d+\s*tid/, "<span style='color:red;'>−2 tid</span>");
     let choiceBText = step.choiceB.text.replace(/-?\d+\s*tid/, "<span style='color:green;'>0 tid</span>");
-    // Hvis opgaven understøtter enten Udvikling eller Sikkerhed, fjern referencer til den anden KPI
     if (gameState.currentTask.focus === "udvikling") {
       choiceAText = choiceAText.replace(/[\+\-]?\d+\s*sikkerhed/gi, "").trim();
       choiceBText = choiceBText.replace(/[\+\-]?\d+\s*sikkerhed/gi, "").trim();
@@ -260,11 +260,11 @@ document.addEventListener("DOMContentLoaded", function() {
       
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
+      ${step.stepContext ? `<p>${step.stepContext}</p>` : ""}
       <button id="choiceA">${step.choiceA.label} (${choiceAText})</button>
       <button id="choiceB">${step.choiceB.label} (${choiceBText})</button>
       <br><br>
       <button id="architectHelp">${gameState.architectHelpUsed ? 'Arkitekthjælp brugt' : 'Brug Arkitekthjælp'}</button>
-      <button id="moreInfo">Mere info (trin)</button>
     `;
     openModal(choiceContent);
     // For Choice A: komplet løsning – fast −2 tid
@@ -297,7 +297,6 @@ document.addEventListener("DOMContentLoaded", function() {
       if (!gameState.architectHelpUsed) {
         gameState.architectHelpUsed = true;
         let hint = "";
-        // Brug en heuristik baseret på titlen for at give hint
         if (gameState.currentTask.title.toLowerCase().includes("hospital") || gameState.currentTask.title.toLowerCase().includes("lims")) {
           hint = "Denne opgave understøtter Udvikling.";
         } else {
@@ -305,9 +304,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         openModal(`<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p><p>${hint}</p>`);
       }
-    });
-    document.getElementById('moreInfo').addEventListener('click', function() {
-      openModal(`<h2>Mere info (trin)</h2><p>${step.stepContext || "Ingen yderligere information tilgængelig."}</p>`);
     });
   }
 
@@ -330,10 +326,8 @@ document.addEventListener("DOMContentLoaded", function() {
   // Når det sidste trin er løst, sendes opgaven til CAB for automatisk vurdering
   function cabApproval() {
     closeModal();
-    // Informer spilleren om, at ændringen sendes til CAB for evaluering
     openModal("<h2>Til CAB</h2><p>Din ændring sendes nu til CAB for evaluering…</p>");
     setTimeout(() => {
-      // Beregn CAB-godkendelseschance med bonus for lavere risiko (bonus på 20)
       let chance = (gameState.security + 20) / (gameState.missionGoals.security + 20);
       if (Math.random() < chance) {
         showTaskSummary();
