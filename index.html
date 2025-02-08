@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT‑Tycoon</title>
+  <!-- Google Font: Montserrat -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <!-- Chart.js via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,10 +14,13 @@
 </head>
 <body>
   <header>
-    <h1>IT‑Tycoon</h1>
+    <div class="header-content">
+      <span class="logo">🚀</span>
+      <h1>IT Tycoon</h1>
+    </div>
   </header>
   <div class="container">
-    <!-- Venstre side: Graf og lokationer (50 % af skærmen) -->
+    <!-- Venstre side: KPI-graf og lokationer -->
     <div class="left-column">
       <div id="graphContainer">
         <canvas id="kpiChart"></canvas>
@@ -23,19 +28,19 @@
       <div id="locationsContainer">
         <h2>Lokationer</h2>
         <div id="locations">
-          <!-- Lokationerne indsættes dynamisk -->
+          <!-- Lokationer indsættes dynamisk -->
         </div>
       </div>
     </div>
-    <!-- Højre side: Aktiv opgave og potentielle opgaver (50 % af skærmen) -->
+    <!-- Højre side: Aktiv opgave og potentielle opgaver -->
     <div class="right-column">
       <div id="activeTask">
         <h2>Aktiv Opgave</h2>
-        <!-- Den aktive opgave vises her -->
+        <!-- Aktiv opgave vises her -->
       </div>
       <div id="potentialTasks">
         <h2>Potentielle Opgaver</h2>
-        <!-- Opgaverne vises her -->
+        <!-- Opgaver vises her -->
       </div>
     </div>
   </div>
@@ -48,11 +53,10 @@
       </div>
     </div>
   </div>
-  <!-- Opgavefiler skal indlæses før main.js -->
+  <!-- Opgavefiler (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js) skal indlæses før main.js -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
-  <!-- Main script -->
   <script src="scripts/main.js"></script>
 </body>
 </html>
