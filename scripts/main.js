@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Modalhåndtering med GSAP – med fast opdeling af body og footer
+  // Modalhåndtering med GSAP
   const modal = document.getElementById('modal');
   const modalBodyContainer = document.getElementById('modalBody');
   const modalFooterContainer = document.getElementById('modalFooter');
@@ -65,6 +65,29 @@ document.addEventListener("DOMContentLoaded", function() {
       modal.classList.add('hidden');
       if (callback) callback();
     }});
+  }
+
+  // Event listener for Få hjælp-knappen i headeren
+  document.getElementById('helpButton').addEventListener('click', function() {
+    showHelp();
+  });
+
+  function showHelp() {
+    const helpContent = `
+      <h2>Få Hjælp</h2>
+      <p>Velkommen til IT Tycoon! I dette spil agerer du IT-forvalter, og dit mål er at balancere tre centrale KPI’er: Tid, Sikkerhed og Udvikling.</p>
+      <p><strong>Spillets funktioner:</strong></p>
+      <ul>
+        <li><strong>Opgaver:</strong> Vælg en opgave fra listen, og forpligt dig til den for at starte processen.</li>
+        <li><strong>Trin:</strong> Hver opgave består af flere trin, hvor du træffer valg, der påvirker dine KPI’er og den tilgængelige tid.</li>
+        <li><strong>Arkitekthjælp:</strong> Brug denne funktion for at få vejledning, når du er i tvivl om, hvilket valg der er bedst.</li>
+        <li><strong>CAB:</strong> Efter alle trin sendes dine ændringer til CAB for evaluering. Hvis CAB afviser, skal du udføre rework.</li>
+        <li><strong>Inspect & Adapt:</strong> Efter et antal opgaver får du en samlet evaluering af din præstation i sprintet.</li>
+      </ul>
+      <p>Målet er at nå de fastsatte sprintmål for sikkerhed og udvikling, mens du håndterer din tid effektivt. Held og lykke!</p>
+    `;
+    openModal(helpContent, `<button id="closeHelp">Luk</button>`);
+    document.getElementById('closeHelp').addEventListener('click', () => closeModal());
   }
 
   // Render lokationer
