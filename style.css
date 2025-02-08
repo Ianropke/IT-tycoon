@@ -9,7 +9,7 @@ body {
   color: #333;
 }
 
-/* Header med gradient og større ikon */
+/* Header med gradient og moderne typografi */
 header {
   background: linear-gradient(90deg, #2193b0, #6dd5ed);
   color: #fff;
@@ -50,7 +50,7 @@ header {
   gap: 0.5rem;
 }
 
-/* Lokationsknapper med uppercase navne */
+/* Lokationsknapper med uppercase navne og høj kontrast */
 .location-button {
   display: inline-block;
   padding: 1rem 1.5rem;
@@ -82,7 +82,7 @@ header {
 }
 #potentialTasks {
   margin-top: 1rem;
-  /* Fast højde så vinduet er scrollbart, hvis indholdet er for langt */
+  /* Fast højde, så vinduet er scrollbart */
   height: calc(100vh - 220px);
   overflow-y: auto;
   position: relative;
@@ -129,7 +129,7 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -171,4 +171,10 @@ button:hover {
   color: #4caf50;
   font-weight: bold;
   margin-left: 0.5rem;
+}
+
+/* Vigtig: Når et element er skjult, skal det ikke fange pointer-events */
+.hidden {
+  display: none;
+  pointer-events: none;
 }
