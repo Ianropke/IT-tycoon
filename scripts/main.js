@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.infrastrukturTasks = window.infrastrukturTasks || [];
   window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-  // Global gameState – tid, sikkerhed og udvikling (alle på skala op til 40)
+  // Global gameState – tid, sikkerhed og udvikling (skala op til 40)
   let gameState = {
     security: 20,
     development: 20,
@@ -100,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let label = document.createElement('span');
       label.textContent = capitalize(loc);
       div.appendChild(label);
-      // Tilføj eventlistener direkte her:
       div.addEventListener('click', () => handleLocationClick(loc));
       gameArea.appendChild(div);
     });
@@ -128,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.id = 'architect-help-btn';
       btn.classList.add('commit-button');
       btn.textContent = "Få arkitekthjælp";
-      let activeTaskDiv = document.getElementById('active-task');
+      const activeTaskDiv = document.getElementById('active-task');
       if (activeTaskDiv) {
         activeTaskDiv.insertBefore(btn, activeTaskDiv.firstChild);
       }
@@ -147,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --- Event Listeners --- */
+  const introStartBtn = document.getElementById('intro-start-btn');
   if (introStartBtn) {
     introStartBtn.addEventListener('click', () => {
       introModal.classList.add('modal-slide-out');
@@ -161,18 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
       scenarioIntroModal.style.display = 'none';
     });
   }
+  const cabOkBtn = document.getElementById('cab-ok-btn');
   if (cabOkBtn) {
     cabOkBtn.addEventListener('click', () => {
       cabModal.style.display = 'none';
       finalizeCABResult();
     });
   }
+  const cabResultOkBtn = document.getElementById('cab-result-ok-btn');
   if (cabResultOkBtn) {
     cabResultOkBtn.addEventListener('click', () => {
       cabResultModal.style.display = 'none';
       postCABTechnicalCheck();
     });
   }
+  const taskSummaryOkBtn = document.getElementById('task-summary-ok-btn');
   if (taskSummaryOkBtn) {
     taskSummaryOkBtn.addEventListener('click', () => {
       taskSummaryModal.style.display = 'none';
@@ -180,18 +183,17 @@ document.addEventListener('DOMContentLoaded', () => {
       renderTasks();
     });
   }
-  if (inspectModal) {
-    const inspectCloseBtn = document.getElementById('inspect-close-btn');
-    if (inspectCloseBtn) {
-      inspectCloseBtn.addEventListener('click', () => {
-        inspectModal.style.display = 'none';
-        endGame();
-      });
-    }
-  }
+  const moreInfoCloseBtn = document.getElementById('more-info-close-btn');
   if (moreInfoCloseBtn) {
     moreInfoCloseBtn.addEventListener('click', () => {
       moreInfoModal.style.display = 'none';
+    });
+  }
+  const inspectCloseBtn = document.getElementById('inspect-close-btn');
+  if (inspectCloseBtn) {
+    inspectCloseBtn.addEventListener('click', () => {
+      inspectModal.style.display = 'none';
+      endGame();
     });
   }
 
@@ -228,26 +230,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* --- Lokationsklik --- */
-  // (EventListeners for lokationer er nu tilføjet i renderLocations)
-  
   /* --- initGame --- */
   function initGame(){
-    renderLocations();         // Generer lokationsbokse med eventlisteners
-    ensureArchitectHelpButton(); // Sørg for, at arkitekthjælp-knappen findes
+    renderLocations();
+    ensureArchitectHelpButton();
     updateDashboard();
     window.backlog = [
       ...(window.hospitalTasks || []),
       ...(window.infrastrukturTasks || []),
       ...(window.cybersikkerhedTasks || [])
     ];
-    // Generér opgaver kontinuerligt via interval – hvis der er færre end 10 opgaver
     setInterval(() => {
       if (gameState.availableTasks.length < 10) {
         generateTask();
       }
     }, 10000);
-    // Start med at generere 5 opgaver
     for (let i = 0; i < 5; i++){
       generateTask();
     }
@@ -258,9 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let dashboardChart;
   function initDashboard() {
     const ctx = dashboardCanvas.getContext('2d');
-    if (dashboardChart) {
-      dashboardChart.destroy();
-    }
+    if (dashboardChart) { dashboardChart.destroy(); }
     dashboardChart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -268,11 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         datasets: [
           {
             label: 'Nuværende Status',
-            data: [
-              gameState.time,
-              gameState.security,
-              gameState.development
-            ],
+            data: [gameState.time, gameState.security, gameState.development],
             backgroundColor: ['#f39c12', '#27ae60', '#8e44ad']
           },
           {
@@ -290,23 +281,13 @@ document.addEventListener('DOMContentLoaded', () => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 40,
-            ticks: { stepSize: 5 }
-          }
-        }
+        scales: { y: { beginAtZero: true, max: 40, ticks: { stepSize: 5 } } }
       }
     });
   }
   function updateDashboard() {
     if (!dashboardChart) return;
-    dashboardChart.data.datasets[0].data = [
-      gameState.time,
-      gameState.security,
-      gameState.development
-    ];
+    dashboardChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
     dashboardChart.update();
     animateDashboardUpdate();
   }
@@ -314,11 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dashboardCanvas.classList.add('kpi-update');
     setTimeout(() => dashboardCanvas.classList.remove('kpi-update'), 1000);
   }
-
-  /* --- Scoreboard --- */
-  function updateScoreboard(){
-    updateDashboard();
-  }
+  function updateScoreboard(){ updateDashboard(); }
 
   /* --- Task Generation --- */
   function validateTask(task) {
@@ -341,9 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(`Task "${chosen.title}" er ugyldig pga. duplikerede lokationer. Skipper opgaven.`);
       return;
     }
-    if (!chosen.riskProfile) {
-      chosen.riskProfile = 1.0;
-    }
+    if (!chosen.riskProfile) { chosen.riskProfile = 1.0; }
     gameState.usedTasks.add(chosen.title);
     let newTask = JSON.parse(JSON.stringify(chosen));
     newTask.currentStep = 0;
@@ -356,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderTasks(){
     let tasksList = document.getElementById('tasks-list');
     tasksList.innerHTML = "";
-    if (!gameState.availableTasks.length){
+    if (!gameState.availableTasks.length) {
       tasksList.innerHTML = "<li>Ingen opgaver tilgængelige</li>";
       return;
     }
@@ -378,10 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
       tasksList.appendChild(li);
     });
   }
-
-  /* --- Forpligt Opgave --- */
   function assignTask(taskTitle){
-    if (gameState.activeTask){
+    if (gameState.activeTask) {
       showPopup("Du har allerede en aktiv opgave!", "error");
       return;
     }
@@ -389,27 +362,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (idx === -1) return;
     let chosen = gameState.availableTasks.splice(idx, 1)[0];
     gameState.activeTask = chosen;
-    if (chosen.narrativeIntro){
-      showScenarioIntroModal("Scenarie", chosen.narrativeIntro);
-    }
+    if (chosen.narrativeIntro) { showScenarioIntroModal("Scenarie", chosen.narrativeIntro); }
     document.getElementById('active-task-headline').textContent = chosen.title;
     document.getElementById('active-task-description').textContent = chosen.shortDesc || "";
     updateStepsList();
     renderTasks();
   }
-
-  /* --- Scenario Intro Modal --- */
   function showScenarioIntroModal(title, text){
     scenarioIntroTitleEl.textContent = title;
     scenarioIntroTextEl.textContent = text;
     scenarioIntroModal.style.display = "flex";
   }
-
-  /* --- Steps-listen --- */
   function updateStepsList(){
     let stepsList = document.getElementById('steps-list');
     stepsList.innerHTML = "";
-    if (!gameState.activeTask){
+    if (!gameState.activeTask) {
       stepsList.innerHTML = "<li>Ingen aktiv opgave</li>";
       return;
     }
@@ -418,17 +385,15 @@ document.addEventListener('DOMContentLoaded', () => {
       let li = document.createElement('li');
       let loc = st.location || "ukendt lokation";
       li.textContent = `Trin ${i+1}: ${loc}`;
-      if (i < c){
+      if (i < c) {
         li.style.textDecoration = "line-through";
         li.style.color = "#95a5a6";
       }
       stepsList.appendChild(li);
     });
   }
-
-  /* --- Lokationsklik --- */
   function handleLocationClick(locName){
-    if (!gameState.activeTask){
+    if (!gameState.activeTask) {
       showPopup("Vælg en opgave først!", "error");
       return;
     }
@@ -438,29 +403,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (locName !== needed) return;
     showScenarioModal(i);
   }
-
-  /* --- Scenario Modal --- */
   function showScenarioModal(stepIndex){
     scenarioModal.style.display = "flex";
     let t = gameState.activeTask;
     let st = t.steps[stepIndex];
     let loc = st.location || "ukendt";
-    
-    // Vis narrativ hvis defineret
-    if (t.narrativeIntro){
+    if (t.narrativeIntro) {
       scenarioNarrativeDiv.style.display = "block";
       scenarioNarrativeDiv.innerHTML = t.narrativeIntro;
     } else {
       scenarioNarrativeDiv.style.display = "none";
     }
-    
     scenarioTitle.textContent = `Trin ${stepIndex+1}: ${loc}`;
     scenarioFlavorText.textContent = scenarioFlavorPool[Math.floor(Math.random() * scenarioFlavorPool.length)];
-    scenarioDescription.innerHTML = `<p style="font-size:1.15rem; line-height:1.4;">
-      ${st.stepDescription || "Standard scenarie..."}
-    </p>`;
-    
-    // DigDeeperLinks (hvis defineret)
+    scenarioDescription.innerHTML = `<p style="font-size:1.15rem; line-height:1.4;">${st.stepDescription || "Standard scenarie..."}</p>`;
     digDeeperLinksDiv.innerHTML = "";
     if (t.digDeeperLinks && t.digDeeperLinks.length) {
       digDeeperLinksDiv.style.display = "block";
@@ -474,8 +430,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       digDeeperLinksDiv.style.display = "none";
     }
-    
-    // "Mere info (trin)" knap, hvis stepContext findes
     let modalContent = scenarioModal.querySelector('.modal-content');
     let oldContextDiv = modalContent.querySelector('#step-context-div');
     if (oldContextDiv) oldContextDiv.remove();
@@ -490,39 +444,28 @@ document.addEventListener('DOMContentLoaded', () => {
       stepContextDiv.appendChild(contextBtn);
       modalContent.appendChild(stepContextDiv);
     }
-    
-    // Opsætning af valg – med ekstra tid for anbefalede valg
     scenarioALabel.textContent = st.choiceA.label;
     scenarioAText.innerHTML = st.choiceA.text + (st.choiceA.recommended ? " <span class='recommended'>(Anbefalet, +2 tid)</span>" : "");
     scenarioBLabel.textContent = st.choiceB.label;
     scenarioBText.innerHTML = st.choiceB.text + (st.choiceB.recommended ? " <span class='recommended'>(Anbefalet, +2 tid)</span>" : "");
-    
     scenarioAButton.onclick = () => {
       let effect = Object.assign({}, st.choiceA.applyEffect);
-      if (st.choiceA.recommended) {
-        effect.timeCost = (effect.timeCost || 0) + 2;
-      }
+      if (st.choiceA.recommended) { effect.timeCost = (effect.timeCost || 0) + 2; }
       applyChoiceEffect(effect);
       finalizeStep(stepIndex);
       scenarioModal.style.display = "none";
     };
     scenarioBButton.onclick = () => {
       let effect = Object.assign({}, st.choiceB.applyEffect);
-      if (st.choiceB.recommended) {
-        effect.timeCost = (effect.timeCost || 0) + 2;
-      }
+      if (st.choiceB.recommended) { effect.timeCost = (effect.timeCost || 0) + 2; }
       applyChoiceEffect(effect);
       finalizeStep(stepIndex);
       scenarioModal.style.display = "none";
     };
   }
-
-  /* --- Valg-effekter --- */
   function applyChoiceEffect(eff){
     if (!eff) return;
-    if (eff.timeCost) {
-      applyTimeCost(eff.timeCost);
-    }
+    if (eff.timeCost) { applyTimeCost(eff.timeCost); }
     if (eff.statChange){
       for (let [stat, delta] of Object.entries(eff.statChange)){
         let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
@@ -538,8 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
       gameState.riskyTotal += eff.riskyPlus * (gameState.activeTask.riskProfile || 1);
     }
   }
-
-  /* --- Tidshåndtering --- */
   function applyTimeCost(t) {
     if (gameState.time < t) {
       showPopup("Ikke nok tid!", "error");
@@ -550,8 +491,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateScoreboard();
     showFloatingText(`-${t} tid`, "time");
   }
-
-  /* --- Statændringer --- */
   function applyStatChange(stat, delta){
     if (stat === "security" || stat === "development") {
       gameState[stat] = Math.min(Math.max(gameState[stat] + delta, 0), 40);
@@ -559,8 +498,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateScoreboard();
     showFloatingText((delta >= 0 ? `+${delta}` : `${delta}`) + " " + stat, stat);
   }
-
-  /* --- Når et trin er færdigt --- */
   function finalizeStep(stepIndex) {
     let t = gameState.activeTask;
     if (!t) return;
@@ -569,19 +506,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (t.currentStep >= t.steps.length) {
       gameState.lastFinishedTask = t;
       gameState.tasksCompleted++;
-      if (gameState.tasksCompleted >= 10) {
-        showInspectAndAdapt();
-      } else {
-        showTaskSummaryModal();
-      }
+      if (gameState.tasksCompleted >= 10) { showInspectAndAdapt(); }
+      else { showTaskSummaryModal(); }
     }
   }
-
-  /* --- Task Summary Modal --- */
   function showTaskSummaryModal(){
-    let s = gameState.security,
-        d = gameState.development,
-        timeRemaining = gameState.time;
+    let s = gameState.security, d = gameState.development, timeRemaining = gameState.time;
     let summary = `
       <strong>Opgave fuldført!</strong><br/>
       Status:<br/>
@@ -589,21 +519,13 @@ document.addEventListener('DOMContentLoaded', () => {
       Tips: Husk, at avancerede valg koster ekstra tid. Vurder dine valg nøje.
     `;
     let lastT = gameState.lastFinishedTask;
-    if (lastT && lastT.knowledgeRecap) {
-      summary += `<hr/><strong>Vidensopsummering:</strong><br/>${lastT.knowledgeRecap}`;
-    }
-    if (lastT && lastT.learningInfo) {
-      summary += `<hr/><strong>Ekstra læring:</strong><br/>${lastT.learningInfo}`;
-    }
+    if (lastT && lastT.knowledgeRecap) { summary += `<hr/><strong>Vidensopsummering:</strong><br/>${lastT.knowledgeRecap}`; }
+    if (lastT && lastT.learningInfo) { summary += `<hr/><strong>Ekstra læring:</strong><br/>${lastT.learningInfo}`; }
     taskSummaryText.innerHTML = summary;
     taskSummaryModal.style.display = "flex";
   }
-
-  /* --- Inspect & Adapt Modal --- */
   function showInspectAndAdapt(){
-    let s = gameState.security,
-        d = gameState.development,
-        timeRemaining = gameState.time;
+    let s = gameState.security, d = gameState.development, timeRemaining = gameState.time;
     let report = `
       <h2>Inspect & Adapt</h2>
       <p>Du har løst ${gameState.tasksCompleted} opgaver.</p>
@@ -621,8 +543,6 @@ document.addEventListener('DOMContentLoaded', () => {
     inspectContent.innerHTML = report;
     inspectModal.style.display = "flex";
   }
-
-  /* --- Afslut aktiv opgave --- */
   function endActiveTask(){
     if (!gameState.activeTask) return;
     gameState.activeTask = null;
@@ -631,8 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('steps-list').innerHTML = "<li>Ingen aktiv opgave</li>";
     updateScoreboard();
   }
-
-  /* --- Ephemeral Popups --- */
   function showPopup(msg, type="success", duration=3000){
     let container = document.getElementById('popup-container');
     let div = document.createElement('div');
@@ -643,8 +561,6 @@ document.addEventListener('DOMContentLoaded', () => {
     container.appendChild(div);
     setTimeout(() => div.remove(), duration);
   }
-
-  /* --- Flydende Tekst --- */
   function showFloatingText(txt, stat){
     let fc = document.getElementById('floating-text-container');
     let div = document.createElement('div');
@@ -659,20 +575,14 @@ document.addEventListener('DOMContentLoaded', () => {
     fc.appendChild(div);
     setTimeout(() => div.remove(), 2000);
   }
-
-  /* --- "Mere Info" Modal --- */
   function showMoreInfo(infoText){
     moreInfoContent.innerHTML = infoText;
     moreInfoModal.style.display = "flex";
   }
-
-  /* --- Arkitekthjælp --- */
   function showArchitectModal(){
     let t = gameState.activeTask;
     if (!t) return;
-    let analysis = `<strong>Arkitekthjælp:</strong><br/>
-    <em>${t.title}</em><br/><br/>
-    <p>
+    let analysis = `<strong>Arkitekthjælp:</strong><br/><em>${t.title}</em><br/><br/><p>
       Efter at have gennemgået opgaven anbefales det særligt at fokusere på de trin, hvor der er markeret anbefalede valg.
     </p>`;
     let recommendations = "";
@@ -688,8 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
     architectModal.style.display = "flex";
     t.architectUsed = true;
   }
-
-  /* --- Intro-funktionalitet --- */
   function startIntro(){
     const introModal = document.getElementById('intro-modal');
     introModal.style.display = 'flex';
@@ -703,13 +611,52 @@ document.addEventListener('DOMContentLoaded', () => {
     startIntro();
     initDashboard();
   });
-
-  // Initialize dashboard
   initDashboard();
-
-  // Dynamisk generér lokationsbokse
   renderLocations();
-
-  // Sørg for, at arkitekthjælp-knappen findes
   ensureArchitectHelpButton();
+  
+  /* --- Dashboard update functions --- */
+  function initDashboard() {
+    const ctx = dashboardCanvas.getContext('2d');
+    if (dashboardChart) { dashboardChart.destroy(); }
+    dashboardChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Tid', 'Sikkerhed', 'Udvikling'],
+        datasets: [
+          {
+            label: 'Nuværende Status',
+            data: [gameState.time, gameState.security, gameState.development],
+            backgroundColor: ['#f39c12', '#27ae60', '#8e44ad']
+          },
+          {
+            label: 'Målsætning',
+            data: [null, missionGoals.security, missionGoals.development],
+            type: 'line',
+            borderColor: '#f1c40f',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, max: 40, ticks: { stepSize: 5 } } }
+      }
+    });
+  }
+  function updateDashboard() {
+    if (!dashboardChart) return;
+    dashboardChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
+    dashboardChart.update();
+    animateDashboardUpdate();
+  }
+  function animateDashboardUpdate() {
+    dashboardCanvas.classList.add('kpi-update');
+    setTimeout(() => dashboardCanvas.classList.remove('kpi-update'), 1000);
+  }
+  function updateScoreboard() { updateDashboard(); }
 });
