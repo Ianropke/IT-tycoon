@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <!-- Chart.js via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- GSAP (GreenSock Animation Platform) til avancerede animationer -->
+  <!-- GSAP til avancerede animationer -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@
       <div id="locationsContainer">
         <h2>Lokationer</h2>
         <div id="locations">
-          <!-- Lokationer indsættes dynamisk -->
+          <!-- Lokationerne indsættes dynamisk -->
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@
       </div>
       <div id="potentialTasks">
         <h2>Potentielle Opgaver</h2>
-        <!-- Scrollbar med potentielle opgaver vises her -->
+        <!-- Opgaverne vises her -->
       </div>
     </div>
   </div>
@@ -48,10 +48,11 @@
       </div>
     </div>
   </div>
-  <!-- Inkludér script-filer -->
-  <script src="scripts/main.js"></script>
+  <!-- Opgavefiler: Disse skal indlæses før main.js -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
+  <!-- Main script -->
+  <script src="scripts/main.js"></script>
 </body>
 </html>
