@@ -122,7 +122,7 @@ button:hover {
   transform: scale(1.02);
 }
 
-/* Modal-styling med fast opdeling af body og footer */
+/* Modal-styling med faste dimensioner, fast modal-body og fast modal-footer */
 .modal {
   position: fixed;
   top: 0;
@@ -135,13 +135,13 @@ button:hover {
   align-items: center;
   z-index: 1000;
 }
+
 .modal-content {
   background-color: #fff;
   border-radius: 8px;
-  width: 90%;
-  max-width: 800px;      /* Øget maksimal bredde – pop-upen bliver bredere */
-  min-height: 300px;     /* Ensartet minimumshøjde */
-  max-height: 80vh;      /* Ensartet maksimal højde */
+  /* Fast størrelse: 80% af viewportens bredde og 60% af viewportens højde */
+  width: 80vw;
+  height: 60vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -149,22 +149,25 @@ button:hover {
   color: #333;
   margin: 0 20px;
 }
+
 .modal-body {
-  padding: 30px 60px;   /* Øget padding på siderne så teksten ikke sidder for tæt */
+  padding: 30px 60px;   /* Øget padding for mere luft på siderne */
   overflow-y: auto;
   flex: 1;
   text-align: left;
 }
+
 .modal-footer {
   padding: 10px 60px;
   background-color: #f5f5f5;
-  /* Placer knapperne i nederste højre hjørne */
+  /* Knapperne placeres i nederste højre hjørne */
   display: flex;
   align-items: center;
   justify-content: flex-end;
   flex-shrink: 0;
   height: 60px;
 }
+
 .close {
   position: absolute;
   top: 10px;
