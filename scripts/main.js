@@ -64,8 +64,11 @@ document.addEventListener("DOMContentLoaded", function() {
     gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.5 });
   }
 
-  function closeModal() {
-    gsap.to(modal, { opacity: 0, duration: 0.5, onComplete: () => modal.classList.add('hidden') });
+  function closeModal(callback) {
+    gsap.to(modal, { opacity: 0, duration: 0.5, onComplete: function() {
+      modal.classList.add('hidden');
+      if (callback) callback();
+    }});
   }
 
   // Render lokationer
@@ -109,8 +112,10 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
     openModal(introContent);
     document.getElementById('startGame').addEventListener('click', function() {
-      closeModal();
-      showSprintGoal();
+      // Vent til fade-out er færdig, før vi går videre
+      closeModal(() => {
+        showSprintGoal();
+      });
     });
   }
 
@@ -122,8 +127,9 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
     openModal(sprintContent);
     document.getElementById('continueTutorial').addEventListener('click', function() {
-      closeModal();
-      startTutorial();
+      closeModal(() => {
+        startTutorial();
+      });
     });
   }
 
@@ -135,17 +141,18 @@ document.addEventListener("DOMContentLoaded", function() {
       <p><strong>UI-Layout:</strong><br>
          Venstre side: KPI-graf og lokationer<br>
          Højre side: Aktiv opgave og potentielle opgaver<br>
-         Opgavens titel og beskrivelse fortæller, om den understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur/cybersikkerhed).</p>
+         Opgavens titel og beskrivelse fortæller, om den understøtter Udvikling (hospitalopgaver) eller Sikkerhed (infrastruktur-/cybersikkerhedsopgaver).</p>
       <p><strong>Spillets Mekanik:</strong><br>
          Når opgaven forpligtes, udfører du hvert trin ved at vælge den korrekte lokation. Ved valg af den komplette løsning trækkes <span style="color:red;">−2 tid</span> og du opnår en større bonus; den hurtige løsning giver 0 tid og en mindre bonus. Effekterne vises direkte i modalvinduet.</p>
       <p><strong>Efter de normale trin:</strong><br>
-         Når alle trin er gennemført, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB – og herefter skal du aktivt klikke på en knap for at starte evalueringen. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
+         Når alle trin er gennemført, sendes din ændring til CAB for evaluering. Du får besked om, at din ændring sendes til CAB – og herefter skal du aktivt trykke på "Evaluér nu" for at starte evalueringen. Hvis CAB afviser, mister du 3 tidspoint, og evalueringen gentages.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
     document.getElementById('endTutorial').addEventListener('click', function() {
-      closeModal();
-      renderPotentialTasks();
+      closeModal(() => {
+        renderPotentialTasks();
+      });
     });
   }
 
@@ -235,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Vis modal med valgmuligheder for et trin (stepContext vises direkte)
+  // Vis modal med valg for et trin (stepContext vises direkte)
   function showStepChoices(step) {
     let choiceAText = step.choiceA.text.replace(/-?\d+\s*tid/, "<span style='color:red;'>−2 tid</span>");
     let choiceBText = step.choiceB.text.replace(/-?\d+\s*tid/, "<span style='color:green;'>0 tid</span>");
@@ -257,24 +264,26 @@ document.addEventListener("DOMContentLoaded", function() {
       modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
       applyChoice(modifiedChoice);
       gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceA.label} (${choiceAText})`);
-      closeModal();
-      if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
-        cabApproval();
-      } else {
-        proceedToNextStep();
-      }
+      closeModal(() => {
+        if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
+          cabApproval();
+        } else {
+          proceedToNextStep();
+        }
+      });
     });
     document.getElementById('choiceB').addEventListener('click', function() {
       let modifiedChoice = Object.assign({}, step.choiceB);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceB.applyEffect, { timeCost: 0 });
       applyChoice(modifiedChoice);
       gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceB.label} (${choiceBText})`);
-      closeModal();
-      if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
-        cabApproval();
-      } else {
-        proceedToNextStep();
-      }
+      closeModal(() => {
+        if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
+          cabApproval();
+        } else {
+          proceedToNextStep();
+        }
+      });
     });
     document.getElementById('architectHelp').addEventListener('click', function() {
       if (!gameState.architectHelpUsed) {
@@ -301,29 +310,29 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // CAB-vurdering: Brugeren skal aktivt trykke på "Evaluér nu" for at starte evalueringen.
+  // CAB-vurdering: Brugeren skal aktivt trykke på "Evaluér nu"
   function cabApproval() {
-    closeModal();
-    openModal("<h2>Til CAB</h2><p>Din ændring sendes nu til CAB for evaluering…</p><button id='evaluateCAB'>Evaluér nu</button>");
-    document.getElementById('evaluateCAB').addEventListener('click', function() {
-      let chance = (gameState.security + 20) / (gameState.missionGoals.security + 20);
-      if (Math.random() < chance) {
-        showTaskSummary();
-      } else {
-        openModal(`
-          <h2>CAB Afvisning</h2>
-          <p>CAB afviste opgaven. Rework er påkrævet, og du mister 3 tidspoint.</p>
-          <button id="continueRework">Fortsæt rework</button>
-        `);
-        document.getElementById('continueRework').addEventListener('click', function() {
-          const penalty = 3;
-          gameState.time -= penalty;
-          if (gameState.time < 0) gameState.time = 0;
-          updateDashboard();
-          closeModal();
-          cabApproval();
-        });
-      }
+    closeModal(() => {
+      openModal("<h2>Til CAB</h2><p>Din ændring sendes nu til CAB for evaluering…</p><button id='evaluateCAB'>Evaluér nu</button>");
+      document.getElementById('evaluateCAB').addEventListener('click', function() {
+        let chance = (gameState.security + 20) / (gameState.missionGoals.security + 20);
+        if (Math.random() < chance) {
+          showTaskSummary();
+        } else {
+          openModal(`
+            <h2>CAB Afvisning</h2>
+            <p>CAB afviste opgaven. Rework er påkrævet, og du mister 3 tidspoint.</p>
+            <button id="continueRework">Fortsæt rework</button>
+          `);
+          document.getElementById('continueRework').addEventListener('click', function() {
+            const penalty = 3;
+            gameState.time -= penalty;
+            if (gameState.time < 0) gameState.time = 0;
+            updateDashboard();
+            closeModal(() => cabApproval());
+          });
+        }
+      });
     });
   }
 
@@ -335,8 +344,7 @@ document.addEventListener("DOMContentLoaded", function() {
     summaryHTML += "</ul><button id='continueAfterSummary'>Fortsæt</button>";
     openModal(summaryHTML);
     document.getElementById('continueAfterSummary').addEventListener('click', function() {
-      closeModal();
-      finishTask();
+      closeModal(() => finishTask());
     });
   }
 
@@ -368,9 +376,10 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
     openModal(inspectContent);
     document.getElementById('endGame').addEventListener('click', function() {
-      closeModal();
-      openModal("<p>Tak for spillet!</p>");
-      setTimeout(() => location.reload(), 2000);
+      closeModal(() => {
+        openModal("<p>Tak for spillet!</p>");
+        setTimeout(() => location.reload(), 2000);
+      });
     });
   }
 
