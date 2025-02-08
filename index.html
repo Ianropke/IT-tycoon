@@ -40,20 +40,24 @@
       </div>
       <div id="potentialTasks">
         <h2>Potentielle Opgaver</h2>
-        <!-- Opgaver vises her -->
+        <!-- Dette vindue er scrollbart, hvis der er meget tekst -->
       </div>
     </div>
   </div>
   <!-- Modal-vindue -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
-      <span id="modalClose" class="close">&times;</span>
-      <div id="modalBody">
-        <!-- Modalens indhold -->
+      <!-- Vi opdeler modalindholdet i en fast modal-body og modal-footer -->
+      <div class="modal-body" id="modalBody">
+        <!-- Dynamisk indhold indsættes her -->
       </div>
+      <div class="modal-footer" id="modalFooter">
+        <!-- Footer-knapper (fx "OK" eller "Næste") vises her -->
+      </div>
+      <span id="modalClose" class="close">&times;</span>
     </div>
   </div>
-  <!-- Opgavefiler (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js) skal indlæses før main.js -->
+  <!-- Sørg for at task-filerne indlæses før main.js -->
   <script src="scripts/tasks/hospitalTasks.js"></script>
   <script src="scripts/tasks/infrastrukturTasks.js"></script>
   <script src="scripts/tasks/cybersikkerhedTasks.js"></script>
