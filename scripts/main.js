@@ -9,14 +9,31 @@ document.addEventListener("DOMContentLoaded", function() {
     tasksCompleted: 0,
     missionGoals: { security: 22, development: 22 },
     architectHelpUsed: false,
+    // Her oprettes to arrays: 
+    // allTasks: indeholder alle opgaver (samlet fra de tre task-filer)
+    // tasks: de opgaver, der aktuelt vises som potentielle opgaver
+    allTasks: [],
     tasks: [],
     choiceHistory: []
   };
 
-  // Load opgave-filerne
-  gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
+  // Saml alle opgaver fra de tre kilder
+  gameState.allTasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
 
-  // Definér getIcon()-funktionen for at returnere et ikon baseret på lokation
+  // Shuffle arrayet med opgaver for at få en tilfældig rækkefølge
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+  shuffleArray(gameState.allTasks);
+
+  // Tag de første 7 opgaver som de oprindelige potentielle opgaver
+  gameState.tasks = gameState.allTasks.splice(0, 7);
+
+  // Definér getIcon()-funktionen
   function getIcon(location) {
     const icons = {
       'hospital': '🏥',
@@ -59,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
     kpiChart.update();
   }
 
-  // Opdater opgaveprogress i dashboardet
+  // Opdater opgaveprogress (f.eks. "Opgave X/10") i dashboardet
   function updateTaskProgress() {
     const progressElement = document.getElementById('taskProgress');
     progressElement.textContent = `Opgave ${gameState.tasksCompleted} / 10`;
@@ -113,19 +130,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const helpContent = `
       <h2>Få Hjælp</h2>
       <p><strong>Din Rolle som IT-forvalter</strong><br>
-      Velkommen til IT Tycoon! Du skal balancere tre KPI’er: <em>Tid, Sikkerhed</em> og <em>Udvikling</em>. Træf strategiske beslutninger for at styrke it-sikkerheden og udviklingen, mens du holder øje med den tilgængelige tid.</p>
-      <p><strong>Spillets Struktur og Valgmuligheder</strong><br>
-      Hver opgave består af flere trin, hvor du vælger mellem to løsninger:<br>
-      - <em>Komplet løsning</em>: Større bonus, men koster 2 tidspoint.<br>
-      - <em>Hurtig løsning</em>: Mindre bonus, men koster 0 tidspoint.<br>
-      Dine valg påvirker dine KPI’er og den samlede tid.</p>
-      <p><strong>Vigtige Funktioner</strong><br>
-      - Opgaver: Gennemfør opgaverne for at nå sprintets mål.<br>
-      - Arkitekthjælp: Få anbefalinger, hvis du er usikker.<br>
-      - CAB: Ændringer sendes til CAB; hvis afvist, skal du udføre rework (tidsomkostning).<br>
-      - Inspect & Adapt: Efter 10 opgaver evalueres dine resultater.</p>
-      <p><strong>Mulige Udfordringer</strong><br>
-      - Tiden kan løbe ud, hvis du ikke gennemfører 10 opgaver, hvis dine KPI’er ikke er på niveau, eller begge dele.</p>
+      Velkommen til IT Tycoon! Du skal balancere tre KPI’er: <em>Tid, Sikkerhed</em> og <em>Udvikling</em>. Træf strategiske beslutninger for at styrke it-sikkerheden og udviklingen, mens du holder øje med din tid.</p>
+      <p><strong>Spillets Struktur:</strong><br>
+      - Hver opgave består af flere trin, hvor du vælger mellem en komplet løsning (−2 tid, større bonus) og en hurtig løsning (0 tid, mindre bonus).<br>
+      - Du skal gennemføre 10 opgaver for at nå Inspect & Adapt-fasen, hvor dine resultater evalueres.</p>
+      <p><strong>Opdateringer:</strong><br>
+      - Dashboardet viser løbende din tid og din opgaveprogress (f.eks. "Opgave 3/10").<br>
+      - Hvis du ikke gennemfører nok opgaver, eller hvis dine KPI’er ikke er på niveau, vil spillet give dig en detaljeret fejlmeddelelse.</p>
       <p>Held og lykke!</p>
     `;
     openModal(helpContent, `<button id="closeHelp">Luk</button>`);
@@ -177,6 +188,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
+  // Render potentielle opgaver – vis blot de opgaver, der er i gameState.tasks (som initialt er 7)
   function renderPotentialTasks() {
     const potentialTasksDiv = document.getElementById('potentialTasks');
     potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
@@ -191,10 +203,7 @@ document.addEventListener("DOMContentLoaded", function() {
       commitBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         if (gameState.currentTask !== null) {
-          openModal(
-            "<h2>Advarsel</h2><p>Du har allerede forpligtet dig til en opgave!</p>",
-            `<button id="okButton">OK</button>`
-          );
+          openModal("<h2>Advarsel</h2><p>Du har allerede forpligtet dig til en opgave!</p>", `<button id="okButton">OK</button>`);
           document.getElementById('okButton').addEventListener('click', () => closeModal());
           return;
         }
@@ -210,10 +219,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
           hint = "Denne opgave understøtter Sikkerhed.";
         }
-        openModal(
-          `<h2>Arkitekthjælp</h2><p>${hint}</p><p>${task.narrativeIntro || ""}</p>`,
-          `<button id="closeArchitectHelp">Luk</button>`
-        );
+        openModal(`<h2>Arkitekthjælp</h2><p>${hint}</p><p>${task.narrativeIntro || ""}</p>`, `<button id="closeArchitectHelp">Luk</button>`);
         document.getElementById('closeArchitectHelp').addEventListener('click', () => closeModal());
       });
       taskItem.appendChild(infoDiv);
@@ -223,6 +229,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
+  // Når en opgave startes, fjern den fra potentielle opgaver
   function startTask(task) {
     gameState.currentTask = task;
     gameState.currentStepIndex = 0;
@@ -231,6 +238,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderActiveTask(task);
   }
 
+  // Vis den aktive opgave med alle dens trin
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
@@ -256,10 +264,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function handleLocationClick(clickedLocation) {
     if (!gameState.currentTask) {
-      openModal(
-        "<h2>Advarsel</h2><p>Vælg en opgave og forpligt dig først!</p>",
-        `<button id="alertOk">OK</button>`
-      );
+      openModal("<h2>Advarsel</h2><p>Vælg en opgave og forpligt dig først!</p>", `<button id="alertOk">OK</button>`);
       document.getElementById('alertOk').addEventListener('click', () => closeModal());
       return;
     }
@@ -267,10 +272,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (clickedLocation.toLowerCase() === currentStep.location.toLowerCase()) {
       showStepChoices(currentStep);
     } else {
-      openModal(
-        "<h2>Fejl</h2><p>Forkert lokation. Prøv igen.</p>",
-        `<button id="errorOk">OK</button>`
-      );
+      openModal("<h2>Fejl</h2><p>Forkert lokation. Prøv igen.</p>", `<button id="errorOk">OK</button>`);
       document.getElementById('errorOk').addEventListener('click', () => closeModal());
     }
   }
@@ -322,10 +324,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (!gameState.architectHelpUsed) {
         gameState.architectHelpUsed = true;
         let hint = "Denne opgave understøtter Sikkerhed.";
-        openModal(
-          `<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p><p>${hint}</p>`,
-          `<button id="closeArchitectHelp">Luk</button>`
-        );
+        openModal(`<h2>Arkitekthjælp</h2><p>Anbefalet valg: ${step.choiceA.label}</p><p>${hint}</p>`, `<button id="closeArchitectHelp">Luk</button>`);
         document.getElementById('closeArchitectHelp').addEventListener('click', () => closeModal());
       }
     });
@@ -341,26 +340,22 @@ document.addEventListener("DOMContentLoaded", function() {
       gameState.development += choice.applyEffect.statChange.development;
     }
     updateDashboard();
-    // Tjek om tiden er opbrugt, og vis en specifik fejlbesked
     if (gameState.time <= 0) {
       checkGameOverCondition();
       return;
     }
   }
 
-  // Funktion til at tjekke, om spillet skal slutte pga. tid
+  // Funktion der tjekker de tre scenarier, når tiden løber ud
   function checkGameOverCondition() {
-    // Case A: For få opgaver gennemført (KPI'er var på niveau)
     if (gameState.tasksCompleted < 10 &&
        (gameState.security >= gameState.missionGoals.security && gameState.development >= gameState.missionGoals.development)) {
       openModal("<h2>Din tid er opbrugt!</h2><p>Selvom dine KPI’er var på rette niveau, har du ikke gennemført de 10 nødvendige opgaver. Du skal fuldføre alle opgaver for at nå sprintets mål.</p>");
     }
-    // Case B: KPI'er ikke opnået (10 opgaver gennemført, men KPI’er under målet)
     else if (gameState.tasksCompleted >= 10 &&
        (gameState.security < gameState.missionGoals.security || gameState.development < gameState.missionGoals.development)) {
       openModal("<h2>Din tid er opbrugt!</h2><p>Du har gennemført 10 opgaver, men dine KPI’er (Sikkerhed og Udvikling) nåede ikke sprintmålet. Vurder dine beslutninger og forsøg igen.</p>");
     }
-    // Case C: Hverken nok opgaver eller KPI’er opnået
     else if (gameState.tasksCompleted < 10 &&
        (gameState.security < gameState.missionGoals.security || gameState.development < gameState.missionGoals.development)) {
       openModal("<h2>Din tid er opbrugt!</h2><p>Du har hverken gennemført de krævede 10 opgaver eller opnået de fastsatte KPI-mål for Sikkerhed og Udvikling. Genovervej dine strategier og prøv igen.</p>");
@@ -414,13 +409,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  // Når en opgave er løst: Fjern den fra listen, og tilføj 2 nye opgaver (hvis tilgængelige)
   function finishTask() {
     gameState.tasksCompleted++;
     updateTaskProgress();
     openModal("<h2>Info</h2><p>Opgaven er fuldført!</p>", `<button id="continueAfterFinish">Fortsæt</button>`);
     document.getElementById('continueAfterFinish').addEventListener('click', function() {
       closeModal(() => {
+        // Fjern den aktuelle opgave fra den viste liste
         gameState.tasks = gameState.tasks.filter(task => task !== gameState.currentTask);
+        // Tilføj op til 2 nye opgaver fra allTasks, hvis der er nogen
+        const newTasks = gameState.allTasks.splice(0, 2);
+        gameState.tasks = gameState.tasks.concat(newTasks);
         document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
         gameState.currentTask = null;
         gameState.currentStepIndex = 0;
@@ -447,6 +447,18 @@ document.addEventListener("DOMContentLoaded", function() {
         updateDashboard();
         showSprintGoal();
       });
+    });
+  }
+
+  function showTaskSummary() {
+    let summaryHTML = "<h2>Opsummering af dine valg</h2><ul>";
+    gameState.choiceHistory.forEach(item => {
+      summaryHTML += `<li>${item}</li>`;
+    });
+    summaryHTML += "</ul>";
+    openModal(summaryHTML, `<button id="continueAfterSummary">Fortsæt</button>`);
+    document.getElementById('continueAfterSummary').addEventListener('click', function() {
+      closeModal(() => finishTask());
     });
   }
 
