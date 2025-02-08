@@ -55,7 +55,6 @@ header {
   flex: 1 1 auto;
   margin-top: 1rem;
   overflow-y: auto;
-  /* Sørg for, at potentielle opgaver får en max højde og ruller inden for området */
   max-height: calc(100vh - 200px);
 }
 
