@@ -1,23 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
   /************************************************************
-   * main.js – IT‑Tycoon (Endelig udgave med Inspect & Adapt og dynamiske lokationer)
-   * Funktioner:
-   * - Tid som beslutningsfaktor (timeCost) – avancerede valg koster ekstra tid.
-   * - Unikke lokationer per opgave (validateTask)
-   * - Kontinuerlig opgavegenerering
-   * - Inspect & Adapt (SAFe) efter 10 løste opgaver med samlet evaluering.
-   * - Grafen er nu skaleret til 40.
-   * - Lokationsområdet genereres dynamisk med tilknyttede eventlisteners.
-   * - "Mere info (trin)" og "dig deeper" funktionalitet.
-   * - Arkitekthjælp med konkrete anbefalinger.
+   * main.js – IT‑Tycoon (Endelig udgave med PI-mål, Inspect & Adapt,
+   * balancering af KPI’er og håndtering af udløbet tid)
+   *
+   * Ændringer:
+   * 1. PI-målsætning vises ved spilstart.
+   * 2. Inspect & Adapt-modal vises efter 10 opgaver, og spillet slutter.
+   * 3. Tekstopdatering: Husk at rette "Leverandor" til "Leverandør" i task-filerne.
+   * 4. Statændringer balanceres med multiplikatorer:
+   *    - Sikkerhed: *0.75 (gør det sværere at opnå store stigninger)
+   *    - Udvikling: *1.25 (gør det lettere at opnå udvikling)
+   * 5. Hvis der ikke er nok tid, vises en popup og spillet afsluttes.
    ************************************************************/
 
-  // Sørg for, at dine task-filer er indlæst
+  // Sørg for, at dine task-filer (hospitalTasks.js, infrastrukturTasks.js, cybersikkerhedTasks.js) er indlæst
   window.hospitalTasks = window.hospitalTasks || [];
   window.infrastrukturTasks = window.infrastrukturTasks || [];
   window.cybersikkerhedTasks = window.cybersikkerhedTasks || [];
 
-  // Global gameState – tid, sikkerhed og udvikling (skala op til 40)
+  // Global gameState – alle værdier måles på en skala op til 40
   let gameState = {
     security: 20,
     development: 20,
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lastFinishedTask: null
   };
 
+  // PI-målsætningen
   const missionGoals = {
     security: 22,
     development: 22
@@ -88,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameArea = document.getElementById('game-area');
     if (!gameArea) return;
     gameArea.innerHTML = "";
-    const locations = ["hospital", "dokumentation", "leverandor", "infrastruktur", "it-jura", "cybersikkerhed"];
+    const locations = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it-jura", "cybersikkerhed"];
     locations.forEach(loc => {
       let div = document.createElement('div');
       div.id = loc;
@@ -108,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     switch (loc) {
       case "hospital": return "🏥";
       case "dokumentation": return "📄";
-      case "leverandor": return "📦";
+      case "leverandør": return "📦";
       case "infrastruktur": return "🔧";
       case "it-jura": return "⚖️";
       case "cybersikkerhed": return "💻";
@@ -152,7 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
       introModal.classList.add('modal-slide-out');
       setTimeout(() => {
         introModal.style.display = 'none';
-        openTutorialModal();
+        // Vis PI-målsætning før tutorialen starter
+        showPIMål();
       }, 500);
     });
   }
@@ -230,6 +233,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* --- PI-målsætning --- */
+  function showPIMål() {
+    // Vis en simpel popup med sprintmålet, inden tutorialen starter
+    showPopup(`Dit sprintmål: Opnå mindst ${missionGoals.security} i sikkerhed og ${missionGoals.development} i udvikling.`, "info", 5000);
+    // Efter popupen, start tutorialen
+    setTimeout(() => {
+      openTutorialModal();
+    }, 5000);
+  }
+
   /* --- initGame --- */
   function initGame(){
     renderLocations();
@@ -240,11 +253,13 @@ document.addEventListener('DOMContentLoaded', () => {
       ...(window.infrastrukturTasks || []),
       ...(window.cybersikkerhedTasks || [])
     ];
+    // Generér opgaver kontinuerligt via interval – hvis der er færre end 10 opgaver
     setInterval(() => {
       if (gameState.availableTasks.length < 10) {
         generateTask();
       }
     }, 10000);
+    // Start med at generere 5 opgaver
     for (let i = 0; i < 5; i++){
       generateTask();
     }
@@ -468,7 +483,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (eff.timeCost) { applyTimeCost(eff.timeCost); }
     if (eff.statChange){
       for (let [stat, delta] of Object.entries(eff.statChange)){
-        let adjustedDelta = delta * (gameState.activeTask.riskProfile || 1);
+        // Brug multiplikatorer: gør det sværere at opnå sikkerhed og lettere at opnå udvikling
+        let multiplier = (stat === "security") ? 0.75 : (stat === "development") ? 1.25 : 1;
+        let adjustedDelta = delta * multiplier * (gameState.activeTask.riskProfile || 1);
         applyStatChange(stat, adjustedDelta);
       }
     }
@@ -483,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function applyTimeCost(t) {
     if (gameState.time < t) {
-      showPopup("Ikke nok tid!", "error");
+      showPopup("Ikke nok tid! Spillet afsluttes.", "error");
       endGame();
       return;
     }
@@ -506,8 +523,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (t.currentStep >= t.steps.length) {
       gameState.lastFinishedTask = t;
       gameState.tasksCompleted++;
-      if (gameState.tasksCompleted >= 10) { showInspectAndAdapt(); }
-      else { showTaskSummaryModal(); }
+      if (gameState.tasksCompleted >= 10) {
+        showInspectAndAdapt();
+      } else {
+        showTaskSummaryModal();
+      }
     }
   }
   function showTaskSummaryModal(){
@@ -606,6 +626,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (startBtn) startBtn.style.display = 'block';
     }, 5000);
   }
+  function endGame(){
+    // Her kan du definere, hvad der sker, når tiden er opbrugt eller Inspect & Adapt er gennemført
+    showPopup("Spillet er slut. Tiden er opbrugt, eller du har gennemført PI'en.", "error", 5000);
+    // Disable yderligere interaktion (du kan fx reload siden eller vise en endelig modal)
+    // For nu stopper vi spillet ved at fjerne activeTask og rydde op
+    gameState.activeTask = null;
+  }
 
   window.addEventListener('load', () => {
     startIntro();
@@ -614,49 +641,4 @@ document.addEventListener('DOMContentLoaded', () => {
   initDashboard();
   renderLocations();
   ensureArchitectHelpButton();
-  
-  /* --- Dashboard update functions --- */
-  function initDashboard() {
-    const ctx = dashboardCanvas.getContext('2d');
-    if (dashboardChart) { dashboardChart.destroy(); }
-    dashboardChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Tid', 'Sikkerhed', 'Udvikling'],
-        datasets: [
-          {
-            label: 'Nuværende Status',
-            data: [gameState.time, gameState.security, gameState.development],
-            backgroundColor: ['#f39c12', '#27ae60', '#8e44ad']
-          },
-          {
-            label: 'Målsætning',
-            data: [null, missionGoals.security, missionGoals.development],
-            type: 'line',
-            borderColor: '#f1c40f',
-            borderWidth: 2,
-            fill: false,
-            pointRadius: 0,
-            tension: 0
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { y: { beginAtZero: true, max: 40, ticks: { stepSize: 5 } } }
-      }
-    });
-  }
-  function updateDashboard() {
-    if (!dashboardChart) return;
-    dashboardChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
-    dashboardChart.update();
-    animateDashboardUpdate();
-  }
-  function animateDashboardUpdate() {
-    dashboardCanvas.classList.add('kpi-update');
-    setTimeout(() => dashboardCanvas.classList.remove('kpi-update'), 1000);
-  }
-  function updateScoreboard() { updateDashboard(); }
 });
