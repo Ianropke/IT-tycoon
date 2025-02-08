@@ -1,6 +1,5 @@
-// Vent på, at DOM’en er klar
+/* main.js */
 document.addEventListener("DOMContentLoaded", function() {
-  // Opret et gameState-objekt til at holde styr på spillets tilstand
   const gameState = {
     time: 100,
     security: 0,
@@ -8,10 +7,14 @@ document.addEventListener("DOMContentLoaded", function() {
     currentTask: null,
     tasksCompleted: 0,
     missionGoals: { security: 22, development: 22 },
-    architectHelpUsed: false
+    architectHelpUsed: false,
+    tasks: [] // Samlet liste over alle opgaver
   };
 
-  // Initialiser Chart.js-dashboardet
+  // Kombiner tasks fra de tre task-filer
+  gameState.tasks = [].concat(hospitalTasks, infrastrukturTasks, cybersikkerhedTasks);
+
+  // Initialiser Chart.js
   const ctx = document.getElementById('kpiChart').getContext('2d');
   const kpiChart = new Chart(ctx, {
     type: 'bar',
@@ -21,6 +24,15 @@ document.addEventListener("DOMContentLoaded", function() {
         label: 'KPI',
         data: [gameState.time, gameState.security, gameState.development],
         backgroundColor: ['#f39c12', '#27ae60', '#8e44ad']
+      },
+      {
+        label: 'Sprintmål',
+        data: [null, gameState.missionGoals.security, gameState.missionGoals.development],
+        type: 'line',
+        borderColor: 'red',
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 0
       }]
     },
     options: {
@@ -30,12 +42,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Modal-håndtering
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modalBody');
   const modalClose = document.getElementById('modalClose');
-
-  modalClose.addEventListener('click', () => closeModal());
+  modalClose.addEventListener('click', closeModal);
 
   function openModal(content) {
     modalBody.innerHTML = content;
@@ -46,89 +56,87 @@ document.addEventListener("DOMContentLoaded", function() {
     modal.classList.add('hidden');
   }
 
-  // 1. Intro-modal: Spillets introduktion
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
-      <p>Som IT‑forvalter skal du navigere i komplekse IT‑systemer og balancere KPI’er (Tid, Sikkerhed og Udvikling).</p>
+      <p>Du agerer IT‑forvalter med ansvar for at balancere tre centrale KPI’er: Tid, Sikkerhed og Udvikling.</p>
+      <p>På venstre side ser du en graf, der viser dine nuværende KPI‑værdier med en rød linje, der markerer sprintmålet.</p>
+      <p>Under grafen finder du en række lokationer – hver repræsenterer et trin i en opgave. Klik på en lokation for at udføre handlingen.</p>
+      <p>På højre side vises din aktive opgave øverst, mens en liste med potentielle opgaver vises nedenunder.</p>
+      <p>Planlæg dine valg omhyggeligt: Avancerede valg giver bedre resultater, men koster mere tid. Du kan bruge arkitekthjælp én gang per opgave til at få anbefalinger.</p>
       <button id="startGame">Start Spillet</button>
     `;
     openModal(introContent);
-    document.getElementById('startGame').addEventListener('click', () => {
+    document.getElementById('startGame').addEventListener('click', function() {
       closeModal();
       showSprintGoal();
     });
   }
 
-  // 2. Sprint Goal-modal
   function showSprintGoal() {
     const sprintContent = `
       <h2>Sprintmålsætning</h2>
-      <p>Målet er at opnå mindst ${gameState.missionGoals.security} i sikkerhed og ${gameState.missionGoals.development} i udvikling.</p>
-      <button id="continueTutorial">Fortsæt</button>
+      <p>Mål: Opnå mindst ${gameState.missionGoals.security} i sikkerhed og ${gameState.missionGoals.development} i udvikling, inden tiden løber ud.</p>
+      <button id="continueTutorial">Fortsæt til Tutorial</button>
     `;
     openModal(sprintContent);
-    document.getElementById('continueTutorial').addEventListener('click', () => {
+    document.getElementById('continueTutorial').addEventListener('click', function() {
       closeModal();
       startTutorial();
     });
   }
 
-  // 3. Tutorial-modal
   function startTutorial() {
     const tutorialContent = `
       <h2>Tutorial</h2>
-      <p>Her gennemgår du spillets mekanik. Hvert trin i en opgave består af et valg mellem to muligheder – et avanceret valg (Choice A) og et hurtigere valg (Choice B). Vær opmærksom på, at avancerede valg koster ekstra tid, men giver bedre effekter.</p>
+      <p><strong>Spillets Koncept:</strong><br>
+         Du navigerer komplekse IT-systemer og balancerer KPI’erne: Tid, Sikkerhed og Udvikling. Dit mål er at opnå sprintmålsætningen, som du altid kan følge i grafen.</p>
+      <p><strong>UI-Layout:</strong><br>
+         - Venstre side: En graf med dine KPI-værdier og en rød linje for sprintmålet. Under grafen er lokationer, der repræsenterer opgavens trin.<br>
+         - Højre side: Den aktive opgave vises øverst med detaljer om det aktuelle trin, mens en liste med potentielle opgaver vises nedenunder.</p>
+      <p><strong>Spillets Mekanik:</strong><br>
+         Ved hvert trin vælger du mellem to muligheder (Choice A og Choice B). Avancerede valg giver bedre effekter, men koster ekstra tid. Brug arkitekthjælp, hvis du er i tvivl (én gang per opgave).</p>
+      <p><strong>Planlægning og Strategi:</strong><br>
+         Hold øje med din tid. Hvert valg påvirker dine KPI’er. Målet er at balancere dine ressourcer og nå sprintmålsætningen, før tiden løber ud.</p>
       <button id="endTutorial">Næste</button>
     `;
     openModal(tutorialContent);
-    document.getElementById('endTutorial').addEventListener('click', () => {
+    document.getElementById('endTutorial').addEventListener('click', function() {
       closeModal();
-      loadTasks();
+      renderPotentialTasks();
     });
   }
 
-  // 4. Indlæs opgaver – her anvendes eksempelvis hospitalTasks fra hospitalTasks.js
-  function loadTasks() {
-    // I dette eksempel benyttes hospitalTasks-arrayet, som er defineret i hospitalTasks.js
-    const tasks = hospitalTasks;
-    renderTaskList(tasks);
-  }
-
-  // Render opgavelisten i højre kolonne
-  function renderTaskList(tasks) {
-    const taskListDiv = document.getElementById('taskList');
-    taskListDiv.innerHTML = '<h2>Mulige opgaver</h2>';
-    tasks.forEach((task, index) => {
+  function renderPotentialTasks() {
+    const potentialTasksDiv = document.getElementById('potentialTasks');
+    potentialTasksDiv.innerHTML = '<h2>Potentielle Opgaver</h2>';
+    gameState.tasks.forEach((task, index) => {
       const taskItem = document.createElement('div');
       taskItem.className = 'task-item';
       taskItem.innerHTML = `<h3>${task.title}</h3><p>${task.shortDesc}</p>`;
-      taskItem.addEventListener('click', () => {
+      taskItem.addEventListener('click', function() {
         startTask(task);
       });
-      taskListDiv.appendChild(taskItem);
+      potentialTasksDiv.appendChild(taskItem);
     });
   }
 
-  // Start en valgt opgave
   function startTask(task) {
     gameState.currentTask = task;
     gameState.architectHelpUsed = false;
     renderActiveTask(task);
   }
 
-  // Vis den aktive opgave med dens trin
   function renderActiveTask(task) {
     const activeTaskDiv = document.getElementById('activeTask');
     activeTaskDiv.innerHTML = `<h2>${task.title}</h2><p>${task.shortDesc}</p>`;
-    // Opret en knap for hvert trin, baseret på den unikke lokation
     const stepsDiv = document.createElement('div');
     stepsDiv.id = 'taskSteps';
     task.steps.forEach((step, stepIndex) => {
       const btn = document.createElement('button');
       btn.className = 'location-button';
       btn.textContent = step.location + ' ' + getIcon(step.location);
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', function() {
         handleStep(step, stepIndex);
       });
       stepsDiv.appendChild(btn);
@@ -136,7 +144,6 @@ document.addEventListener("DOMContentLoaded", function() {
     activeTaskDiv.appendChild(stepsDiv);
   }
 
-  // Returner en emoji-ikon baseret på lokation
   function getIcon(location) {
     const icons = {
       'hospital': '🏥',
@@ -149,7 +156,6 @@ document.addEventListener("DOMContentLoaded", function() {
     return icons[location] || '';
   }
 
-  // Håndter et trin: vis en modal med de to valg (Choice A og Choice B)
   function handleStep(step, stepIndex) {
     const choiceContent = `
       <h2>${step.stepDescription}</h2>
@@ -161,69 +167,59 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
     openModal(choiceContent);
     
-    document.getElementById('choiceA').addEventListener('click', () => {
+    document.getElementById('choiceA').addEventListener('click', function() {
       applyChoice(step.choiceA);
       closeModal();
-      proceedToNextStep(stepIndex);
+      proceedToNextStep(step, stepIndex);
     });
-    document.getElementById('choiceB').addEventListener('click', () => {
+    document.getElementById('choiceB').addEventListener('click', function() {
       applyChoice(step.choiceB);
       closeModal();
-      proceedToNextStep(stepIndex);
+      proceedToNextStep(step, stepIndex);
     });
-    document.getElementById('architectHelp').addEventListener('click', () => {
+    document.getElementById('architectHelp').addEventListener('click', function() {
       if (!gameState.architectHelpUsed) {
         gameState.architectHelpUsed = true;
-        // Eksempelvis vises en simpel vejledning; denne funktion kan udbygges
-        alert('Arkitekthjælp: Anbefalet valg er ' + step.choiceA.label);
+        alert('Anbefalet valg: ' + step.choiceA.label);
       }
     });
   }
 
-  // Anvend effekterne fra et valg
   function applyChoice(choice) {
     gameState.time -= choice.applyEffect.timeCost;
-    const change = choice.applyEffect.statChange;
-    if (change.security) {
-      gameState.security += change.security;
+    if (choice.applyEffect.statChange.security) {
+      gameState.security += choice.applyEffect.statChange.security;
     }
-    if (change.development) {
-      gameState.development += change.development;
+    if (choice.applyEffect.statChange.development) {
+      gameState.development += choice.applyEffect.statChange.development;
     }
     updateDashboard();
-    // Vis øjeblikkelig feedback (her med console.log, men kan udvides med popups/animeret tekst)
-    console.log(`Valg: ${choice.label} – Effekt: ${choice.text}`);
-    // Hvis tiden løber ud, afslut spillet
     if (gameState.time <= 0) {
       alert("Ikke nok tid! Spillet slutter.");
-      // Her kan du udvide med afslutningslogik
+      location.reload();
     }
   }
 
-  // Gå videre til næste trin eller afslut opgaven, hvis alle trin er gennemført
-  function proceedToNextStep(currentStepIndex) {
+  function proceedToNextStep(step, currentStepIndex) {
     const task = gameState.currentTask;
     if (currentStepIndex < task.steps.length - 1) {
-      // For eksemplets skyld viser vi en simpel besked
       alert(`Gå til næste trin (${currentStepIndex + 2} af ${task.steps.length})`);
     } else {
-      // Opgaven er fuldført
       gameState.tasksCompleted++;
       alert("Opgaven er fuldført!");
-      // Efter 10 opgaver vises Inspect & Adapt-modalen
+      renderPotentialTasks();
+      document.getElementById('activeTask').innerHTML = '<h2>Aktiv Opgave</h2>';
       if (gameState.tasksCompleted % 10 === 0) {
         showInspectAndAdapt();
       }
     }
   }
 
-  // Opdater Chart.js-dashboardet med de aktuelle KPI-værdier
   function updateDashboard() {
     kpiChart.data.datasets[0].data = [gameState.time, gameState.security, gameState.development];
     kpiChart.update();
   }
 
-  // Inspect & Adapt-modal efter 10 opgaver
   function showInspectAndAdapt() {
     const inspectContent = `
       <h2>Inspect & Adapt</h2>
@@ -232,13 +228,12 @@ document.addEventListener("DOMContentLoaded", function() {
       <button id="endGame">Afslut Spillet</button>
     `;
     openModal(inspectContent);
-    document.getElementById('endGame').addEventListener('click', () => {
+    document.getElementById('endGame').addEventListener('click', function() {
       closeModal();
       alert("Tak for spillet!");
-      // Her kan du implementere yderligere afslutningslogik
+      location.reload();
     });
   }
 
-  // Start spillet med intro-modalen
   showIntro();
 });
