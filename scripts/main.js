@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }});
   }
 
-  // Event listener for "Få hjælp"-knappen i headeren
+  // Event listener for "Få hjælp"-knappen
   document.getElementById('helpButton').addEventListener('click', function() {
     showHelp();
   });
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
       Spillet er inddelt i opgaver, der hver består af flere trin. Hvert trin præsenterer dig for to muligheder:
       <ul>
         <li><strong>Den komplette løsning:</strong> Giver en større bonus, men koster ekstra tid (typisk −2 tid). Ideelt, når du har tid til overs og ønsker et kraftigt løft i enten sikkerhed eller udvikling.</li>
-        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus – nyttig, når du skal spare tid, selvom det betyder en mindre effekt.</li>
+        <li><strong>Den hurtige løsning:</strong> Koster ingen ekstra tid, men giver en mindre bonus – nyttig, når du skal spare tid.</li>
       </ul>
       Dine valg påvirker dine KPI’er, så det er vigtigt nøje at afveje risiko og belønning.</p>
       
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function() {
       
       <p><strong>Mulige Udfordringer</strong><br>
       - <em>Tidsstyring:</em> Forkerte valg kan få dig til at løbe tør for tid – overvej altid, hvilken løsning der er bedst i den givne situation.<br>
-      - <em>Forkerte Beslutninger:</em> Fejlagtige valg kan påvirke dine KPI’er negativt, hvilket kan resultere i, at CAB afviser dine ændringer og du skal udføre rework.<br>
+      - <em>Forkerte Beslutninger:</em> Fejlagtige valg kan påvirke dine KPI’er negativt, hvilket kan resultere i, at CAB afviser dine ændringer, og du skal udføre rework.<br>
       - <em>Afvejning af Risiko og Belønning:</em> Det er en balancegang at vælge mellem hurtige løsninger og de mere omfattende, men fordelagtige, løsninger.<br>
       - <em>Overblik:</em> Hold nøje øje med dine KPI’er og den tilgængelige tid, så du altid træffer informerede beslutninger.</p>
       
@@ -104,36 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('closeHelp').addEventListener('click', () => closeModal());
   }
 
-  // Render lokationer
-  const locationsList = ["hospital", "dokumentation", "leverandør", "infrastruktur", "it‑jura", "cybersikkerhed"];
-  function renderLocations() {
-    const locationsDiv = document.getElementById('locations');
-    locationsDiv.innerHTML = "";
-    locationsList.forEach(loc => {
-      const btn = document.createElement('button');
-      btn.className = 'location-button';
-      btn.innerHTML = loc.toUpperCase() + " " + getIcon(loc);
-      btn.addEventListener('click', function() {
-        handleLocationClick(loc);
-      });
-      locationsDiv.appendChild(btn);
-    });
-  }
-  renderLocations();
-
-  function getIcon(location) {
-    const icons = {
-      'hospital': '🏥',
-      'dokumentation': '📄',
-      'leverandør': '📦',
-      'infrastruktur': '🔧',
-      'it‑jura': '⚖️',
-      'cybersikkerhed': '💻'
-    };
-    return icons[location] || '';
-  }
-
-  // Introduktion og PI Planning
+  // Introduktion – Velkommen til IT‑Tycoon pop-up med en "Start Spillet"-knap
   function showIntro() {
     const introContent = `
       <h2>Velkommen til IT‑Tycoon</h2>
@@ -298,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceA);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceA.applyEffect, { timeCost: 2 });
       applyChoice(modifiedChoice);
-      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex + 1}: ${step.choiceA.label} (${choiceAText})`);
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceA.label} (${choiceAText})`);
       closeModal(() => {
         if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
           cabApproval();
@@ -311,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let modifiedChoice = Object.assign({}, step.choiceB);
       modifiedChoice.applyEffect = Object.assign({}, step.choiceB.applyEffect, { timeCost: 0 });
       applyChoice(modifiedChoice);
-      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex + 1}: ${step.choiceB.label} (${choiceBText})`);
+      gameState.choiceHistory.push(`Trin ${gameState.currentStepIndex+1}: ${step.choiceB.label} (${choiceBText})`);
       closeModal(() => {
         if (gameState.currentStepIndex === gameState.currentTask.steps.length - 1) {
           cabApproval();
