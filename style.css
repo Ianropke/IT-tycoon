@@ -96,7 +96,7 @@ header {
   to { opacity: 1; }
 }
 
-/* Generel knap-styling – forstørrede knapper */
+/* Forstørrede knapper */
 button {
   padding: 1rem 1.5rem;
   margin: 0.5rem;
@@ -104,7 +104,7 @@ button {
   cursor: pointer;
 }
 
-/* Lokationsknapper – nu dobbelt så store */
+/* Lokationsknapper – dobbelt så store */
 .location-button {
   display: inline-block;
   margin: 0.5rem;
@@ -128,4 +128,11 @@ button {
 .task-item .task-info {
   flex: 1;
   margin-right: 1rem;
+}
+
+/* I den aktive opgave skal gennemførte trin vises med et checkmark */
+.done {
+  color: green;
+  font-weight: bold;
+  margin-left: 0.5rem;
 }
